@@ -19,7 +19,15 @@ public class Echo : MonoBehaviour
 
     private void Update()
     {
-        text.text = recvStr;
+        if (socket == null) return;
+
+        if (socket.Poll(0, SelectMode.SelectRead))// 0:非阻塞，1：一直等待
+        {
+            byte[] readBuff = new byte[1024];
+            int count = socket.Receive(readBuff);
+            string recvStr = Encoding.Default.GetString(readBuff, 0, count);
+            text.text = recvStr;
+        }
     }
 
     /// <summary>
@@ -32,8 +40,8 @@ public class Echo : MonoBehaviour
                              SocketType.Stream, // 套接字类型
                              ProtocolType.Tcp); // 协议
         // Connect
-        //socket.Connect("127.0.0.1", 8888); // (远程IP地址，远程端口) 阻塞方法会卡住，直到服务器回应
-        socket.BeginConnect("127.0.0.1", 8888, ConnectCallback, socket);
+        socket.Connect("127.0.0.1", 8888); // (远程IP地址，远程端口) 阻塞方法会卡住，直到服务器回应
+        //socket.BeginConnect("127.0.0.1", 8888, ConnectCallback, socket);
     }
 
     /// <summary>
