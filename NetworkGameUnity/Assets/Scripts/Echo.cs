@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Echo : MonoBehaviour
 {
-    private Socket sockect;
+    private Socket socket;
 
     public InputField InputField;
 
@@ -28,12 +28,12 @@ public class Echo : MonoBehaviour
     public void Connection()
     {
         // Socket
-        sockect = new Socket(AddressFamily.InterNetwork, // 地址族
+        socket = new Socket(AddressFamily.InterNetwork, // 地址族
                              SocketType.Stream, // 套接字类型
                              ProtocolType.Tcp); // 协议
         // Connect
-        //sockect.Connect("127.0.0.1", 8888); // (远程IP地址，远程端口) 阻塞方法会卡住，直到服务器回应
-        sockect.BeginConnect("127.0.0.1", 8888, ConnectCallback, sockect);
+        //socket.Connect("127.0.0.1", 8888); // (远程IP地址，远程端口) 阻塞方法会卡住，直到服务器回应
+        socket.BeginConnect("127.0.0.1", 8888, ConnectCallback, socket);
     }
 
     /// <summary>
@@ -44,7 +44,11 @@ public class Echo : MonoBehaviour
         // Send
         string sendStr = InputField.text;
         byte[] sendBytes = Encoding.Default.GetBytes(sendStr);
-        sockect.Send(sendBytes); // 阻塞方法 接受一个byte[]类型的参数指明要发送的内容
+        //socket.Send(sendBytes); // 阻塞方法 接受一个byte[]类型的参数指明要发送的内容
+        for (int i = 0; i < 1000000; i++)
+        {
+            socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, SendCallback, socket);
+        }
     }
 
     /// <summary>
@@ -71,7 +75,6 @@ public class Echo : MonoBehaviour
     /// <summary>
     /// Receive回调
     /// </summary>
-    /// <param name="ar"></param>
     private void ReceiveCallback(IAsyncResult ar)
     {
         try
@@ -84,6 +87,23 @@ public class Echo : MonoBehaviour
         catch (SocketException ex)
         {
             Debug.LogError($"Socket Receive Fail {ex.ToString()}");
+        }
+    }
+
+    /// <summary>
+    /// Send回调
+    /// </summary>
+    private void SendCallback(IAsyncResult ar)
+    {
+        try
+        {
+            socket = (Socket)ar.AsyncState;
+            int count = socket.EndSend(ar);
+            Debug.Log($"Socket Send Success : {count}");
+        }
+        catch (SocketException ex)
+        {
+            Debug.LogError($"Socket send fail {ex.ToString()}");
         }
     }
 }
