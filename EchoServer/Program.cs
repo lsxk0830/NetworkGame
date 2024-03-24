@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -7,12 +8,17 @@ namespace EchoServer
 {
     internal class EhoServer
     {
+        // 监听Socket
+        private static Socket listenfd;
+
+        // 客户端Socket及状态信息
+        private static Dictionary<Socket, ClientState> clients = new Dictionary<Socket, ClientState>();
+
         private static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
 
-            // Socket
-            Socket listenfd = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            listenfd = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             // Bind
             IPAddress ipAdr = IPAddress.Parse("127.0.0.1"); // 127.0.0.1是回送地址，指本地机，一般用于测试
@@ -22,21 +28,69 @@ namespace EchoServer
             // Listen
             listenfd.Listen(0); // backlog指定队列中最多可容纳等待接受的连接数，0表示不限制
             Console.WriteLine("[服务器]启动成功");
-            while (true)
+
+            listenfd.BeginAccept(AcceptCallback, listenfd);
+
+            Console.ReadLine();
+        }
+
+        /// <summary>
+        /// Accept应答回调
+        /// </summary>
+        private static void AcceptCallback(IAsyncResult ar)
+        {
+            try
             {
-                // Accept
-                Socket connfd = listenfd.Accept(); // 接收客户端连接
-                Console.WriteLine("[服务器]Accept");
+                Console.WriteLine("[服务器应答]Accept");
+                Socket listenfd = (Socket)ar.AsyncState;
+                Socket clientfd = listenfd.EndAccept(ar);
 
-                // Receive
-                byte[] readBuff = new byte[1024];
-                int count = connfd.Receive(readBuff);
-                string readStr = Encoding.Default.GetString(readBuff, 0, count);
-                Console.WriteLine("[服务器接收]" + readStr);
+                // clients 列表
+                ClientState state = new ClientState();
+                state.socket = clientfd;
+                clients.Add(clientfd, state);
 
-                // Send
-                byte[] sendBytes = Encoding.Default.GetBytes(readStr);
-                connfd.Send(sendBytes);
+                // 接收数据BeginReceive
+                clientfd.BeginReceive(state.readBuff, 0, 1024, 0, ReceiveCallback, state);
+
+                // 继续Accept
+                listenfd.BeginAccept(AcceptCallback, listenfd);
+            }
+            catch (SocketException ex)
+            {
+                Console.WriteLine($"Socket Accept fail {ex.ToString()}");
+            }
+        }
+
+        /// <summary>
+        /// Receive接收回调
+        /// </summary>
+        private static void ReceiveCallback(IAsyncResult ar)
+        {
+            try
+            {
+                ClientState state = (ClientState)ar.AsyncState;
+                Socket clientfd = state.socket;
+                int count = clientfd.EndReceive(ar);
+
+                // 客户端关闭
+                if (count == 0)
+                {
+                    clientfd.Close();
+                    clients.Remove(clientfd);
+                    Console.WriteLine($"Socket Close");
+                    return;
+                }
+
+                string receiveStr = Encoding.Default.GetString(state.readBuff, 0, count);
+                Console.WriteLine("[服务器接收]" + receiveStr);
+                byte[] sendBytes = Encoding.Default.GetBytes("Echo" + receiveStr);
+                clientfd.Send(sendBytes);
+                clientfd.BeginReceive(state.readBuff, 0, 1024, 0, ReceiveCallback, state);
+            }
+            catch (SocketException ex)
+            {
+                Console.WriteLine($"Socket Receive fail : {ex.ToString()}");
             }
         }
     }

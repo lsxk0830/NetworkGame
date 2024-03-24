@@ -45,10 +45,7 @@ public class Echo : MonoBehaviour
         string sendStr = InputField.text;
         byte[] sendBytes = Encoding.Default.GetBytes(sendStr);
         //socket.Send(sendBytes); // 阻塞方法 接受一个byte[]类型的参数指明要发送的内容
-        for (int i = 0; i < 1000000; i++)
-        {
-            socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, SendCallback, socket);
-        }
+        socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, SendCallback, socket);
     }
 
     /// <summary>
@@ -73,7 +70,7 @@ public class Echo : MonoBehaviour
     }
 
     /// <summary>
-    /// Receive回调
+    /// Receive 接收消息回调
     /// </summary>
     private void ReceiveCallback(IAsyncResult ar)
     {
