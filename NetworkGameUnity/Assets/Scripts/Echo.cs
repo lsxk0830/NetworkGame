@@ -78,7 +78,8 @@ public class Echo : MonoBehaviour
         {
             Socket socket = (Socket)ar.AsyncState;
             int count = socket.EndReceive(ar);
-            recvStr = Encoding.Default.GetString(readBuff, 0, count);
+            string s = Encoding.Default.GetString(readBuff, 0, count);
+            recvStr = s + "\n" + recvStr; // 接收历史消息
             socket.BeginReceive(readBuff, 0, 1024, 0, ReceiveCallback, socket);
         }
         catch (SocketException ex)

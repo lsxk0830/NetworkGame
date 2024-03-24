@@ -83,9 +83,15 @@ namespace EchoServer
                 }
 
                 string receiveStr = Encoding.Default.GetString(state.readBuff, 0, count);
+                string sendStr = clientfd.RemoteEndPoint.ToString() + ":" + receiveStr;
                 Console.WriteLine("[服务器接收]" + receiveStr);
-                byte[] sendBytes = Encoding.Default.GetBytes("Echo" + receiveStr);
-                clientfd.Send(sendBytes);
+                byte[] sendBytes = Encoding.Default.GetBytes(sendStr);
+
+                foreach (ClientState s in clients.Values) // 给所有客户端发送消息
+                {
+                    s.socket.Send(sendBytes);
+                }
+
                 clientfd.BeginReceive(state.readBuff, 0, 1024, 0, ReceiveCallback, state);
             }
             catch (SocketException ex)
