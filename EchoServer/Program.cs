@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 
 namespace EchoServer
 {
@@ -28,33 +27,36 @@ namespace EchoServer
             listenfd.Listen(0); // backlog指定队列中最多可容纳等待接受的连接数，0表示不限制
             Console.WriteLine("[服务器]启动成功");
 
+            // checkRead
+            List<Socket> checkRead = new List<Socket>();
+
             while (true)
             {
-                // 检查listenfd
-                if (listenfd.Poll(0, SelectMode.SelectRead))
-                {
-                    ReadListenfd(listenfd);
-                }
-                // 检查clientfd
+                // 填充checkRead列表
+                checkRead.Clear();
+                checkRead.Add(listenfd);
                 foreach (ClientState s in clients.Values)
                 {
-                    Socket clientfd = s.socket;
-                    if (clientfd.Poll(0, SelectMode.SelectRead))
-                    {
-                        if (!ReadClientfd(clientfd))
-                            break;
-                    }
+                    checkRead.Add(s.socket);
                 }
-                // 防止 CPU 占用过高
-                Thread.Sleep(1);
+
+                // Select
+                Socket.Select(checkRead, null, null, 1000);
+
+                // 检查可读对象
+                foreach (Socket s in checkRead)
+                {
+                    if (s == listenfd)
+                        ReadListenfd(s);
+                    else
+                        ReadClientfd(s);
+                }
             }
         }
 
         /// <summary>
         /// 读取Listenfd
         /// </summary>
-        /// <param name="listenfd"></param>
-        /// <returns></returns>
         private static void ReadListenfd(Socket listenfd)
         {
             Console.WriteLine("[服务器应答]Accept");
