@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
@@ -17,11 +18,21 @@ public class Echo : MonoBehaviour
 
     private string recvStr = "";
 
+    private List<Socket> checkRead = new List<Socket>();
+
     private void Update()
     {
         if (socket == null) return;
 
-        if (socket.Poll(0, SelectMode.SelectRead))// 0:非阻塞，1：一直等待
+        // 填充CheckRead列表
+        checkRead.Clear();
+        checkRead.Add(socket);
+
+        // Select
+        Socket.Select(checkRead, null, null, 0);
+
+        // Check
+        foreach (Socket socket in checkRead)
         {
             byte[] readBuff = new byte[1024];
             int count = socket.Receive(readBuff);
