@@ -97,7 +97,7 @@ namespace EchoServer
             // 广播
             string receiveStr = Encoding.Default.GetString(state.readBuff, 0, count);
             Console.WriteLine("[服务器接收]" + receiveStr);
-            string sendStr = clientfd.RemoteEndPoint.ToString() + ":" + receiveStr;
+            string sendStr = receiveStr;
             byte[] sendBytes = Encoding.Default.GetBytes(sendStr);
             foreach (ClientState s in clients.Values) // 给所有客户端发送消息
             {
