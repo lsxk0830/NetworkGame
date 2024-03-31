@@ -7,13 +7,13 @@ using System.Text;
 
 namespace EchoServer
 {
-    internal class EhoServer
+    internal class MainClass
     {
         // 监听Socket
         private static Socket listenfd;
 
         // 客户端Socket及状态信息
-        private static Dictionary<Socket, ClientState> clients = new Dictionary<Socket, ClientState>();
+        public static Dictionary<Socket, ClientState> clients = new Dictionary<Socket, ClientState>();
 
         private static void Main(string[] args)
         {
@@ -111,9 +111,19 @@ namespace EchoServer
             string msgArgs = split[1];
             string funName = "Msg" + msgName;
             MethodInfo mi = typeof(MsgHandler).GetMethod(funName);
+            Console.WriteLine("[funName]" + funName);
             object[] o = { state, msgArgs }; // 客户端状态，消息内容
             mi?.Invoke(null, o);// 参数1:代表this指针，消息处理都是静态方法，所以填null,参数2：参数列表。P73
             return true;
+        }
+
+        /// <summary>
+        /// 发送消息
+        /// </summary>
+        public static void Send(ClientState cs, string sendStr)
+        {
+            byte[] sendbytes = Encoding.Default.GetBytes(sendStr);
+            cs.socket.Send(sendbytes);
         }
     }
 }

@@ -39,12 +39,26 @@ public static class NetManager
     /// </summary>
     public static void Send(string sendStr)
     {
+        Debug.Log("sendStr:" + sendStr);
         if (socket == null) return;
 
         if (!socket.Connected) return;
 
         byte[] sendBytes = Encoding.Default.GetBytes(sendStr);
-        socket.Send(sendBytes);
+        //socket.Send(sendBytes);
+        socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, SendCallback, socket);
+    }
+
+    private static void SendCallback(IAsyncResult ar)
+    {
+        try
+        {
+            Socket socket = (Socket)ar.AsyncState;
+        }
+        catch (SocketException ex)
+        {
+            Debug.Log("Socket Send fail" + ex.ToString());
+        }
     }
 
     /// <summary>

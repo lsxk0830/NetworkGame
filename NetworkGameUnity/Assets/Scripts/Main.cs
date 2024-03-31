@@ -17,6 +17,7 @@ public class Main : MonoBehaviour
 
         // 网络模块
         NetManager.AddListener("Enter", OnEnter);
+        NetManager.AddListener("List", OnList);
         NetManager.AddListener("Move", OnMove);
         NetManager.AddListener("Leave", OnLeave);
         NetManager.Connect("127.0.0.1", 8888);
@@ -29,7 +30,7 @@ public class Main : MonoBehaviour
         myHuman = obj.AddComponent<CtrlHuman>();
         myHuman.desc = NetManager.GetDesc();
 
-        // 发送协议
+        // 发送Enter协议
         Vector3 pos = myHuman.transform.position;
         Vector3 eul = myHuman.transform.eulerAngles;
         string sendStr = "Enter|";
@@ -39,6 +40,9 @@ public class Main : MonoBehaviour
         sendStr += pos.z + ",";
         sendStr += eul.y;
         NetManager.Send(sendStr);
+
+        // 请求玩家列表
+        NetManager.Send("List|");
     }
 
     private void Update()
@@ -65,6 +69,33 @@ public class Main : MonoBehaviour
         BaseHuman h = obj.AddComponent<SyncHuman>();
         h.desc = desc;
         otherHumans.Add(desc, h);
+    }
+
+    private void OnList(string msg)
+    {
+        Debug.Log($"OnList:{msg}");
+        // 解析参数
+        string[] split = msg.Split(",");
+        int count = (split.Length - 1) / 6;
+        for (int i = 0; i < count; i++)
+        {
+            string desc = split[i * 6 + 0];
+            float x = float.Parse(split[i * 6 + 1]);
+            float y = float.Parse(split[i * 6 + 2]);
+            float z = float.Parse(split[i * 6 + 3]);
+            float eulY = float.Parse(split[i * 6 + 4]);
+            float hp = int.Parse(split[i * 6 + 5]);
+            // 是自己
+            if (desc == NetManager.GetDesc())
+                continue;
+            // 添加一个角色
+            GameObject obj = Instantiate(humanPrefab);
+            obj.transform.position = new Vector3(x, y, z);
+            obj.transform.eulerAngles = new Vector3(0, eulY, 0);
+            BaseHuman h = obj.AddComponent<SyncHuman>();
+            h.desc = desc;
+            otherHumans.Add(desc, h);
+        }
     }
 
     private void OnMove(string msg)

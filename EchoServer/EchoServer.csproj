@@ -44,6 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientState.cs" />
+    <Compile Include="说明\DescriptionReadme.cs" />
+    <Compile Include="事件\EventHandler.cs" />
+    <Compile Include="消息\MsgHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
