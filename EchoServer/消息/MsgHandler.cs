@@ -77,5 +77,20 @@ namespace EchoServer
                 MainClass.Send(cs, sendStr);
             }
         }
+
+        /* 客户端掉线，触发服务器Disconnect事件
+        public static void MsgLeave(ClientState c, string msgArgs)
+        {
+            // 解析参数
+            string[] split = msgArgs.Split(',');
+            string desc = split[0];
+            // 广播
+            string sendStr = "Leave|" + msgArgs;
+            foreach (ClientState cs in MainClass.clients.Values)
+            {
+                MainClass.Send(cs, sendStr);
+            }
+        }
+        */
     }
 }

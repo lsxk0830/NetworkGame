@@ -118,5 +118,13 @@ public class Main : MonoBehaviour
     private void OnLeave(string msg)
     {
         Debug.Log($"OnLeave:{msg}");
+        // 解析参数
+        string[] split = msg.Split(",");
+        string desc = split[0];
+        if (!otherHumans.ContainsKey(desc))
+            return;
+        BaseHuman h = otherHumans[desc];
+        Destroy(h.gameObject);
+        otherHumans.Remove(desc);
     }
 }

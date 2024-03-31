@@ -61,7 +61,7 @@ public static class NetManager
     }
 
     /// <summary>
-    /// 辅助方法，获取描述符
+    /// 辅助方法，获取描述
     /// </summary>
     public static string GetDesc()
     {
