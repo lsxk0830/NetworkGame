@@ -110,8 +110,7 @@ namespace EchoServer
             string msgName = split[0];
             string msgArgs = split[1];
             string funName = "Msg" + msgName;
-            MethodInfo mi = typeof(MsgHandler).GetMethod(funName);
-            Console.WriteLine("[funName]" + funName);
+            MethodInfo mi = typeof(MsgHandler).GetMethod(funName); // MsgEnter,MsgList,MsgMove
             object[] o = { state, msgArgs }; // 客户端状态，消息内容
             mi?.Invoke(null, o);// 参数1:代表this指针，消息处理都是静态方法，所以填null,参数2：参数列表。P73
             return true;

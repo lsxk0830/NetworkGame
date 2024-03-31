@@ -101,6 +101,18 @@ public class Main : MonoBehaviour
     private void OnMove(string msg)
     {
         Debug.Log($"OnMove:{msg}");
+        // 解析消息
+        string[] split = msg.Split(',');
+        string desc = split[0];
+        float x = float.Parse(split[1]);
+        float y = float.Parse(split[2]);
+        float z = float.Parse(split[3]);
+        // 移动
+        if (!otherHumans.ContainsKey(desc))
+            return;
+        BaseHuman human = otherHumans[desc];
+        Vector3 targetPos = new Vector3(x, y, z);
+        human.MoveTo(targetPos);
     }
 
     private void OnLeave(string msg)
