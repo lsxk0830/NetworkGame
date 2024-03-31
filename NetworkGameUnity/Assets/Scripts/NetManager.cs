@@ -39,7 +39,6 @@ public static class NetManager
     /// </summary>
     public static void Send(string sendStr)
     {
-        Debug.Log("sendStr:" + sendStr);
         if (socket == null) return;
 
         if (!socket.Connected) return;
