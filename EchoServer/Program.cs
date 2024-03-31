@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 
 namespace EchoServer
@@ -79,6 +80,10 @@ namespace EchoServer
             }
             catch (SocketException ex)
             {
+                MethodInfo mei = typeof(EventHandler).GetMethod("OnDisconnect");
+                object[] ob = { state };
+                mei?.Invoke(null, ob);
+
                 clientfd.Close();
                 clients.Remove(clientfd);
                 Console.WriteLine($"Receive SocketException : {ex.ToString()}");
@@ -88,6 +93,10 @@ namespace EchoServer
             // 客户端关闭
             if (count == 0)
             {
+                MethodInfo mei = typeof(EventHandler).GetMethod("OnDisconnect");
+                object[] ob = { state };
+                mei?.Invoke(null, ob);
+
                 clientfd.Close();
                 clients.Remove(clientfd);
                 Console.WriteLine($"Socket Close");
@@ -96,13 +105,14 @@ namespace EchoServer
 
             // 广播
             string receiveStr = Encoding.Default.GetString(state.readBuff, 0, count);
+            string[] split = receiveStr.Split('|');
             Console.WriteLine("[服务器接收]" + receiveStr);
-            string sendStr = receiveStr;
-            byte[] sendBytes = Encoding.Default.GetBytes(sendStr);
-            foreach (ClientState s in clients.Values) // 给所有客户端发送消息
-            {
-                s.socket.Send(sendBytes);
-            }
+            string msgName = split[0];
+            string msgArgs = split[1];
+            string funName = "Msg" + msgName;
+            MethodInfo mi = typeof(MsgHandler).GetMethod(funName);
+            object[] o = { state, msgArgs }; // 客户端状态，消息内容
+            mi?.Invoke(null, o);// 参数1:代表this指针，消息处理都是静态方法，所以填null,参数2：参数列表。P73
             return true;
         }
     }
