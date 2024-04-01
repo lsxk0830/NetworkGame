@@ -37,6 +37,12 @@ public class CtrlHuman : BaseHuman
             Physics.Raycast(ray, out RaycastHit hit);
             transform.LookAt(hit.point);
             Attack();
+
+            // 发送协议
+            string sendStr = "Attack|";
+            sendStr += NetManager.GetDesc() + ",";
+            sendStr += transform.eulerAngles.y + ",";
+            NetManager.Send(sendStr);
         }
     }
 }

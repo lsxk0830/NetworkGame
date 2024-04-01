@@ -78,6 +78,15 @@ namespace EchoServer
             }
         }
 
+        public static void MsgAttack(ClientState c, string msgArgs)
+        {
+            string sendStr = "Attack|" + msgArgs;
+            foreach (ClientState cs in MainClass.clients.Values)
+            {
+                MainClass.Send(cs, sendStr);
+            }
+        }
+
         /* 客户端掉线，触发服务器Disconnect事件
         public static void MsgLeave(ClientState c, string msgArgs)
         {
