@@ -2,16 +2,17 @@ using UnityEngine;
 
 public class BaseHuman : MonoBehaviour
 {
-    protected bool isMoving = false; // ÊÇ·ñÕıÔÚÒÆ¶¯
-    protected Vector3 targetPosition; // ÒÆ¶¯Ä¿±êµã
-    public float speed = 1.2f; // ÒÆ¶¯ËÙ¶È
-    private Animator animator; // ¶¯»­×é¼ş
-    public string desc = ""; // ÃèÊö
+    protected bool isMoving = false; // æ˜¯å¦æ­£åœ¨ç§»åŠ¨
+    protected Vector3 targetPosition; // ç§»åŠ¨ç›®æ ‡ç‚¹
+    public float speed = 1.2f; // ç§»åŠ¨é€Ÿåº¦
+    private Animator animator; // åŠ¨ç”»ç»„ä»¶
+    public string desc = ""; // æè¿°
+    internal bool isAttacking = false; // æ˜¯å¦æ”»å‡»
+    internal float attackTime = float.MinValue;
 
     /// <summary>
-    /// ÒÆ¶¯µ½Ä³´¦
+    /// ç§»åŠ¨åˆ°æŸå¤„
     /// </summary>
-    /// <param name="pos"></param>
     public void MoveTo(Vector3 pos)
     {
         targetPosition = pos;
@@ -20,7 +21,7 @@ public class BaseHuman : MonoBehaviour
     }
 
     /// <summary>
-    /// ÒÆ¶¯Update
+    /// ç§»åŠ¨Update
     /// </summary>
     public void MoveUpdate()
     {
@@ -36,6 +37,27 @@ public class BaseHuman : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// æ”»å‡»
+    /// </summary>
+    public void Attack()
+    {
+        isAttacking = true;
+        attackTime = Time.time;
+        animator.SetBool("isAttacking", true);
+    }
+
+    /// <summary>
+    /// æ”»å‡»Update
+    /// </summary>
+    public void AttackUpdate()
+    {
+        if (!isAttacking) return;
+        if (Time.time - attackTime < 1.2f) return;
+        isAttacking = false;
+        animator.SetBool("isAttacking", false);
+    }
+
     protected void Start()
     {
         animator = GetComponent<Animator>();
@@ -44,5 +66,6 @@ public class BaseHuman : MonoBehaviour
     protected void Update()
     {
         MoveUpdate();
+        AttackUpdate();
     }
 }
