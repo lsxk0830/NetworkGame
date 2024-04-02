@@ -45,8 +45,9 @@ public class CtrlHuman : BaseHuman
             NetManager.Send(sendStr);
 
             // 攻击判定
-            Vector3 lineEnd = transform.position + 0.5f * Vector3.up;
+            Vector3 lineEnd = transform.position + 0.5f * Vector3.up; // 腰部位置
             Vector3 lineStart = lineEnd + 20 * transform.forward;
+
             if (Physics.Linecast(lineStart, lineEnd, out hit))
             {
                 GameObject hitObj = hit.collider.gameObject;

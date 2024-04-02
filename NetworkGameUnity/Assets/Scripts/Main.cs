@@ -147,7 +147,7 @@ public class Main : MonoBehaviour
 
         string[] split = msg.Split(",");
         string attDesc = split[0];
-        string hitDesc = split[1];
+        string hitDesc = split[0];
 
         if (hitDesc == myHuman.desc)
         {

@@ -16,7 +16,7 @@ namespace EchoServer
         /// <param name="msgArgs">消息</param>
         public static void MsgEnter(ClientState c, string msgArgs)
         {
-            Console.WriteLine($"MsgEnter:{msgArgs}");
+            //Console.WriteLine($"MsgEnter:{msgArgs}");
 
             string[] split = msgArgs.Split(',');
             string desc = split[0];
@@ -106,9 +106,10 @@ namespace EchoServer
                 return;
 
             hitCS.hp -= 25;// 扣血
+
             if (hitCS.hp <= 0) // 死亡
             {
-                string sendStr = "Hit|" + hitCS.socket.RemoteEndPoint.ToString();
+                string sendStr = "Die|" + hitCS.socket.RemoteEndPoint.ToString();
                 foreach (ClientState cs in MainClass.clients.Values)
                 {
                     MainClass.Send(cs, sendStr);

@@ -106,7 +106,7 @@ namespace EchoServer
             // 广播
             string receiveStr = Encoding.Default.GetString(state.readBuff, 0, count);
             string[] split = receiveStr.Split('|');
-            Console.WriteLine("[服务器接收]" + receiveStr);
+            //Console.WriteLine("[服务器接收]" + receiveStr);
             string msgName = split[0];
             string msgArgs = split[1];
             string funName = "Msg" + msgName;
