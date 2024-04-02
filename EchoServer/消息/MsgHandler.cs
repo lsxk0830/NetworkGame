@@ -87,6 +87,35 @@ namespace EchoServer
             }
         }
 
+        public static void MsgHit(ClientState c, string msgArgs)
+        {
+            // 解析参数
+            string[] split = msgArgs.Split(',');
+            string attDesc = split[0];
+            string hitDesc = split[1];
+            // 找到被攻击的角色
+            ClientState hitCS = null;
+            foreach (ClientState cs in MainClass.clients.Values)
+            {
+                if (cs.socket.RemoteEndPoint.ToString() == hitDesc)
+                {
+                    hitCS = cs;
+                }
+            }
+            if (hitCS == null)
+                return;
+
+            hitCS.hp -= 25;// 扣血
+            if (hitCS.hp <= 0) // 死亡
+            {
+                string sendStr = "Hit|" + hitCS.socket.RemoteEndPoint.ToString();
+                foreach (ClientState cs in MainClass.clients.Values)
+                {
+                    MainClass.Send(cs, sendStr);
+                }
+            }
+        }
+
         /* 客户端掉线，触发服务器Disconnect事件
         public static void MsgLeave(ClientState c, string msgArgs)
         {

@@ -43,6 +43,23 @@ public class CtrlHuman : BaseHuman
             sendStr += NetManager.GetDesc() + ",";
             sendStr += transform.eulerAngles.y + ",";
             NetManager.Send(sendStr);
+
+            // 攻击判定
+            Vector3 lineEnd = transform.position + 0.5f * Vector3.up;
+            Vector3 lineStart = lineEnd + 20 * transform.forward;
+            if (Physics.Linecast(lineStart, lineEnd, out hit))
+            {
+                GameObject hitObj = hit.collider.gameObject;
+                if (hitObj == gameObject)
+                    return;
+                SyncHuman h = hitObj.GetComponent<SyncHuman>();
+                if (h == null)
+                    return;
+                sendStr = "Hit|";
+                sendStr += NetManager.GetDesc() + ",";
+                sendStr += h.desc + ",";
+                NetManager.Send(sendStr);
+            }
         }
     }
 }

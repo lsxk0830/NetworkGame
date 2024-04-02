@@ -523,6 +523,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1246162863301744969}
   - component: {fileID: 1246162863311337217}
+  - component: {fileID: 7889471673650246821}
   m_Layer: 0
   m_Name: Ethan
   m_TagString: Untagged
@@ -568,6 +569,20 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!136 &7889471673650246821
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1246162863301969193}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.42
+  m_Height: 1.73
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.78, z: 0}
 --- !u!1 &1246162863301969195
 GameObject:
   m_ObjectHideFlags: 0
