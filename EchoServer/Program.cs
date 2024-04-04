@@ -102,7 +102,20 @@ namespace EchoServer
                 Console.WriteLine($"Socket Close");
                 return false;
             }
-
+            #region 聊天室 EchoScene
+            string receiveStr = Encoding.Default.GetString(state.readBuff, 2, count-2);
+            Console.WriteLine($"Receive:{receiveStr}");
+            // 广播
+            byte[] sendBytes = new byte[count];
+            Array.Copy(state.readBuff,0,sendBytes,0,count);
+            foreach(ClientState cs in clients.Values)
+            {
+                cs.socket.Send(sendBytes);
+            }
+            return true;
+            #endregion
+            #region  Move Scene
+            /* 
             // 广播
             string receiveStr = Encoding.Default.GetString(state.readBuff, 0, count);
             string[] split = receiveStr.Split('|');
@@ -114,6 +127,8 @@ namespace EchoServer
             object[] o = { state, msgArgs }; // 客户端状态，消息内容
             mi?.Invoke(null, o);// 参数1:代表this指针，消息处理都是静态方法，所以填null,参数2：参数列表。P73
             return true;
+            */
+            #endregion
         }
 
         /// <summary>

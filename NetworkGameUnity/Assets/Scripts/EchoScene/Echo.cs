@@ -1,44 +1,29 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Echo : MonoBehaviour
 {
-    private Socket socket;
+    private Socket socket; // 定义套接字
 
     public InputField InputField;
-
     public Text text;
 
-    // 接收缓冲区
-    private byte[] readBuff = new byte[1024];
+    private byte[] readBuff = new byte[1024]; // 接收缓冲区
+    private int buffCount = 0; // 接收缓冲区的数据长度
 
-    private string recvStr = "";
+    private string recvStr = ""; // 显示文字
 
     private List<Socket> checkRead = new List<Socket>();
 
     private void Update()
     {
-        if (socket == null) return;
-
-        // 填充CheckRead列表
-        checkRead.Clear();
-        checkRead.Add(socket);
-
-        // Select
-        Socket.Select(checkRead, null, null, 0);
-
-        // Check
-        foreach (Socket socket in checkRead)
-        {
-            byte[] readBuff = new byte[1024];
-            int count = socket.Receive(readBuff);
-            string recvStr = Encoding.Default.GetString(readBuff, 0, count);
-            text.text = recvStr;
-        }
+        text.text = recvStr;
     }
 
     /// <summary>
@@ -48,11 +33,12 @@ public class Echo : MonoBehaviour
     {
         // Socket
         socket = new Socket(AddressFamily.InterNetwork, // 地址族
-                             SocketType.Stream, // 套接字类型
-                             ProtocolType.Tcp); // 协议
+                            SocketType.Stream, // 套接字类型
+                            ProtocolType.Tcp); // 协议
         // Connect
         socket.Connect("127.0.0.1", 8888); // (远程IP地址，远程端口) 阻塞方法会卡住，直到服务器回应
         //socket.BeginConnect("127.0.0.1", 8888, ConnectCallback, socket);
+        socket.BeginReceive(readBuff, buffCount, 1024 - buffCount, 0, ReceiveCallback, socket);
     }
 
     /// <summary>
@@ -60,11 +46,16 @@ public class Echo : MonoBehaviour
     /// </summary>
     public void Send()
     {
-        // Send
         string sendStr = InputField.text;
-        byte[] sendBytes = Encoding.Default.GetBytes(sendStr);
-        //socket.Send(sendBytes); // 阻塞方法 接受一个byte[]类型的参数指明要发送的内容
-        socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, SendCallback, socket);
+        // 组装协议
+        byte[] bodyBytes = Encoding.Default.GetBytes(sendStr);
+        Int16 len = (Int16)bodyBytes.Length;
+        byte[] lenBytes = BitConverter.GetBytes(len);
+        byte[] sendBytes = lenBytes.Concat(bodyBytes).ToArray();
+
+        socket.Send(sendBytes); // 阻塞方法 接受一个byte[]类型的参数指明要发送的内容
+        Debug.Log($"[Send]{BitConverter.ToString(sendBytes)}");
+        //socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, SendCallback, socket);
     }
 
     /// <summary>
@@ -96,15 +87,43 @@ public class Echo : MonoBehaviour
         try
         {
             Socket socket = (Socket)ar.AsyncState;
+            // 获取接收数据的长度
             int count = socket.EndReceive(ar);
-            string s = Encoding.Default.GetString(readBuff, 0, count);
-            recvStr = s + "\n" + recvStr; // 接收历史消息
-            socket.BeginReceive(readBuff, 0, 1024, 0, ReceiveCallback, socket);
+            buffCount += count;
+            // 处理二进制数据
+            OnReceiveData();
+            // 等待
+            Thread.Sleep(1000 * 30);
+            // 继续接收数据
+            socket.BeginReceive(readBuff, buffCount, 1024 - buffCount, 0, ReceiveCallback, socket);
         }
         catch (SocketException ex)
         {
-            Debug.LogError($"Socket Receive Fail {ex.ToString()}");
+            Debug.LogError($"Socket接收失败: {ex.ToString()}");
         }
+    }
+
+    private void OnReceiveData()
+    {
+        Debug.Log($"[Recv 1] buffCount = {buffCount}");
+        Debug.Log($"[Recv 1] readBuff = {BitConverter.ToString(readBuff)}");
+        // 消息长度
+        if (buffCount <= 2) return;
+        Int16 bodyLength = BitConverter.ToInt16(readBuff, 0); // 最前面的两个，消息长度
+        Debug.Log($"[Recv 3] bodyLength = {bodyLength}");
+        // 消息体
+        if (buffCount < 2 + bodyLength) return;
+        string s = Encoding.UTF8.GetString(readBuff, 2, bodyLength); // 去除消息长度的两位
+        Debug.Log($"[Recv 4] s = {s}");
+        // 更新缓冲区
+        int start = 2 + bodyLength;
+        int count = buffCount - start;
+        Array.Copy(readBuff, start, readBuff, 0, count);
+        buffCount -= start;
+        Debug.Log($"[Recv 5] buffCount = {buffCount}");
+        // 消息处理
+        recvStr = s + "\n" + recvStr;
+        OnReceiveData();
     }
 
     /// <summary>
