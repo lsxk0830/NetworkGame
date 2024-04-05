@@ -51,6 +51,12 @@ public class Echo : MonoBehaviour
         byte[] bodyBytes = Encoding.Default.GetBytes(sendStr);
         Int16 len = (Int16)bodyBytes.Length;
         byte[] lenBytes = BitConverter.GetBytes(len);
+        // 大小端编码
+        if (!BitConverter.IsLittleEndian)
+        {
+            Debug.Log($"[Send] Reverse lenBytes");
+            lenBytes = (byte[])lenBytes.Reverse();
+        }
         byte[] sendBytes = lenBytes.Concat(bodyBytes).ToArray();
 
         socket.Send(sendBytes); // 阻塞方法 接受一个byte[]类型的参数指明要发送的内容
@@ -109,7 +115,8 @@ public class Echo : MonoBehaviour
         Debug.Log($"[Recv 1] readBuff = {BitConverter.ToString(readBuff)}");
         // 消息长度
         if (buffCount <= 2) return;
-        Int16 bodyLength = BitConverter.ToInt16(readBuff, 0); // 最前面的两个，消息长度
+        //Int16 bodyLength = BitConverter.ToInt16(readBuff, 0); // 最前面的两个，消息长度
+        Int16 bodyLength = (short)(readBuff[1] << 8 | readBuff[0]);
         Debug.Log($"[Recv 3] bodyLength = {bodyLength}");
         // 消息体
         if (buffCount < 2 + bodyLength) return;
