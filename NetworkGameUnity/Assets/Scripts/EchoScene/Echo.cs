@@ -14,7 +14,11 @@ public class Echo : MonoBehaviour
     public InputField InputField;
     public Text text;
 
+    private Queue<ByteArray> writeQueue = new Queue<ByteArray>(); // 写入队列
+    private byte[] sendBytes = new byte[1024]; // 发送缓冲区
     private byte[] readBuff = new byte[1024]; // 接收缓冲区
+    private int readIdx = 0; // 缓冲区偏移值
+    private int length = 0; // 缓冲区剩余长度
     private int buffCount = 0; // 接收缓冲区的数据长度
 
     private string recvStr = ""; // 显示文字
@@ -57,11 +61,20 @@ public class Echo : MonoBehaviour
             Debug.Log($"[Send] Reverse lenBytes");
             lenBytes = (byte[])lenBytes.Reverse();
         }
-        byte[] sendBytes = lenBytes.Concat(bodyBytes).ToArray();
+        sendBytes = lenBytes.Concat(bodyBytes).ToArray(); // 要发送的数据
 
-        socket.Send(sendBytes); // 阻塞方法 接受一个byte[]类型的参数指明要发送的内容
-        Debug.Log($"[Send]{BitConverter.ToString(sendBytes)}");
-        //socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, SendCallback, socket);
+        ByteArray ba = new ByteArray(sendBytes);
+        int count = 0;
+        lock (writeQueue)
+        {
+            writeQueue.Enqueue(ba);
+            count = writeQueue.Count;
+        }
+
+        if (count == 1)
+        {
+            socket.BeginSend(ba.bytes, ba.readIdx, ba.length, 0, SendCallback, socket);
+        }
     }
 
     /// <summary>
@@ -140,9 +153,28 @@ public class Echo : MonoBehaviour
     {
         try
         {
-            socket = (Socket)ar.AsyncState;
+            Socket socket = (Socket)ar.AsyncState;
             int count = socket.EndSend(ar);
-            Debug.Log($"Socket Send Success : {count}");
+            // 判断是否发送完整
+
+            ByteArray ba;
+            lock (writeQueue)
+            {
+                ba = writeQueue.First();
+            }
+            ba.readIdx += count;
+
+            if (ba.length == 0) // 发送完整
+            {
+                lock (writeQueue)
+                {
+                    writeQueue.Dequeue();
+                    ba = writeQueue.First();
+                }
+            }
+
+            if (ba != null) // 发送不完整，或发送完整且存在第二条数据
+                socket.BeginSend(ba.bytes, ba.readIdx, ba.length, 0, SendCallback, socket);
         }
         catch (SocketException ex)
         {
