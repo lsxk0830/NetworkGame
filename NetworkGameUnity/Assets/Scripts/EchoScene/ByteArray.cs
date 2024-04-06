@@ -1,22 +1,48 @@
 public class ByteArray
 {
     /// <summary>
-    /// ������
+    /// 默认大小
+    /// </summary>
+    private const int DEFAULF_SIZE = 1024;
+
+    /// <summary>
+    /// 缓冲区
     /// </summary>
     public byte[] bytes;
 
     /// <summary>
-    /// �ɴӻ�������ȡ��λ��
+    /// 缓冲区容量
+    /// </summary>
+    public int capacity;
+
+    /// <summary>
+    /// 初始长度
+    /// </summary>
+    public int initSize;
+
+    /// <summary>
+    /// 可从缓冲区读取的位置，缓冲区【有效数据】的起始位置 [0][3][c][a][t][0][2][h][i] readIdx = 5【可能为】
     /// </summary>
     public int readIdx;
 
     /// <summary>
-    /// �ɴӻ�����д��λ��
+    /// 可从缓冲区写的位置,缓冲区【有效数据】的末尾 [0][3][c][a][t][0][2][h][i] writeIdx = 9
     /// </summary>
     public int writeIdx;
 
     /// <summary>
-    /// ������ʣ�����ݳ���
+    /// 缓冲区还可容纳的字节数
+    /// </summary>
+    public int remain
+    {
+        get
+        {
+            return capacity - writeIdx;
+        }
+    }
+
+    /// <summary>
+    /// 缓冲区剩余数据长度
     /// </summary>
     public int length
     {
@@ -29,15 +55,18 @@ public class ByteArray
     public ByteArray(byte[] defaultBytes)
     {
         bytes = defaultBytes;
+        capacity = defaultBytes.Length;
+        initSize = defaultBytes.Length;
         readIdx = 0;
         writeIdx = defaultBytes.Length;
     }
 
-    public ByteArray(int size = -1)
+    public ByteArray(int size = DEFAULF_SIZE)
     {
-        if (size == -1)
-            bytes = new byte[1024];
-        else
-            bytes = new byte[size];
+        bytes = new byte[size];
+        capacity = size;
+        initSize = size;
+        readIdx = 0;
+        writeIdx = 0;
     }
 }
