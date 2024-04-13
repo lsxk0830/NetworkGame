@@ -166,4 +166,18 @@ public class ByteArray
     }
 
     #endregion 读写
+
+    #region 调试
+
+    public override string ToString()
+    {
+        return BitConverter.ToString(bytes,readIdx,length);
+    }
+
+    public string Debug()
+    {
+        return string.Format("readIdx({0}) writeIdx({1}) bytes({2})",
+                            readIdx,writeIdx,BitConverter.ToString(bytes,0,bytes.Length));
+    }
+    #endregion
 }
