@@ -115,6 +115,8 @@ public class ByteArray
     /// <summary>
     /// 写入数据
     /// </summary>
+    /// <param name="offset">开始写入缓冲区位置</param>
+    /// <param name="count">写的数据个数</param>
     public int Write(byte[] bs, int offset, int count)
     {
         if (remain < count)
