@@ -15,7 +15,7 @@ public class ByteArray
     /// <summary>
     /// 缓冲区容量
     /// </summary>
-    public int capacity;
+    public int capacity = 0;
 
     /// <summary>
     /// 初始长度
@@ -25,34 +25,22 @@ public class ByteArray
     /// <summary>
     /// 可从缓冲区读取的位置，缓冲区【有效数据】的起始位置 [0][3][c][a][t][0][2][h][i] readIdx = 5【可能为】
     /// </summary>
-    public int readIdx;
+    public int readIdx = 0;
 
     /// <summary>
     /// 可从缓冲区写的位置,缓冲区【有效数据】的末尾 [0][3][c][a][t][0][2][h][i] writeIdx = 9
     /// </summary>
-    public int writeIdx;
+    public int writeIdx = 0;
 
     /// <summary>
     /// 缓冲区还可容纳的字节数
     /// </summary>
-    public int remain
-    {
-        get
-        {
-            return capacity - writeIdx;
-        }
-    }
+    public int remain { get { return capacity - writeIdx; } }
 
     /// <summary>
     /// 数据长度
     /// </summary>
-    public int length
-    {
-        get
-        {
-            return writeIdx - readIdx;
-        }
-    }
+    public int length { get { return writeIdx - readIdx; } }
 
     public ByteArray(byte[] defaultBytes)
     {
@@ -171,13 +159,13 @@ public class ByteArray
 
     public override string ToString()
     {
-        return BitConverter.ToString(bytes,readIdx,length);
+        return BitConverter.ToString(bytes, readIdx, length);
     }
 
     public string Debug()
     {
         return string.Format("readIdx({0}) writeIdx({1}) bytes({2})",
-                            readIdx,writeIdx,BitConverter.ToString(bytes,0,bytes.Length));
+                            readIdx, writeIdx, BitConverter.ToString(bytes, 0, bytes.Length));
     }
     #endregion
 }
