@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,10 +14,8 @@ public class Echo : MonoBehaviour
     public Text text;
     private ByteArray readBuff = new ByteArray(); // 接收缓冲区
     private string recvStr = ""; // 显示文字
-
-    private byte[] sendBytes = new byte[1024]; // 发送缓冲区
-    private Queue<ByteArray> writeQueue = new Queue<ByteArray>(); // 写入队列
-
+    private Queue<ByteArray> writeQueue = new Queue<ByteArray>(); // 发送缓冲区
+    private bool isSending = false;
     private void Update()
     {
         text.text = recvStr;
@@ -43,30 +42,32 @@ public class Echo : MonoBehaviour
     public void Send()
     {
         string sendStr = InputField.text;
+
         // 组装协议
         byte[] bodyBytes = Encoding.Default.GetBytes(sendStr);
         Int16 len = (Int16)bodyBytes.Length;
         byte[] lenBytes = BitConverter.GetBytes(len);
+
         // 大小端编码
         if (!BitConverter.IsLittleEndian)
         {
             Debug.Log($"[Send] Reverse lenBytes");
             lenBytes = (byte[])lenBytes.Reverse();
         }
-        sendBytes = lenBytes.Concat(bodyBytes).ToArray(); // 要发送的数据
 
+        // 拼接字节
+        byte[] sendBytes = lenBytes.Concat(bodyBytes).ToArray(); // 要发送的数据
         ByteArray ba = new ByteArray(sendBytes);
-        int count = 0;
         lock (writeQueue)
-        {
             writeQueue.Enqueue(ba);
-            count = writeQueue.Count;
-        }
 
-        if (count == 1)
+        // Send
+        if (!isSending)
         {
-            socket.BeginSend(ba.bytes, ba.readIdx, ba.length, 0, SendCallback, socket);
+            socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, SendCallback, socket);
+            isSending = true;
         }
+        Debug.Log("[Send] " + BitConverter.ToString(sendBytes));
     }
 
     /// <summary>
@@ -100,13 +101,13 @@ public class Echo : MonoBehaviour
             int count = socket.EndReceive(ar); // 获取接收数据的长度
             readBuff.writeIdx += count;
             OnReceiveData(); // 处理二进制数据
-            //Thread.Sleep(1000 * 30); // 等待
             // 继续接收数据
             if (readBuff.remain < 8)
             {
                 readBuff.MoveBytes();
                 readBuff.ReSize(readBuff.length * 2);
             }
+            Thread.Sleep(1000 * 20);
             socket.BeginReceive(readBuff.bytes, readBuff.writeIdx, readBuff.remain, 0, ReceiveCallback, socket);
         }
         catch (SocketException ex)
@@ -155,27 +156,36 @@ public class Echo : MonoBehaviour
         try
         {
             Socket socket = (Socket)ar.AsyncState;
-            int count = socket.EndSend(ar);
-            // 判断是否发送完整
 
-            ByteArray ba;
-            lock (writeQueue)
-            {
-                ba = writeQueue.First();
-            }
+            //EndSend的处理
+            int count = 0;
+            count = socket.EndSend(ar);
+
+            Debug.Log("Socket Send succ " + count);
+
+            ByteArray ba = writeQueue.First();
             ba.readIdx += count;
-
-            if (ba.length == 0) // 发送完整
+            if (ba.length == 0)
             {
                 lock (writeQueue)
                 {
                     writeQueue.Dequeue();
-                    ba = writeQueue.First();
+                    if (writeQueue.Count > 0)
+                        ba = writeQueue.First();
+                    else
+                        ba = null;
                 }
             }
-
-            if (ba != null) // 发送不完整，或发送完整且存在第二条数据
+            if (ba != null)
+            {
                 socket.BeginSend(ba.bytes, ba.readIdx, ba.length, 0, SendCallback, socket);
+                Debug.Log("ba != null");
+            }
+            else
+            {
+                isSending = false;
+                Debug.Log("ba == null");
+            }
         }
         catch (SocketException ex)
         {
