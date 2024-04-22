@@ -3,27 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Echo : MonoBehaviour
 {
     private Socket socket; // 定义套接字
-
     public InputField InputField;
     public Text text;
-
-    private Queue<ByteArray> writeQueue = new Queue<ByteArray>(); // 写入队列
-    private byte[] sendBytes = new byte[1024]; // 发送缓冲区
-    private byte[] readBuff = new byte[1024]; // 接收缓冲区
-    private int readIdx = 0; // 缓冲区偏移值
-    private int length = 0; // 缓冲区剩余长度
-    private int buffCount = 0; // 接收缓冲区的数据长度
-
+    private ByteArray readBuff = new ByteArray(); // 接收缓冲区
     private string recvStr = ""; // 显示文字
 
-    private List<Socket> checkRead = new List<Socket>();
+    private byte[] sendBytes = new byte[1024]; // 发送缓冲区
+    private Queue<ByteArray> writeQueue = new Queue<ByteArray>(); // 写入队列
 
     private void Update()
     {
@@ -42,7 +34,7 @@ public class Echo : MonoBehaviour
         // Connect
         socket.Connect("127.0.0.1", 8888); // (远程IP地址，远程端口) 阻塞方法会卡住，直到服务器回应
         //socket.BeginConnect("127.0.0.1", 8888, ConnectCallback, socket);
-        socket.BeginReceive(readBuff, buffCount, 1024 - buffCount, 0, ReceiveCallback, socket);
+        socket.BeginReceive(readBuff.bytes, readBuff.writeIdx, readBuff.remain, 0, ReceiveCallback, socket);
     }
 
     /// <summary>
@@ -85,12 +77,11 @@ public class Echo : MonoBehaviour
     {
         try
         {
-            // 由于BeginConnect最后一个参数出入的socket,可由 ar.AsyncState 获取到
-            Socket socket = (Socket)ar.AsyncState;
+            Socket socket = (Socket)ar.AsyncState; // 由于BeginConnect最后一个参数出入的socket,可由 ar.AsyncState 获取到
             socket.EndConnect(ar);
             Debug.Log("Socket Connect Success");
             // readBuff:接收缓冲区;0:从readBuff第0位开始接收数据;1024:每次最多接收1024个字节的数据
-            socket.BeginReceive(readBuff, 0, 1024, 0, ReceiveCallback, socket);
+            socket.BeginReceive(readBuff.bytes, readBuff.writeIdx, readBuff.remain, 0, ReceiveCallback, socket);
         }
         catch (SocketException ex)
         {
@@ -106,15 +97,17 @@ public class Echo : MonoBehaviour
         try
         {
             Socket socket = (Socket)ar.AsyncState;
-            // 获取接收数据的长度
-            int count = socket.EndReceive(ar);
-            buffCount += count;
-            // 处理二进制数据
-            OnReceiveData();
-            // 等待
-            Thread.Sleep(1000 * 30);
+            int count = socket.EndReceive(ar); // 获取接收数据的长度
+            readBuff.writeIdx += count;
+            OnReceiveData(); // 处理二进制数据
+            //Thread.Sleep(1000 * 30); // 等待
             // 继续接收数据
-            socket.BeginReceive(readBuff, buffCount, 1024 - buffCount, 0, ReceiveCallback, socket);
+            if (readBuff.remain < 8)
+            {
+                readBuff.MoveBytes();
+                readBuff.ReSize(readBuff.length * 2);
+            }
+            socket.BeginReceive(readBuff.bytes, readBuff.writeIdx, readBuff.remain, 0, ReceiveCallback, socket);
         }
         catch (SocketException ex)
         {
@@ -122,28 +115,36 @@ public class Echo : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 数据处理
+    /// </summary>
     private void OnReceiveData()
     {
-        Debug.Log($"[Recv 1] buffCount = {buffCount}");
-        Debug.Log($"[Recv 1] readBuff = {BitConverter.ToString(readBuff)}");
+        Debug.Log($"[Recv 1] length = {readBuff.length}");
+        Debug.Log($"[Recv 1] readBuff = {readBuff.ToString()}");
+        if (readBuff.length <= 2) return;
+
         // 消息长度
-        if (buffCount <= 2) return;
-        //Int16 bodyLength = BitConverter.ToInt16(readBuff, 0); // 最前面的两个，消息长度
-        Int16 bodyLength = (short)(readBuff[1] << 8 | readBuff[0]);
+        int readIdx = readBuff.readIdx;
+        byte[] bytes = readBuff.bytes;
+        Int16 bodyLength = (Int16)(bytes[readIdx + 1] << 8 | bytes[readIdx]);
+        if (readBuff.length < bodyLength + 2) return;
+        readBuff.readIdx += 2;
         Debug.Log($"[Recv 3] bodyLength = {bodyLength}");
+
         // 消息体
-        if (buffCount < 2 + bodyLength) return;
-        string s = Encoding.UTF8.GetString(readBuff, 2, bodyLength); // 去除消息长度的两位
+        byte[] stringByte = new byte[bodyLength];
+        readBuff.Read(stringByte, 0, bodyLength);
+        string s = Encoding.UTF8.GetString(stringByte);
         Debug.Log($"[Recv 4] s = {s}");
-        // 更新缓冲区
-        int start = 2 + bodyLength;
-        int count = buffCount - start;
-        Array.Copy(readBuff, start, readBuff, 0, count);
-        buffCount -= start;
-        Debug.Log($"[Recv 5] buffCount = {buffCount}");
+        Debug.Log($"[Recv 5] readBuff = {readBuff.ToString()}");
+
         // 消息处理
         recvStr = s + "\n" + recvStr;
-        OnReceiveData();
+
+        // 继续读取消息
+        if (readBuff.length > 2)
+            OnReceiveData();
     }
 
     /// <summary>
