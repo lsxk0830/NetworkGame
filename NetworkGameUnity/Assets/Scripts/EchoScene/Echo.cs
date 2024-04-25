@@ -16,6 +16,7 @@ public class Echo : MonoBehaviour
     private string recvStr = ""; // 显示文字
     private Queue<ByteArray> writeQueue = new Queue<ByteArray>(); // 发送缓冲区
     private bool isSending = false;
+    private bool isClose = false;
     private void Update()
     {
         text.text = recvStr;
@@ -37,10 +38,23 @@ public class Echo : MonoBehaviour
     }
 
     /// <summary>
+    /// 关闭连接
+    /// </summary>
+    public void Close()
+    {
+        if (writeQueue.Count > 0) // 还有数据在发送
+            isClose = true;
+        else // 没有数据在发送
+            socket.Close();
+    }
+
+    /// <summary>
     /// 点击发送按钮
     /// </summary>
     public void Send()
     {
+        if (isClose) return;
+
         string sendStr = InputField.text;
 
         // 组装协议
@@ -58,16 +72,10 @@ public class Echo : MonoBehaviour
         // 拼接字节
         byte[] sendBytes = lenBytes.Concat(bodyBytes).ToArray(); // 要发送的数据
         ByteArray ba = new ByteArray(sendBytes);
-        lock (writeQueue)
-            writeQueue.Enqueue(ba);
-
+        writeQueue.Enqueue(ba);
         // Send
-        if (!isSending)
-        {
-            socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, SendCallback, socket);
-            isSending = true;
-        }
-        Debug.Log("[Send] " + BitConverter.ToString(sendBytes));
+        if (writeQueue.Count==1)
+            socket.BeginSend(ba.bytes, ba.readIdx, ba.length, 0, SendCallback, socket);
     }
 
     /// <summary>
@@ -153,43 +161,24 @@ public class Echo : MonoBehaviour
     /// </summary>
     private void SendCallback(IAsyncResult ar)
     {
-        try
+        // 获取state、EndSend的处理
+        Socket socket = (Socket)ar.AsyncState;
+        int count = socket.EndSend(ar);
+        // 判断是否发送完整
+        ByteArray ba = writeQueue.First();
+        ba.readIdx += count;
+        if (ba.length == count) // 发送完整
         {
-            Socket socket = (Socket)ar.AsyncState;
-
-            //EndSend的处理
-            int count = 0;
-            count = socket.EndSend(ar);
-
-            Debug.Log("Socket Send succ " + count);
-
-            ByteArray ba = writeQueue.First();
-            ba.readIdx += count;
-            if (ba.length == 0)
-            {
-                lock (writeQueue)
-                {
-                    writeQueue.Dequeue();
-                    if (writeQueue.Count > 0)
-                        ba = writeQueue.First();
-                    else
-                        ba = null;
-                }
-            }
-            if (ba != null)
-            {
-                socket.BeginSend(ba.bytes, ba.readIdx, ba.length, 0, SendCallback, socket);
-                Debug.Log("ba != null");
-            }
-            else
-            {
-                isSending = false;
-                Debug.Log("ba == null");
-            }
+            writeQueue.Dequeue();
+            ba = writeQueue.First();
         }
-        catch (SocketException ex)
+        if (ba != null)
         {
-            Debug.LogError($"Socket send fail {ex.ToString()}");
+            socket.BeginSend(ba.bytes, ba.readIdx, ba.length, 0, SendCallback, socket);
+        }
+        else if (isClose)
+        {
+            socket.Close();
         }
     }
 }
