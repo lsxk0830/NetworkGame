@@ -9,7 +9,7 @@ public static class NetManager
     public delegate void EventListener(string err); // 事件委托类型
     private static Dictionary<NetEvent, EventListener> eventListeners = new Dictionary<NetEvent, EventListener>(); // 事件监听列表
 
-    #region 事件监听、移除
+    #region 事件监听、移除、分发
     /// <summary>
     /// 添加事件监听
     /// </summary>
@@ -37,5 +37,16 @@ public static class NetManager
                 eventListeners.Remove(netEvent);
         }
     }
-    #endregion 事件监听、移除
+
+    /// <summary>
+    /// 分发事件
+    /// </summary>
+    /// <param name="netEvent">事件类型</param>
+    /// <param name="err">传给回调方法的字符串</param>
+    private static void FireEvent(NetEvent netEvent, string err)
+    {
+        if(eventListeners.ContainsKey(netEvent))
+            eventListeners[netEvent](err);
+    }
+    #endregion 事件监听、移除、分发
 }
