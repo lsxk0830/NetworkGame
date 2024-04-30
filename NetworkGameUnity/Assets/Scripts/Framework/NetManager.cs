@@ -35,6 +35,7 @@ public static class NetManager
     private static Dictionary<NetEvent, EventListener> eventListeners = new Dictionary<NetEvent, EventListener>(); // 事件监听列表
 
     private static bool isConnecting = false; // 是否正在连接
+    private static bool isClosing = false; // 是否正在关闭
 
     #region 事件监听、移除、分发
     /// <summary>
@@ -77,6 +78,7 @@ public static class NetManager
     }
     #endregion 事件监听、移除、分发
 
+    #region 连接、关闭
     /// <summary>
     /// 连接
     /// </summary>
@@ -106,6 +108,27 @@ public static class NetManager
     }
 
     /// <summary>
+    /// 关闭连接
+    /// </summary>
+    public static void Close()
+    {
+        // 状态判断
+        if (socket == null || !socket.Connected) return;
+        if (isConnecting) return;
+        // 还有数据在发送
+        if (writeQueue.Count > 0)
+            isClosing = true;
+        // 没有数据在发送
+        else
+        {
+            socket.Close();
+            FireEvent(NetEvent.Close, "");
+        }
+    }
+
+    #endregion 连接、关闭
+
+    /// <summary>
     /// 初始化成员
     /// </summary>
     private static void InitState()
@@ -118,6 +141,8 @@ public static class NetManager
         writeQueue = new Queue<ByteArray>();
         // 是否正在连接
         isConnecting = false;
+        // 是否正在关闭
+        isClosing = false;
     }
 
     #region Socket回调

@@ -23,6 +23,14 @@ public class ExampleTest : MonoBehaviour
     }
 
     /// <summary>
+    /// 主动关闭
+    /// </summary>
+    public void OnCloseClick()
+    {
+        NetManager.Close();
+    }
+
+    /// <summary>
     /// 连接成功回调
     /// </summary>
     private void OnConnectSucc(string err)
