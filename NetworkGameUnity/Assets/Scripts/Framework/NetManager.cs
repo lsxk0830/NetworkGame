@@ -5,6 +5,29 @@ using UnityEngine;
 
 public static class NetManager
 {
+    #region 事件
+    /// <summary>
+    /// 事件
+    /// </summary>
+    public enum NetEvent
+    {
+        /// <summary>
+        /// 连接成功
+        /// </summary>
+        ConnectSucc = 1,
+
+        /// <summary>
+        /// 连接失败
+        /// </summary>
+        ConnectFail = 2,
+
+        /// <summary>
+        /// 断开连接
+        /// </summary>
+        Close = 3
+    }
+
+    #endregion
     private static Socket socket; // 定义套接字
     private static ByteArray readBuff;// 接收缓冲区
     private static Queue<ByteArray> writeQueue; // 写入队列
