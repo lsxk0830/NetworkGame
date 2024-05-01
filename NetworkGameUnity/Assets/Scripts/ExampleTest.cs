@@ -9,13 +9,17 @@ public class ExampleTest : MonoBehaviour
         NetManager.AddEventListener(NetManager.NetEvent.ConnectFail, OnConnectFail);
         NetManager.AddEventListener(NetManager.NetEvent.Close, OnConnectClose);
 
-        BattleMsg.MsgMove msgMove = new BattleMsg.MsgMove();
+        /*
+        MsgMove msgMove = new MsgMove();
         byte[] bs = MsgBase.EncodeName(msgMove);
         int count = 0;
         string name = MsgBase.DecodeName(bs, 0, out count);
         Debug.Log($"Name:{name}");
         Debug.Log($"Count:{count}");
+        */
     }
+
+    #region 按钮点击
 
     /// <summary>
     /// 玩家点击连接按钮
@@ -33,6 +37,20 @@ public class ExampleTest : MonoBehaviour
     {
         NetManager.Close();
     }
+
+    /// <summary>
+    /// 玩家点击发送按钮
+    /// </summary>
+    public void OnMoveClick()
+    {
+        MsgMove msg = new MsgMove();
+        msg.x = 120;
+        msg.y = 123;
+        msg.z = -6;
+        NetManager.Send(msg);
+    }
+
+    #endregion 按钮点击
 
     /// <summary>
     /// 连接成功回调

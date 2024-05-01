@@ -18,7 +18,7 @@ public class MsgBase
     public string protoName = "";
 
     /// <summary>
-    /// 编码
+    /// 编码协议体
     /// </summary>
     public static byte[] Encode(MsgBase msgBase)
     {
@@ -27,7 +27,7 @@ public class MsgBase
     }
 
     /// <summary>
-    /// 解码
+    /// 解码协议体
     /// </summary>
     /// <param name="protoName">协议名</param>
     /// <param name="bytes">要解码的byte数组</param>
@@ -41,7 +41,7 @@ public class MsgBase
     }
 
     /// <summary>
-    /// 解码协议名（2字节长度+字符串）
+    /// 编码协议名（2字节长度+字符串）
     /// </summary>
     public static byte[] EncodeName(MsgBase msgBase)
     {
@@ -61,10 +61,6 @@ public class MsgBase
     /// <summary>
     /// 解码协议名（2字节长度+字符串）
     /// </summary>
-    /// <param name="bytes"></param>
-    /// <param name="offset"></param>
-    /// <param name="count"></param>
-    /// <returns></returns>
     public static string DecodeName(byte[] bytes, int offset, out int count)
     {
         count = 0;

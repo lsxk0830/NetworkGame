@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using UnityEngine;
 
@@ -78,7 +79,7 @@ public static class NetManager
     }
     #endregion 事件监听、移除、分发
 
-    #region 连接、关闭
+    #region 连接、关闭、Send
     /// <summary>
     /// 连接
     /// </summary>
@@ -126,7 +127,42 @@ public static class NetManager
         }
     }
 
-    #endregion 连接、关闭
+    /// <summary>
+    /// 发送数据
+    /// </summary>
+    /// <param name="msg"></param>
+    public static void Send(MsgBase msg)
+    {
+        // 状态判断
+        if (socket == null || !socket.Connected) return;
+        if (isConnecting) return;
+        if (isClosing) return;
+        // 数据编码
+        byte[] nameBytes = MsgBase.EncodeName(msg);
+        byte[] bodyBytes = MsgBase.Encode(msg);
+        int len = nameBytes.Length + bodyBytes.Length;
+        byte[] sendBytes = new byte[2 + len];
+        // 组装长度
+        sendBytes[0] = (byte)(len % 256);
+        sendBytes[1] = (byte)(len / 256);
+        //组装名字
+        Array.Copy(nameBytes, 0, sendBytes, 2, nameBytes.Length);
+        // 组装消息体
+        Array.Copy(bodyBytes, 0, sendBytes, 2 + nameBytes.Length, bodyBytes.Length);
+        // 写入队列
+        ByteArray ba = new ByteArray(sendBytes);
+        int count = 0;
+        lock (writeQueue)
+        {
+            writeQueue.Enqueue(ba);
+            count = writeQueue.Count;
+        }
+        // Send
+        if (count == 1)
+            socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, SendCallback, socket);
+    }
+
+    #endregion 连接、关闭、Send
 
     /// <summary>
     /// 初始化成员
@@ -162,6 +198,35 @@ public static class NetManager
             FireEvent(NetEvent.ConnectFail, ex.ToString());
             isConnecting = false;
         }
+    }
+
+    private static void SendCallback(IAsyncResult ar)
+    {
+        // 获取state、EndSend
+        Socket socket = (Socket)ar.AsyncState;
+        // 状态判断
+        if (socket == null || !socket.Connected) return;
+        //EndSend
+        int count = socket.EndSend(ar);
+        // 获取写入队列第一条数据
+        ByteArray ba;
+        lock (writeQueue)
+            ba = writeQueue.First();
+        // 完整发送
+        ba.readIdx += count;
+        if (ba.length == 0)
+        {
+            lock (writeQueue)
+            {
+                writeQueue.Dequeue();
+                ba = writeQueue.First();
+            }
+        }
+        // 继续发送
+        if (ba != null)
+            socket.BeginSend(ba.bytes, ba.readIdx, ba.length, 0, SendCallback, socket);
+        else if (isClosing)
+            socket.Close();
     }
     #endregion Socket回调
 }
