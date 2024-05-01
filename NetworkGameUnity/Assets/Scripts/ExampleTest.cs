@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ExampleTest : MonoBehaviour
@@ -11,6 +8,13 @@ public class ExampleTest : MonoBehaviour
         NetManager.AddEventListener(NetManager.NetEvent.ConnectSucc, OnConnectSucc);
         NetManager.AddEventListener(NetManager.NetEvent.ConnectFail, OnConnectFail);
         NetManager.AddEventListener(NetManager.NetEvent.Close, OnConnectClose);
+
+        BattleMsg.MsgMove msgMove = new BattleMsg.MsgMove();
+        byte[] bs = MsgBase.EncodeName(msgMove);
+        int count = 0;
+        string name = MsgBase.DecodeName(bs, 0, out count);
+        Debug.Log($"Name:{name}");
+        Debug.Log($"Count:{count}");
     }
 
     /// <summary>
