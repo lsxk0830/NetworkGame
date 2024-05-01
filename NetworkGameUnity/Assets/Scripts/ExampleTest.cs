@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class ExampleTest : MonoBehaviour
@@ -8,6 +9,7 @@ public class ExampleTest : MonoBehaviour
         NetManager.AddEventListener(NetManager.NetEvent.ConnectSucc, OnConnectSucc);
         NetManager.AddEventListener(NetManager.NetEvent.ConnectFail, OnConnectFail);
         NetManager.AddEventListener(NetManager.NetEvent.Close, OnConnectClose);
+        NetManager.AddMsgListener("MsgMove", OnMsgMove);
 
         /*
         MsgMove msgMove = new MsgMove();
@@ -76,5 +78,17 @@ public class ExampleTest : MonoBehaviour
         Debug.LogError("OnConnectClose");
         // TODO:弹出提示框（网络断开）
         // TODO:弹出按钮（重新连接）
+    }
+
+    /// <summary>
+    /// 收到MsgMove协议
+    /// </summary>
+    private void OnMsgMove(MsgBase msgBse)
+    {
+        MsgMove msgMove = (MsgMove)msgBse;
+        // 消息处理
+        Debug.Log($"OnMsgMove msg.x = {msgMove.x}");
+        Debug.Log($"OnMsgMove msg.y = {msgMove.y}");
+        Debug.Log($"OnMsgMove msg.z = {msgMove.z}");
     }
 }

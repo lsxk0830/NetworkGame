@@ -34,16 +34,19 @@ public static class NetManager
     private static Queue<ByteArray> writeQueue; // 写入队列
     public delegate void EventListener(string err); // 事件委托类型
     private static Dictionary<NetEvent, EventListener> eventListeners = new Dictionary<NetEvent, EventListener>(); // 事件监听列表
+    public delegate void MsgListener(MsgBase msgBse); // 消息委托类型
+    private static Dictionary<string, MsgListener> msgListeners = new Dictionary<string, MsgListener>(); // 消息监听列表
 
     private static bool isConnecting = false; // 是否正在连接
     private static bool isClosing = false; // 是否正在关闭
 
-    #region 事件监听、移除、分发
+    #region 【事件】【消息】监听、移除、分发
+    #region 事件
     /// <summary>
     /// 添加事件监听
     /// </summary>
     /// <param name="netEvent">事件类型</param>
-    /// <param name="listener">监听回调</param>
+    /// <param name="listener">事件的监听</param>
     public static void AddEventListener(NetEvent netEvent, EventListener listener)
     {
         if (eventListeners.ContainsKey(netEvent)) // 添加事件
@@ -56,7 +59,7 @@ public static class NetManager
     /// 移除事件监听
     /// </summary>
     /// <param name="netEvent">事件类型</param>
-    /// <param name="listener">监听回调</param>
+    /// <param name="listener">事件的监听</param>
     public static void RemoveEventListener(NetEvent netEvent, EventListener listener)
     {
         if (eventListeners.ContainsKey(netEvent))
@@ -77,8 +80,49 @@ public static class NetManager
         if (eventListeners.ContainsKey(netEvent))
             eventListeners[netEvent](err);
     }
-    #endregion 事件监听、移除、分发
+    #endregion 事件
 
+    #region 消息
+    /// <summary>
+    /// 添加消息监听
+    /// </summary>
+    /// <param name="netEvent">消息名</param>
+    /// <param name="listener">消息的监听</param>
+    public static void AddMsgListener(string msgName, MsgListener listener)
+    {
+        if (msgListeners.ContainsKey(msgName)) // 添加事件
+            msgListeners[msgName] += listener;
+        else // 新增事件
+            msgListeners[msgName] = listener;
+    }
+
+    /// <summary>
+    /// 移除消息监听
+    /// </summary>
+    /// <param name="netEvent">消息名</param>
+    /// <param name="listener">消息的监听</param>
+    public static void RemoveMsgListener(string msgName, MsgListener listene)
+    {
+        if (msgListeners.ContainsKey(msgName))
+        {
+            msgListeners[msgName] -= listene;
+            if (msgListeners[msgName] == null)
+                msgListeners.Remove(msgName);
+        }
+    }
+    /// <summary>
+    /// 分发消息
+    /// </summary>
+    /// <param name="netEvent">事件类型</param>
+    /// <param name="err">传给回调方法的消息</param>
+    private static void FireMsg(string msgName, MsgBase msgBase)
+    {
+        if (msgListeners.ContainsKey(msgName))
+            msgListeners[msgName](msgBase);
+    }
+    #endregion 消息
+
+    #endregion 【事件】【消息】监听、移除、分发
     #region 连接、关闭、Send
     /// <summary>
     /// 连接
