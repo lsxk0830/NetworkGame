@@ -32,10 +32,15 @@ public static class NetManager
     private static Socket socket; // 定义套接字
     private static ByteArray readBuff;// 接收缓冲区
     private static Queue<ByteArray> writeQueue; // 写入队列
+
     public delegate void EventListener(string err); // 事件委托类型
     private static Dictionary<NetEvent, EventListener> eventListeners = new Dictionary<NetEvent, EventListener>(); // 事件监听列表
     public delegate void MsgListener(MsgBase msgBse); // 消息委托类型
     private static Dictionary<string, MsgListener> msgListeners = new Dictionary<string, MsgListener>(); // 消息监听列表
+
+    private static List<MsgBase> msgList = new List<MsgBase>(); // 消息列表
+    private static int msgCount = 0; // 消息列表长度
+    readonly static int MAX_MESSAGE_FIRE = 10; // 每一次Update处理消息量
 
     private static bool isConnecting = false; // 是否正在连接
     private static bool isClosing = false; // 是否正在关闭
@@ -206,6 +211,41 @@ public static class NetManager
             socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, SendCallback, socket);
     }
 
+    /// <summary>
+    /// 更新
+    /// </summary>
+    public static void Update()
+    {
+        MsgUpdate();
+    }
+
+    /// <summary>
+    /// 更新消息
+    /// </summary>
+    public static void MsgUpdate()
+    {
+        // 初步判断，提升效率
+        if (msgCount == 0) return;
+        // 重复处理消息
+        for (int i = 0; i < MAX_MESSAGE_FIRE; i++)
+        {
+            MsgBase msgBase = null;
+            lock (msgList)
+            {
+                if (msgList.Count > 0)
+                {
+                    msgBase = msgList[0];
+                    msgList.RemoveAt(0);
+                    msgCount--;
+                }
+            }
+            if (msgBase != null) // 分发消息
+                FireMsg(msgBase.protoName, msgBase);
+            else // 没消息了
+                break;
+        }
+    }
+
     #endregion 连接、关闭、Send
 
     /// <summary>
@@ -223,6 +263,10 @@ public static class NetManager
         isConnecting = false;
         // 是否正在关闭
         isClosing = false;
+        // 消息列表
+        msgList = new List<MsgBase>();
+        // 消息列表长度
+        msgCount = 0;
     }
 
     #region Socket回调
@@ -235,12 +279,42 @@ public static class NetManager
             Debug.Log("Socket Connect Succ");
             FireEvent(NetEvent.ConnectSucc, "");
             isConnecting = false;
+            //开始接收
+            socket.BeginReceive(readBuff.bytes, readBuff.writeIdx, readBuff.remain, 0, ReceiveCallback, socket);
         }
         catch (SocketException ex)
         {
             Debug.LogError($"Socket Connect fail {ex.ToString()}");
             FireEvent(NetEvent.ConnectFail, ex.ToString());
             isConnecting = false;
+        }
+    }
+
+    private static void ReceiveCallback(IAsyncResult ar)
+    {
+        try
+        {
+            Socket socket = (Socket)ar.AsyncState;
+            int count = socket.EndReceive(ar); // 获取接收数据长度
+            if (count == 0)
+            {
+                socket.Close();
+                return;
+            }
+            readBuff.writeIdx += count;
+            // 处理二进制消息
+            OnReveiveData();
+            // 继续接收数据
+            if (readBuff.remain < 8)
+            {
+                readBuff.MoveBytes();
+                readBuff.ReSize(readBuff.length * 2);
+            }
+            socket.BeginReceive(readBuff.bytes, readBuff.writeIdx, readBuff.remain, 0, ReceiveCallback, socket);
+        }
+        catch (SocketException ex)
+        {
+            Debug.LogError($"Socket Receive fail : {ex.ToString()}");
         }
     }
 
@@ -273,4 +347,43 @@ public static class NetManager
             socket.Close();
     }
     #endregion Socket回调
+
+    /// <summary>
+    /// 1、根据协议的前两个字节判断是否收到一条完整的协议。如果收到完整的协议，便解析它；
+    /// 如果没有收到完整的协议，则退出等待下一波消息
+    /// 2、解析协议
+    /// </summary>
+    private static void OnReveiveData()
+    {
+        // 消息长度
+        if (readBuff.length <= 2) return;
+        // 获取消息体长度
+        int readIdx = readBuff.readIdx;
+        byte[] bytes = readBuff.bytes;
+        Int16 bodyLength = (Int16)(bytes[readIdx] | bytes[readIdx + 1] << 8);
+        if (readBuff.length < bodyLength + 2) return;
+        readBuff.readIdx += 2;
+        // 解析协议名
+        int nameCount = 0;
+        string protoName = MsgBase.DecodeName(readBuff.bytes, readBuff.readIdx, out nameCount);
+        if (protoName == "")
+        {
+            Debug.Log($"OnReceiveData MsgBase.DecodeName Fial");
+            return;
+        }
+        readBuff.readIdx += nameCount;
+        // 解析协议体
+        int bodyCount = bodyLength - nameCount;
+
+        MsgBase msgBase = MsgBase.Decode(protoName, readBuff.bytes, readBuff.readIdx, bodyCount);
+        readBuff.readIdx += bodyCount;
+        readBuff.CheckAndMoveBytes();
+        // 添加到消息队列
+        lock (msgList)
+            msgList.Add(msgBase);
+        msgCount++;
+        // 继续读取消息
+        if (readBuff.length > 2)
+            OnReveiveData();
+    }
 }

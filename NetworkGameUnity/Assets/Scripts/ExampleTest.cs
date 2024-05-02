@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class ExampleTest : MonoBehaviour
@@ -19,6 +18,10 @@ public class ExampleTest : MonoBehaviour
         Debug.Log($"Name:{name}");
         Debug.Log($"Count:{count}");
         */
+    }
+    void Update()
+    {
+        NetManager.Update();
     }
 
     #region 按钮点击
