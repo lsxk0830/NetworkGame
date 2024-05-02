@@ -45,7 +45,13 @@ public static class NetManager
     private static bool isConnecting = false; // 是否正在连接
     private static bool isClosing = false; // 是否正在关闭
 
+    public static bool isUsePing = true; // 是否启用心跳
+    public static int pingInterval = 30; // 心跳间隔时间
+    private static float lastPingTime = 0; // 上一次发送Ping的时间
+    private static float lastPongTime = 0; // 上一次收到Pong的时间
+
     #region 【事件】【消息】监听、移除、分发
+
     #region 事件
     /// <summary>
     /// 添加事件监听
@@ -128,7 +134,9 @@ public static class NetManager
     #endregion 消息
 
     #endregion 【事件】【消息】监听、移除、分发
-    #region 连接、关闭、Send
+
+    #region 连接、关闭、Send、更新
+
     /// <summary>
     /// 连接
     /// </summary>
@@ -217,59 +225,13 @@ public static class NetManager
     public static void Update()
     {
         MsgUpdate();
+        PingUpdate();
     }
 
-    /// <summary>
-    /// 更新消息
-    /// </summary>
-    public static void MsgUpdate()
-    {
-        // 初步判断，提升效率
-        if (msgCount == 0) return;
-        // 重复处理消息
-        for (int i = 0; i < MAX_MESSAGE_FIRE; i++)
-        {
-            MsgBase msgBase = null;
-            lock (msgList)
-            {
-                if (msgList.Count > 0)
-                {
-                    msgBase = msgList[0];
-                    msgList.RemoveAt(0);
-                    msgCount--;
-                }
-            }
-            if (msgBase != null) // 分发消息
-                FireMsg(msgBase.protoName, msgBase);
-            else // 没消息了
-                break;
-        }
-    }
-
-    #endregion 连接、关闭、Send
-
-    /// <summary>
-    /// 初始化成员
-    /// </summary>
-    private static void InitState()
-    {
-        // socket
-        socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        // 接收缓冲区
-        readBuff = new ByteArray();
-        // 写入队列
-        writeQueue = new Queue<ByteArray>();
-        // 是否正在连接
-        isConnecting = false;
-        // 是否正在关闭
-        isClosing = false;
-        // 消息列表
-        msgList = new List<MsgBase>();
-        // 消息列表长度
-        msgCount = 0;
-    }
+    #endregion 连接、关闭、Send、更新
 
     #region Socket回调
+
     private static void ConnectCallback(IAsyncResult ar)
     {
         try
@@ -346,7 +308,100 @@ public static class NetManager
         else if (isClosing)
             socket.Close();
     }
+
     #endregion Socket回调
+
+    #region 更新消息、更新PING
+
+    /// <summary>
+    /// 更新消息
+    /// </summary>
+    private static void MsgUpdate()
+    {
+        // 初步判断，提升效率
+        if (msgCount == 0) return;
+        // 重复处理消息
+        for (int i = 0; i < MAX_MESSAGE_FIRE; i++)
+        {
+            MsgBase msgBase = null;
+            lock (msgList)
+            {
+                if (msgList.Count > 0)
+                {
+                    msgBase = msgList[0];
+                    msgList.RemoveAt(0);
+                    msgCount--;
+                }
+            }
+            if (msgBase != null) // 分发消息
+                FireMsg(msgBase.protoName, msgBase);
+            else // 没消息了
+                break;
+        }
+    }
+
+    /// <summary>
+    /// 更新PING,发送PING协议
+    /// </summary>
+    public static void PingUpdate()
+    {
+        // 是否启用
+        if (!isUsePing) return;
+        // 发送PING
+        if (Time.time - lastPingTime > pingInterval)
+        {
+            MsgPing msgPing = new MsgPing();
+            Send(msgPing);
+            lastPingTime = Time.time;
+        }
+        // 检测PONG时间
+        if (Time.time - lastPongTime > pingInterval * 4)
+            Close();
+    }
+
+    #endregion 更新消息、更新PING
+
+    #region 事件监听【PONG协议】
+
+    /// <summary>
+    /// 监听PONG协议
+    /// </summary>
+    private static void OnMsgPong(MsgBase msgBase)
+    {
+        lastPongTime = Time.time;
+    }
+
+    #endregion 事件监听【PONG协议】
+
+    #region 私有发送,内部使用
+
+    /// <summary>
+    /// 初始化成员
+    /// </summary>
+    private static void InitState()
+    {
+        // socket
+        socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        // 接收缓冲区
+        readBuff = new ByteArray();
+        // 写入队列
+        writeQueue = new Queue<ByteArray>();
+        // 是否正在连接
+        isConnecting = false;
+        // 是否正在关闭
+        isClosing = false;
+        // 消息列表
+        msgList = new List<MsgBase>();
+        // 消息列表长度
+        msgCount = 0;
+        // 上一次发送PING时间
+        lastPingTime = Time.time;
+        // 上一次收到PONG时间
+        lastPongTime = Time.time;
+        // 监听PONG协议
+        if (!msgListeners.ContainsKey("MsgPong"))
+            AddMsgListener("MsgPong", OnMsgPong);
+    }
 
     /// <summary>
     /// 1、根据协议的前两个字节判断是否收到一条完整的协议。如果收到完整的协议，便解析它；
@@ -386,4 +441,6 @@ public static class NetManager
         if (readBuff.length > 2)
             OnReveiveData();
     }
+
+    #endregion  私有发送,内部使用
 }
