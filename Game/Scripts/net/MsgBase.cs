@@ -73,7 +73,7 @@ public class MsgBase
         // 必须大于2字节
         if (offset + 2 > bytes.Length) return "";
         // 读取长度
-        Int16 len = (Int16)(bytes[offset + 1] << 8 | bytes[offset]);
+        Int16 len = (Int16)((bytes[offset + 1] << 8) | bytes[offset]);
         if (len <= 0) return "";
         // 长度必须足够
         if (offset + 2 + len > bytes.Length) return "";
