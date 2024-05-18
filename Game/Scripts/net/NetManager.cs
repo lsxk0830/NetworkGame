@@ -9,6 +9,7 @@ public class NetManager
     public static Socket listenfd; // 监听Socket
     public static Dictionary<Socket, ClientState> clients = new Dictionary<Socket, ClientState>(); // 客户端Socket及状态信息
     private static List<Socket> checkRead = new List<Socket>(); // Select的检查列表
+    public static long pingInterval = 30; // ping间隔
 
     /// <summary>
     /// 开启服务端监听
@@ -39,9 +40,9 @@ public class NetManager
                 else
                     ReadClientfd(s);
             }
+            // 超时
+            Timer();
         }
-        // 超时
-        Timer();
     }
 
     /// <summary>
@@ -68,6 +69,7 @@ public class NetManager
             Console.WriteLine($"Accept {clientfd.RemoteEndPoint.ToString()}");
             ClientState state = new ClientState();
             state.socket = clientfd;
+            state.lastPingTime = GetTimeStamp();
             clients.Add(clientfd, state);
         }
         catch (SocketException ex)
@@ -124,7 +126,7 @@ public class NetManager
         readBuff.CheckAndMoveBytes();
     }
 
-    private static void Close(ClientState state)
+    public static void Close(ClientState state)
     {
         // 事件分发
         MethodInfo mei = typeof(EventHandler).GetMethod("OnDisconnect");
@@ -215,5 +217,15 @@ public class NetManager
         {
             Console.WriteLine("Socket Close on BeginSend" + ex.ToString());
         }
+    }
+
+    /// <summary>
+    /// 获取时间戳
+    /// </summary>
+    /// <returns></returns>
+    public static long GetTimeStamp()
+    {
+        TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
+        return Convert.ToInt64(ts.TotalSeconds);
     }
 }

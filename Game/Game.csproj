@@ -33,13 +33,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MySql.Data">
+      <HintPath>..\Reference\MySql.Data.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Web.Extensions" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripts\db\DbManager.cs" />
     <Compile Include="Scripts\Logic\EventHandler.cs" />
+    <Compile Include="Scripts\Logic\PlayerManager.cs" />
+    <Compile Include="Scripts\Logic\PlayerData.cs" />
+    <Compile Include="Scripts\Logic\Player.cs" />
     <Compile Include="Scripts\net\ClientState.cs" />
     <Compile Include="Scripts\net\NetManager.cs" />
     <Compile Include="Scripts\Logic\SysMsgHandler.cs" />

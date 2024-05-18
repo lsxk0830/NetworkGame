@@ -9,5 +9,13 @@ public class ClientState
     public Socket socket;
     public ByteArray readBuff = new ByteArray();
 
-    // 玩家数据后面添加
+    /// <summary>
+    /// 最后收到Ping的时间
+    /// </summary>
+    public long lastPingTime = 0;
+
+    /// <summary>
+    /// 玩家
+    /// </summary>
+    public Player player;
 }
