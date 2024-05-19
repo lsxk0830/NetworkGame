@@ -1,4 +1,7 @@
-﻿public class PlayerData
+/// <summary>
+/// 玩家数据
+/// </summary>
+public class PlayerData
 {
     /// <summary>
     /// 金币

@@ -8,7 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Example/Scenes/EchoScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 1
+  - enabled: 0
     path: Assets/Example/Scenes/Move.unity
     guid: aef9e7b71add08d4fa30ffc8f4a86725
+  - enabled: 1
+    path: "Assets/Example/\u8BB0\u4E8B\u672C/\u8BB0\u4E8B\u672C.unity"
+    guid: 3e41da1a6c698144f98593e81888dfcb
   m_configObjects: {}

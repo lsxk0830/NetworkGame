@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Game
 {
@@ -11,8 +11,13 @@ namespace Game
                 Console.ReadLine();
                 return;
             }
-            if (DbManager.Register("lpy", "123456"))
-                Console.WriteLine("注册成功");
+            //if (DbManager.Register("lpy", "123456"))
+            //    Console.WriteLine("注册成功");
+            //if (DbManager.CreatePlayer("Sky"))
+            //    Console.WriteLine("创建成功");
+            //PlayerData pd = DbManager.GetPlayerData("Sky");
+            //pd.coin = 256;
+            //DbManager.UpdatePlayerData("Sky", pd);
             NetManager.StartLoop(8888);
         }
     }

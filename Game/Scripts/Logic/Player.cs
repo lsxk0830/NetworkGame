@@ -1,4 +1,7 @@
-﻿public class Player
+/// <summary>
+/// 玩家
+/// </summary>
+public class Player
 {
     public string id = "";
     public ClientState state;
@@ -16,6 +19,10 @@
         this.state = state;
     }
 
+    /// <summary>
+    /// 发送数据
+    /// </summary>
+    /// <param name="msgBase">协议</param>
     public void Send(MsgBase msgBase)
     {
         NetManager.Send(state, msgBase);

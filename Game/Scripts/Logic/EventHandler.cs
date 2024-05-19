@@ -2,21 +2,22 @@ using System;
 
 public partial class EventHandler
 {
+    /// <summary>
+    /// ç¦»çº¿åè®®å¤„ç†
+    /// </summary>
+    /// <param name="c"></param>
     public static void OnDisconnect(ClientState c)
     {
         Console.WriteLine("Close");
-        //PlayerÏÂÏß
-        //if (c.player != null)
-        //{
-        //    //±£´æÊı¾İ
-        //    DbManager.UpdatePlayerData(c.player.id, c.player.data);
-        //    //ÒÆ³ı
-        //    PlayerManager.RemovePlayer(c.player.id);
-        //}
+        if (c.player != null) //Playerä¸‹çº¿
+        {
+            DbManager.UpdatePlayerData(c.player.id, c.player.data); //ä¿å­˜æ•°æ®
+            PlayerManager.RemovePlayer(c.player.id); //ç§»é™¤
+        }
     }
 
     /// <summary>
-    /// ¶¨Ê±ÊÂ¼ş
+    /// å®šæ—¶äº‹ä»¶
     /// </summary>
     public static void OnTimer()
     {
@@ -24,18 +25,18 @@ public partial class EventHandler
     }
 
     /// <summary>
-    /// Ping¼ì²é£¬×î¶à¶Ï¿ªÒ»¸ö¿Í»§¶ËÁ¬½Ó
+    /// Pingæ£€æŸ¥ï¼Œæœ€å¤šæ–­å¼€ä¸€ä¸ªå®¢æˆ·ç«¯è¿æ¥
     /// </summary>
-    public static void CheckPing()
+    private static void CheckPing()
     {
-        long timeNow = NetManager.GetTimeStamp(); //ÏÖÔÚµÄÊ±¼ä´Á
+        long timeNow = NetManager.GetTimeStamp(); //ç°åœ¨çš„æ—¶é—´æˆ³
         foreach (ClientState s in NetManager.clients.Values)
         {
             if (timeNow - s.lastPingTime > NetManager.pingInterval * 4)
             {
                 Console.WriteLine("Ping Close " + s.socket.RemoteEndPoint.ToString());
                 NetManager.Close(s);
-                return; // foreachÖĞ
+                return; // foreachä¸­
             }
         }
     }

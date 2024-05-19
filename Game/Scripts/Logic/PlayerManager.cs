@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
+/// <summary>
+/// 玩家管理器。是否在线、获取玩家、添加玩家、删除玩家
+/// </summary>
 public class PlayerManager
 {
     // 玩家列表
