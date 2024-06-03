@@ -159,7 +159,7 @@ public static class NetManager
         // 初始化成员
         InitState();
         // 参数设置
-        socket.NoDelay = true;
+        socket.NoDelay = true; // 禁用Nagle算法
         // Connect
         isConnecting = true;
         socket.BeginConnect(ip, port, ConnectCallback, socket);
