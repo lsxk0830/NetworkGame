@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class CtrlTank : BaseTank
 {
-    private float steer = 20; // 旋转角度
-    private float speed = 5; // 移动速度
+    public float steer = 20; // 旋转角度
+    public float speed = 5; // 移动速度
 
     new void Update()
     {
