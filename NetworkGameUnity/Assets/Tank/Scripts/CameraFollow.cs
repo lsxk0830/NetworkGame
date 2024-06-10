@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    public Vector3 distance = new Vector3(0, 8, 18); // 距离矢量
+    public Vector3 distance = new Vector3(0, 8, -18); // 距离矢量
     public Camera mCamera; // 相机
     public Vector3 offset = new Vector3(0, 5f, 0); // 偏移值
     public float speed = 3; // 相机移动速度
