@@ -9,7 +9,7 @@ public class BaseTank : MonoBehaviour
     private GameObject skin;
 
     public float steer = 20; // 旋转角度
-    public float speed = 3; // 移动速度
+    public float speed = 6; // 移动速度
 
     public float turretSpeed = 30f; // 炮塔旋转速度
     public Transform turret; // 炮塔

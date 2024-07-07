@@ -10,6 +10,10 @@ public class TestTank : MonoBehaviour
         // 相机
         tankObj.AddComponent<CameraFollow>();
 
-        CtrlTank.Attacked(200);
+        // 被打的坦克
+        GameObject tankObj2 = new GameObject("enemyTank");
+        BaseTank baseTank = tankObj2.AddComponent<BaseTank>();
+        baseTank.Init("tankPrefab");
+        baseTank.transform.position = new Vector3(-40, 0, 50);
     }
 }

@@ -31,7 +31,12 @@ public class Bullet : MonoBehaviour
         // 打到的坦克
         GameObject collObj = collisionInfo.gameObject;
         BaseTank hitTank = collObj.GetComponent<BaseTank>();
-        if (hitTank == tank) return; // 不能打自己
+
+        if (hitTank == tank) // 不能打自己
+            return;
+        if (hitTank != null) // 攻击其他坦克
+            hitTank.Attacked(35);
+
         // 显示爆炸效果
         GameObject explode = ResManager.LoadPrefab("fire");
         Instantiate(explode, transform.position, transform.rotation);
