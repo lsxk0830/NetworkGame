@@ -10,6 +10,6 @@ public class TestTank : MonoBehaviour
         // 相机
         tankObj.AddComponent<CameraFollow>();
 
-        CtrlTank.isDie();
+        CtrlTank.Attacked(200);
     }
 }

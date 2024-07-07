@@ -71,8 +71,23 @@ public class BaseTank : MonoBehaviour
     /// </summary>
     public bool isDie()
     {
-        //GameObject explode = ResManager.LoadPrefab("explosion");
-        //Instantiate(explode,transform.position,transform.rotation);
         return hp < 0;
+    }
+
+    /// <summary>
+    /// 被攻击
+    /// </summary>
+    public void Attacked(float att)
+    {
+        if (isDie())
+            return;
+
+        hp -= att;
+        if (isDie())
+        {
+            GameObject obj = ResManager.LoadPrefab("Explosion");
+            GameObject explode = Instantiate(obj, transform.position, transform.rotation);
+            explode.transform.SetParent(transform);
+        }
     }
 }
