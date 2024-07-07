@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class CtrlTank : BaseTank
@@ -15,6 +14,8 @@ public class CtrlTank : BaseTank
 
     private void MoveUpdate()
     {
+        if (isDie()) return;
+
         float x = Input.GetAxis("Horizontal");
         transform.Rotate(0, x * steer * Time.deltaTime, 0);
         float y = Input.GetAxis("Vertical");
@@ -24,6 +25,8 @@ public class CtrlTank : BaseTank
 
     private void TurretUpdate()
     {
+        if (isDie()) return;
+
         float axis = 0;
         if (Input.GetKey(KeyCode.Q))
             axis = -1;
@@ -37,6 +40,8 @@ public class CtrlTank : BaseTank
 
     private void FireUpdate()
     {
+        if (isDie()) return;
+
         if (!Input.GetKeyDown(KeyCode.Space)) return;
 
         if (Time.time - lastFireTime < fired) return;

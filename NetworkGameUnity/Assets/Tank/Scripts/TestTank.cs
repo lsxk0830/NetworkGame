@@ -9,5 +9,7 @@ public class TestTank : MonoBehaviour
         CtrlTank.Init("tankPrefab");
         // 相机
         tankObj.AddComponent<CameraFollow>();
+
+        CtrlTank.isDie();
     }
 }

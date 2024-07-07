@@ -19,7 +19,7 @@ public class BaseTank : MonoBehaviour
     public float fired = 0.5f; // 炮弹Cd时间
     public float lastFireTime = 0; // 上一次发射炮弹时间
 
-
+    public float hp = 100;
 
     protected Rigidbody mRigidbody;
 
@@ -44,9 +44,12 @@ public class BaseTank : MonoBehaviour
         firePoint = gun.transform.Find("FirePoint");
     }
 
+    /// <summary>
+    /// 开火
+    /// </summary>
     public Bullet Fire()
     {
-        //if (isDie()) return null;
+        if (isDie()) return null;
 
         // 产生炮弹
         GameObject bulletObj = new GameObject("bullet");
@@ -63,8 +66,13 @@ public class BaseTank : MonoBehaviour
         return bullet;
     }
 
-    private bool isDie()
+    /// <summary>
+    /// 是否死亡
+    /// </summary>
+    public bool isDie()
     {
-        return false;
+        //GameObject explode = ResManager.LoadPrefab("explosion");
+        //Instantiate(explode,transform.position,transform.rotation);
+        return hp < 0;
     }
 }
