@@ -1,3 +1,5 @@
+using System;
+
 public partial class MsgHandler
 {
     /// <summary>
@@ -24,10 +26,13 @@ public partial class MsgHandler
         MsgLogin msg = (MsgLogin)msgBase;
         if (!DbManager.CheckPassword(msg.id, msg.pw)) //密码校验
         {
+            Console.WriteLine("账号密码错误");
             msg.result = 1;
             NetManager.Send(c, msg);
             return;
         }
+        else
+            Console.WriteLine("账号密码正确");
         if (c.player != null)  //不允许再次登陆
         {
             msg.result = 1;

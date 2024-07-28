@@ -26,7 +26,7 @@ public class BaseTank : MonoBehaviour
     public virtual void Init(string skinPath)
     {
         // 皮肤
-        GameObject skinRes = ResManager.LoadPrefab("tankPrefab");
+        GameObject skinRes = ResManager.LoadPrefab(skinPath);
         GameObject skin = Instantiate(skinRes);
         skin.transform.parent = this.transform;
         skin.transform.localPosition = Vector3.zero;

@@ -27,7 +27,7 @@ public static class PanelManager
         Transform panel = canvas.Find("Panel");
         Transform tip = canvas.Find("Tip");
         layers.Add(Layer.Panel, panel);
-        layers.Add(Layer.Tip, panel);
+        layers.Add(Layer.Tip, tip);
     }
 
     /// <summary>
@@ -36,7 +36,21 @@ public static class PanelManager
 
     public static void Open<T>(params object[] para) where T : BasePanel
     {
+        string name = typeof(T).ToString();
+        if (panels.ContainsKey(name))
+            return;
 
+        // 组件
+        BasePanel panel = root.gameObject.AddComponent<T>();
+        panel.OnInit();
+        panel.Init();
+        // 父容器
+        Transform layer = layers[panel.layer];
+        panel.skin.transform.SetParent(layer, false);
+        // 列表
+        panels.Add(name, panel);
+        // PnShow
+        panel.OnShow();
     }
 
     /// <summary>
@@ -45,6 +59,15 @@ public static class PanelManager
 
     public static void Close(string name)
     {
-
+        if (!panels.ContainsKey(name)) // 没有打开
+            return;
+        BasePanel panel = panels[name];
+        // OnClose
+        panel.OnClose();
+        // 列表
+        panels.Remove(name);
+        // 销毁
+        GameObject.Destroy(panel.skin);
+        Component.Destroy(panel);
     }
 }

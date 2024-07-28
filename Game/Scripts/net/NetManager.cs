@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text;
 
 public class NetManager
 {
@@ -211,6 +212,7 @@ public class NetManager
         Array.Copy(bodyBytes, 0, sendBytes, 2 + nameBytes.Length, bodyBytes.Length);
         try
         {
+            Console.WriteLine($"发送消息：{Encoding.UTF8.GetString(sendBytes)}");
             cs.socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, null, null); //为简化代码，不设置回调
         }
         catch (SocketException ex)

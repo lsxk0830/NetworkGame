@@ -3,7 +3,7 @@ using UnityEngine;
 public class BasePanel : MonoBehaviour
 {
     public string skinPath; // 皮肤路径
-    public GameObject skin; // 皮肤
+    public GameObject skin; // 皮肤【面板或者弹窗的那个物体】
     public PanelManager.Layer layer = PanelManager.Layer.Panel; // 层级
 
     /// <summary>
