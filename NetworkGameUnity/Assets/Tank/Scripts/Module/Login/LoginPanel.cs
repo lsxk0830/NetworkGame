@@ -66,7 +66,7 @@ public class LoginPanel : BasePanel
 
     private void onRegisterClick()
     {
-        //PanelManager.Open<RegisterPanel>();
+        PanelManager.Open<RegisterPanel>();
     }
 
     private void OnMsgLogin(MsgBase msgBse) // 收到登录协议
