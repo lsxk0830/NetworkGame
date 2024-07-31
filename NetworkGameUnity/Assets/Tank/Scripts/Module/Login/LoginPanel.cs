@@ -51,7 +51,7 @@ public class LoginPanel : BasePanel
     {
         if (idInput.text == "" || pwInput.text == "")
         {
-            //PanelManager.Open<TipPanel>("用户名和密码不能为空");
+            PanelManager.Open<TipPanel>("用户名和密码不能为空");
             return;
         }
 
@@ -86,8 +86,8 @@ public class LoginPanel : BasePanel
             // 关闭界面
             Close();
         }
-        //else
-        //PanelManager.Open<TipPanel>("登录失败");
+        else
+            PanelManager.Open<TipPanel>("登录失败");
     }
 
     private void OnConnectSucc(string err) // 连接成功回调
@@ -97,6 +97,6 @@ public class LoginPanel : BasePanel
 
     private void OnConnectFail(string err) // 连接失败回调
     {
-        //PanelManager.Open<TipPanel>(err);
+        PanelManager.Open<TipPanel>(err);
     }
 }

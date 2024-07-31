@@ -50,7 +50,7 @@ public static class PanelManager
         // 列表
         panels.Add(name, panel);
         // PnShow
-        panel.OnShow();
+        panel.OnShow(para);
     }
 
     /// <summary>

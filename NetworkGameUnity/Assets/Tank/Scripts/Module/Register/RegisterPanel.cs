@@ -45,12 +45,12 @@ public class RegisterPanel : BasePanel
     {
         if (idInput.text == "" || pwInput.text == "")
         {
-            //PanelManager.Open<TipPanel>("用户名和密码不能为空");
+            PanelManager.Open<TipPanel>("用户名和密码不能为空");
             return;
         }
         if (pwInput.text != repInput.text)
         {
-            //PanelManager.Open<TipPanel>("两次输入的密码不相同");
+            PanelManager.Open<TipPanel>("两次输入的密码不相同");
             return;
         }
         MsgRegister msgRegister = new MsgRegister()
@@ -63,7 +63,7 @@ public class RegisterPanel : BasePanel
 
     private void OnCloseClick()
     {
-        OnClose();
+        Close();
     }
 
 
@@ -73,10 +73,10 @@ public class RegisterPanel : BasePanel
         if (msg.result == 0)
         {
             Debug.Log("注册成功");
-            //PanelManager.Open<TipPanel>("注册成功");
+            PanelManager.Open<TipPanel>("注册成功");
             Close();
         }
-        //else
-            //PanelManager.Open<TipPanel>("注册失败");
+        else
+            PanelManager.Open<TipPanel>("注册失败");
     }
 }
