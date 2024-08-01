@@ -9,11 +9,6 @@ public class LoginPanel : BasePanel
     public Button loginBtn; // 登录按钮
     public Button registerBtn; // 注册按钮
 
-    private void Update()
-    {
-        NetManager.Update();
-    }
-
     public override void OnInit() // 初始化
     {
         skinPath = "LoginPanel";
@@ -83,6 +78,7 @@ public class LoginPanel : BasePanel
             ctrlTank.Init("tankPrefab");
             // 设置相机
             tankObj.AddComponent<CameraFollow>();
+            GameMain.id = msg.id;
             // 关闭界面
             Close();
         }

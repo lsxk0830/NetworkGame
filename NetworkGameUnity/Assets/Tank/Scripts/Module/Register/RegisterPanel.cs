@@ -10,11 +10,6 @@ public class RegisterPanel : BasePanel
     public Button registerBtn; // 注册按钮
     public Button closeBtn; // 登录按钮
 
-    private void Update()
-    {
-        NetManager.Update();
-    }
-
     public override void OnInit() // 初始化
     {
         skinPath = "RegisterPanel";

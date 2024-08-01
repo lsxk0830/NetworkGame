@@ -16,7 +16,7 @@ public class TestTank : MonoBehaviour
         // baseTank.Init("tankPrefab");
         // baseTank.transform.position = new Vector3(-40, 0, 50);
 
-        PanelManager.Init();
-        PanelManager.Open<LoginPanel>();
+        //PanelManager.Init();
+        //PanelManager.Open<LoginPanel>();
     }
 }
