@@ -13,6 +13,6 @@ namespace Tank
         /// <summary>
         /// 服务器返回的所有房间信息
         /// </summary>
-        public RoomInfo rooms;
+        public RoomInfo[] rooms;
     }
 }

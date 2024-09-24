@@ -26,7 +26,13 @@ public class BasePanel : MonoBehaviour
 
     public virtual void OnInit() { } // 初始化时
 
-    public virtual void OnShow(params object[] para) { } // 显示时
+    /// <summary>
+    /// 显示
+    /// </summary>
+    public virtual void OnShow(params object[] para) { }
 
-    public virtual void OnClose() { } // 关闭时
+    /// <summary>
+    /// 关闭
+    /// </summary>
+    public virtual void OnClose() { }
 }

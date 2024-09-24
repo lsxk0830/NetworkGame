@@ -1,32 +1,35 @@
 using UnityEngine;
 
-public class GameMain : MonoBehaviour
+namespace Tank
 {
-    public static string id = ""; // 玩家角色ID
-
-    void Start()
+    public class GameMain : MonoBehaviour
     {
-        // 网络监听
-        NetManager.AddEventListener(NetManager.NetEvent.Close, OnConnectClose);
-        NetManager.AddMsgListener("MsgKick", OnMsgKick);
-        // 初始化
-        PanelManager.Init();
-        // 打开登录面板
-        PanelManager.Open<LoginPanel>();
-    }
+        public static string id = ""; // 玩家角色ID
 
-    void Update()
-    {
-        NetManager.Update();
-    }
+        void Start()
+        {
+            // 网络监听
+            NetManager.AddEventListener(NetManager.NetEvent.Close, OnConnectClose);
+            NetManager.AddMsgListener("MsgKick", OnMsgKick);
+            // 初始化
+            PanelManager.Init();
+            // 打开登录面板
+            PanelManager.Open<LoginPanel>();
+        }
 
-    private void OnConnectClose(string err)
-    {
-        Debug.Log("断开连接");
-    }
+        void Update()
+        {
+            NetManager.Update();
+        }
 
-    private void OnMsgKick(MsgBase msgBse)
-    {
-        PanelManager.Open<TipPanel>("被踢下线");
+        private void OnConnectClose(string err)
+        {
+            Debug.Log("断开连接");
+        }
+
+        private void OnMsgKick(MsgBase msgBse)
+        {
+            PanelManager.Open<TipPanel>("被踢下线");
+        }
     }
 }

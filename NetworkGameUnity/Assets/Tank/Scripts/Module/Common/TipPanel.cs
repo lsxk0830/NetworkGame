@@ -1,33 +1,35 @@
 using TMPro;
-using UnityEngine;
 using UnityEngine.UI;
 
-public class TipPanel : BasePanel
+namespace Tank
 {
-    private TMP_Text text; // 提示文本
-    private Button okBtn; // 好的按钮
-    public override void OnInit()
+    public class TipPanel : BasePanel
     {
-        skinPath = "TipPanel";
-        layer = PanelManager.Layer.Tip;
-    }
+        private TMP_Text text; // 提示文本
+        private Button okBtn; // 好的按钮
+        public override void OnInit()
+        {
+            skinPath = "TipPanel";
+            layer = PanelManager.Layer.Tip;
+        }
 
-    public override void OnShow(params object[] args)
-    {
-        text = skin.transform.Find("Text").GetComponent<TMP_Text>();
-        okBtn = skin.transform.Find("OKBtn").GetComponent<Button>();
-        okBtn.onClick.AddListener(OnOkClick);
-        if (args.Length == 1)
-            text.text = (string)args[0];
-    }
+        public override void OnShow(params object[] args)
+        {
+            text = skin.transform.Find("Text").GetComponent<TMP_Text>();
+            okBtn = skin.transform.Find("OKBtn").GetComponent<Button>();
+            okBtn.onClick.AddListener(OnOkClick);
+            if (args.Length == 1)
+                text.text = (string)args[0];
+        }
 
-    private void OnOkClick()
-    {
-        Close();
-    }
+        private void OnOkClick()
+        {
+            Close();
+        }
 
-    public override void OnClose()
-    {
+        public override void OnClose()
+        {
 
+        }
     }
 }

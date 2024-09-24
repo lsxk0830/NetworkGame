@@ -1,46 +1,49 @@
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+namespace Tank
 {
-    public float speed = 100f; // 移动速度
-    public BaseTank tank; // 发射者
-    private GameObject skin; // 炮弹模型
-    private Rigidbody mRigidbody; // 物理
-
-    public void Init()
+    public class Bullet : MonoBehaviour
     {
-        // 皮肤
-        GameObject skinRes = ResManager.LoadPrefab("bulletPrefab");
-        skin = Instantiate(skinRes);
-        skin.transform.parent = this.transform;
-        skin.transform.localPosition = Vector3.zero;
-        skin.transform.localEulerAngles = Vector3.zero;
+        public float speed = 100f; // 移动速度
+        public BaseTank tank; // 发射者
+        private GameObject skin; // 炮弹模型
+        private Rigidbody mRigidbody; // 物理
 
-        // 物理
-        mRigidbody = gameObject.AddComponent<Rigidbody>();
-        mRigidbody.useGravity = false;
-    }
+        public void Init()
+        {
+            // 皮肤
+            GameObject skinRes = ResManager.LoadPrefab("bulletPrefab");
+            skin = Instantiate(skinRes);
+            skin.transform.parent = this.transform;
+            skin.transform.localPosition = Vector3.zero;
+            skin.transform.localEulerAngles = Vector3.zero;
 
-    void Update()
-    {
-        transform.position += transform.forward * speed * Time.deltaTime;
-    }
+            // 物理
+            mRigidbody = gameObject.AddComponent<Rigidbody>();
+            mRigidbody.useGravity = false;
+        }
 
-    private void OnCollisionEnter(Collision collisionInfo)
-    {
-        // 打到的坦克
-        GameObject collObj = collisionInfo.gameObject;
-        BaseTank hitTank = collObj.GetComponent<BaseTank>();
+        void Update()
+        {
+            transform.position += transform.forward * speed * Time.deltaTime;
+        }
 
-        if (hitTank == tank) // 不能打自己
-            return;
-        if (hitTank != null) // 攻击其他坦克
-            hitTank.Attacked(35);
+        private void OnCollisionEnter(Collision collisionInfo)
+        {
+            // 打到的坦克
+            GameObject collObj = collisionInfo.gameObject;
+            BaseTank hitTank = collObj.GetComponent<BaseTank>();
 
-        // 显示爆炸效果
-        GameObject explode = ResManager.LoadPrefab("fire");
-        Instantiate(explode, transform.position, transform.rotation);
-        // 摧毁自身
-        Destroy(gameObject);
+            if (hitTank == tank) // 不能打自己
+                return;
+            if (hitTank != null) // 攻击其他坦克
+                hitTank.Attacked(35);
+
+            // 显示爆炸效果
+            GameObject explode = ResManager.LoadPrefab("fire");
+            Instantiate(explode, transform.position, transform.rotation);
+            // 摧毁自身
+            Destroy(gameObject);
+        }
     }
 }
