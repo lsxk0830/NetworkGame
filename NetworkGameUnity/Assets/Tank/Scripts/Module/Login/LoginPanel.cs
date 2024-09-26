@@ -66,21 +66,25 @@ namespace Tank
             PanelManager.Open<RegisterPanel>();
         }
 
-        private void OnMsgLogin(MsgBase msgBse) // 收到登录协议
+        /// <summary>
+        /// 收到登录协议
+        /// </summary>
+        private void OnMsgLogin(MsgBase msgBse)
         {
             Debug.Log("OnMsgLogin");
             MsgLogin msg = (MsgLogin)msgBse;
             if (msg.result == 0)
             {
                 Debug.Log("登录成功");
-                // 进入游戏
-                // 添加坦克
-                GameObject tankObj = new GameObject("myTank");
-                CtrlTank ctrlTank = tankObj.AddComponent<CtrlTank>();
-                ctrlTank.Init("tankPrefab");
-                // 设置相机
-                tankObj.AddComponent<CameraFollow>();
+                // // 进入游戏
+                // // 添加坦克
+                // GameObject tankObj = new GameObject("myTank");
+                // CtrlTank ctrlTank = tankObj.AddComponent<CtrlTank>();
+                // ctrlTank.Init("tankPrefab");
+                // // 设置相机
+                // tankObj.AddComponent<CameraFollow>();
                 GameMain.id = msg.id;
+                PanelManager.Open<RoomListPanel>();
                 // 关闭界面
                 Close();
             }
@@ -88,12 +92,18 @@ namespace Tank
                 PanelManager.Open<TipPanel>("登录失败");
         }
 
-        private void OnConnectSucc(string err) // 连接成功回调
+        /// <summary>
+        /// 连接成功回调
+        /// </summary>
+        private void OnConnectSucc(string err)
         {
             Debug.Log("OnConnectSucc");
         }
 
-        private void OnConnectFail(string err) // 连接失败回调
+        /// <summary>
+        /// 连接失败回调
+        /// </summary>
+        private void OnConnectFail(string err)
         {
             PanelManager.Open<TipPanel>(err);
         }

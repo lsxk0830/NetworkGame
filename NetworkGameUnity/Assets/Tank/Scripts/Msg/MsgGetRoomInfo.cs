@@ -13,6 +13,6 @@ namespace Tank
         /// <summary>
         /// 房间的玩家信息
         /// </summary>
-        public PlayerInfo Players;
+        public PlayerInfo[] Players;
     }
 }

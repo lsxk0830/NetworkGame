@@ -24,7 +24,10 @@ public class BasePanel : MonoBehaviour
         PanelManager.Close(name);
     }
 
-    public virtual void OnInit() { } // 初始化时
+    /// <summary>
+    /// 初始化时
+    /// </summary>
+    public virtual void OnInit() { }
 
     /// <summary>
     /// 显示
