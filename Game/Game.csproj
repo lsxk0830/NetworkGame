@@ -47,9 +47,12 @@
     <Compile Include="Scripts\Logic\EventHandler.cs" />
     <Compile Include="Scripts\Logic\LoginMsgHandle.cs" />
     <Compile Include="Scripts\Logic\NotepadMsgHandle.cs" />
+    <Compile Include="Scripts\Logic\PlayerInfo.cs" />
     <Compile Include="Scripts\Logic\PlayerManager.cs" />
     <Compile Include="Scripts\Logic\PlayerData.cs" />
     <Compile Include="Scripts\Logic\Player.cs" />
+    <Compile Include="Scripts\Logic\RoomManager.cs" />
+    <Compile Include="Scripts\Logic\Room.cs" />
     <Compile Include="Scripts\net\ClientState.cs" />
     <Compile Include="Scripts\net\NetManager.cs" />
     <Compile Include="Scripts\Logic\SysMsgHandler.cs" />
@@ -59,6 +62,13 @@
     <Compile Include="Scripts\proto\BattleMsg.cs" />
     <Compile Include="Scripts\proto\NotepadMsg.cs" />
     <Compile Include="Scripts\proto\LoginMsg.cs" />
+    <Compile Include="Scripts\proto\RoomMsg\MsgCreateRoom.cs" />
+    <Compile Include="Scripts\proto\RoomMsg\MsgEnterRoom.cs" />
+    <Compile Include="Scripts\proto\RoomMsg\MsgGetAchieve.cs" />
+    <Compile Include="Scripts\proto\RoomMsg\MsgGetRoomInfo.cs" />
+    <Compile Include="Scripts\proto\RoomMsg\MsgGetRoomList.cs" />
+    <Compile Include="Scripts\proto\RoomMsg\MsgLeaveRoom.cs" />
+    <Compile Include="Scripts\proto\RoomMsg\MsgStartBattle.cs" />
     <Compile Include="Scripts\proto\SysMsg.cs" />
   </ItemGroup>
   <ItemGroup>

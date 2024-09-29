@@ -12,4 +12,14 @@ public class PlayerData
     /// 记事本
     /// </summary>
     public string text = "new text";
+       
+    /// <summary>
+    /// 胜利数
+    /// </summary>
+    public int win = 0;
+    
+    /// <summary>
+    /// 失败数
+    /// </summary>
+    public int lost = 0;
 }
