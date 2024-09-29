@@ -13,6 +13,7 @@ namespace Tank
             NetManager.AddMsgListener("MsgKick", OnMsgKick);
             // 初始化
             PanelManager.Init();
+            BattleManager.Init();
             // 打开登录面板
             PanelManager.Open<LoginPanel>();
         }

@@ -1,18 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class SyncTank : MonoBehaviour
+namespace Tank
 {
-    // Start is called before the first frame update
-    void Start()
+    /// <summary>
+    /// 同步坦克类
+    /// </summary>
+    public class SyncTank : BaseTank
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

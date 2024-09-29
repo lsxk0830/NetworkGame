@@ -22,6 +22,15 @@ namespace Tank
 
         public float hp = 100;
 
+        /// <summary>
+        /// 属于哪一名玩家
+        /// </summary>
+        public string id = "";
+        /// <summary>
+        /// 阵营
+        /// </summary>
+        public int camp = 0;
+
         protected Rigidbody mRigidbody;
 
         public virtual void Init(string skinPath)
