@@ -51,8 +51,10 @@
     <Compile Include="Scripts\Logic\PlayerManager.cs" />
     <Compile Include="Scripts\Logic\PlayerData.cs" />
     <Compile Include="Scripts\Logic\Player.cs" />
+    <Compile Include="Scripts\Logic\RoomInfo.cs" />
     <Compile Include="Scripts\Logic\RoomManager.cs" />
     <Compile Include="Scripts\Logic\Room.cs" />
+    <Compile Include="Scripts\Logic\RoomMsgHandler.cs" />
     <Compile Include="Scripts\net\ClientState.cs" />
     <Compile Include="Scripts\net\NetManager.cs" />
     <Compile Include="Scripts\Logic\SysMsgHandler.cs" />
