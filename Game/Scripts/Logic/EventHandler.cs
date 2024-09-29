@@ -1,4 +1,5 @@
 using System;
+using Tank;
 
 public partial class EventHandler
 {
@@ -11,6 +12,13 @@ public partial class EventHandler
         Console.WriteLine("Close");
         if (c.player != null) //Player下线
         {
+            // 离开战场
+            int roomId = c.player.roomId;
+            if (roomId >= 0)
+            {
+                Room  room = RoomManager.GetRoom(roomId);
+                room.RemovePlayer(c.player.id);
+            }
             DbManager.UpdatePlayerData(c.player.id, c.player.data); //保存数据
             PlayerManager.RemovePlayer(c.player.id); //移除
         }
