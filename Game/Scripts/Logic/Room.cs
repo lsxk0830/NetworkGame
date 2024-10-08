@@ -46,6 +46,12 @@ namespace Tank
             FIGHT = 1
         }
 
+        private static float[,,] birthConfig = new float[2, 3, 6]
+        {
+            { { 1,1,1,1,1,1}, { 1,1,1,1,1,1}, { 1,1,1,1,1,1} }, // 阵营1出生点
+            { { 2,2,2,2,2,2}, { 2,2,2,2,2,2},{ 2,2,2,2,2,2}} // 阵营2出生点
+        };
+
         /// <summary>
         /// 添加玩家,true-加入成功，false-加入失败
         /// </summary>
@@ -85,7 +91,7 @@ namespace Tank
             if (ownerId == "")
                 ownerId = player.id;
             // 广播
-            Broadcast(ToMag());
+            Broadcast(ToMsg());
             return true;
         }
 
@@ -198,6 +204,68 @@ namespace Tank
                 i++;
             }
             return msg;
+        }
+
+        /// <summary>
+        /// 能否开战
+        /// </summary>
+        public bool CanStartBattle()
+        {
+            // 已经是战斗状态
+            if (status != Status.PREPARE) return false;
+            // 统计每个阵营的玩家数
+            int count1 = 0;
+            int count2 = 0;
+            foreach (string id in playerIds.Keys)
+            {
+                Player player = PlayerManager.GetPlayer(id);
+                if (player.camp == 1) count1++;
+                else count2++;
+            }
+            // 每个阵营至少要有 1 名玩家
+            if (count1 < 1 || count2 < 1)
+                return false;
+            return true;
+        }
+
+        /// <summary>
+        /// 初始化位置
+        /// </summary>
+        private void SetBirthPos(Player player, int index)
+        {
+            int camp = player.camp;
+            player.x = birthConfig[camp - 1, index, 0];
+            player.y = birthConfig[camp - 1, index, 1];
+            player.z = birthConfig[camp - 1, index, 2];
+            player.ex = birthConfig[camp - 1, index, 3];
+            player.ey = birthConfig[camp - 1, index, 4];
+            player.ez = birthConfig[camp - 1, index, 5];
+        }
+
+        /// <summary>
+        /// 重置玩家战斗属性
+        /// </summary>
+        private void ResetPlayers()
+        {
+            // 位置和旋转
+            int count1 = 0;
+            int count2 = 0;
+            foreach (string id in playerIds.Keys)
+            {
+                Player player = PlayerManager.GetPlayer(id);
+                player.hp = 100;
+                if (player.camp == 1)
+                {
+                    SetBirthPos(player, count1);
+                    count1++;
+                }
+                else
+                {
+                    SetBirthPos(player, count2);
+                    count2++;
+                }
+                player.hp = 100;
+            }
         }
     }
 }

@@ -32,7 +32,7 @@ public class BasePanel : MonoBehaviour
     /// <summary>
     /// 显示
     /// </summary>
-    public virtual void OnShow(params object[] para) { }
+    public virtual void OnShow(params object[] args) { }
 
     /// <summary>
     /// 关闭

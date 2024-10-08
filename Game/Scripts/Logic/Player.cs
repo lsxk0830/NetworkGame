@@ -32,9 +32,9 @@ public class Player
     }
 
     // 坐标和旋转
-    public int x;
-    public int y;
-    public int z;
+    public float x;
+    public float y;
+    public float z;
     public float ex;
     public float ey;
     public float ez;
