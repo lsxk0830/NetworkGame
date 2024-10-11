@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Tank
 {
@@ -66,6 +67,15 @@ namespace Tank
                 i++;
             }
             return msg;
+        }
+
+        /// <summary>
+        /// Update
+        /// </summary>
+        public static void Update()
+        {
+            foreach (Room room in rooms.Values)
+                room.Update();
         }
     }
 }

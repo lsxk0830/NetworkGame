@@ -55,6 +55,7 @@
     <Compile Include="Scripts\Logic\RoomManager.cs" />
     <Compile Include="Scripts\Logic\Room.cs" />
     <Compile Include="Scripts\Logic\RoomMsgHandler.cs" />
+    <Compile Include="Scripts\Logic\TankInfo.cs" />
     <Compile Include="Scripts\net\ClientState.cs" />
     <Compile Include="Scripts\net\NetManager.cs" />
     <Compile Include="Scripts\Logic\SysMsgHandler.cs" />
@@ -64,7 +65,9 @@
     <Compile Include="Scripts\proto\BattleMsg.cs" />
     <Compile Include="Scripts\proto\NotepadMsg.cs" />
     <Compile Include="Scripts\proto\LoginMsg.cs" />
+    <Compile Include="Scripts\proto\RoomMsg\MsgBattleResult.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgCreateRoom.cs" />
+    <Compile Include="Scripts\proto\RoomMsg\MsgEnterBattle.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgEnterRoom.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgGetAchieve.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgGetRoomInfo.cs" />

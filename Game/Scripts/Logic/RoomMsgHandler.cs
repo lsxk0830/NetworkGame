@@ -129,5 +129,38 @@ namespace Tank
             msg.result = 0;
             player.Send(msg);
         }
+
+        /// <summary>
+        /// 请求开始战斗
+        /// </summary>
+        public static void MsgStartBattle(ClientState c, MsgBase msgBase)
+        {
+            MsgStartBattle msg = (MsgStartBattle)msgBase;
+            Player player = c.player;
+            if (player == null)
+                return;
+            Room room = RoomManager.GetRoom(player.roomId);
+            if (room == null) // Room是否存在
+            {
+                msg.result = 1;
+                player.Send(msg);
+                return;
+            }
+            if (!room.isOwner(player)) // 是否是房主
+            {
+                msg.result = 1;
+                player.Send(msg);
+                return;
+            }
+            if (!room.StartBattle()) // 开战
+            {
+                msg.result = 1;
+                player.Send(msg);
+                return;
+            }
+            // 成功
+            msg.result = 0;
+            player.Send(msg);
+        }
     }
 }

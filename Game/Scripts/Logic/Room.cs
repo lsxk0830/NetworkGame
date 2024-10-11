@@ -46,6 +46,9 @@ namespace Tank
             FIGHT = 1
         }
 
+        /// <summary>
+        /// 阵营出生点
+        /// </summary>
         private static float[,,] birthConfig = new float[2, 3, 6]
         {
             { { 1,1,1,1,1,1}, { 1,1,1,1,1,1}, { 1,1,1,1,1,1} }, // 阵营1出生点
@@ -150,7 +153,7 @@ namespace Tank
         /// <summary>
         /// 是否是房主
         /// </summary>
-        private bool isOwner(Player player)
+        public bool isOwner(Player player)
         {
             return player.id == ownerId;
         }
@@ -266,6 +269,114 @@ namespace Tank
                 }
                 player.hp = 100;
             }
+        }
+
+        /// <summary>
+        /// 玩家数据转成TankInfo
+        /// </summary>
+        public TankInfo PlayerToTankInfo(Player player)
+        {
+            TankInfo tankInfo = new TankInfo();
+            tankInfo.camp = player.camp;
+            tankInfo.id = player.id;
+            tankInfo.hp = player.hp;
+            tankInfo.x = player.x;
+            tankInfo.y = player.y;
+            tankInfo.z = player.z;
+            tankInfo.ex = player.ex;
+            tankInfo.ey = player.ey;
+            tankInfo.ez = player.ez;
+            return tankInfo;
+        }
+
+        /// <summary>
+        /// 开战
+        /// </summary>
+        public bool StartBattle()
+        {
+            if (!CanStartBattle())
+                return false;
+            status = Status.FIGHT; // 状态
+            ResetPlayers(); // 重置属性
+            MsgEnterBattle msg = new MsgEnterBattle();
+            msg.mapId = 1;
+            msg.tanks = new TankInfo[playerIds.Count];
+            int i = 0;
+            foreach (string id in playerIds.Keys)
+            {
+                Player player = PlayerManager.GetPlayer(id);
+                msg.tanks[i] = PlayerToTankInfo(player);
+                i++;
+            }
+            Broadcast(msg);
+            return true;
+        }
+
+        /// <summary>
+        /// 是否死亡
+        /// </summary>
+        public bool IsDie(Player player)
+        {
+            return player.hp <= 0;
+        }
+
+        /// <summary>
+        /// 胜负判断，0-未分出胜负，1-阵营1胜利，2-阵营2胜利
+        /// </summary>
+        public int Judgment()
+        {
+            // 存活人数
+            int count1 = 0;
+            int count2 = 0;
+            foreach (string id in playerIds.Keys)
+            {
+                Player player = PlayerManager.GetPlayer(id);
+                if (!IsDie(player))
+                {
+                    if (player.camp == 1) count1++;
+                    if (player.camp == 2) count2++;
+                }
+            }
+            // 判断
+            if (count1 <= 0)
+                return 2;
+            else if (count2 <= 0)
+                return 1;
+            return 0;
+        }
+
+        /// <summary>
+        /// 上一次判断结果的时间
+        /// </summary>
+
+        private long lastJudgeTime = 0;
+
+        /// <summary>
+        /// 定时更新,10s更新一次
+        /// </summary>
+        public void Update()
+        {
+            if (status != Status.FIGHT) // 状态判断
+                return;
+            if (NetManager.GetTimeStamp() - lastJudgeTime > 10f) // 时间判断
+                return;
+            lastJudgeTime = NetManager.GetTimeStamp();
+            int winCamp = Judgment(); // 胜负判断
+            if (winCamp == 0)
+                return;
+            status = Status.PREPARE; // 某一方胜利，结束战斗
+            foreach (string id in playerIds.Keys)  // 统计信息
+            {
+                Player player = PlayerManager.GetPlayer(id);
+                if (player.camp == winCamp)
+                    player.data.win++;
+                else
+                    player.data.lost++;
+            }
+            // 发送Result
+            MsgBattleResult msg = new MsgBattleResult();
+            msg.winCamp = winCamp;
+            Broadcast(msg);
         }
     }
 }
