@@ -72,6 +72,7 @@
     <Compile Include="Scripts\proto\RoomMsg\MsgGetAchieve.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgGetRoomInfo.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgGetRoomList.cs" />
+    <Compile Include="Scripts\proto\RoomMsg\MsgLeaveBattle.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgLeaveRoom.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgStartBattle.cs" />
     <Compile Include="Scripts\proto\SysMsg.cs" />
