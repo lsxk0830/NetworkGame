@@ -123,6 +123,13 @@ namespace Tank
             // 设置房主
             if (isOwner(player))
                 ownerId = SwitchOwner();
+            if (status == Status.FIGHT) // 战斗状态退出，战斗状态退出游戏视为输掉游戏
+            {
+                player.data.lost--;
+                MsgLeaveBattle msg = new MsgLeaveBattle();
+                msg.id = player.id;
+                Broadcast(msg);
+            }
             // 房间为空
             if (playerIds.Count == 0)
                 RoomManager.RemoveRoom(this.id);
