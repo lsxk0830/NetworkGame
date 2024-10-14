@@ -1,9 +1,19 @@
+using System;
 using UnityEngine;
 
 namespace Tank
 {
     public class CtrlTank : BaseTank
     {
+        /// <summary>
+        /// 上一次发送同步信息的时间
+        /// </summary>
+        private float lastSendSyncTime = 0;
+        /// <summary>
+        /// 同步帧率
+        /// </summary>
+        public static float syncInterval = 0.1f;
+
         void Update()
         {
             // 移动控制
@@ -12,6 +22,8 @@ namespace Tank
             TurretUpdate();
             // 开炮
             FireUpdate();
+            // 发送同步信息
+            SyncUpdate();
         }
 
         private void MoveUpdate()
@@ -42,13 +54,40 @@ namespace Tank
 
         private void FireUpdate()
         {
-            if (isDie()) return;
+            if (isDie()) return; // 是否死亡
 
-            if (!Input.GetKeyDown(KeyCode.Space)) return;
+            if (!Input.GetKeyDown(KeyCode.Space)) return; // 按键判断
 
-            if (Time.time - lastFireTime < fired) return;
+            if (Time.time - lastFireTime < fired) return; // CD时间判断
 
-            Fire();
+            Bullet bullet = Fire();
+            // 发送同步协议
+            MsgFire msg = new MsgFire();
+            msg.x = bullet.transform.position.x;
+            msg.y = bullet.transform.position.y;
+            msg.z = bullet.transform.position.z;
+            msg.ex = bullet.transform.eulerAngles.x;
+            msg.ey = bullet.transform.eulerAngles.y;
+            msg.ez = bullet.transform.eulerAngles.z;
+            NetManager.Send(msg);
+        }
+
+        private void SyncUpdate()
+        {
+            // 时间间隔判断
+            if (Time.time - lastSendSyncTime < syncInterval)
+                return;
+            lastSendSyncTime = Time.time;
+            // 发送同步协议
+            MsgSyncTank msg = new MsgSyncTank();
+            msg.x = transform.position.x;
+            msg.y = transform.position.y;
+            msg.z = transform.position.z;
+            msg.x = transform.eulerAngles.x;
+            msg.ey = transform.eulerAngles.y;
+            msg.ez = transform.eulerAngles.z;
+            msg.turretY = turret.localEulerAngles.y;
+            NetManager.Send(msg);
         }
     }
 }

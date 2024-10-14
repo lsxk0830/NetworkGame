@@ -65,6 +65,7 @@
     <Compile Include="Scripts\proto\BattleMsg.cs" />
     <Compile Include="Scripts\proto\NotepadMsg.cs" />
     <Compile Include="Scripts\proto\LoginMsg.cs" />
+    <Compile Include="Scripts\proto\RoomMsg\MsgFrameSync.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgBattleResult.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgCreateRoom.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgEnterBattle.cs" />

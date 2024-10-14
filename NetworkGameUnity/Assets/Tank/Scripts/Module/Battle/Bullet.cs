@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Tank
@@ -37,13 +38,33 @@ namespace Tank
             if (hitTank == tank) // 不能打自己
                 return;
             if (hitTank != null) // 攻击其他坦克
-                hitTank.Attacked(35);
+                SendMsgHit(tank, hitTank);
+            //hitTank.Attacked(35);
 
             // 显示爆炸效果
             GameObject explode = ResManager.LoadPrefab("fire");
             Instantiate(explode, transform.position, transform.rotation);
             // 摧毁自身
             Destroy(gameObject);
+        }
+
+        /// <summary>
+        /// 发送伤害协议。tank-发射者 hitTank-被攻击坦克
+        /// </summary>
+        private void SendMsgHit(BaseTank tank, BaseTank hitTank)
+        {
+            if (hitTank == null || tank == null)
+                return;
+            // 不是自己发出的炮弹
+            if (tank.id != GameMain.id)
+                return;
+            MsgHit msg = new MsgHit();
+            msg.targetId = hitTank.id;
+            msg.id = tank.id;
+            msg.x = transform.position.x;
+            msg.y = transform.position.y;
+            msg.z = transform.position.z;
+            NetManager.Send(msg);
         }
     }
 }
