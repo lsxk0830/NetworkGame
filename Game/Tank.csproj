@@ -65,6 +65,7 @@
     <Compile Include="Scripts\proto\BattleMsg.cs" />
     <Compile Include="Scripts\proto\NotepadMsg.cs" />
     <Compile Include="Scripts\proto\LoginMsg.cs" />
+    <Compile Include="Scripts\proto\RoomMsg\MsgFire.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgFrameSync.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgBattleResult.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgCreateRoom.cs" />
@@ -73,9 +74,12 @@
     <Compile Include="Scripts\proto\RoomMsg\MsgGetAchieve.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgGetRoomInfo.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgGetRoomList.cs" />
+    <Compile Include="Scripts\proto\RoomMsg\MsgHit.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgLeaveBattle.cs" />
+    <Compile Include="Scripts\Logic\SyncMsgHandle.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgLeaveRoom.cs" />
     <Compile Include="Scripts\proto\RoomMsg\MsgStartBattle.cs" />
+    <Compile Include="Scripts\proto\RoomMsg\MsgSyncTank.cs" />
     <Compile Include="Scripts\proto\SysMsg.cs" />
   </ItemGroup>
   <ItemGroup>
