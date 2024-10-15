@@ -180,7 +180,7 @@ namespace Tank
         /// <summary>
         /// 广播消息
         /// </summary>
-        private void Broadcast(MsgBase msg)
+        public void Broadcast(MsgBase msg)
         {
             foreach (string id in playerIds.Keys)
             {
