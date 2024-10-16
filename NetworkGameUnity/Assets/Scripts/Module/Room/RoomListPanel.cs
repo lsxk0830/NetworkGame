@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Tank
 {
@@ -8,11 +9,11 @@ namespace Tank
         /// <summary>
         /// 账号文本
         /// </summary>
-        private Text idText;
+        private TMP_Text idText;
         /// <summary>
         /// 战绩文本
         /// </summary>
-        private Text scoreText;
+        private TMP_Text scoreText;
         /// <summary>
         /// 创建房间按钮
         /// </summary>
@@ -39,12 +40,12 @@ namespace Tank
         public override void OnShow(params object[] para)
         {
             // 寻找组件
-            idText = skin.transform.Find("InfoPanel/IdText").GetComponent<Text>();
-            scoreText = skin.transform.Find("InfoPanel/scoreText").GetComponent<Text>();
-            createButton = skin.transform.Find("InfoPanel/IdText").GetComponent<Button>();
-            reflashButton = skin.transform.Find("InfoPanel/IdText").GetComponent<Button>();
-            content = skin.transform.Find("InfoPanel/IdText");
-            roomObj = skin.transform.Find("InfoPanel/IdText").gameObject;
+            idText = skin.transform.Find("InfoPanel/IdText").GetComponent<TMP_Text>();
+            scoreText = skin.transform.Find("InfoPanel/ScoreText").GetComponent<TMP_Text>();
+            createButton = skin.transform.Find("CtrlPanel/CreateBtn").GetComponent<Button>();
+            reflashButton = skin.transform.Find("CtrlPanel/ReflashBtn").GetComponent<Button>();
+            content = skin.transform.Find("ListPanel/Scroll View/Viewport/Content");
+            roomObj = skin.transform.Find("Room").gameObject;
             // 按钮事件
             createButton.onClick.AddListener(OnCreatClick);
             reflashButton.onClick.AddListener(OnReflashClick);
@@ -149,9 +150,9 @@ namespace Tank
             go.transform.localScale = Vector3.one;
             //获取组件
             Transform trans = go.transform;
-            Text idText = trans.Find("IdText").GetComponent<Text>();
-            Text countText = trans.Find("CountText").GetComponent<Text>();
-            Text statusText = trans.Find("StatusText").GetComponent<Text>();
+            TMP_Text idText = trans.Find("IdText").GetComponent<TMP_Text>();
+            TMP_Text countText = trans.Find("CountText").GetComponent<TMP_Text>();
+            TMP_Text statusText = trans.Find("StatusText").GetComponent<TMP_Text>();
             Button btn = trans.Find("JointButton").GetComponent<Button>();
             //填充信息
             idText.text = roomInfo.id.ToString();

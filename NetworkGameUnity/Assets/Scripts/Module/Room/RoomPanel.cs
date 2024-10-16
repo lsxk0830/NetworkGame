@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -106,9 +107,9 @@ namespace Tank
             go.transform.localScale = Vector3.one;
             // 获取组件
             Transform trans = go.transform;
-            Text idText = trans.Find("IdText").GetComponent<Text>();
-            Text campText = trans.Find("CampText").GetComponent<Text>();
-            Text scoreText = trans.Find("ScoreText").GetComponent<Text>();
+            TMP_Text idText = trans.Find("IdText").GetComponent<TMP_Text>();
+            TMP_Text campText = trans.Find("CampText").GetComponent<TMP_Text>();
+            TMP_Text scoreText = trans.Find("ScoreText").GetComponent<TMP_Text>();
             // 填充信息
             idText.text = playerInfo.id;
             campText.text = playerInfo.camp == 1 ? "红" : "蓝";
