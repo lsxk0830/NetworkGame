@@ -18,6 +18,6 @@ EditorBuildSettings:
     path: Assets/Tank/Tank.unity
     guid: a7672638d4adbfa4aaca1674e23fb067
   - enabled: 0
-    path: Assets/UnityTechnologies/ParticlePack/Scenes/Main.unity
+    path: "Assets/TankAsset/EffectTool/\u706B\u7130\u71C3\u70E7\u7B49\u7B49/ParticlePack/Scenes/Main.unity"
     guid: 163adec682b5ccd4c8dbb7766c20f3fb
   m_configObjects: {}
