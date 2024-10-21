@@ -11,5 +11,5 @@ public class MsgGetRoomInfo : MsgBase
     /// <summary>
     /// 房间的玩家信息
     /// </summary>
-    public PlayerInfo[] players;
+    public PlayerInfo[] Players;
 }

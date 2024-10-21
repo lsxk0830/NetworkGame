@@ -1,7 +1,7 @@
 /// <summary>
 /// 查询战绩、请求房间列表、创建房间、进入房间、获取房间信息、离开房间
 /// </summary>
-public partial class RoomMsgHandler
+public partial class MsgHandler
 {
     /// <summary>
     /// 查询战绩

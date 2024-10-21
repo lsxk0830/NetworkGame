@@ -195,7 +195,7 @@ public class Room
     {
         MsgGetRoomInfo msg = new MsgGetRoomInfo();
         int count = playerIds.Count;
-        msg.players = new PlayerInfo[count];
+        msg.Players = new PlayerInfo[count];
         // Players
         int i = 0;
         foreach (string id in playerIds.Keys)
@@ -208,7 +208,7 @@ public class Room
             playerInfo.win = player.data.win;
             playerInfo.lost = player.data.lost;
             playerInfo.isOwner = isOwner(player) ? 1 : 0;
-            msg.players[i] = playerInfo;
+            msg.Players[i] = playerInfo;
             i++;
         }
         return msg;
