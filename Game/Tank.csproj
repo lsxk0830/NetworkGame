@@ -43,10 +43,9 @@
   <ItemGroup>
     <Compile Include="MainClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scripts\db\DbManager.cs" />
-    <Compile Include="Scripts\Logic\EventHandler.cs" />
-    <Compile Include="Scripts\Logic\LoginMsgHandle.cs" />
-    <Compile Include="Scripts\Logic\NotepadMsgHandle.cs" />
+    <Compile Include="Scripts\Manager\DbManager.cs" />
+    <Compile Include="Scripts\Handler\EventHandler.cs" />
+    <Compile Include="Scripts\Handler\LoginMsgHandle.cs" />
     <Compile Include="Scripts\Logic\PlayerInfo.cs" />
     <Compile Include="Scripts\Logic\PlayerManager.cs" />
     <Compile Include="Scripts\Logic\PlayerData.cs" />
@@ -54,36 +53,27 @@
     <Compile Include="Scripts\Logic\RoomInfo.cs" />
     <Compile Include="Scripts\Logic\RoomManager.cs" />
     <Compile Include="Scripts\Logic\Room.cs" />
-    <Compile Include="Scripts\Logic\RoomMsgHandler.cs" />
+    <Compile Include="Scripts\Handler\RoomMsgHandler.cs" />
     <Compile Include="Scripts\Logic\TankInfo.cs" />
+    <Compile Include="Scripts\proto\SyncMsg.cs" />
+    <Compile Include="Scripts\proto\RoomMsg.cs" />
+    <Compile Include="Scripts\proto\BattleMsg.cs" />
+    <Compile Include="Scripts\MsgBase\MsgAttack.cs" />
     <Compile Include="Scripts\net\ClientState.cs" />
     <Compile Include="Scripts\net\NetManager.cs" />
-    <Compile Include="Scripts\Logic\SysMsgHandler.cs" />
-    <Compile Include="Scripts\Logic\BattleMsgHandle.cs" />
+    <Compile Include="Scripts\Handler\SysMsgHandler.cs" />
+    <Compile Include="Scripts\Handler\BattleMsgHandle.cs" />
     <Compile Include="Scripts\net\ByteArray.cs" />
     <Compile Include="Scripts\net\MsgBase.cs" />
-    <Compile Include="Scripts\proto\BattleMsg.cs" />
-    <Compile Include="Scripts\proto\NotepadMsg.cs" />
+    <Compile Include="Scripts\MsgBase\MsgMove.cs" />
     <Compile Include="Scripts\proto\LoginMsg.cs" />
-    <Compile Include="Scripts\proto\RoomMsg\MsgFire.cs" />
-    <Compile Include="Scripts\proto\RoomMsg\MsgFrameSync.cs" />
-    <Compile Include="Scripts\proto\RoomMsg\MsgBattleResult.cs" />
-    <Compile Include="Scripts\proto\RoomMsg\MsgCreateRoom.cs" />
-    <Compile Include="Scripts\proto\RoomMsg\MsgEnterBattle.cs" />
-    <Compile Include="Scripts\proto\RoomMsg\MsgEnterRoom.cs" />
-    <Compile Include="Scripts\proto\RoomMsg\MsgGetAchieve.cs" />
-    <Compile Include="Scripts\proto\RoomMsg\MsgGetRoomInfo.cs" />
-    <Compile Include="Scripts\proto\RoomMsg\MsgGetRoomList.cs" />
-    <Compile Include="Scripts\proto\RoomMsg\MsgHit.cs" />
-    <Compile Include="Scripts\proto\RoomMsg\MsgLeaveBattle.cs" />
-    <Compile Include="Scripts\Logic\SyncMsgHandle.cs" />
-    <Compile Include="Scripts\proto\RoomMsg\MsgLeaveRoom.cs" />
-    <Compile Include="Scripts\proto\RoomMsg\MsgStartBattle.cs" />
-    <Compile Include="Scripts\proto\RoomMsg\MsgSyncTank.cs" />
+    <Compile Include="Scripts\MsgBase\MsgFrameSync.cs" />
+    <Compile Include="Scripts\Handler\SyncMsgHandle.cs" />
     <Compile Include="Scripts\proto\SysMsg.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

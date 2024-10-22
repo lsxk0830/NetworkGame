@@ -151,7 +151,7 @@ public class RoomListPanel : BasePanel
         TMP_Text idText = trans.Find("IdText").GetComponent<TMP_Text>();
         TMP_Text countText = trans.Find("CountText").GetComponent<TMP_Text>();
         TMP_Text statusText = trans.Find("StatusText").GetComponent<TMP_Text>();
-        Button btn = trans.Find("JointButton").GetComponent<Button>();
+        Button btn = trans.Find("JointBtn").GetComponent<Button>();
         //填充信息
         idText.text = roomInfo.id.ToString();
         countText.text = roomInfo.count.ToString();

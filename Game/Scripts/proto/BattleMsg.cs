@@ -1,27 +1,45 @@
-/// <summary>
-/// 玩家攻击协议
-/// </summary>
-public class MsgAttack : MsgBase
-{
-    public MsgAttack()
-    {
-        protoName = "MsgAttack";
-    }
+// 进入战场、战斗结果、玩家退出
 
-    public string desc = "127.0.0.1:6543";
+/// <summary>
+/// 进入战场（服务器推送）
+/// </summary>
+public class MsgEnterBattle : MsgBase
+{
+    public MsgEnterBattle() { protoName = "MsgEnterBattle"; }
+
+    /// <summary>
+    /// 服务器返回的坦克列表信息
+    /// </summary>
+    public TankInfo[] tanks;
+
+    /// <summary>
+    /// 地图，只有一张
+    /// </summary>
+    public int mapId = 1;
 }
 
 /// <summary>
-/// 玩家移动协议
+/// 战斗结果（服务器推送）
 /// </summary>
-public class MsgMove : MsgBase
+public class MsgBattleResult : MsgBase
 {
-    public MsgMove()
-    {
-        protoName = "MsgMove";
-    }
+    public MsgBattleResult() { protoName = "MsgBattleResult"; }
 
-    public int x = 0;
-    public int y = 0;
-    public int z = 0;
+    /// <summary>
+    /// 获胜的阵营
+    /// </summary>
+    public int winCamp = 0;
+}
+
+/// <summary>
+/// 玩家退出（服务器推送）
+/// </summary>
+public class MsgLeaveBattle : MsgBase
+{
+    public MsgLeaveBattle() { protoName = "MsgLeaveBattle"; }
+
+    /// <summary>
+    /// 服务器返回的玩家Id
+    /// </summary>
+    public string id = "";
 }

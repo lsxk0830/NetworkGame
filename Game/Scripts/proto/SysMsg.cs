@@ -3,10 +3,7 @@
 /// </summary>
 public class MsgPing : MsgBase
 {
-    public MsgPing()
-    {
-        protoName = "MsgPing";
-    }
+    public MsgPing() { protoName = "MsgPing"; }
 }
 
 /// <summary>
@@ -14,8 +11,5 @@ public class MsgPing : MsgBase
 /// </summary>
 public class MsgPong : MsgBase
 {
-    public MsgPong()
-    {
-        protoName = "MsgPong";
-    }
+    public MsgPong() { protoName = "MsgPong"; }
 }
