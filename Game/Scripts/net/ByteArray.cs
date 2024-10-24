@@ -63,11 +63,11 @@ public class ByteArray
     /// <summary>
     /// 重设尺寸
     /// </summary>
-    /// <param name="size">所需数据长度</param>
+    /// <param name="size">想新设置的尺寸长度</param>
     public void ReSize(int size)
     {
-        if (size < length) return;
-        if (size < initSize) return;
+        if (size < length) return; // 新的尺寸要比数据长度大
+        if (size < initSize) return; // 新的尺寸要比原来的大
         int n = 1;
         while (n < size) n *= 2;
         capacity = n;
@@ -121,6 +121,7 @@ public class ByteArray
     {
         count = Math.Min(count, length);
         Array.Copy(bytes, readIdx, bs, offset, count);
+        //Array.Copy(bytes, 0, bs, offset, count);
         readIdx += count;
         CheckAndMoveBytes();
         return count;
@@ -132,7 +133,8 @@ public class ByteArray
     public Int16 ReadInt16()
     {
         if (length < 2) return 0;
-        Int16 ret = (Int16)(bytes[readIdx + 1] << 8 | bytes[readIdx]);
+        Int16 ret =BitConverter.ToInt16(bytes, readIdx);
+        //Int16 ret = (Int16)(bytes[readIdx + 1] << 8 | bytes[readIdx]);
         readIdx += 2;
         CheckAndMoveBytes();
         return ret;
@@ -144,10 +146,13 @@ public class ByteArray
     public Int32 ReadInt32()
     {
         if (length < 4) return 0;
+        Int32 ret =BitConverter.ToInt32(bytes, readIdx);
+        /*
         Int32 ret = (Int32)(bytes[readIdx + 3] << 24 |
                             bytes[readIdx + 2] << 16 |
                             bytes[readIdx + 1] << 8 |
                             bytes[readIdx + 0]);
+        */
         readIdx += 4;
         CheckAndMoveBytes();
         return ret;

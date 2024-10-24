@@ -1,7 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
@@ -41,8 +41,7 @@ public class NetManager
                 else
                     ReadClientfd(s);
             }
-            // 超时
-            Timer();
+            Timer();  // 定时
         }
     }
 
@@ -67,7 +66,7 @@ public class NetManager
         try
         {
             Socket clientfd = listenfd.Accept();
-            Console.WriteLine($"Accept {clientfd.RemoteEndPoint.ToString()}");
+            Console.WriteLine($"接收{clientfd.RemoteEndPoint.ToString()}的远程连接");
             ClientState state = new ClientState();
             state.socket = clientfd;
             state.lastPingTime = GetTimeStamp();
@@ -168,7 +167,7 @@ public class NetManager
         //分发消息
         MethodInfo mi = typeof(MsgHandler).GetMethod(protoName);
         object[] o = { state, msgBase };
-        Console.WriteLine("Receive " + protoName);
+        //Console.WriteLine("Receive:" + protoName);
         if (mi != null)
             mi.Invoke(null, o);
         else
@@ -176,17 +175,6 @@ public class NetManager
         //继续读取消息
         if (readBuff.length > 2)
             OnReceiveData(state);
-    }
-
-    /// <summary>
-    /// 定时器
-    /// </summary>
-    private static void Timer()
-    {
-        //消息分发
-        MethodInfo mei = typeof(EventHandler).GetMethod(name: "OnTimer");
-        object[] ob = { };
-        mei.Invoke(null, ob);
     }
 
     /// <summary>
@@ -206,19 +194,29 @@ public class NetManager
         //组装长度
         sendBytes[0] = (byte)(len % 256);
         sendBytes[1] = (byte)(len / 256);
-        //组装名字
-        Array.Copy(nameBytes, 0, sendBytes, 2, nameBytes.Length);
-        //组装消息体
-        Array.Copy(bodyBytes, 0, sendBytes, 2 + nameBytes.Length, bodyBytes.Length);
+        Array.Copy(nameBytes, 0, sendBytes, 2, nameBytes.Length);//组装名字   
+        Array.Copy(bodyBytes, 0, sendBytes, 2 + nameBytes.Length, bodyBytes.Length);//组装消息体
         try
         {
-            Console.WriteLine($"发送消息：{Encoding.UTF8.GetString(sendBytes)}");
+            Console.WriteLine($"发送消息：{len % 256}{len / 256}{Encoding.UTF8.GetString(bodyBytes)}{Encoding.UTF8.GetString(bodyBytes)}");
             cs.socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, null, null); //为简化代码，不设置回调
         }
         catch (SocketException ex)
         {
             Console.WriteLine("Socket Close on BeginSend" + ex.ToString());
         }
+    }
+
+
+    /// <summary>
+    /// 定时器
+    /// </summary>
+    private static void Timer()
+    {
+        //消息分发
+        MethodInfo mei = typeof(EventHandler).GetMethod(name: "OnTimer");
+        object[] ob = { };
+        mei.Invoke(null, ob);
     }
 
     /// <summary>

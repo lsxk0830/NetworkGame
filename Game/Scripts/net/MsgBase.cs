@@ -4,12 +4,11 @@
 0 7: 【协议名长度】示例中“MsgMove”的长度，为7字节。通过协议名长度可以正确解析协议名称，根据名称做消息分发
 M s g M o v e：【协议名】长度由“协议名长度”确定
 { " x " = 1 } : 【协议体】可由它解析出MsgMove对象
-
 */
 
 using System;
 using System.Text;
-using System.Web.Script.Serialization;
+using System.Text.Json;
 
 public class MsgBase
 {
@@ -19,16 +18,11 @@ public class MsgBase
     public string protoName = "null";
 
     /// <summary>
-    /// 编码器
-    /// </summary>
-    private static JavaScriptSerializer Js = new JavaScriptSerializer();
-
-    /// <summary>
     /// 编码协议体
     /// </summary>
     public static byte[] Encode(MsgBase msgBase)
     {
-        string s = Js.Serialize(msgBase);
+        string s = JsonSerializer.Serialize(msgBase);
         return Encoding.UTF8.GetBytes(s);
     }
 
@@ -42,7 +36,7 @@ public class MsgBase
     public static MsgBase Decode(string protoName, byte[] bytes, int offset, int count)
     {
         string s = Encoding.UTF8.GetString(bytes, offset, count);
-        MsgBase msgBase = (MsgBase)Js.Deserialize(s, Type.GetType(protoName));
+        MsgBase msgBase = (MsgBase)JsonSerializer.Deserialize(s, Type.GetType(protoName));
         return msgBase;
     }
 
@@ -54,32 +48,30 @@ public class MsgBase
         // 名字bytes和长度
         byte[] nameBytes = Encoding.UTF8.GetBytes(msgBase.protoName);
         Int16 len = (Int16)nameBytes.Length;
-        // 申请bytes数值
-        byte[] bytes = new byte[2 + len];
-        // 组装2字节的长度信息
-        bytes[0] = ((byte)(len % 256));
+        byte[] bytes = new byte[2 + len]; // 申请bytes数组
+        bytes[0] = ((byte)(len % 256)); // 组装2字节的长度信息
         bytes[1] = ((byte)(len / 256));
-        // 组装名字bytes
-        Array.Copy(nameBytes, 0, bytes, 2, len);
+        Array.Copy(nameBytes, 0, bytes, 2, len); // 组装名字bytes
         return bytes;
     }
 
     /// <summary>
     /// 解码协议名（2字节长度+字符串）
     /// </summary>
-    public static string DecodeName(byte[] bytes, int offset, out int count)
+    public static string DecodeName(byte[] bytes, int readIndex, out int count)
     {
         count = 0;
         // 必须大于2字节
-        if (offset + 2 > bytes.Length) return "";
+        if (readIndex + 2 > bytes.Length) return "";
         // 读取长度
-        Int16 len = (Int16)((bytes[offset + 1] << 8) | bytes[offset]);
-        if (len <= 0) return "";
+        Int16 len = BitConverter.ToInt16(bytes, readIndex);
+        Int16 len2 = (Int16)((bytes[readIndex + 1] << 8) | bytes[readIndex]);
+        Console.WriteLine($"Int1:{len},Int2:{len2}.请注释！");
         // 长度必须足够
-        if (offset + 2 + len > bytes.Length) return "";
+        if (readIndex + 2 + len > bytes.Length) return "";
         // 解析
         count = 2 + len;
-        string name = Encoding.UTF8.GetString(bytes, offset + 2, len);
+        string name = Encoding.UTF8.GetString(bytes, readIndex + 2, len);
         return name;
     }
 }
