@@ -88,7 +88,6 @@
     <Compile Include="Scripts\net\ClientState.cs" />
     <Compile Include="Scripts\net\NetManager.cs" />
     <Compile Include="Scripts\Handler\SysMsgHandler.cs" />
-    <Compile Include="Scripts\Handler\BattleMsgHandle.cs" />
     <Compile Include="Scripts\net\ByteArray.cs" />
     <Compile Include="Scripts\net\MsgBase.cs" />
     <Compile Include="Scripts\proto\LoginMsg.cs" />

@@ -65,8 +65,7 @@ public class MsgBase
         if (readIndex + 2 > bytes.Length) return "";
         // 读取长度
         Int16 len = BitConverter.ToInt16(bytes, readIndex);
-        Int16 len2 = (Int16)((bytes[readIndex + 1] << 8) | bytes[readIndex]);
-        Console.WriteLine($"Int1:{len},Int2:{len2}.请注释！");
+        //Int16 len2 = (Int16)((bytes[readIndex + 1] << 8) | bytes[readIndex]);
         // 长度必须足够
         if (readIndex + 2 + len > bytes.Length) return "";
         // 解析

@@ -198,7 +198,8 @@ public class NetManager
         Array.Copy(bodyBytes, 0, sendBytes, 2 + nameBytes.Length, bodyBytes.Length);//组装消息体
         try
         {
-            Console.WriteLine($"发送消息：{len % 256}{len / 256}{Encoding.UTF8.GetString(bodyBytes)}{Encoding.UTF8.GetString(bodyBytes)}");
+            //Console.WriteLine($"发送消息：{(byte)(len % 256)}{(byte)(len / 256)}{Encoding.UTF8.GetString(nameBytes)}{Encoding.UTF8.GetString(bodyBytes)}");
+            Console.WriteLine($"消息:{Encoding.UTF8.GetString(nameBytes)}");
             cs.socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, null, null); //为简化代码，不设置回调
         }
         catch (SocketException ex)
