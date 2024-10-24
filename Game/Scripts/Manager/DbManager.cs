@@ -1,6 +1,6 @@
 using System;
+using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Web.Script.Serialization;
 using MySql.Data.MySqlClient;
 
 /// <summary>
@@ -15,17 +15,12 @@ public class DbManager
     public static MySqlConnection mysql;
 
     /// <summary>
-    /// 序列化、反序列化工具
-    /// </summary>
-    private static JavaScriptSerializer Js = new JavaScriptSerializer();
-
-    /// <summary>
     /// 连接MySQL数据库
     /// </summary>m>
     public static bool Connect(string db, string ip, int port, string user, string pw)
     {
         mysql = new MySqlConnection();
-        string s = string.Format("Database={0};Data Source ={1 };port={2};User Id ={3};Password = {4}", db, ip, port, user, pw);
+        string s = $"Database={db};Data Source={ip};port={port};User Id={user};Password={pw}";
         mysql.ConnectionString = s;
 
         try // 连接
@@ -87,7 +82,7 @@ public class DbManager
             return false;
         }
         PlayerData playerData = new PlayerData(); //序列化
-        string data = Js.Serialize(playerData);
+        string data = JsonSerializer.Serialize(playerData);
         //写入数据库
         string sql = string.Format("insert into player set id ='{0}' ,data ='{1}';", id, data);
         try
@@ -129,7 +124,7 @@ public class DbManager
             dataReader.Read();
             string data = dataReader.GetString("data");
             //反序列化
-            PlayerData playerData = Js.Deserialize<PlayerData>(data);
+            PlayerData playerData = JsonSerializer.Deserialize<PlayerData>(data);
             dataReader.Close();
             return playerData;
         }
@@ -172,7 +167,7 @@ public class DbManager
     /// </summary>
     public static bool UpdatePlayerData(string id, PlayerData playerData)
     {
-        string data = Js.Serialize(playerData);
+        string data = JsonSerializer.Serialize(playerData);
         string sql = string.Format("update player set data='{0}' where id ='{1}';", data, id);
         try //更新
         {

@@ -123,13 +123,12 @@ public class Room
             ownerId = SwitchOwner();
         if (status == Status.FIGHT) // 战斗状态退出，战斗状态退出游戏视为输掉游戏
         {
-            player.data.lost--;
+            player.data.lost++;
             MsgLeaveBattle msg = new MsgLeaveBattle();
             msg.id = player.id;
             Broadcast(msg);
         }
-        // 房间为空
-        if (playerIds.Count == 0)
+        if (playerIds.Count == 0) // 房间为空
             RoomManager.RemoveRoom(this.id);
         // 广播
         Broadcast(ToMsg());
@@ -149,10 +148,7 @@ public class Room
             if (player.camp == 1) count1++;
             if (player.camp == 2) count2++;
         }
-        if (count1 <= count2)
-            return 1;
-        else
-            return 2;
+        return count1 <= count2 ? 1 : 2;
     }
 
     /// <summary>
@@ -219,8 +215,7 @@ public class Room
     /// </summary>
     public bool CanStartBattle()
     {
-        // 已经是战斗状态
-        if (status != Status.PREPARE) return false;
+        if (status != Status.PREPARE) return false; // 已经是战斗状态
         // 统计每个阵营的玩家数
         int count1 = 0;
         int count2 = 0;
