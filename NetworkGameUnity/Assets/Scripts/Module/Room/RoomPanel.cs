@@ -52,6 +52,7 @@ public class RoomPanel : BasePanel
     private void OnMsgGetRoomInfo(MsgBase msgBse)
     {
         MsgGetRoomInfo msg = (MsgGetRoomInfo)msgBse;
+        Debug.Log($"收到玩家列表协议");
         // 清除玩家列表
         for (int i = content.childCount - 1; i >= 0; i--)
         {
@@ -60,6 +61,7 @@ public class RoomPanel : BasePanel
         }
         // 重新生成列表
         if (msg.Players == null) return;
+
         for (int i = 0; i < msg.Players.Length; i++)
         {
             GeneratePlayerInfo(msg.Players[i]);
@@ -72,6 +74,7 @@ public class RoomPanel : BasePanel
     private void OnMsgLeaveRoom(MsgBase msgBse)
     {
         MsgLeaveRoom msg = (MsgLeaveRoom)msgBse;
+        Debug.Log($"收到退出房间协议");
         if (msg.result == 0) // 成功退出房间
         {
             PanelManager.Open<TipPanel>("退出房间");
@@ -87,6 +90,7 @@ public class RoomPanel : BasePanel
     /// </summary>
     private void OnMsgStartBattle(MsgBase msgBse)
     {
+        Debug.Log($"收到开战协议");
         MsgStartBattle msg = (MsgStartBattle)msgBse;
         if (msg.result == 0)//开战
             Close();
@@ -112,8 +116,8 @@ public class RoomPanel : BasePanel
         idText.text = playerInfo.id;
         campText.text = playerInfo.camp == 1 ? "红" : "蓝";
         if (playerInfo.isOwner == 1)
-            campText.text = campText.text + "! ";
-        scoreText.text = playerInfo.win + " 胜 " + playerInfo.lost + " 负";
+            campText.text = campText.text + "!";
+        scoreText.text = playerInfo.win + "胜" + playerInfo.lost + "负";
     }
 
 
@@ -126,6 +130,7 @@ public class RoomPanel : BasePanel
     /// </summary>
     private void OnStartClick()
     {
+        Debug.Log($"发送开始战斗协议");
         MsgStartBattle msg = new MsgStartBattle();
         NetManager.Send(msg);
     }
@@ -135,6 +140,7 @@ public class RoomPanel : BasePanel
     /// </summary>
     private void OnCloseClick()
     {
+        Debug.Log($"发送退出房间协议");
         MsgLeaveRoom msg = new MsgLeaveRoom();
         NetManager.Send(msg);
     }
