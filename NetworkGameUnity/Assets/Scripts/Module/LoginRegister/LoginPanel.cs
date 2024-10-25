@@ -95,7 +95,7 @@ public class LoginPanel : BasePanel
     /// </summary>
     private void OnConnectSucc(string err)
     {
-        Debug.Log("OnConnectSucc");
+        Debug.Log($"OnConnectSucc:{err}");
     }
 
     /// <summary>

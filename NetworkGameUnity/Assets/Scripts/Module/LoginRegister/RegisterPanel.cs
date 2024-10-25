@@ -8,7 +8,7 @@ public class RegisterPanel : BasePanel
     public TMP_InputField pwInput; // 密码输入框
     public TMP_InputField repInput; // 重复输入框
     public Button registerBtn; // 注册按钮
-    public Button closeBtn; // 登录按钮
+    public Button closeBtn; // 关闭按钮
 
     public override void OnInit() // 初始化
     {

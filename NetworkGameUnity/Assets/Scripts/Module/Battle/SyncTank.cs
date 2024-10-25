@@ -39,7 +39,7 @@ public class SyncTank : BaseTank
         // 时间
         float t = (Time.time - forecastTime) / CtrlTank.syncInterval;
         t = Mathf.Clamp(t, 0, 1); // 将一个数值限制在指定的范围之内。它可以防止数值超出你设定的最小值和最大值边界
-                                  // 位置
+        // 位置
         Vector3 pos = transform.position;
         pos = Vector3.Lerp(pos, forecastPos, t);
         transform.position = pos;

@@ -25,8 +25,5 @@ public class TipPanel : BasePanel
         Close();
     }
 
-    public override void OnClose()
-    {
-
-    }
+    public override void OnClose() { }
 }

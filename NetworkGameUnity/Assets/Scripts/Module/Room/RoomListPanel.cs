@@ -80,7 +80,8 @@ public class RoomListPanel : BasePanel
     private void OnMsgGetAchieve(MsgBase msgBse)
     {
         MsgGetAchieve msg = (MsgGetAchieve)msgBse;
-        scoreText.text = $"{msg.win} 胜 << {msg.lost} 负";
+        Debug.Log($"收到查询成绩协议:{msg.win}胜<<{msg.lost}负");
+        scoreText.text = $"{msg.win}胜<<{msg.lost}负";
     }
 
     /// <summary>
@@ -89,6 +90,7 @@ public class RoomListPanel : BasePanel
     private void OnMsgGetRoomList(MsgBase msgBse)
     {
         MsgGetRoomList msg = (MsgGetRoomList)msgBse;
+        Debug.Log($"收到获取房间列表协议:数量->{msg.rooms.Length}");
         // 清除房间列表
         for (int i = content.childCount - 1; i >= 0; i++)
         {
@@ -111,6 +113,7 @@ public class RoomListPanel : BasePanel
     private void OnMsgCreateRoom(MsgBase msgBse)
     {
         MsgCreateRoom msg = (MsgCreateRoom)msgBse;
+        Debug.Log($"收到新建房间协议");
         // 成功创建房间
         if (msg.result == 0)
         {
@@ -130,6 +133,7 @@ public class RoomListPanel : BasePanel
     private void OnMsgEnterRoom(MsgBase msgBse)
     {
         MsgEnterRoom msg = (MsgEnterRoom)msgBse;
+        Debug.Log($"收到进入房间协议");
         if (msg.result == 0)
         {
             PanelManager.Open<RoomPanel>();
@@ -161,16 +165,7 @@ public class RoomListPanel : BasePanel
         btn.onClick.AddListener(() => { OnJoinClick(btn.name); });
     }
 
-    /// <summary>
-    /// 点击加入房间按钮
-    /// </summary>
-    /// <param name="idString">房间序号</param>
-    private void OnJoinClick(string idString)
-    {
-        MsgEnterRoom msg = new MsgEnterRoom();
-        msg.id = int.Parse(idString);
-        NetManager.Send(msg);
-    }
+
     #endregion
     #region UI事件
 
@@ -179,6 +174,7 @@ public class RoomListPanel : BasePanel
     /// </summary>
     private void OnCreatClick()
     {
+        Debug.Log($"收到创建房间协议");
         MsgCreateRoom msg = new MsgCreateRoom();
         NetManager.Send(msg);
     }
@@ -188,9 +184,21 @@ public class RoomListPanel : BasePanel
     /// </summary>
     public void OnReflashClick()
     {
+        Debug.Log($"发送获取房间列表协议");
         MsgGetRoomList msg = new MsgGetRoomList();
         NetManager.Send(msg);
     }
 
+    /// <summary>
+    /// 点击加入房间按钮
+    /// </summary>
+    /// <param name="idString">房间序号</param>
+    private void OnJoinClick(string idString)
+    {
+        Debug.Log($"发送进入房间协议");
+        MsgEnterRoom msg = new MsgEnterRoom();
+        msg.id = int.Parse(idString);
+        NetManager.Send(msg);
+    }
     #endregion
 }

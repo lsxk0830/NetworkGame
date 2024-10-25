@@ -3,7 +3,7 @@ using UnityEngine;
 public class BaseTank : MonoBehaviour
 {
     private GameObject skin; // 坦克模型资源
-    public float steer = 20; // 旋转角度
+    public float steer = 20; // 转向速度
     public float speed = 6; // 移动速度
     public float turretSpeed = 30f; // 炮塔旋转速度
     public Transform turret; // 炮塔
