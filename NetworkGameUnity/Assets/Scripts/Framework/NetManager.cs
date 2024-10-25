@@ -74,11 +74,7 @@ public static class NetManager
     public static void RemoveEventListener(NetEvent netEvent, EventListener listener)
     {
         if (eventListeners.ContainsKey(netEvent))
-        {
             eventListeners[netEvent] -= listener;
-            if (eventListeners[netEvent] == null)
-                eventListeners.Remove(netEvent);
-        }
     }
 
     /// <summary>
@@ -115,11 +111,7 @@ public static class NetManager
     public static void RemoveMsgListener(string msgName, MsgListener listene)
     {
         if (msgListeners.ContainsKey(msgName))
-        {
             msgListeners[msgName] -= listene;
-            if (msgListeners[msgName] == null)
-                msgListeners.Remove(msgName);
-        }
     }
     /// <summary>
     /// 分发消息
@@ -170,14 +162,10 @@ public static class NetManager
     /// </summary>
     public static void Close()
     {
-        // 状态判断
-        if (socket == null || !socket.Connected) return;
-        if (isConnecting) return;
-        // 还有数据在发送
-        if (writeQueue.Count > 0)
+        if (socket == null || !socket.Connected || isConnecting) return; // 状态判断
+        if (writeQueue.Count > 0) // 还有数据在发送
             isClosing = true;
-        // 没有数据在发送
-        else
+        else // 没有数据在发送
         {
             socket.Close();
             FireEvent(NetEvent.Close, "");
@@ -190,10 +178,7 @@ public static class NetManager
     /// <param name="msg"></param>
     public static void Send(MsgBase msg)
     {
-        // 状态判断
-        if (socket == null || !socket.Connected) return;
-        if (isConnecting) return;
-        if (isClosing) return;
+        if (socket == null || !socket.Connected || isConnecting || isClosing) return; // 状态判断
         // 数据编码
         byte[] nameBytes = MsgBase.EncodeName(msg);
         byte[] bodyBytes = MsgBase.Encode(msg);
@@ -202,13 +187,11 @@ public static class NetManager
         // 组装长度
         sendBytes[0] = (byte)(len % 256);
         sendBytes[1] = (byte)(len / 256);
-        //组装名字
-        Array.Copy(nameBytes, 0, sendBytes, 2, nameBytes.Length);
-        // 组装消息体
-        Array.Copy(bodyBytes, 0, sendBytes, 2 + nameBytes.Length, bodyBytes.Length);
+        Array.Copy(nameBytes, 0, sendBytes, 2, nameBytes.Length); //组装名字
+        Array.Copy(bodyBytes, 0, sendBytes, 2 + nameBytes.Length, bodyBytes.Length); // 组装消息体
         // 写入队列
         ByteArray ba = new ByteArray(sendBytes);
-        int count = 0;
+        int count = 0;	//writeQueue的长度
         lock (writeQueue)
         {
             writeQueue.Enqueue(ba);
@@ -276,7 +259,7 @@ public static class NetManager
         }
         catch (SocketException ex)
         {
-            Debug.LogError($"Socket Receive fail : {ex.ToString()}");
+            Debug.LogError($"Socket Receive fail : {ex}");
         }
     }
 
@@ -284,10 +267,8 @@ public static class NetManager
     {
         // 获取state、EndSend
         Socket socket = (Socket)ar.AsyncState;
-        // 状态判断
-        if (socket == null || !socket.Connected) return;
-        //EndSend
-        int count = socket.EndSend(ar);
+        if (socket == null || !socket.Connected) return; // 状态判断
+        int count = socket.EndSend(ar); //EndSend
         // 获取写入队列第一条数据
         ByteArray ba;
         lock (writeQueue)
@@ -345,8 +326,7 @@ public static class NetManager
     /// </summary>
     public static void PingUpdate()
     {
-        // 是否启用
-        if (!isUsePing) return;
+        if (!isUsePing) return; // 是否启用
         // 发送PING
         if (Time.time - lastPingTime > pingInterval)
         {
@@ -380,26 +360,16 @@ public static class NetManager
     /// </summary>
     private static void InitState()
     {
-        // socket
-        socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        // 接收缓冲区
-        readBuff = new ByteArray();
-        // 写入队列
-        writeQueue = new Queue<ByteArray>();
-        // 是否正在连接
-        isConnecting = false;
-        // 是否正在关闭
-        isClosing = false;
-        // 消息列表
-        msgList = new List<MsgBase>();
-        // 消息列表长度
-        msgCount = 0;
-        // 上一次发送PING时间
-        lastPingTime = Time.time;
-        // 上一次收到PONG时间
-        lastPongTime = Time.time;
-        // 监听PONG协议
-        if (!msgListeners.ContainsKey("MsgPong"))
+        socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp); // socket
+        readBuff = new ByteArray(); // 接收缓冲区
+        writeQueue = new Queue<ByteArray>(); // 写入队列
+        isConnecting = false; // 是否正在连接
+        isClosing = false; // 是否正在关闭
+        msgList = new List<MsgBase>(); // 消息列表
+        msgCount = 0; // 消息列表长度
+        lastPingTime = Time.time; // 上一次发送PING时间
+        lastPongTime = Time.time; // 上一次收到PONG时间
+        if (!msgListeners.ContainsKey("MsgPong")) // 监听PONG协议
             AddMsgListener("MsgPong", OnMsgPong);
     }
 
@@ -410,17 +380,15 @@ public static class NetManager
     /// </summary>
     private static void OnReveiveData()
     {
-        // 消息长度
-        if (readBuff.length <= 2) return;
+        if (readBuff.length <= 2) return; // 消息长度
         // 获取消息体长度
         int readIdx = readBuff.readIdx;
         byte[] bytes = readBuff.bytes;
-        Int16 bodyLength = (Int16)(bytes[readIdx] | bytes[readIdx + 1] << 8);
+        Int16 bodyLength = BitConverter.ToInt16(bytes, readIdx);
         if (readBuff.length < bodyLength + 2) return;
         readBuff.readIdx += 2;
         // 解析协议名
-        int nameCount = 0;
-        string protoName = MsgBase.DecodeName(readBuff.bytes, readBuff.readIdx, out nameCount);
+        string protoName = MsgBase.DecodeName(readBuff.bytes, readBuff.readIdx, out int nameCount);
         if (protoName == "")
         {
             Debug.Log($"OnReceiveData MsgBase.DecodeName Fial");
@@ -435,8 +403,10 @@ public static class NetManager
         readBuff.CheckAndMoveBytes();
         // 添加到消息队列
         lock (msgList)
+        {
             msgList.Add(msgBase);
-        msgCount++;
+            msgCount++;
+        }
         // 继续读取消息
         if (readBuff.length > 2)
             OnReveiveData();

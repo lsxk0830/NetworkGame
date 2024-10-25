@@ -4,7 +4,6 @@
 0 7: 【协议名长度】示例中“MsgMove”的长度，为7字节。通过协议名长度可以正确解析协议名称，根据名称做消息分发
 M s g M o v e：【协议名】长度由“协议名长度”确定
 { " x " = 1 } : 【协议体】可由它解析出MsgMove对象
-
 */
 using System;
 using System.Text;
@@ -36,6 +35,7 @@ public class MsgBase
     public static MsgBase Decode(string protoName, byte[] bytes, int offset, int count)
     {
         string s = Encoding.UTF8.GetString(bytes, offset, count);
+        Debug.Log("解码协议体:" + s);
         MsgBase msgBase = (MsgBase)JsonUtility.FromJson(s, Type.GetType(protoName));
         return msgBase;
     }
@@ -48,11 +48,10 @@ public class MsgBase
         // 名字bytes和长度
         byte[] nameBytes = Encoding.UTF8.GetBytes(msgBase.protoName);
         Int16 len = (Int16)nameBytes.Length;
-        // 申请bytes数值
-        byte[] bytes = new byte[2 + len];
+        byte[] bytes = new byte[2 + len]; // 申请bytes数值
         // 组装2字节的长度信息
-        bytes[0] = ((byte)(len % 256));
-        bytes[1] = ((byte)(len / 256));
+        bytes[0] = (byte)(len % 256);
+        bytes[1] = (byte)(len / 256);
         // 组装名字bytes
         Array.Copy(nameBytes, 0, bytes, 2, len);
         return bytes;
@@ -64,10 +63,11 @@ public class MsgBase
     public static string DecodeName(byte[] bytes, int offset, out int count)
     {
         count = 0;
-        // 必须大于2字节
-        if (offset + 2 > bytes.Length) return "";
+        if (offset + 2 > bytes.Length) return "";  // 必须大于2字节
         // 读取长度
-        Int16 len = (Int16)(bytes[offset + 1] << 8 | bytes[offset]);
+        Int16 len = BitConverter.ToInt16(bytes, offset);
+        Int16 len2 = (Int16)(bytes[offset + 1] << 8 | bytes[offset]);
+        Debug.Log($"len:{len},len2:{len2},删除注释");
         if (len <= 0) return "";
         // 长度必须足够
         if (offset + 2 + len > bytes.Length) return "";
