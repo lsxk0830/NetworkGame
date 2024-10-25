@@ -161,8 +161,7 @@ public class BattleManager : MonoBehaviour
     /// </summary>
     public static void EnterBattle(MsgEnterBattle msg)
     {
-        BattleManager.Reset(); // 重置
-                               // 关闭界面
+        Reset(); // 重置
         PanelManager.Close("RoomPanel"); // 可以放到房间系统的监听中
         PanelManager.Close("ResultPanel");
         foreach (var tank in msg.tanks) // 生成坦克
@@ -180,14 +179,14 @@ public class BattleManager : MonoBehaviour
         string objName = $"Tank_{tankInfo.id}";
         GameObject tankObj = new GameObject(objName);
         // AddComponent
-        BaseTank tank = null;
+        BaseTank tank;
         if (tankInfo.id == GameMain.id)
+        {
             tank = tankObj.AddComponent<CtrlTank>();
+            tankObj.AddComponent<CameraFollow>();
+        }
         else
             tank = tankObj.AddComponent<SyncTank>();
-        // Camera
-        if (tankInfo.id == GameMain.id)
-            tankObj.AddComponent<CameraFollow>();
         // 属性
         tank.camp = tankInfo.camp;
         tank.id = tankInfo.id;

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float speed = 100f; // 移动速度
+    public float speed = 120f; // 移动速度
     public BaseTank tank; // 发射者
     private GameObject skin; // 炮弹模型
     private Rigidbody mRigidbody; // 物理
@@ -10,7 +10,7 @@ public class Bullet : MonoBehaviour
     public void Init()
     {
         // 皮肤
-        GameObject skinRes = ResManager.LoadPrefab("bulletPrefab");
+        GameObject skinRes = ResManager.LoadPrefab("BulletPrefab");
         skin = Instantiate(skinRes);
         skin.transform.parent = this.transform;
         skin.transform.localPosition = Vector3.zero;
@@ -36,7 +36,6 @@ public class Bullet : MonoBehaviour
             return;
         if (hitTank != null) // 攻击其他坦克
             SendMsgHit(tank, hitTank);
-        //hitTank.Attacked(35);
 
         // 显示爆炸效果
         GameObject explode = ResManager.LoadPrefab("fire");

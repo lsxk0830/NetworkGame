@@ -2,40 +2,25 @@ using UnityEngine;
 
 public class BaseTank : MonoBehaviour
 {
-    /// <summary>
-    /// 坦克模型资源
-    /// </summary>
-    private GameObject skin;
-
+    private GameObject skin; // 坦克模型资源
     public float steer = 20; // 旋转角度
     public float speed = 6; // 移动速度
-
     public float turretSpeed = 30f; // 炮塔旋转速度
     public Transform turret; // 炮塔
     public Transform gun; // 炮管
     public Transform firePoint; // 发射点
-
     public float fired = 0.5f; // 炮弹Cd时间
     public float lastFireTime = 0; // 上一次发射炮弹时间
-
     public float hp = 100;
-
-    /// <summary>
-    /// 属于哪一名玩家
-    /// </summary>
-    public string id = "";
-    /// <summary>
-    /// 阵营
-    /// </summary>
-    public int camp = 0;
-
+    public string id = ""; // 哪一玩家
+    public int camp = 0; // 阵营
     protected Rigidbody mRigidbody;
 
     public virtual void Init(string skinPath)
     {
         // 皮肤
         GameObject skinRes = ResManager.LoadPrefab(skinPath);
-        GameObject skin = Instantiate(skinRes);
+        skin = Instantiate(skinRes);
         skin.transform.parent = this.transform;
         skin.transform.localPosition = Vector3.zero;
         skin.transform.localEulerAngles = Vector3.zero;
@@ -79,7 +64,7 @@ public class BaseTank : MonoBehaviour
     /// </summary>
     public bool isDie()
     {
-        return hp < 0;
+        return hp <= 0;
     }
 
     /// <summary>
@@ -87,15 +72,14 @@ public class BaseTank : MonoBehaviour
     /// </summary>
     public void Attacked(float att)
     {
-        if (isDie())
-            return;
+        if (isDie()) return;
 
         hp -= att;
         if (isDie())
         {
             GameObject obj = ResManager.LoadPrefab("Explosion");
-            GameObject explode = Instantiate(obj, transform.position, transform.rotation);
-            explode.transform.SetParent(transform);
+            GameObject explosion = Instantiate(obj, transform.position, transform.rotation);
+            explosion.transform.SetParent(transform);
         }
     }
 }

@@ -47,9 +47,7 @@ public static class PanelManager
         // 父容器
         Transform layer = layers[panel.layer];
         panel.skin.transform.SetParent(layer, false);
-        // 列表
         panels.Add(name, panel);
-        // PnShow
         panel.OnShow(para);
     }
 
@@ -62,12 +60,9 @@ public static class PanelManager
         if (!panels.ContainsKey(name)) // 没有打开
             return;
         BasePanel panel = panels[name];
-        // OnClose
         panel.OnClose();
-        // 列表
         panels.Remove(name);
-        // 销毁
-        GameObject.Destroy(panel.skin);
-        Component.Destroy(panel);
+        GameObject.Destroy(panel.skin); // 销毁面板
+        Component.Destroy(panel); // 销毁脚本
     }
 }
