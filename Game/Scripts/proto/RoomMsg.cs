@@ -10,12 +10,12 @@ public class MsgGetAchieve : MsgBase
     /// <summary>
     /// 总胜利次数
     /// </summary>
-    public int win = 0;
+    public int win { get; set; } = 0;
 
     /// <summary>
     /// 总失败次数
     /// </summary>
-    public int lost = 0;
+    public int lost { get; set; } = 0;
 }
 
 /// <summary>
@@ -28,7 +28,7 @@ public class MsgGetRoomList : MsgBase
     /// <summary>
     /// 服务器返回的所有房间信息
     /// </summary>
-    public RoomInfo[] rooms;
+    public RoomInfo[] rooms { get; set; }
 }
 
 /// <summary>
@@ -41,7 +41,7 @@ public class MsgCreateRoom : MsgBase
     /// <summary>
     /// 服务器返回的执行结果 0-创建成功 其他数值-创建失败
     /// </summary>
-    public int result = 0;
+    public int result { get; set; } = 0;
 }
 
 /// <summary>
@@ -54,12 +54,12 @@ public class MsgEnterRoom : MsgBase
     /// <summary>
     /// 请求加入房间的房间序号（id）
     /// </summary>
-    public int id = 0;
+    public int id { get; set; } = 0;
 
     /// <summary>
     /// 服务器返回的执行结果 0-成功进入 其他数值-进入失败
     /// </summary>
-    public int result = 0;
+    public int result { get; set; } = 0;
 }
 
 /// <summary>
@@ -72,7 +72,7 @@ public class MsgGetRoomInfo : MsgBase
     /// <summary>
     /// 房间的玩家信息
     /// </summary>
-    public PlayerInfo[] Players;
+    public PlayerInfo[] Players { get; set; }
 }
 
 /// <summary>
@@ -85,7 +85,7 @@ public class MsgLeaveRoom : MsgBase
     /// <summary>
     /// 服务器返回的结果 0-离开成功 其他数值-离开失败
     /// </summary>
-    public int result = 0;
+    public int result { get; set; } = 0;
 }
 
 /// <summary>
@@ -98,5 +98,5 @@ public class MsgStartBattle : MsgBase
     /// <summary>
     /// 服务器返回的战斗结果 0-成功 其他数值-失败
     /// </summary>
-    public int result = 0;
+    public int result { get; set; } = 0;
 }

@@ -150,8 +150,7 @@ public class NetManager
         //消息体
         if (readBuff.length < bodyLength) return;
         //解析协议名
-        int nameCount = 0;
-        string protoName = MsgBase.DecodeName(readBuff.bytes, readBuff.readIdx, out nameCount);
+        string protoName = MsgBase.DecodeName(readBuff.bytes, readBuff.readIdx, out int nameCount);
         if (protoName == "")
         {
             Console.WriteLine("OnReceiveData MsgBase.DecodeName fail");
@@ -164,10 +163,10 @@ public class NetManager
         MsgBase msgBase = MsgBase.Decode(protoName, readBuff.bytes, readBuff.readIdx, bodyCount);
         readBuff.readIdx += bodyCount;
         readBuff.CheckAndMoveBytes();
+        Console.WriteLine("Receive:" + protoName);
         //分发消息
         MethodInfo mi = typeof(MsgHandler).GetMethod(protoName);
         object[] o = { state, msgBase };
-        //Console.WriteLine("Receive:" + protoName);
         if (mi != null)
             mi.Invoke(null, o);
         else
