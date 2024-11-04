@@ -22,11 +22,10 @@ public partial class MsgHandler
     /// </summary>
     public static void MsgGetRoomList(ClientState c, MsgBase msgBase)
     {
-        MsgGetRoomList msg = (MsgGetRoomList)msgBase;
         Player player = c.player;
         if (player == null)
             return;
-        player.Send(RoomManager.ToMag());
+        player.Send(RoomManager.ToMsg());
     }
 
     /// <summary>
@@ -50,6 +49,7 @@ public partial class MsgHandler
         room.AddPlayer(player.id);
         msg.result = 0;
         player.Send(msg);
+        PlayerManager.Broadcast(RoomManager.ToMsg()); // 告诉全员有新房间
     }
 
     /// <summary>

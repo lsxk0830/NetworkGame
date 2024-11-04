@@ -129,7 +129,10 @@ public class Room
             Broadcast(msg);
         }
         if (playerIds.Count == 0) // 房间为空
+        {
             RoomManager.RemoveRoom(this.id);
+            PlayerManager.Broadcast(RoomManager.ToMsg()); // 告诉全员有房间被删除
+        }
         // 广播
         Broadcast(ToMsg());
         return true;

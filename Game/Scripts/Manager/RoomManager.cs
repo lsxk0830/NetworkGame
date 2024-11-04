@@ -46,7 +46,7 @@ public class RoomManager
     /// <summary>
     /// 生成MsgGetRoomList协议
     /// </summary>
-    public static MsgBase ToMag()
+    public static MsgBase ToMsg()
     {
         MsgGetRoomList msg = new MsgGetRoomList();
         int count = rooms.Count;
@@ -55,11 +55,12 @@ public class RoomManager
         int i = 0;
         foreach (Room room in rooms.Values)
         {
-            RoomInfo roomInfo = new RoomInfo();
-            // 赋值
-            roomInfo.id = room.id;
-            roomInfo.count = room.playerIds.Count;
-            roomInfo.status = (int)room.status;
+            RoomInfo roomInfo = new RoomInfo
+            {
+                id = room.id,
+                count = room.playerIds.Count,
+                status = (int)room.status
+            };
             msg.rooms[i] = roomInfo;
             i++;
         }

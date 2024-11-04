@@ -93,7 +93,7 @@ public class RoomListPanel : BasePanel
         int roomCount = msg.rooms == null ? 0 : msg.rooms.Length;
         Debug.Log($"收到获取房间列表协议:数量->{roomCount}");
         // 清除房间列表
-        for (int i = content.childCount - 1; i >= 0; i++)
+        for (int i = content.childCount - 1; i >= 0; i--)
         {
             GameObject go = content.GetChild(i).gameObject;
             Destroy(go);
@@ -118,7 +118,7 @@ public class RoomListPanel : BasePanel
         // 成功创建房间
         if (msg.result == 0)
         {
-            PanelManager.Open<TipPanel>("创建成功");
+            //PanelManager.Open<TipPanel>("创建成功");
             PanelManager.Open<RoomPanel>();
             Close();
         }

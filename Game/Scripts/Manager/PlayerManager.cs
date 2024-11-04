@@ -41,4 +41,16 @@ public class PlayerManager
     {
         players.Remove(id);
     }
+
+    /// <summary>
+    /// 广播消息
+    /// </summary>
+    public static void Broadcast(MsgBase msg)
+    {
+        foreach (string id in players.Keys)
+        {
+            Player player = GetPlayer(id);
+            player.Send(msg);
+        }
+    }
 }
