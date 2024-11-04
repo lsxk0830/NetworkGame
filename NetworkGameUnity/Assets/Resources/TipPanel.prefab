@@ -224,7 +224,7 @@ GameObject:
   - component: {fileID: 114693705834969668}
   - component: {fileID: 114444824127248278}
   m_Layer: 5
-  m_Name: OkBtn
+  m_Name: OKBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

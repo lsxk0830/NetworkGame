@@ -20,7 +20,7 @@ public class RoomPanel : BasePanel
         // 寻找组件
         startBtn = skin.transform.Find("CtrlPanel/StartBtn").GetComponent<Button>();
         closeBtn = skin.transform.Find("CtrlPanel/CloseBtn").GetComponent<Button>();
-        content = skin.transform.Find("ListPanel/Scroll View/Viewport/Content");
+        content = skin.transform.Find("ListPanel/ScrollView/Viewport/Content");
         playerObj = skin.transform.Find("Player").gameObject;
         //不激活玩家信息
         playerObj.SetActive(false);
