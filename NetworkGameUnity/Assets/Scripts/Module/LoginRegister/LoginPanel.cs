@@ -77,7 +77,7 @@ public class LoginPanel : BasePanel
             // // 添加坦克
             // GameObject tankObj = new GameObject("myTank");
             // CtrlTank ctrlTank = tankObj.AddComponent<CtrlTank>();
-            // ctrlTank.Init("tankPrefab");
+            // ctrlTank.Init("TankPrefab");
             // // 设置相机
             // tankObj.AddComponent<CameraFollow>();
             GameMain.id = msg.id;
