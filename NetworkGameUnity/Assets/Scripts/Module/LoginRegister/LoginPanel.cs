@@ -69,11 +69,10 @@ public class LoginPanel : BasePanel
     /// </summary>
     private void OnMsgLogin(MsgBase msgBse)
     {
-        Debug.Log("OnMsgLogin");
         MsgLogin msg = (MsgLogin)msgBse;
         if (msg.result == 0)
         {
-            Debug.Log("登录成功");
+            Debug.Log($"收到OnMsgLogin协议:登录成功");
             // // 进入游戏
             // // 添加坦克
             // GameObject tankObj = new GameObject("myTank");
@@ -95,7 +94,7 @@ public class LoginPanel : BasePanel
     /// </summary>
     private void OnConnectSucc(string err)
     {
-        Debug.Log($"OnConnectSucc:{err}");
+        Debug.Log($"OnConnectSucc");
     }
 
     /// <summary>

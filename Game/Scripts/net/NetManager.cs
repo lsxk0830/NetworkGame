@@ -143,7 +143,6 @@ public class NetManager
     public static void OnReceiveData(ClientState state)
     {
         ByteArray readBuff = state.readBuff;
-        byte[] bytes = readBuff.bytes;
         //消息长度
         if (readBuff.length <= 2) return;
         Int16 bodyLength = readBuff.ReadInt16();
@@ -182,8 +181,7 @@ public class NetManager
     public static void Send(ClientState cs, MsgBase msg)
     {
         //状态判断
-        if (cs == null) return;
-        if (!cs.socket.Connected) return;
+        if (cs == null || !cs.socket.Connected) return;
 
         //数据编码
         byte[] nameBytes = MsgBase.EncodeName(msg);

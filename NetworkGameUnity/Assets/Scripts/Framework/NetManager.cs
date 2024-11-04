@@ -248,7 +248,7 @@ public static class NetManager
             }
             readBuff.writeIdx += count;
             // 处理二进制消息
-            OnReveiveData();
+            OnReceiveData();
             // 继续接收数据
             if (readBuff.remain < 8)
             {
@@ -378,7 +378,7 @@ public static class NetManager
     /// 如果没有收到完整的协议，则退出等待下一波消息
     /// 2、解析协议
     /// </summary>
-    private static void OnReveiveData()
+    private static void OnReceiveData()
     {
         if (readBuff.length <= 2) return; // 消息长度
         // 获取消息体长度
@@ -409,7 +409,7 @@ public static class NetManager
         }
         // 继续读取消息
         if (readBuff.length > 2)
-            OnReveiveData();
+            OnReceiveData();
     }
 
     #endregion  私有发送,内部使用

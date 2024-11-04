@@ -66,8 +66,7 @@ public class MsgBase
         if (offset + 2 > bytes.Length) return "";  // 必须大于2字节
         // 读取长度
         Int16 len = BitConverter.ToInt16(bytes, offset);
-        Int16 len2 = (Int16)(bytes[offset + 1] << 8 | bytes[offset]);
-        Debug.Log($"len:{len},len2:{len2},删除注释");
+        //Int16 len2 = (Int16)(bytes[offset + 1] << 8 | bytes[offset]);
         if (len <= 0) return "";
         // 长度必须足够
         if (offset + 2 + len > bytes.Length) return "";

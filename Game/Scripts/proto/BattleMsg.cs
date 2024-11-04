@@ -10,7 +10,7 @@ public class MsgEnterBattle : MsgBase
     /// <summary>
     /// 服务器返回的坦克列表信息
     /// </summary>
-    public TankInfo[] tanks { get; set; };
+    public TankInfo[] tanks { get; set; }
 
     /// <summary>
     /// 地图，只有一张

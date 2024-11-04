@@ -42,7 +42,7 @@ public class RoomListPanel : BasePanel
         scoreText = skin.transform.Find("InfoPanel/ScoreText").GetComponent<TMP_Text>();
         createButton = skin.transform.Find("CtrlPanel/CreateBtn").GetComponent<Button>();
         reflashButton = skin.transform.Find("CtrlPanel/ReflashBtn").GetComponent<Button>();
-        content = skin.transform.Find("ListPanel/Scroll View/Viewport/Content");
+        content = skin.transform.Find("ListPanel/ScrollView/Viewport/Content");
         roomObj = skin.transform.Find("Room").gameObject;
         // 按钮事件
         createButton.onClick.AddListener(OnCreatClick);
@@ -90,7 +90,8 @@ public class RoomListPanel : BasePanel
     private void OnMsgGetRoomList(MsgBase msgBse)
     {
         MsgGetRoomList msg = (MsgGetRoomList)msgBse;
-        Debug.Log($"收到获取房间列表协议:数量->{msg.rooms.Length}");
+        int roomCount = msg.rooms == null ? 0 : msg.rooms.Length;
+        Debug.Log($"收到获取房间列表协议:数量->{roomCount}");
         // 清除房间列表
         for (int i = content.childCount - 1; i >= 0; i++)
         {
@@ -98,7 +99,7 @@ public class RoomListPanel : BasePanel
             Destroy(go);
         }
         // 如果没有房间，不需要进一步处理
-        if (msg.rooms == null) return;
+        if (roomCount == 0) return;
 
         for (int i = 0; i < msg.rooms.Length; i++)
         {

@@ -1,7 +1,7 @@
 using System;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 
 /// <summary>
 /// 用于处理数据库相关事务
@@ -82,7 +82,7 @@ public class DbManager
             return false;
         }
         PlayerData playerData = new PlayerData(); //序列化
-        string data = JsonSerializer.Serialize(playerData);
+        string data = JsonConvert.SerializeObject(playerData);
         //写入数据库
         string sql = string.Format("insert into player set id ='{0}' ,data ='{1}';", id, data);
         try
@@ -124,7 +124,7 @@ public class DbManager
             dataReader.Read();
             string data = dataReader.GetString("data");
             //反序列化
-            PlayerData playerData = JsonSerializer.Deserialize<PlayerData>(data);
+            PlayerData playerData = JsonConvert.DeserializeObject<PlayerData>(data);
             dataReader.Close();
             return playerData;
         }
@@ -167,7 +167,7 @@ public class DbManager
     /// </summary>
     public static bool UpdatePlayerData(string id, PlayerData playerData)
     {
-        string data = JsonSerializer.Serialize(playerData);
+        string data = JsonConvert.SerializeObject(playerData);
         string sql = string.Format("update player set data='{0}' where id ='{1}';", data, id);
         try //更新
         {

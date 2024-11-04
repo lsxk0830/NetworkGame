@@ -6,9 +6,9 @@ M s g M o v e：【协议名】长度由“协议名长度”确定
 { " x " = 1 } : 【协议体】可由它解析出MsgMove对象
 */
 
+using Newtonsoft.Json;
 using System;
 using System.Text;
-using System.Text.Json;
 
 public class MsgBase
 {
@@ -22,7 +22,7 @@ public class MsgBase
     /// </summary>
     public static byte[] Encode(MsgBase msgBase)
     {
-        string s = JsonSerializer.Serialize(msgBase);
+        string s = JsonConvert.SerializeObject(msgBase);
         return Encoding.UTF8.GetBytes(s);
     }
 
@@ -36,7 +36,7 @@ public class MsgBase
     public static MsgBase Decode(string protoName, byte[] bytes, int offset, int count)
     {
         string s = Encoding.UTF8.GetString(bytes, offset, count);
-        MsgBase msgBase = (MsgBase)JsonSerializer.Deserialize(s, Type.GetType(protoName));
+        MsgBase msgBase = (MsgBase)JsonConvert.DeserializeObject(s, Type.GetType(protoName));
         return msgBase;
     }
 
