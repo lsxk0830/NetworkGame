@@ -12,6 +12,14 @@ public class SyncTank : BaseTank
     private Vector3 forecastRot;
     private float forecastTime;
 
+    private void Start()
+    {
+        GloablMono.Instance.OnUpdate += f =>
+        {
+            ForecastUpdate();
+        };
+    }
+
     public override void Init(string skinPath)
     {
         base.Init(skinPath);
@@ -24,11 +32,6 @@ public class SyncTank : BaseTank
         forecastPos = transform.position;
         forecastRot = transform.eulerAngles;
         forecastTime = Time.time;
-    }
-
-    private void Update()
-    {
-        ForecastUpdate();
     }
 
     /// <summary>

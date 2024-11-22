@@ -7,6 +7,14 @@ public class Bullet : MonoBehaviour
     private GameObject skin; // 炮弹模型
     private Rigidbody mRigidbody; // 物理
 
+    private void Start()
+    {
+        GloablMono.Instance.OnUpdate += f =>
+        {
+            transform.position += transform.forward * speed * Time.deltaTime;
+        };
+    }
+
     public void Init()
     {
         // 皮肤
@@ -19,11 +27,6 @@ public class Bullet : MonoBehaviour
         // 物理
         mRigidbody = gameObject.AddComponent<Rigidbody>();
         mRigidbody.useGravity = false;
-    }
-
-    void Update()
-    {
-        transform.position += transform.forward * speed * Time.deltaTime;
     }
 
     private void OnCollisionEnter(Collision collisionInfo)

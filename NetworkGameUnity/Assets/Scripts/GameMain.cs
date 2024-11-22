@@ -4,6 +4,11 @@ public class GameMain : MonoBehaviour
 {
     public static string id = ""; // 玩家角色ID
 
+    private void Awake()
+    {
+        new GameObject("MonoUpdate").AddComponent<GloablMono>();
+    }
+
     void Start()
     {
         // 网络监听
@@ -14,12 +19,13 @@ public class GameMain : MonoBehaviour
         BattleManager.Init();
         // 打开登录面板
         PanelManager.Open<LoginPanel>();
+
+        GloablMono.Instance.OnUpdate += f =>
+        {
+            NetManager.Update();
+        };
     }
 
-    void Update()
-    {
-        NetManager.Update();
-    }
 
     private void OnConnectClose(string err)
     {

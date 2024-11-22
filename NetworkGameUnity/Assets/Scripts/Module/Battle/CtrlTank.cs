@@ -11,16 +11,19 @@ public class CtrlTank : BaseTank
     /// </summary>
     public static float syncInterval = 0.1f;
 
-    void Update()
+    private void Start()
     {
-        // 移动控制
-        MoveUpdate();
-        // 炮塔控制
-        TurretUpdate();
-        // 开炮
-        FireUpdate();
-        // 发送同步信息
-        SyncUpdate();
+        GloablMono.Instance.OnUpdate += f =>
+        {
+            // 移动控制
+            MoveUpdate();
+            // 炮塔控制
+            TurretUpdate();
+            // 开炮
+            FireUpdate();
+            // 发送同步信息
+            SyncUpdate();
+        };
     }
 
     private void MoveUpdate()
