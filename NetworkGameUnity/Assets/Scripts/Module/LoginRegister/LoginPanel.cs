@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +9,7 @@ public class LoginPanel : BasePanel
     public TMP_InputField pwInput; // 密码输入框
     public Button loginBtn; // 登录按钮
     public Button registerBtn; // 注册按钮
+    public Toggle isShowPwToggle; // 是否显示密码
 
     public override void OnInit() // 初始化
     {
@@ -22,9 +24,11 @@ public class LoginPanel : BasePanel
         pwInput = skin.transform.Find("PWInput").GetComponent<TMP_InputField>();
         loginBtn = skin.transform.Find("LoginBtn").GetComponent<Button>();
         registerBtn = skin.transform.Find("RegisterBtn").GetComponent<Button>();
+        isShowPwToggle = skin.transform.Find("IsShowPwToggle").GetComponent<Toggle>();
         // 监听
         loginBtn.onClick.AddListener(OnLoginClick);
         registerBtn.onClick.AddListener(onRegisterClick);
+        isShowPwToggle.onValueChanged.AddListener(OnPwShowChangeClick);
 
         // 网络协议监听
         NetManager.AddMsgListener("MsgLogin", OnMsgLogin);
@@ -41,6 +45,8 @@ public class LoginPanel : BasePanel
         NetManager.RemoveEventListener(NetManager.NetEvent.ConnectSucc, OnConnectSucc);
         NetManager.RemoveEventListener(NetManager.NetEvent.ConnectFail, OnConnectFail);
     }
+
+    #region UI事件
 
     private void OnLoginClick()
     {
@@ -64,6 +70,14 @@ public class LoginPanel : BasePanel
         PanelManager.Open<RegisterPanel>();
     }
 
+    private void OnPwShowChangeClick(bool isShow)
+    {
+        pwInput.contentType = isShow ? TMP_InputField.ContentType.Standard : TMP_InputField.ContentType.Password;
+        pwInput.ForceLabelUpdate();
+    }
+
+    #endregion
+
     /// <summary>
     /// 收到登录协议
     /// </summary>
@@ -73,13 +87,6 @@ public class LoginPanel : BasePanel
         if (msg.result == 0)
         {
             Debug.Log($"收到OnMsgLogin协议:登录成功");
-            // // 进入游戏
-            // // 添加坦克
-            // GameObject tankObj = new GameObject("myTank");
-            // CtrlTank ctrlTank = tankObj.AddComponent<CtrlTank>();
-            // ctrlTank.Init("TankPrefab");
-            // // 设置相机
-            // tankObj.AddComponent<CameraFollow>();
             GameMain.id = msg.id;
             PanelManager.Open<RoomListPanel>();
             // 关闭界面
@@ -102,6 +109,9 @@ public class LoginPanel : BasePanel
     /// </summary>
     private void OnConnectFail(string err)
     {
-        PanelManager.Open<TipPanel>(err);
+        GloablMono.Instance.TriggerFromOtherThread(() =>
+        {
+            PanelManager.Open<TipPanel>(err,2);
+        });
     }
 }
