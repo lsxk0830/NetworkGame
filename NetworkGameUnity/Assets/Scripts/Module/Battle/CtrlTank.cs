@@ -13,17 +13,19 @@ public class CtrlTank : BaseTank
 
     private void Start()
     {
-        GloablMono.Instance.OnUpdate += f =>
-        {
-            // 移动控制
-            MoveUpdate();
-            // 炮塔控制
-            TurretUpdate();
-            // 开炮
-            FireUpdate();
-            // 发送同步信息
-            SyncUpdate();
-        };
+        GloablMono.Instance.OnUpdate += OnUpdate;
+    }
+
+    private void OnUpdate(float f)
+    {
+        // 移动控制
+        MoveUpdate();
+        // 炮塔控制
+        TurretUpdate();
+        // 开炮
+        FireUpdate();
+        // 发送同步信息
+        SyncUpdate();
     }
 
     private void MoveUpdate()
@@ -88,5 +90,10 @@ public class CtrlTank : BaseTank
         msg.ez = transform.eulerAngles.z;
         msg.turretY = turret.localEulerAngles.y;
         NetManager.Send(msg);
+    }
+
+    private void OnDestroy()
+    {
+        GloablMono.Instance.OnUpdate -= OnUpdate;
     }
 }

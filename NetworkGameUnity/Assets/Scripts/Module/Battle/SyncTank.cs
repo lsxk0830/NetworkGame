@@ -14,10 +14,12 @@ public class SyncTank : BaseTank
 
     private void Start()
     {
-        GloablMono.Instance.OnUpdate += f =>
-        {
-            ForecastUpdate();
-        };
+        GloablMono.Instance.OnUpdate += OnUpdate;
+    }
+
+    private void OnUpdate(float f)
+    {
+        ForecastUpdate();
     }
 
     public override void Init(string skinPath)
@@ -84,5 +86,10 @@ public class SyncTank : BaseTank
         Vector3 rot = new Vector3(msg.ex, msg.ey, msg.ez);
         bullet.transform.position = pos;
         bullet.transform.eulerAngles = rot;
+    }
+
+    private void OnDestroy()
+    {
+        GloablMono.Instance.OnUpdate -= OnUpdate;
     }
 }

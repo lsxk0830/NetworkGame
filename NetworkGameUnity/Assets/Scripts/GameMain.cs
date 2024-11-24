@@ -20,10 +20,12 @@ public class GameMain : MonoBehaviour
         // 打开登录面板
         PanelManager.Open<LoginPanel>();
 
-        GloablMono.Instance.OnUpdate += f =>
-        {
-            NetManager.Update();
-        };
+        GloablMono.Instance.OnUpdate += OnUpdate;
+    }
+
+    private void OnUpdate(float f)
+    {
+        NetManager.Update();
     }
 
 
@@ -35,5 +37,10 @@ public class GameMain : MonoBehaviour
     private void OnMsgKick(MsgBase msgBse)
     {
         PanelManager.Open<TipPanel>("被踢下线");
+    }
+
+    private void OnDestroy()
+    {
+        GloablMono.Instance.OnUpdate -= OnUpdate;
     }
 }

@@ -9,10 +9,12 @@ public class Bullet : MonoBehaviour
 
     private void Start()
     {
-        GloablMono.Instance.OnUpdate += f =>
-        {
-            transform.position += transform.forward * speed * Time.deltaTime;
-        };
+        GloablMono.Instance.OnUpdate += OnUpdate;
+    }
+
+    private void OnUpdate(float f)
+    {
+        transform.position += transform.forward * speed * Time.deltaTime;
     }
 
     public void Init()
@@ -64,5 +66,10 @@ public class Bullet : MonoBehaviour
         msg.y = transform.position.y;
         msg.z = transform.position.z;
         NetManager.Send(msg);
+    }
+
+    private void OnDestroy()
+    {
+        GloablMono.Instance.OnUpdate -= OnUpdate;
     }
 }
