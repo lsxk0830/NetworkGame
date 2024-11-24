@@ -74,7 +74,11 @@ public static class NetManager
     public static void RemoveEventListener(NetEvent netEvent, EventListener listener)
     {
         if (eventListeners.ContainsKey(netEvent))
+        {
             eventListeners[netEvent] -= listener;
+            if (eventListeners[netEvent] == null)
+                eventListeners.Remove(netEvent);
+        }
     }
 
     /// <summary>
@@ -111,7 +115,11 @@ public static class NetManager
     public static void RemoveMsgListener(string msgName, MsgListener listene)
     {
         if (msgListeners.ContainsKey(msgName))
+        {
             msgListeners[msgName] -= listene;
+            if (msgListeners[msgName] == null)
+                msgListeners.Remove(msgName);
+        }
     }
     /// <summary>
     /// 分发消息
@@ -280,7 +288,8 @@ public static class NetManager
             lock (writeQueue)
             {
                 writeQueue.Dequeue();
-                ba = writeQueue.First();
+                if (writeQueue.Count > 0)
+                    ba = writeQueue.First();
             }
         }
         // 继续发送

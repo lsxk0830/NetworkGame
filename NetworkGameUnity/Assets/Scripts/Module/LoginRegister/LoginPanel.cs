@@ -57,7 +57,7 @@ public class LoginPanel : BasePanel
                 idInput.text = str.Substring(0, index);
                 // 获取分隔符后的部分
                 pwInput.text = str.Substring(index + 1);
-                this.Log($"id:{idInput.text},pw:{pwInput.text}");
+                //this.Log($"id:{idInput.text},pw:{pwInput.text}");
             }
         }
     }
