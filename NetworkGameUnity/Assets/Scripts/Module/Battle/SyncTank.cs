@@ -70,7 +70,6 @@ public class SyncTank : BaseTank
         //lastRot = rot;
         transform.position = pos;
         transform.eulerAngles = rot;
-        Debug.Log($"Pos:{pos},Rot:{rot}");
         //forecastTime = Time.time;
         // 炮塔
         Vector3 le = turret.localEulerAngles;
