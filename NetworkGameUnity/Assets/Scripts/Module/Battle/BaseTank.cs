@@ -70,7 +70,7 @@ public class BaseTank : MonoBehaviour
     /// <summary>
     /// 被攻击
     /// </summary>
-    public void Attacked(float att)
+    public void Attacked(string winID,float att)
     {
         if (isDie()) return;
 
@@ -80,6 +80,12 @@ public class BaseTank : MonoBehaviour
             GameObject obj = ResManager.LoadPrefab("Explosion");
             GameObject explosion = Instantiate(obj, transform.position, transform.rotation);
             explosion.transform.SetParent(transform);
+            BaseTank winTank = BattleManager.GetTank(winID);
+            MsgBattleResult msg = new MsgBattleResult()
+            {
+                winCamp = winTank.camp
+            };
+            NetManager.Send(msg);
         }
     }
 }

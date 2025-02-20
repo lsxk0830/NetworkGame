@@ -148,10 +148,10 @@ public class BattleManager : MonoBehaviour
     {
         MsgHit msg = (MsgHit)msgBse;
         // 查找坦克
-        BaseTank tank = GetTank(msg.id);
+        BaseTank tank = GetTank(msg.targetId);
         if (tank == null)
             return;
-        tank.Attacked(msg.damage); // 被击中
+        tank.Attacked(msg.id, msg.damage); // 被击中
     }
 
     #endregion

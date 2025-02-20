@@ -160,4 +160,25 @@ public partial class MsgHandler
         msg.result = 0;
         player.Send(msg);
     }
+
+    /// <summary>
+    /// 战斗结束
+    /// </summary>
+    public static void MsgBattleResult(ClientState c, MsgBase msgBase)
+    {
+        Room room = RoomManager.GetRoom(c.player.roomId);
+        if (room!=null) // Room是否存在
+        {
+            MsgBattleResult msg = (MsgBattleResult)msgBase;
+            foreach (string id in room.playerIds.Keys)  // 统计信息
+            {
+                Player player = PlayerManager.GetPlayer(id);
+                if (player.camp == msg.winCamp)
+                    player.data.win++;
+                else
+                    player.data.lost++;
+            }
+            room.Broadcast(msg);
+        }
+    }
 }
