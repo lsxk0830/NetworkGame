@@ -3,7 +3,7 @@
 /// </summary>
 public class MsgSyncTank : MsgBase
 {
-    public MsgSyncTank() { protoName = "MsgStartBattle"; }
+    public MsgSyncTank() { protoName = "MsgSyncTank"; }
 
     //位置
     public float x = 0;
