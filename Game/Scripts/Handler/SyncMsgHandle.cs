@@ -72,8 +72,7 @@ public partial class MsgHandler
         int damage = 35;
         targetPlayer.hp -= damage;
         // 广播
-        msg.id = player.id;
-        msg.hp = player.hp;
+        msg.hp = targetPlayer.hp;
         msg.damage = damage;
         room.Broadcast(msg);
     }
