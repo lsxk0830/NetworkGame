@@ -85,7 +85,7 @@ public class CtrlTank : BaseTank
         msg.x = transform.position.x;
         msg.y = transform.position.y;
         msg.z = transform.position.z;
-        msg.x = transform.eulerAngles.x;
+        msg.ex = transform.eulerAngles.x;
         msg.ey = transform.eulerAngles.y;
         msg.ez = transform.eulerAngles.z;
         msg.turretY = turret.localEulerAngles.y;
