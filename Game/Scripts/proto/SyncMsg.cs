@@ -82,12 +82,12 @@ public class MsgHit : MsgBase
     public float z { get; set; } = 0;
 
     /// <summary>
-    /// 服务端补充，击中谁
+    /// 击中谁
     /// </summary>
     public string targetId { get; set; } = "";
 
     /// <summary>
-    /// 服务端补充，哪个坦克
+    /// 哪个坦克打的
     /// </summary>
     public string id { get; set; } = "";
 

@@ -280,7 +280,9 @@ public static class NetManager
         // 获取写入队列第一条数据
         ByteArray ba;
         lock (writeQueue)
+        {
             ba = writeQueue.First();
+        }
         // 完整发送
         ba.readIdx += count;
         if (ba.length == 0)
@@ -288,13 +290,14 @@ public static class NetManager
             lock (writeQueue)
             {
                 writeQueue.Dequeue();
-                if (writeQueue.Count > 0)
-                    ba = writeQueue.First();
+                ba = writeQueue.FirstOrDefault();
             }
         }
         // 继续发送
         if (ba != null)
+        {
             socket.BeginSend(ba.bytes, ba.readIdx, ba.length, 0, SendCallback, socket);
+        }
         else if (isClosing)
             socket.Close();
     }

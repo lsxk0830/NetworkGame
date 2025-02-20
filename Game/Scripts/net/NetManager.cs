@@ -162,7 +162,7 @@ public class NetManager
         MsgBase msgBase = MsgBase.Decode(protoName, readBuff.bytes, readBuff.readIdx, bodyCount);
         readBuff.readIdx += bodyCount;
         readBuff.CheckAndMoveBytes();
-        Console.WriteLine("Receive:" + protoName);
+        //Console.WriteLine("Receive:" + protoName);
         //分发消息
         MethodInfo mi = typeof(MsgHandler).GetMethod(protoName);
         object[] o = { state, msgBase };
@@ -196,7 +196,7 @@ public class NetManager
         try
         {
             //Console.WriteLine($"发送消息：{(byte)(len % 256)}{(byte)(len / 256)}{Encoding.UTF8.GetString(nameBytes)}{Encoding.UTF8.GetString(bodyBytes)}");
-            Console.WriteLine($"消息:{Encoding.UTF8.GetString(nameBytes)}");
+            //Console.WriteLine($"消息:{Encoding.UTF8.GetString(nameBytes)}");
             cs.socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, null, null); //为简化代码，不设置回调
         }
         catch (SocketException ex)

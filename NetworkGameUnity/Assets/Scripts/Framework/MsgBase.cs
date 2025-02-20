@@ -35,7 +35,7 @@ public class MsgBase
     public static MsgBase Decode(string protoName, byte[] bytes, int offset, int count)
     {
         string s = Encoding.UTF8.GetString(bytes, offset, count);
-        Debug.Log("解码协议体:" + s);
+        //Debug.Log("解码协议体:" + s);
         MsgBase msgBase = (MsgBase)JsonUtility.FromJson(s, Type.GetType(protoName));
         return msgBase;
     }
