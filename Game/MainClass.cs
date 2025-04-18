@@ -6,7 +6,8 @@ namespace Game
     {
         private static void Main(string[] args)
         {
-            if (!DbManager.Connect("game", "127.0.0.1", 3306, "root", ""))
+            if (!DbManager.Connect("networkgame", "127.0.0.1", 3306, "NetworkGame", "CYMpKLdxhLpWaHMh"))
+            //if (!DbManager.Connect("game", "127.0.0.1", 3306, "root", ""))
             {
                 Console.ReadLine();
                 return;

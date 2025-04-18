@@ -44,7 +44,7 @@ public class LoginPanel : BasePanel
         NetManager.AddEventListener(NetManager.NetEvent.ConnectSucc, OnConnectSucc);
         NetManager.AddEventListener(NetManager.NetEvent.ConnectFail, OnConnectFail);
         // 连接服务器
-        NetManager.Connect("127.0.0.1", 8888);
+        NetManager.Connect("111.229.57.137", 8888);
 
         RememberPwToggle.isOn = PlayerPrefs.GetInt("RememberPwToggle") == 0 ? true : false;
         if (RememberPwToggle.isOn)
