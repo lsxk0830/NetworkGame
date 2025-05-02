@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Tank
+  m_EditorClassIdentifier: 
+  m_GroupName: Tank
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 1009acbbf9a3d2b4fb8c4849015359a6
+  m_SerializeEntries:
+  - m_GUID: acca3b020c185fa49a59a6177b1770fb
+    m_Address: TankA
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 2a8da8b4b21026d42b11cafdb0ae43a8
+    m_Address: TankB
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 84c9b2831d5d27e40987d5ad7557534e
+    m_Address: TankC
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: c29541d8c54383d46a864d0bc5edac08
+    m_Address: TankD
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 0c62968f62d51d848b11533011becdd3, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 08078404fd9c25a4cac35462772e3492, type: 2}
+    - {fileID: 11400000, guid: c0e8280be53d8d344bf4f74b8e48d05e, type: 2}

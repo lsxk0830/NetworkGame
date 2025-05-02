@@ -12,7 +12,7 @@ public class Bullet : MonoBehaviour
         GloablMono.Instance.OnUpdate += OnUpdate;
     }
 
-    private void OnUpdate(float f)
+    private void OnUpdate()
     {
         transform.position += transform.forward * speed * Time.deltaTime;
     }

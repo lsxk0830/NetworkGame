@@ -23,14 +23,14 @@ public class LoginPanel : BasePanel
     public override void OnShow(params object[] para) // 显示
     {
         // 寻找组件
-        idInput = skin.transform.Find("IDInput").GetComponent<TMP_InputField>();
-        pwInput = skin.transform.Find("PWInput").GetComponent<TMP_InputField>();
-        loginBtn = skin.transform.Find("LoginBtn").GetComponent<Button>();
-        registerBtn = skin.transform.Find("RegisterBtn").GetComponent<Button>();
-        tipPanel = skin.transform.Find("TipPanel").gameObject;
-        readPwBtn = skin.transform.Find("TipPanel/ReadPwBtn").GetComponent<Button>();
-        isShowPwToggle = skin.transform.Find("PWInput/IsShowPwToggle").GetComponent<Toggle>();
-        RememberPwToggle = skin.transform.Find("RememberPwToggle").GetComponent<Toggle>();
+        idInput = go.transform.Find("IDInput").GetComponent<TMP_InputField>();
+        pwInput = go.transform.Find("PWInput").GetComponent<TMP_InputField>();
+        loginBtn = go.transform.Find("LoginBtn").GetComponent<Button>();
+        registerBtn = go.transform.Find("RegisterBtn").GetComponent<Button>();
+        tipPanel = go.transform.Find("TipPanel").gameObject;
+        readPwBtn = go.transform.Find("TipPanel/ReadPwBtn").GetComponent<Button>();
+        isShowPwToggle = go.transform.Find("PWInput/IsShowPwToggle").GetComponent<Toggle>();
+        RememberPwToggle = go.transform.Find("RememberPwToggle").GetComponent<Toggle>();
         // 监听
         loginBtn.onClick.AddListener(OnLoginClick);
         registerBtn.onClick.AddListener(onRegisterClick);

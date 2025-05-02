@@ -16,7 +16,7 @@ public class CameraFollow : MonoBehaviour
         GloablMono.Instance.OnLateUpdate += OnLateUpdate;
     }
 
-    private void OnLateUpdate(float f)
+    private void OnLateUpdate()
     {
         Vector3 pos = transform.position; // 坦克位置
         Vector3 forward = transform.forward; // 坦克方向

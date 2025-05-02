@@ -38,12 +38,12 @@ public class RoomListPanel : BasePanel
     public override void OnShow(params object[] para)
     {
         // 寻找组件
-        idText = skin.transform.Find("InfoPanel/IdText").GetComponent<TMP_Text>();
-        scoreText = skin.transform.Find("InfoPanel/ScoreText").GetComponent<TMP_Text>();
-        createButton = skin.transform.Find("CtrlPanel/CreateBtn").GetComponent<Button>();
-        reflashButton = skin.transform.Find("CtrlPanel/ReflashBtn").GetComponent<Button>();
-        content = skin.transform.Find("ListPanel/ScrollView/Viewport/Content");
-        roomObj = skin.transform.Find("Room").gameObject;
+        idText = go.transform.Find("InfoPanel/IdText").GetComponent<TMP_Text>();
+        scoreText = go.transform.Find("InfoPanel/ScoreText").GetComponent<TMP_Text>();
+        createButton = go.transform.Find("CtrlPanel/CreateBtn").GetComponent<Button>();
+        reflashButton = go.transform.Find("CtrlPanel/ReflashBtn").GetComponent<Button>();
+        content = go.transform.Find("ListPanel/ScrollView/Viewport/Content");
+        roomObj = go.transform.Find("Room").gameObject;
         // 按钮事件
         createButton.onClick.AddListener(OnCreatClick);
         reflashButton.onClick.AddListener(OnReflashClick);

@@ -22,8 +22,8 @@ public class TipPanel : BasePanel
 
     public override void OnShow(params object[] args)
     {
-        text = skin.transform.Find("Text").GetComponent<TMP_Text>();
-        okBtn = skin.transform.Find("OKBtn").GetComponent<Button>();
+        text = go.transform.Find("Text").GetComponent<TMP_Text>();
+        okBtn = go.transform.Find("OKBtn").GetComponent<Button>();
         okBtn.onClick.AddListener(OnOkClick);
         if (args.Length == 1)
             text.text = (string)args[0];

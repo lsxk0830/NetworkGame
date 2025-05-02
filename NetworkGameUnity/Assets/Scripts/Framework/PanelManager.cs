@@ -9,7 +9,7 @@ public static class PanelManager
         Tip
     }
 
-    private static Dictionary<Layer, Transform> layers = new Dictionary<Layer, Transform>(); // 层级列表
+    public static Dictionary<Layer, Transform> layers = new Dictionary<Layer, Transform>(); // 层级列表
 
     public static Dictionary<string, BasePanel> panels = new Dictionary<string, BasePanel>(); // 面板列表
 
@@ -33,7 +33,6 @@ public static class PanelManager
     /// <summary>
     /// 打开面板
     /// </summary>
-
     public static void Open<T>(params object[] para) where T : BasePanel
     {
         string name = typeof(T).ToString();
@@ -44,9 +43,10 @@ public static class PanelManager
         BasePanel panel = root.gameObject.AddComponent<T>();
         panel.OnInit();
         panel.Init();
+        // ToDo await
         // 父容器
         Transform layer = layers[panel.layer];
-        panel.skin.transform.SetParent(layer, false);
+        panel.go.transform.SetParent(layer, false);
         panels.Add(name, panel);
         panel.OnShow(para);
     }
@@ -54,7 +54,6 @@ public static class PanelManager
     /// <summary>
     /// 关闭面板
     /// </summary>
-
     public static void Close(string name)
     {
         if (!panels.ContainsKey(name)) // 没有打开
@@ -62,7 +61,7 @@ public static class PanelManager
         BasePanel panel = panels[name];
         panel.OnClose();
         panels.Remove(name);
-        GameObject.Destroy(panel.skin); // 销毁面板
+        GameObject.Destroy(panel.go); // 销毁面板
         Component.Destroy(panel); // 销毁脚本
     }
 }

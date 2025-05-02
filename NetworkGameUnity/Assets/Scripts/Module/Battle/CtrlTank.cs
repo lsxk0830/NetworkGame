@@ -16,7 +16,7 @@ public class CtrlTank : BaseTank
         GloablMono.Instance.OnUpdate += OnUpdate;
     }
 
-    private void OnUpdate(float f)
+    private void OnUpdate()
     {
         // 移动控制
         MoveUpdate();

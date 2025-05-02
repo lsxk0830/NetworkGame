@@ -23,7 +23,7 @@ public class GameMain : MonoBehaviour
         GloablMono.Instance.OnUpdate += OnUpdate;
     }
 
-    private void OnUpdate(float f)
+    private void OnUpdate()
     {
         NetManager.Update();
     }

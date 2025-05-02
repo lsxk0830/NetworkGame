@@ -1,9 +1,11 @@
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class BasePanel : MonoBehaviour
 {
     public string skinPath; // 皮肤路径
-    public GameObject skin; // 皮肤【面板或者弹窗的那个物体】
+    public GameObject go;
     public PanelManager.Layer layer = PanelManager.Layer.Panel; // 层级
 
     /// <summary>
@@ -11,8 +13,16 @@ public class BasePanel : MonoBehaviour
     /// </summary>
     public void Init()
     {
-        GameObject skinPrefab = ResManager.LoadPrefab(skinPath);
-        skin = Instantiate(skinPrefab);
+        Addressables.LoadAssetAsync<GameObject>(skinPath).Completed += handle =>
+        {
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                GameObject skinPrefab = handle.Result;
+                go = Instantiate(skinPrefab);
+
+                Addressables.Release(handle);
+            }
+        };
     }
 
     /// <summary>

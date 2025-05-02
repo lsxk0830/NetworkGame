@@ -18,10 +18,10 @@ public class RoomPanel : BasePanel
     public override void OnShow(params object[] para)
     {
         // 寻找组件
-        startBtn = skin.transform.Find("CtrlPanel/StartBtn").GetComponent<Button>();
-        closeBtn = skin.transform.Find("CtrlPanel/CloseBtn").GetComponent<Button>();
-        content = skin.transform.Find("ListPanel/ScrollView/Viewport/Content");
-        playerObj = skin.transform.Find("Player").gameObject;
+        startBtn = go.transform.Find("CtrlPanel/StartBtn").GetComponent<Button>();
+        closeBtn = go.transform.Find("CtrlPanel/CloseBtn").GetComponent<Button>();
+        content = go.transform.Find("ListPanel/ScrollView/Viewport/Content");
+        playerObj = go.transform.Find("Player").gameObject;
         //不激活玩家信息
         playerObj.SetActive(false);
         //按钮事件

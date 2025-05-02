@@ -19,11 +19,11 @@ public class RegisterPanel : BasePanel
     public override void OnShow(params object[] para) // 显示
     {
         // 寻找组件
-        idInput = skin.transform.Find("IdInput").GetComponent<TMP_InputField>();
-        pwInput = skin.transform.Find("PwInput").GetComponent<TMP_InputField>();
-        repInput = skin.transform.Find("RepInput").GetComponent<TMP_InputField>();
-        registerBtn = skin.transform.Find("RegisterBtn").GetComponent<Button>();
-        closeBtn = skin.transform.Find("CloseBtn").GetComponent<Button>();
+        idInput = go.transform.Find("IdInput").GetComponent<TMP_InputField>();
+        pwInput = go.transform.Find("PwInput").GetComponent<TMP_InputField>();
+        repInput = go.transform.Find("RepInput").GetComponent<TMP_InputField>();
+        registerBtn = go.transform.Find("RegisterBtn").GetComponent<Button>();
+        closeBtn = go.transform.Find("CloseBtn").GetComponent<Button>();
         // 监听
         registerBtn.onClick.AddListener(OnRegisterClick);
         closeBtn.onClick.AddListener(OnCloseClick);

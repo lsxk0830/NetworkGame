@@ -1,15 +1,14 @@
 using System;
 using System.Threading;
 using SimpleFrame;
-using UnityEngine;
 
 public class GloablMono : MonoSingleton<GloablMono>
 {
     private SynchronizationContext unityContext;
 
-    public Action<float> OnUpdate;
-    public Action<float> OnFixedUpdate;
-    public Action<float> OnLateUpdate;
+    public Action OnUpdate;
+    public Action OnFixedUpdate;
+    public Action OnLateUpdate;
 
     protected override void OnAwake()
     {
@@ -28,17 +27,17 @@ public class GloablMono : MonoSingleton<GloablMono>
 
     private void Update()
     {
-        OnUpdate?.Invoke(Time.deltaTime);
+        OnUpdate?.Invoke();
     }
 
     private void FixedUpdate()
     {
-        OnFixedUpdate?.Invoke(Time.deltaTime);
+        OnFixedUpdate?.Invoke();
     }
 
     private void LateUpdate()
     {
-        OnLateUpdate?.Invoke(Time.deltaTime);
+        OnLateUpdate?.Invoke();
     }
 
     private void OnDestroy()
