@@ -9,23 +9,6 @@ public class BasePanel : MonoBehaviour
     public PanelManager.Layer layer = PanelManager.Layer.Panel; // 层级
 
     /// <summary>
-    /// 初始化
-    /// </summary>
-    public void Init()
-    {
-        Addressables.LoadAssetAsync<GameObject>(skinPath).Completed += handle =>
-        {
-            if (handle.Status == AsyncOperationStatus.Succeeded)
-            {
-                GameObject skinPrefab = handle.Result;
-                go = Instantiate(skinPrefab);
-
-                Addressables.Release(handle);
-            }
-        };
-    }
-
-    /// <summary>
     /// 关闭
     /// </summary>
     public void Close()

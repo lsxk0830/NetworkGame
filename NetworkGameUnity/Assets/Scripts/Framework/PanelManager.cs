@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public static class PanelManager
 {
@@ -9,7 +11,7 @@ public static class PanelManager
         Tip
     }
 
-    public static Dictionary<Layer, Transform> layers = new Dictionary<Layer, Transform>(); // 层级列表
+    private static Dictionary<Layer, Transform> layers = new Dictionary<Layer, Transform>(); // 层级列表
 
     public static Dictionary<string, BasePanel> panels = new Dictionary<string, BasePanel>(); // 面板列表
 
@@ -42,13 +44,21 @@ public static class PanelManager
         // 组件
         BasePanel panel = root.gameObject.AddComponent<T>();
         panel.OnInit();
-        panel.Init();
-        // ToDo await
-        // 父容器
-        Transform layer = layers[panel.layer];
-        panel.go.transform.SetParent(layer, false);
-        panels.Add(name, panel);
-        panel.OnShow(para);
+
+        Addressables.LoadAssetAsync<GameObject>(panel.skinPath).Completed += handle =>
+        {
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                GameObject skinPrefab = handle.Result;
+                panel.go = GameObject.Instantiate(skinPrefab);
+                Addressables.Release(handle);
+
+                Transform layer = layers[panel.layer];
+                panel.go.transform.SetParent(layer, false);
+                panels.Add(name, panel);
+                panel.OnShow(para);
+            }
+        };
     }
 
     /// <summary>

@@ -1,4 +1,7 @@
+using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class BaseTank : MonoBehaviour
 {
@@ -16,25 +19,31 @@ public class BaseTank : MonoBehaviour
     public int camp = 0; // 阵营
     protected Rigidbody mRigidbody;
 
-    public virtual void Init(string skinPath)
+    public virtual void Init(string tankName)
     {
-        // 皮肤
-        GameObject skinRes = ResManager.LoadPrefab(skinPath);
-        skin = Instantiate(skinRes);
-        skin.transform.parent = this.transform;
-        skin.transform.localPosition = Vector3.zero;
-        skin.transform.localEulerAngles = Vector3.zero;
+        Addressables.LoadAssetAsync<GameObject>(tankName).Completed += handle =>
+        {
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                GameObject skinRes = handle.Result;
+                skin = Instantiate(skinRes);
+                skin.transform.parent = this.transform;
+                skin.transform.localPosition = Vector3.zero;
+                skin.transform.localEulerAngles = Vector3.zero;
 
-        // 物理
-        mRigidbody = gameObject.AddComponent<Rigidbody>();
-        BoxCollider boxCollider = gameObject.AddComponent<BoxCollider>();
-        boxCollider.center = new Vector3(0, 2.5f, 1.47f);
-        boxCollider.size = new Vector3(7, 5, 12);
+                // 物理
+                mRigidbody = gameObject.AddComponent<Rigidbody>();
+                BoxCollider boxCollider = gameObject.AddComponent<BoxCollider>();
+                boxCollider.center = new Vector3(0, 2.5f, 1.47f);
+                boxCollider.size = new Vector3(7, 5, 12);
 
-        // 炮塔炮管
-        turret = skin.transform.Find("Turret");
-        gun = turret.transform.Find("Gun");
-        firePoint = gun.transform.Find("FirePoint");
+                // 炮塔炮管
+                turret = skin.transform.Find("Turret");
+                gun = turret.transform.Find("Gun");
+                firePoint = gun.transform.Find("FirePoint");
+            }
+        };
+
     }
 
     /// <summary>
@@ -70,22 +79,30 @@ public class BaseTank : MonoBehaviour
     /// <summary>
     /// 被攻击
     /// </summary>
-    public void Attacked(string winID,float att)
+    public void Attacked(string winID, float att)
     {
         if (isDie()) return;
 
         hp -= att;
         if (isDie())
         {
-            GameObject obj = ResManager.LoadPrefab("Explosion");
-            GameObject explosion = Instantiate(obj, transform.position, transform.rotation);
-            explosion.transform.SetParent(transform);
-            BaseTank winTank = BattleManager.GetTank(winID);
-            MsgBattleResult msg = new MsgBattleResult()
+            ResManager.Instance.LoadAssetAsync<GameObject>("Explosion", false,
+            handle =>
             {
-                winCamp = winTank.camp
-            };
-            NetManager.Send(msg);
+                GameObject explosion = Instantiate(handle.gameObject, transform.position, transform.rotation);
+                explosion.transform.SetParent(transform);
+                BaseTank winTank = BattleManager.GetTank(winID);
+                MsgBattleResult msg = new MsgBattleResult()
+                {
+                    winCamp = winTank.camp
+                };
+                NetManager.Send(msg);
+            },
+            error =>
+            {
+                Debug.LogError($"BaseTank.Attacked被攻击执行异常");
+            }).Forget();
+
         }
     }
 }
