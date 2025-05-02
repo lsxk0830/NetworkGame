@@ -1,6 +1,5 @@
 using System;
 using System.Threading;
-using SimpleFrame;
 
 public class GloablMono : MonoSingleton<GloablMono>
 {

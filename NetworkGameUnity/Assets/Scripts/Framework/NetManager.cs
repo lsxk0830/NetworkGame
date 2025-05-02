@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 
@@ -229,7 +230,7 @@ public static class NetManager
         {
             Socket socket = (Socket)ar.AsyncState;
             socket.EndConnect(ar);
-            Debug.Log("Socket Connect Succ");
+            Debug.Log($"Socket Connect Succ:{((IPEndPoint)socket.RemoteEndPoint).Address}");
             FireEvent(NetEvent.ConnectSucc, "");
             isConnecting = false;
             //开始接收
@@ -237,7 +238,7 @@ public static class NetManager
         }
         catch (SocketException ex)
         {
-            Debug.LogError($"Socket Connect fail {ex.ToString()}");
+            Debug.LogError($"Socket Connect fail {ex.ToString()}.IP:{((IPEndPoint)socket.RemoteEndPoint).Address}");
             FireEvent(NetEvent.ConnectFail, ex.ToString());
             isConnecting = false;
         }
