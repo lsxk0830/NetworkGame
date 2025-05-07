@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class CtrlTank : BaseTank
 {
@@ -11,9 +12,17 @@ public class CtrlTank : BaseTank
     /// </summary>
     public static float syncInterval = 0.1f;
 
-    private void Start()
+    public override AsyncOperationHandle Init(string tankName)
     {
-        GloablMono.Instance.OnUpdate += OnUpdate;
+        AsyncOperationHandle option = base.Init(tankName);
+        option.Completed += handle =>
+        {
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                GloablMono.Instance.OnUpdate += OnUpdate;
+            }
+        };
+        return option;
     }
 
     private void OnUpdate()

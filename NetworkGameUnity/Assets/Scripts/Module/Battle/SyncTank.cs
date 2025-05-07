@@ -15,12 +15,12 @@ public class SyncTank : BaseTank
 
     private void Start()
     {
-        //GloablMono.Instance.OnUpdate += OnUpdate;
+        
     }
 
-    private void OnUpdate(float f)
+    private void OnUpdate()
     {
-        //ForecastUpdate();
+        ForecastUpdate();
     }
 
     public override AsyncOperationHandle Init(string tankName)
@@ -39,6 +39,8 @@ public class SyncTank : BaseTank
                 //forecastPos = transform.position;
                 //forecastRot = transform.eulerAngles;
                 //forecastTime = Time.time;
+
+                GloablMono.Instance.OnUpdate += OnUpdate;
             }
         };
         return option;
