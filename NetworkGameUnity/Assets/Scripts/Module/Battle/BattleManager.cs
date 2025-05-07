@@ -200,7 +200,7 @@ public class BattleManager : MonoBehaviour
         if (tankInfo.camp == 1)
             tank.Init("TankC");
         else
-            tank.Init("TankB");
+            tank.Init("TankCC");
         // 列表
         AddTank(tankInfo.id, tank);
     }
