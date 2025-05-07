@@ -30,7 +30,7 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: c49183660cae8ac4881e3a02a1c88878
-    m_Address: RoomListPanel
+    m_Address: HomePanel
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 37cd54564004926419b427fdfcb425dd
