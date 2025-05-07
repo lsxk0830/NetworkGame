@@ -13,10 +13,6 @@ public class SyncTank : BaseTank
     //private Vector3 forecastRot;
     //private float forecastTime;
 
-    private void Start()
-    {
-        
-    }
 
     private void OnUpdate()
     {
@@ -70,6 +66,8 @@ public class SyncTank : BaseTank
     /// </summary>
     public void SyncPos(MsgSyncTank msg)
     {
+        if (turret == null) return;
+
         // 预测位置
         Vector3 pos = new Vector3(msg.x, msg.y, msg.z);
         Vector3 rot = new Vector3(msg.ex, msg.ey, msg.ez);
