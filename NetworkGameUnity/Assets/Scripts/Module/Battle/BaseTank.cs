@@ -39,8 +39,9 @@ public class BaseTank : MonoBehaviour
 
                 // 炮塔炮管
                 turret = skin.transform.Find("Turret");
-                gun = turret.transform.Find("Gun");
-                firePoint = gun.transform.Find("FirePoint");
+                //ToDo: 这里需要根据模型的实际结构来修改炮塔和炮管的名称
+                //gun = turret.transform.Find("Gun");
+                //firePoint = gun.transform.Find("FirePoint");
             }
         };
         return handle;

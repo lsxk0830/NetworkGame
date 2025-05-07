@@ -198,7 +198,7 @@ public class BattleManager : MonoBehaviour
         tank.transform.eulerAngles = rot;
         // Init
         if (tankInfo.camp == 1)
-            tank.Init("TankA");
+            tank.Init("TankC");
         else
             tank.Init("TankB");
         // 列表
