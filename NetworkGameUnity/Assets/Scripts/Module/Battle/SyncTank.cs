@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 /// <summary>
 /// 同步坦克类。预测信息，哪个时间到哪个位置
@@ -22,18 +23,25 @@ public class SyncTank : BaseTank
         //ForecastUpdate();
     }
 
-    public override void Init(string skinPath)
+    public override AsyncOperationHandle Init(string tankName)
     {
-        base.Init(skinPath);
-        // 不受物理运动影响
-        mRigidbody.constraints = RigidbodyConstraints.FreezeAll;
-        mRigidbody.useGravity = false;
-        // 初始化预测信息
-        //lastPos = transform.position;
-        //lastRot = transform.eulerAngles;
-        //forecastPos = transform.position;
-        //forecastRot = transform.eulerAngles;
-        //forecastTime = Time.time;
+        AsyncOperationHandle option = base.Init(tankName);
+        option.Completed += handle =>
+        {
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                // 不受物理运动影响
+                mRigidbody.constraints = RigidbodyConstraints.FreezeAll;
+                mRigidbody.useGravity = false;
+                // 初始化预测信息
+                //lastPos = transform.position;
+                //lastRot = transform.eulerAngles;
+                //forecastPos = transform.position;
+                //forecastRot = transform.eulerAngles;
+                //forecastTime = Time.time;
+            }
+        };
+        return option;
     }
 
     /// <summary>

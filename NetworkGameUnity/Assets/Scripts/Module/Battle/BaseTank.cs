@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -19,9 +18,10 @@ public class BaseTank : MonoBehaviour
     public int camp = 0; // 阵营
     protected Rigidbody mRigidbody;
 
-    public virtual void Init(string tankName)
+    public virtual AsyncOperationHandle Init(string tankName)
     {
-        Addressables.LoadAssetAsync<GameObject>(tankName).Completed += handle =>
+        AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>(tankName);
+        handle.Completed += handle =>
         {
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
@@ -43,6 +43,7 @@ public class BaseTank : MonoBehaviour
                 firePoint = gun.transform.Find("FirePoint");
             }
         };
+        return handle;
 
     }
 
