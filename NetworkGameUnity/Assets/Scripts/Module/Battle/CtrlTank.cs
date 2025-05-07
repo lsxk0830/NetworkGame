@@ -20,8 +20,8 @@ public class CtrlTank : BaseTank
     {
         // 移动控制
         MoveUpdate();
-        // 炮塔控制
-        TurretUpdate();
+        // ToDo炮塔控制
+        //TurretUpdate();
         // 开炮
         FireUpdate();
         // 发送同步信息
