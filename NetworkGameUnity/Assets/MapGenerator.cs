@@ -24,34 +24,22 @@ public class MapGenerator : MonoBehaviour
         ground.transform.position = new Vector3(mapSize / 2f, 0, mapSize / 2f);
         ground.GetComponent<Renderer>().material.color = Color.gray;
 
-        // 生成边界墙
-        CreateBorderWalls();
-
-        // 生成随机障碍物
-        for (int i = 0; i < obstacleCount; i++)
-        {
-            Vector3 spawnPos = new Vector3(
-                Random.Range(2, mapSize - 2),
-                0,
-                Random.Range(2, mapSize - 2)
-            );
-
-            GameObject obstacle = Instantiate(destructiblePrefab, spawnPos, Quaternion.identity);
-            obstacle.transform.localScale = new Vector3(
-                Random.Range(1f, 3f),
-                Random.Range(minObstacleHeight, maxObstacleHeight),
-                Random.Range(1f, 3f)
-            );
-        }
-    }
-
-    void CreateBorderWalls()
-    {
         // 创建四周不可破坏的墙
         CreateWall(new Vector3(mapSize / 2f, 1f, 0), new Vector3(mapSize, 2f, 1f));       // 下
         CreateWall(new Vector3(mapSize / 2f, 1f, mapSize), new Vector3(mapSize, 2f, 1f));  // 上
         CreateWall(new Vector3(0, 1f, mapSize / 2f), new Vector3(1f, 2f, mapSize));       // 左
         CreateWall(new Vector3(mapSize, 1f, mapSize / 2f), new Vector3(1f, 2f, mapSize));// 右
+
+        // 生成随机障碍物
+        for (int i = 0; i < obstacleCount; i++)
+        {
+            Vector3 spawnPos = new Vector3(Random.Range(2, mapSize - 2), 0, Random.Range(2, mapSize - 2)
+            );
+
+            GameObject obstacle = Instantiate(destructiblePrefab, spawnPos, Quaternion.identity);
+            obstacle.transform.localScale = new Vector3(Random.Range(1f, 3f), Random.Range(minObstacleHeight, maxObstacleHeight), Random.Range(1f, 3f)
+            );
+        }
     }
 
     void CreateWall(Vector3 position, Vector3 scale)
@@ -67,13 +55,6 @@ public class MapGenerator : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            // 销毁旧地图
-            foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Obstacle"))
-            {
-                Destroy(obj);
-            }
-            Destroy(GameObject.Find("Plane"));
-
             GenerateMap();
         }
     }

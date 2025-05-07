@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class RoomListPanel : BasePanel
+public class HomePanel : BasePanel
 {
     /// <summary>
     /// 账号文本
@@ -31,7 +31,7 @@ public class RoomListPanel : BasePanel
 
     public override void OnInit()
     {
-        skinPath = "RoomListPanel";
+        skinPath = "HomePanel";
         layer = PanelManager.Layer.Panel;
     }
 
