@@ -9,35 +9,10 @@ using UnityEngine;
 
 public static class NetManager
 {
-    #region 事件
-    /// <summary>
-    /// 事件
-    /// </summary>
-    public enum NetEvent
-    {
-        /// <summary>
-        /// 连接成功
-        /// </summary>
-        ConnectSucc = 1,
-
-        /// <summary>
-        /// 连接失败
-        /// </summary>
-        ConnectFail = 2,
-
-        /// <summary>
-        /// 断开连接
-        /// </summary>
-        Close = 3
-    }
-
-    #endregion
     private static Socket socket; // 定义套接字
     private static ByteArray readBuff;// 接收缓冲区
     private static Queue<ByteArray> writeQueue; // 写入队列
 
-    public delegate void EventListener(string err); // 事件委托类型
-    private static Dictionary<NetEvent, EventListener> eventListeners = new Dictionary<NetEvent, EventListener>(); // 事件监听列表
     public delegate void MsgListener(MsgBase msgBse); // 消息委托类型
     private static Dictionary<string, MsgListener> msgListeners = new Dictionary<string, MsgListener>(); // 消息监听列表
 
@@ -55,91 +30,6 @@ public static class NetManager
 
     private static readonly object _lock = new object();
     private static CancellationTokenSource cts;
-
-    #region 【事件】【消息】监听、移除、分发
-
-    #region 事件
-    /// <summary>
-    /// 添加事件监听
-    /// </summary>
-    /// <param name="netEvent">事件类型</param>
-    /// <param name="listener">事件的监听</param>
-    public static void AddEventListener(NetEvent netEvent, EventListener listener)
-    {
-        if (eventListeners.ContainsKey(netEvent)) // 添加事件
-            eventListeners[netEvent] += listener;
-        else // 新增事件
-            eventListeners[netEvent] = listener;
-    }
-
-    /// <summary>
-    /// 移除事件监听
-    /// </summary>
-    /// <param name="netEvent">事件类型</param>
-    /// <param name="listener">事件的监听</param>
-    public static void RemoveEventListener(NetEvent netEvent, EventListener listener)
-    {
-        if (eventListeners.ContainsKey(netEvent))
-        {
-            eventListeners[netEvent] -= listener;
-            if (eventListeners[netEvent] == null)
-                eventListeners.Remove(netEvent);
-        }
-    }
-
-    /// <summary>
-    /// 分发事件
-    /// </summary>
-    /// <param name="netEvent">事件类型</param>
-    /// <param name="err">传给回调方法的字符串</param>
-    private static void FireEvent(NetEvent netEvent, string err)
-    {
-        if (eventListeners.ContainsKey(netEvent))
-            eventListeners[netEvent](err);
-    }
-    #endregion 事件
-
-    #region 消息
-    /// <summary>
-    /// 添加消息监听
-    /// </summary>
-    /// <param name="netEvent">消息名</param>
-    /// <param name="listener">消息的监听</param>
-    public static void AddMsgListener(string msgName, MsgListener listener)
-    {
-        if (msgListeners.ContainsKey(msgName)) // 添加事件
-            msgListeners[msgName] += listener;
-        else // 新增事件
-            msgListeners[msgName] = listener;
-    }
-
-    /// <summary>
-    /// 移除消息监听
-    /// </summary>
-    /// <param name="netEvent">消息名</param>
-    /// <param name="listener">消息的监听</param>
-    public static void RemoveMsgListener(string msgName, MsgListener listene)
-    {
-        if (msgListeners.ContainsKey(msgName))
-        {
-            msgListeners[msgName] -= listene;
-            if (msgListeners[msgName] == null)
-                msgListeners.Remove(msgName);
-        }
-    }
-    /// <summary>
-    /// 分发消息
-    /// </summary>
-    /// <param name="netEvent">事件类型</param>
-    /// <param name="err">传给回调方法的消息</param>
-    private static void FireMsg(string msgName, MsgBase msgBase)
-    {
-        if (msgListeners.ContainsKey(msgName))
-            msgListeners[msgName](msgBase);
-    }
-    #endregion 消息
-
-    #endregion 【事件】【消息】监听、移除、分发
 
     #region 连接、关闭、Send、更新
 
@@ -176,8 +66,8 @@ public static class NetManager
             socket.BeginConnect("111.229.57.137", 8888, ConnectCallback, socket);
 #endif
                 // 等待连接完成或超时
-                var IsCanceled = await UniTask.WaitForSeconds(15, cancellationToken: cts.Token).SuppressCancellationThrow();
-                if (IsCanceled)  return;
+                var IsCanceled = await UniTask.WaitForSeconds(5, cancellationToken: cts.Token).SuppressCancellationThrow();
+                if (IsCanceled) return;
                 else Debug.Log("等待下次连接尝试...");
             }
             finally
@@ -198,7 +88,7 @@ public static class NetManager
         else // 没有数据在发送
         {
             socket.Close();
-            FireEvent(NetEvent.Close, "");
+            EventSystem.InvokeEvent(Events.SocketOnConnectFail, "");
         }
     }
 
@@ -259,14 +149,14 @@ public static class NetManager
                 cts = null;
                 isConnecting = false;
             }
-            FireEvent(NetEvent.ConnectSucc, "");
+            EventSystem.InvokeEvent(Events.SocketOnConnectSuccess, "");
             //开始接收
             socket.BeginReceive(readBuff.bytes, readBuff.writeIdx, readBuff.remain, 0, ReceiveCallback, socket);
         }
         catch (SocketException ex)
         {
             Debug.LogError($"Socket Connect fail {ex.ToString()}.IP:{((IPEndPoint)socket.RemoteEndPoint).Address}");
-            FireEvent(NetEvent.ConnectFail, ex.ToString());
+            EventSystem.InvokeEvent(Events.SocketOnConnectFail, "服务器断开连接");
             lock (_lock) isConnecting = false;
         }
         catch (Exception ex)
@@ -306,7 +196,15 @@ public static class NetManager
         }
         catch (SocketException ex)
         {
-            Debug.LogError($"Socket Receive fail : {ex}");
+            Debug.LogError($"Socket接收消息错误: {ex}");
+            if
+            (
+                ex.SocketErrorCode == SocketError.ConnectionReset || //远程强制关闭
+                ex.SocketErrorCode == SocketError.Shutdown || // 连接已关闭
+                ex.SocketErrorCode == SocketError.NotConnected ||// 未建立连接
+                ex.SocketErrorCode == SocketError.NetworkDown // 网络不可用
+            )
+                EventSystem.InvokeEvent(Events.SocketOnConnectFail, "服务器断开连接");
         }
     }
 
@@ -366,7 +264,7 @@ public static class NetManager
                 }
             }
             if (msgBase != null) // 分发消息
-                FireMsg(msgBase.protoName, msgBase);
+                EventSystem.InvokeEvent(msgBase.protoName, msgBase);
             else // 没消息了
                 break;
         }
@@ -421,7 +319,7 @@ public static class NetManager
         lastPingTime = Time.time; // 上一次发送PING时间
         lastPongTime = Time.time; // 上一次收到PONG时间
         if (!msgListeners.ContainsKey("MsgPong")) // 监听PONG协议
-            AddMsgListener("MsgPong", OnMsgPong);
+            EventSystem.RegisterEvent("MsgPong", OnMsgPong);
     }
 
     /// <summary>

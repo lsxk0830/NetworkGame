@@ -28,12 +28,12 @@ public class RegisterPanel : BasePanel
         registerBtn.onClick.AddListener(OnRegisterClick);
         closeBtn.onClick.AddListener(OnCloseClick);
 
-        NetManager.AddMsgListener("MsgRegister", OnMsgRegister);
+        EventSystem.RegisterEvent(Events.MsgRegister, OnMsgRegister);
     }
 
     public override void OnClose() // 关闭
     {
-        NetManager.RemoveMsgListener("MsgRegister", OnMsgRegister);
+        EventSystem.RemoveEvent(Events.MsgRegister, OnMsgRegister);
     }
 
     private void OnRegisterClick()

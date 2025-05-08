@@ -17,12 +17,12 @@ public class BattleManager : MonoBehaviour
     public static void Init()
     {
         // 添加监听
-        NetManager.AddMsgListener("MsgEnterBattle", OnMsgEnterBattle);
-        NetManager.AddMsgListener("MsgBattleResult", OnMsgBattleResult);
-        NetManager.AddMsgListener("MsgLeaveBattle", OnMsgLeaveBattle);
-        NetManager.AddMsgListener("MsgSyncTank", OnMsgSyncTank);
-        NetManager.AddMsgListener("MsgFire", OnMsgFire);
-        NetManager.AddMsgListener("MsgHit", OnMsgHit);
+        EventSystem.RegisterEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
+        EventSystem.RegisterEvent(Events.MsgBattleResult, OnMsgBattleResult);
+        EventSystem.RegisterEvent(Events.MsgLeaveBattle, OnMsgLeaveBattle);
+        EventSystem.RegisterEvent(Events.MsgSyncTank, OnMsgSyncTank);
+        EventSystem.RegisterEvent(Events.MsgFire, OnMsgFire);
+        EventSystem.RegisterEvent(Events.MsgHit, OnMsgHit);
     }
 
     /// <summary>

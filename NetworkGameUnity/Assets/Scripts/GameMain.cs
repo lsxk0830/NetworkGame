@@ -1,4 +1,7 @@
+using System;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class GameMain : MonoBehaviour
 {
@@ -7,31 +10,30 @@ public class GameMain : MonoBehaviour
     private void Awake()
     {
         new GameObject("MonoUpdate").AddComponent<GloablMono>();
-    }
 
-    void Start()
-    {
-        // 网络监听
-        NetManager.AddEventListener(NetManager.NetEvent.Close, OnConnectClose);
-        NetManager.AddMsgListener("MsgKick", OnMsgKick);
-        // 初始化
         PanelManager.Init();
-        BattleManager.Init();
-        // 打开登录面板
         PanelManager.Open<LoginPanel>();
-
         GloablMono.Instance.OnUpdate += OnUpdate;
+
+        EventSystem.RegisterEvent(Events.SocketOnConnectFail, OnConnectClose);
+        // 网络消息监听
+        EventSystem.RegisterEvent(Events.MsgKick, OnMsgKick);
+        NetManager.ConnectAsync(); // 循环连接连接服务器
+
+        DontDestroyOnLoad(gameObject);
     }
+
 
     private void OnUpdate()
     {
         NetManager.Update();
     }
 
-
     private void OnConnectClose(string err)
     {
-        Debug.Log("断开连接");
+        Debug.LogError("断开连接");
+        PanelManager.Open<TipPanel>(err);
+        NetManager.ConnectAsync(); // 循环连接连接服务器
     }
 
     private void OnMsgKick(MsgBase msgBse)
@@ -42,5 +44,6 @@ public class GameMain : MonoBehaviour
     private void OnDestroy()
     {
         GloablMono.Instance.OnUpdate -= OnUpdate;
+        EventSystem.RemoveEvent(Events.SocketOnConnectFail, OnConnectClose);
     }
 }

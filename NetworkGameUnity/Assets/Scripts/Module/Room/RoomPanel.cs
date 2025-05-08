@@ -28,9 +28,10 @@ public class RoomPanel : BasePanel
         startBtn.onClick.AddListener(OnStartClick);
         closeBtn.onClick.AddListener(OnCloseClick);
         // 协议监听
-        NetManager.AddMsgListener("MsgGetRoomInfo", OnMsgGetRoomInfo);
-        NetManager.AddMsgListener("MsgLeaveRoom", OnMsgLeaveRoom);
-        NetManager.AddMsgListener("MsgStartBattle", OnMsgStartBattle);
+
+        EventSystem.RegisterEvent(Events.MsgGetRoomInfo, OnMsgGetRoomInfo);
+        EventSystem.RegisterEvent(Events.MsgLeaveRoom, OnMsgLeaveRoom);
+        EventSystem.RegisterEvent(Events.MsgStartBattle, OnMsgStartBattle);
         // 发送查询
         MsgGetRoomInfo msg = new MsgGetRoomInfo();
         NetManager.Send(msg);
@@ -39,9 +40,9 @@ public class RoomPanel : BasePanel
     public override void OnClose()
     {
         // 协议取消监听
-        NetManager.RemoveMsgListener("MsgGetRoomInfo", OnMsgGetRoomInfo);
-        NetManager.RemoveMsgListener("MsgLeaveRoom", OnMsgLeaveRoom);
-        NetManager.RemoveMsgListener("MsgStartBattle", OnMsgStartBattle);
+        EventSystem.RemoveEvent(Events.MsgGetRoomInfo, OnMsgGetRoomInfo);
+        EventSystem.RemoveEvent(Events.MsgLeaveRoom, OnMsgLeaveRoom);
+        EventSystem.RemoveEvent(Events.MsgStartBattle, OnMsgStartBattle);
     }
 
     #region 协议事件

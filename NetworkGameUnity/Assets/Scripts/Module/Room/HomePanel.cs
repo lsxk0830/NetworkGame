@@ -52,10 +52,10 @@ public class HomePanel : BasePanel
         //显示id
         idText.text = GameMain.id;
         //协议监听
-        NetManager.AddMsgListener("MsgGetAchieve", OnMsgGetAchieve);
-        NetManager.AddMsgListener("MsgGetRoomList", OnMsgGetRoomList);
-        NetManager.AddMsgListener("MsgCreateRoom", OnMsgCreateRoom);
-        NetManager.AddMsgListener("MsgEnterRoom", OnMsgEnterRoom);
+        EventSystem.RegisterEvent(Events.MsgGetAchieve, OnMsgGetAchieve);
+        EventSystem.RegisterEvent(Events.MsgGetRoomList, OnMsgGetRoomList);
+        EventSystem.RegisterEvent(Events.MsgCreateRoom, OnMsgCreateRoom);
+        EventSystem.RegisterEvent(Events.MsgEnterRoom, OnMsgEnterRoom);
         //发送查询
         MsgGetAchieve msgGetAchieve = new MsgGetAchieve();
         NetManager.Send(msgGetAchieve);
@@ -65,11 +65,10 @@ public class HomePanel : BasePanel
 
     public override void OnClose()
     {
-        //协议取消监听
-        NetManager.RemoveMsgListener("MsgGetAchieve", OnMsgGetAchieve);
-        NetManager.RemoveMsgListener("MsgGetRoomList", OnMsgGetRoomList);
-        NetManager.RemoveMsgListener("MsgCreateRoom", OnMsgCreateRoom);
-        NetManager.RemoveMsgListener("MsgEnterRoom", OnMsgEnterRoom);
+        EventSystem.RemoveEvent(Events.MsgGetAchieve, OnMsgGetAchieve);
+        EventSystem.RemoveEvent(Events.MsgGetRoomList, OnMsgGetRoomList);
+        EventSystem.RemoveEvent(Events.MsgCreateRoom, OnMsgCreateRoom);
+        EventSystem.RemoveEvent(Events.MsgEnterRoom, OnMsgEnterRoom);
     }
 
     #region 协议事件

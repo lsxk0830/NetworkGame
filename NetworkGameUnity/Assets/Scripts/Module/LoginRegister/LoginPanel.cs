@@ -38,12 +38,9 @@ public class LoginPanel : BasePanel
         idInput.onEndEdit.AddListener(IdInputEnd); // 用户名输入名结束
 
         // 网络协议监听
-        NetManager.AddMsgListener("MsgLogin", OnMsgLogin);
-        // 网络事件监听
-        NetManager.AddEventListener(NetManager.NetEvent.ConnectSucc, OnConnectSucc);
-        NetManager.AddEventListener(NetManager.NetEvent.ConnectFail, OnConnectFail);
+        EventSystem.RegisterEvent(Events.MsgLogin, OnMsgLogin);
 
-        NetManager.ConnectAsync(); // 循环连接连接服务器
+
 
         RememberPwToggle.isOn = PlayerPrefs.GetInt("RememberPwToggle") == 0 ? true : false;
         if (RememberPwToggle.isOn)
@@ -63,9 +60,7 @@ public class LoginPanel : BasePanel
 
     public override void OnClose() // 关闭
     {
-        NetManager.RemoveMsgListener("MsgLogin", OnMsgLogin);
-        NetManager.RemoveEventListener(NetManager.NetEvent.ConnectSucc, OnConnectSucc);
-        NetManager.RemoveEventListener(NetManager.NetEvent.ConnectFail, OnConnectFail);
+        EventSystem.RemoveEvent(Events.MsgLogin, OnMsgLogin);
     }
 
     #region UI事件
@@ -131,24 +126,10 @@ public class LoginPanel : BasePanel
             PanelManager.Open<HomePanel>();
             // 关闭界面
             Close();
+
+            BattleManager.Init();
         }
         else
             PanelManager.Open<TipPanel>("登录失败");
-    }
-
-    /// <summary>
-    /// 连接成功回调
-    /// </summary>
-    private void OnConnectSucc(string err) { }
-
-    /// <summary>
-    /// 连接失败回调
-    /// </summary>
-    private void OnConnectFail(string err)
-    {
-        GloablMono.Instance.TriggerFromOtherThread(() =>
-        {
-            PanelManager.Open<TipPanel>(err);
-        });
     }
 }
