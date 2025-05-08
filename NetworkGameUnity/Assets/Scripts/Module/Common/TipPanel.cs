@@ -18,8 +18,8 @@ public class TipPanel : BasePanel
 
     public override void OnShow(params object[] args)
     {
-        text = go.transform.Find("Text").GetComponent<TMP_Text>();
-        okBtn = go.transform.Find("OKBtn").GetComponent<Button>();
+        text = transform.Find("Text").GetComponent<TMP_Text>();
+        okBtn = transform.Find("OKBtn").GetComponent<Button>();
         if (args.Length == 1)
         {
             text.text = (string)args[0];

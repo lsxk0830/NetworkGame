@@ -24,9 +24,9 @@ public class ResultPanel : BasePanel
     public override void OnShow(params object[] args)
     {
         // 寻找组件
-        winImage = go.transform.Find("WinImage").GetComponent<Image>();
-        lostImage = go.transform.Find("LostImage").GetComponent<Image>();
-        okBtn = go.transform.Find("OkBtn").GetComponent<Button>();
+        winImage = transform.Find("WinImage").GetComponent<Image>();
+        lostImage = transform.Find("LostImage").GetComponent<Image>();
+        okBtn = transform.Find("OkBtn").GetComponent<Button>();
         // 监听
         okBtn.onClick.AddListener(OnOkClick);
         // 显示哪个照片

@@ -20,27 +20,33 @@ MonoBehaviour:
   - m_GUID: 6ef8bb197ad66694197fc0e5fff4c4d6
     m_Address: LoginPanel
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - UIPanel
   - m_GUID: 4372e5fa582b4964388fd8d053c70a86
     m_Address: RegisterPanel
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - UIPanel
   - m_GUID: a26cc27872f88104abf22bb7d583dc5d
     m_Address: ResultPanel
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - UIPanel
   - m_GUID: c49183660cae8ac4881e3a02a1c88878
     m_Address: HomePanel
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - UIPanel
   - m_GUID: 37cd54564004926419b427fdfcb425dd
     m_Address: RoomPanel
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - UIPanel
   - m_GUID: 4718cc914ae8f3942a74335763ac5921
     m_Address: TipPanel
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - UIPanel
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 0c62968f62d51d848b11533011becdd3, type: 2}
   m_SchemaSet:

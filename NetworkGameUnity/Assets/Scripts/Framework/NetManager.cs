@@ -13,8 +13,6 @@ public static class NetManager
     private static ByteArray readBuff;// 接收缓冲区
     private static Queue<ByteArray> writeQueue; // 写入队列
 
-    public delegate void MsgListener(MsgBase msgBse); // 消息委托类型
-    private static Dictionary<string, MsgListener> msgListeners = new Dictionary<string, MsgListener>(); // 消息监听列表
 
     private static List<MsgBase> msgList = new List<MsgBase>(); // 消息列表
     private static int msgCount = 0; // 消息列表长度
@@ -141,7 +139,7 @@ public static class NetManager
         {
             Socket socket = (Socket)ar.AsyncState;
             socket.EndConnect(ar);
-            Debug.Log($"Socket连接成功:{((IPEndPoint)socket.RemoteEndPoint).Address},{((IPEndPoint)socket.RemoteEndPoint).Port}");
+            //Debug.Log($"Socket连接成功:{((IPEndPoint)socket.RemoteEndPoint).Address},{((IPEndPoint)socket.RemoteEndPoint).Port}");
             lock (_lock)
             {
                 cts?.Cancel();
@@ -318,7 +316,7 @@ public static class NetManager
         msgCount = 0; // 消息列表长度
         lastPingTime = Time.time; // 上一次发送PING时间
         lastPongTime = Time.time; // 上一次收到PONG时间
-        if (!msgListeners.ContainsKey("MsgPong")) // 监听PONG协议
+        if (!EventSystem.ContainerMsgBase.ContainsKey("MsgPong")) // 监听PONG协议
             EventSystem.RegisterEvent("MsgPong", OnMsgPong);
     }
 

@@ -22,14 +22,14 @@ public class LoginPanel : BasePanel
     public override void OnShow(params object[] para) // 显示
     {
         // 寻找组件
-        idInput = go.transform.Find("IDInput").GetComponent<TMP_InputField>();
-        pwInput = go.transform.Find("PWInput").GetComponent<TMP_InputField>();
-        loginBtn = go.transform.Find("LoginBtn").GetComponent<Button>();
-        registerBtn = go.transform.Find("RegisterBtn").GetComponent<Button>();
-        tipPanel = go.transform.Find("TipPanel").gameObject;
-        readPwBtn = go.transform.Find("TipPanel/ReadPwBtn").GetComponent<Button>();
-        isShowPwToggle = go.transform.Find("PWInput/IsShowPwToggle").GetComponent<Toggle>();
-        RememberPwToggle = go.transform.Find("RememberPwToggle").GetComponent<Toggle>();
+        idInput = transform.Find("IDInput").GetComponent<TMP_InputField>();
+        pwInput = transform.Find("PWInput").GetComponent<TMP_InputField>();
+        loginBtn = transform.Find("LoginBtn").GetComponent<Button>();
+        registerBtn = transform.Find("RegisterBtn").GetComponent<Button>();
+        tipPanel = transform.Find("TipPanel").gameObject;
+        readPwBtn = transform.Find("TipPanel/ReadPwBtn").GetComponent<Button>();
+        isShowPwToggle = transform.Find("IsShowPwToggle").GetComponent<Toggle>();
+        RememberPwToggle = transform.Find("RememberPwToggle").GetComponent<Toggle>();
         // 监听
         loginBtn.onClick.AddListener(OnLoginClick);
         registerBtn.onClick.AddListener(onRegisterClick);
@@ -60,6 +60,7 @@ public class LoginPanel : BasePanel
 
     public override void OnClose() // 关闭
     {
+        gameObject.SetActive(false);
         EventSystem.RemoveEvent(Events.MsgLogin, OnMsgLogin);
     }
 
@@ -125,7 +126,7 @@ public class LoginPanel : BasePanel
             GameMain.id = msg.id;
             PanelManager.Open<HomePanel>();
             // 关闭界面
-            Close();
+            OnClose();
 
             BattleManager.Init();
         }

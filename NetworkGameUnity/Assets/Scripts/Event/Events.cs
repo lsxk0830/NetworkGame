@@ -29,4 +29,9 @@ public static class Events
     public static string MsgHit = "MsgHit"; //击中协议
 
     #endregion 消息协议
+
+    #region UI事件
+    public static string PanelLoadSuccess = "PanelLoadSuccess"; //面板加载成功事件
+
+    #endregion UI事件
 }

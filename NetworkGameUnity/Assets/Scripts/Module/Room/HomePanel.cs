@@ -30,37 +30,40 @@ public class HomePanel : BasePanel
     /// 房间物体
     /// </summary>
     private GameObject roomObj;
-
+    /// <summary>
+    /// 大厅显示的模型
+    /// </summary>
     public GameObject tank;
 
     public override void OnInit()
     {
         panelName = "HomePanel";
         layer = PanelManager.Layer.Panel;
-    }
 
-    public override void OnShow(params object[] para)
-    {
         // 寻找组件
-        idText = go.transform.Find("InfoPanel/IdText").GetComponent<TMP_Text>();
-        scoreText = go.transform.Find("InfoPanel/ScoreText").GetComponent<TMP_Text>();
-        createButton = go.transform.Find("CtrlPanel/CreateBtn").GetComponent<Button>();
-        reflashButton = go.transform.Find("CtrlPanel/ReflashBtn").GetComponent<Button>();
-        content = go.transform.Find("ListPanel/ScrollView/Viewport/Content");
-        roomObj = go.transform.Find("Room").gameObject;
+        idText = transform.Find("InfoPanel/IdText").GetComponent<TMP_Text>();
+        scoreText = transform.Find("InfoPanel/ScoreText").GetComponent<TMP_Text>();
+        createButton = transform.Find("CtrlPanel/CreateBtn").GetComponent<Button>();
+        reflashButton = transform.Find("CtrlPanel/ReflashBtn").GetComponent<Button>();
+        content = transform.Find("ListPanel/ScrollView/Viewport/Content");
+        roomObj = transform.Find("Room").gameObject;
         GameObject[] rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
         tank = Array.Find(rootObjects, obj => obj.name == "TankA");
         tank.SetActive(true);
         Camera.current.transform.position = new Vector3(-1, 10, -14);
         Camera.current.transform.eulerAngles = new Vector3(15, 0, 0);
 
+        roomObj.SetActive(false);//不激活房间
+        idText.text = GameMain.id; //显示id
+
+
+    }
+
+    public override void OnShow(params object[] para)
+    {
         // 按钮事件
         createButton.onClick.AddListener(OnCreatClick);
         reflashButton.onClick.AddListener(OnReflashClick);
-        //不激活房间
-        roomObj.SetActive(false);
-        //显示id
-        idText.text = GameMain.id;
         //协议监听
         EventSystem.RegisterEvent(Events.MsgGetAchieve, OnMsgGetAchieve);
         EventSystem.RegisterEvent(Events.MsgGetRoomList, OnMsgGetRoomList);

@@ -1,7 +1,4 @@
-using System;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class GameMain : MonoBehaviour
 {
@@ -10,24 +7,28 @@ public class GameMain : MonoBehaviour
     private void Awake()
     {
         new GameObject("MonoUpdate").AddComponent<GloablMono>();
-
-        PanelManager.Init();
-        PanelManager.Open<LoginPanel>();
         GloablMono.Instance.OnUpdate += OnUpdate;
 
-        EventSystem.RegisterEvent(Events.SocketOnConnectFail, OnConnectClose);
-        // 网络消息监听
+        EventSystem.RegisterEvent(Events.SocketOnConnectSuccess, OnConnectSuccess);
+        EventSystem.RegisterEvent(Events.SocketOnConnectFail, OnConnectFail);
         EventSystem.RegisterEvent(Events.MsgKick, OnMsgKick);
-        NetManager.ConnectAsync(); // 循环连接连接服务器
-    }
+        EventSystem.RegisterEvent(Events.PanelLoadSuccess, OnPanelLoadSuccess);
 
+        PanelManager.Init();
+        NetManager.ConnectAsync(); // 循环连接服务器
+    }
 
     private void OnUpdate()
     {
         NetManager.Update();
     }
 
-    private void OnConnectClose(string err)
+    private void OnConnectSuccess(string msg)
+    {
+        Debug.Log("服务器连接成功");
+    }
+
+    private void OnConnectFail(string err)
     {
         Debug.LogError("断开连接");
         PanelManager.Open<TipPanel>(err);
@@ -39,9 +40,17 @@ public class GameMain : MonoBehaviour
         PanelManager.Open<TipPanel>("被踢下线");
     }
 
+    private void OnPanelLoadSuccess()
+    {
+        Debug.Log("打开登录界面");
+        PanelManager.Open<LoginPanel>();
+        EventSystem.RemoveEvent(Events.PanelLoadSuccess, OnPanelLoadSuccess);
+    }
+
     private void OnDestroy()
     {
-        GloablMono.Instance.OnUpdate -= OnUpdate;
-        EventSystem.RemoveEvent(Events.SocketOnConnectFail, OnConnectClose);
+        EventSystem.RemoveEvent(Events.SocketOnConnectSuccess, OnConnectSuccess);
+        EventSystem.RemoveEvent(Events.SocketOnConnectFail, OnConnectFail);
+        EventSystem.RemoveEvent(Events.MsgKick, OnMsgKick);
     }
 }

@@ -1,35 +1,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 public static class PanelManager
 {
-    public enum Layer
-    {
-        Panel,
-        Tip
-    }
+    public enum Layer { Panel, Tip } // 层级
 
     private static Dictionary<Layer, Transform> layers = new Dictionary<Layer, Transform>(); // 层级列表
-
     public static Dictionary<string, BasePanel> panels = new Dictionary<string, BasePanel>(); // 面板列表
-
-    // 结构
-    public static Transform root;
-    public static Transform canvas;
+    private static Dictionary<string, GameObject> panelCache = new Dictionary<string, GameObject>(); //aaddressable缓存
 
     /// <summary>
     /// 初始化
     /// </summary>
     public static void Init()
     {
-        root = GameObject.Find("Root").transform;
-        canvas = GameObject.Find("Canvas").transform;
+        //Transform root = GameObject.Find("Root").transform;
+        Transform canvas = GameObject.Find("Canvas").transform;
         Transform panel = canvas.Find("Panel");
         Transform tip = canvas.Find("Tip");
         layers.Add(Layer.Panel, panel);
         layers.Add(Layer.Tip, tip);
+
+        Addressables.LoadAssetsAsync<GameObject>("UIPanel", panel =>
+        {
+            panelCache.Add(panel.name, panel);
+            //Debug.Log($"加载面板：{panel.name}");
+            if (panel.name == typeof(LoginPanel).FullName)
+                EventSystem.InvokeEvent(Events.PanelLoadSuccess); // 触发面板加载成功事件
+        }).Completed += operation => { Addressables.Release(operation); };
     }
 
     /// <summary>
@@ -37,28 +36,24 @@ public static class PanelManager
     /// </summary>
     public static void Open<T>(params object[] para) where T : BasePanel
     {
-        string name = typeof(T).ToString();
-        if (panels.ContainsKey(name))
-            return;
-
-        // 组件
-        BasePanel panel = root.gameObject.AddComponent<T>();
-        panel.OnInit();
-
-        Addressables.LoadAssetAsync<GameObject>(panel.panelName).Completed += handle =>
+        string panelName = typeof(T).ToString();
+        if (panels.ContainsKey(panelName))
         {
-            if (handle.Status == AsyncOperationStatus.Succeeded)
-            {
-                GameObject skinPrefab = handle.Result;
-                panel.go = GameObject.Instantiate(skinPrefab);
-                Addressables.Release(handle);
+            panels[panelName].OnShow();
+            return;
+        }
 
-                Transform layer = layers[panel.layer];
-                panel.go.transform.SetParent(layer, false);
-                panels.Add(name, panel);
-                panel.OnShow(para);
-            }
-        };
+        if (!panelCache.ContainsKey(panelName)) return;
+
+        GameObject go = GameObject.Instantiate(panelCache[panelName]);
+        go.name = panelName;
+        BasePanel panel = go.AddComponent<T>();
+        go.transform.SetParent(layers[panel.layer],false);
+        panels.Add(panelName, panel);
+        panel.OnInit();
+        panel.OnShow(para);
+
+        panelCache.Remove(panelName); // 从缓存中移除
     }
 
     /// <summary>
@@ -70,8 +65,5 @@ public static class PanelManager
             return;
         BasePanel panel = panels[name];
         panel.OnClose();
-        panels.Remove(name);
-        GameObject.Destroy(panel.go); // 销毁面板
-        Component.Destroy(panel); // 销毁脚本
     }
 }
