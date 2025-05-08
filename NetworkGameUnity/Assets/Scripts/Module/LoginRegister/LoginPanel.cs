@@ -1,6 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,10 +12,6 @@ public class LoginPanel : BasePanel
     public Toggle isShowPwToggle; // 是否显示密码
     public Toggle RememberPwToggle; // 是否记住密码
     private GameObject tipPanel; // 自动输入密码弹窗
-
-    public int COUNT=8889; // 玩家
-
-    private CancellationTokenSource cts;
 
     public override void OnInit() // 初始化
     {
@@ -50,7 +43,7 @@ public class LoginPanel : BasePanel
         NetManager.AddEventListener(NetManager.NetEvent.ConnectSucc, OnConnectSucc);
         NetManager.AddEventListener(NetManager.NetEvent.ConnectFail, OnConnectFail);
 
-        LoopConnect(); // 循环连接连接服务器
+        NetManager.ConnectAsync(); // 循环连接连接服务器
 
         RememberPwToggle.isOn = PlayerPrefs.GetInt("RememberPwToggle") == 0 ? true : false;
         if (RememberPwToggle.isOn)
@@ -146,12 +139,7 @@ public class LoginPanel : BasePanel
     /// <summary>
     /// 连接成功回调
     /// </summary>
-    private void OnConnectSucc(string err)
-    {
-        cts?.Cancel();
-        cts?.Dispose();
-        cts = null;
-    }
+    private void OnConnectSucc(string err) { }
 
     /// <summary>
     /// 连接失败回调
@@ -162,21 +150,5 @@ public class LoginPanel : BasePanel
         {
             PanelManager.Open<TipPanel>(err);
         });
-    }
-
-    private async void LoopConnect()
-    {
-        cts = new CancellationTokenSource();
-        while (true && !cts.Token.IsCancellationRequested)
-        {
-            Debug.Log("准备连接服务器...");
-#if UNITY_EDITOR
-            NetManager.Connect("127.0.0.1", COUNT);
-#else
-            NetManager.Connect("111.229.57.137", 8888);
-#endif
-            await UniTask.WaitForSeconds(6, cancellationToken: cts.Token); // 等待10秒
-            Debug.Log("等待后...");
-        }
     }
 }

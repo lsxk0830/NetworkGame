@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public static class NetManager
@@ -50,6 +52,9 @@ public static class NetManager
     public static int pingInterval = 30; // 心跳间隔时间
     private static float lastPingTime = 0; // 上一次发送Ping的时间
     private static float lastPongTime = 0; // 上一次收到Pong的时间
+
+    private static readonly object _lock = new object();
+    private static CancellationTokenSource cts;
 
     #region 【事件】【消息】监听、移除、分发
 
@@ -143,27 +148,43 @@ public static class NetManager
     /// </summary>
     /// <param name="ip"></param>
     /// <param name="port"></param>
-    public static void Connect(string ip, int port)
+    public static async void ConnectAsync()
     {
-        if (socket != null && socket.Connected)
+        lock (_lock)
         {
-            Debug.Log("Connect Fail,already connected!");
-            return;
+            if (cts != null) return;
+            cts = new CancellationTokenSource();
         }
 
-        if (isConnecting)
+        while (true)
         {
-            Debug.Log("Connect Fail,isConnecting!");
-            return;
-        }
+            Debug.Log("准备连接服务器...");
 
-        // 初始化成员
-        InitState();
-        // 参数设置
-        socket.NoDelay = true; // 禁用Nagle算法
-        // Connect
-        isConnecting = true;
-        socket.BeginConnect(ip, port, ConnectCallback, socket);
+            lock (_lock)
+            {
+                if (socket?.Connected == true) break;
+                if (isConnecting) return;
+                isConnecting = true;
+            }
+            InitState(); // 初始化成员
+            socket.NoDelay = true; // 禁用Nagle算法
+            try
+            {
+#if UNITY_EDITOR
+                socket.BeginConnect("127.0.0.1", 8888, ConnectCallback, socket);
+#else
+            socket.BeginConnect("111.229.57.137", 8888, ConnectCallback, socket);
+#endif
+                // 等待连接完成或超时
+                var IsCanceled = await UniTask.WaitForSeconds(15, cancellationToken: cts.Token).SuppressCancellationThrow();
+                if (IsCanceled)  return;
+                else Debug.Log("等待下次连接尝试...");
+            }
+            finally
+            {
+                lock (_lock) isConnecting = false;
+            }
+        }
     }
 
     /// <summary>
@@ -230,9 +251,15 @@ public static class NetManager
         {
             Socket socket = (Socket)ar.AsyncState;
             socket.EndConnect(ar);
-            Debug.Log($"Socket Connect Succ:{((IPEndPoint)socket.RemoteEndPoint).Address}");
+            Debug.Log($"Socket连接成功:{((IPEndPoint)socket.RemoteEndPoint).Address},{((IPEndPoint)socket.RemoteEndPoint).Port}");
+            lock (_lock)
+            {
+                cts?.Cancel();
+                cts?.Dispose();
+                cts = null;
+                isConnecting = false;
+            }
             FireEvent(NetEvent.ConnectSucc, "");
-            isConnecting = false;
             //开始接收
             socket.BeginReceive(readBuff.bytes, readBuff.writeIdx, readBuff.remain, 0, ReceiveCallback, socket);
         }
@@ -240,7 +267,18 @@ public static class NetManager
         {
             Debug.LogError($"Socket Connect fail {ex.ToString()}.IP:{((IPEndPoint)socket.RemoteEndPoint).Address}");
             FireEvent(NetEvent.ConnectFail, ex.ToString());
-            isConnecting = false;
+            lock (_lock) isConnecting = false;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"未知错误: {ex}");
+            lock (_lock)
+            {
+                cts?.Cancel();
+                cts?.Dispose();
+                cts = null;
+                isConnecting = false;
+            }
         }
     }
 
