@@ -11,7 +11,7 @@ public class RoomPanel : BasePanel
 
     public override void OnInit()
     {
-        skinPath = "RoomPanel";
+        panelName = "RoomPanel";
         layer = PanelManager.Layer.Panel;
     }
 

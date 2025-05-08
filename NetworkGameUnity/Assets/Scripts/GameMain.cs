@@ -19,8 +19,6 @@ public class GameMain : MonoBehaviour
         // 网络消息监听
         EventSystem.RegisterEvent(Events.MsgKick, OnMsgKick);
         NetManager.ConnectAsync(); // 循环连接连接服务器
-
-        DontDestroyOnLoad(gameObject);
     }
 
 

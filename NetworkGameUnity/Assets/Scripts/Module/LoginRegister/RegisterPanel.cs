@@ -12,7 +12,7 @@ public class RegisterPanel : BasePanel
 
     public override void OnInit() // 初始化
     {
-        skinPath = "RegisterPanel";
+        panelName = "RegisterPanel";
         layer = PanelManager.Layer.Panel;
     }
 

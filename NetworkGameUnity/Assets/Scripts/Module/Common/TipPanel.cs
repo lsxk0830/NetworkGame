@@ -12,7 +12,7 @@ public class TipPanel : BasePanel
 
     public override void OnInit()
     {
-        skinPath = "TipPanel";
+        panelName = "TipPanel";
         layer = PanelManager.Layer.Tip;
     }
 

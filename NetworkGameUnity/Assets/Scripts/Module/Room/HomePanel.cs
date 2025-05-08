@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
+using System;
 
 public class HomePanel : BasePanel
 {
@@ -29,9 +31,11 @@ public class HomePanel : BasePanel
     /// </summary>
     private GameObject roomObj;
 
+    public GameObject tank;
+
     public override void OnInit()
     {
-        skinPath = "HomePanel";
+        panelName = "HomePanel";
         layer = PanelManager.Layer.Panel;
     }
 
@@ -44,6 +48,12 @@ public class HomePanel : BasePanel
         reflashButton = go.transform.Find("CtrlPanel/ReflashBtn").GetComponent<Button>();
         content = go.transform.Find("ListPanel/ScrollView/Viewport/Content");
         roomObj = go.transform.Find("Room").gameObject;
+        GameObject[] rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
+        tank = Array.Find(rootObjects, obj => obj.name == "TankA");
+        tank.SetActive(true);
+        Camera.current.transform.position = new Vector3(-1, 10, -14);
+        Camera.current.transform.eulerAngles = new Vector3(15, 0, 0);
+
         // 按钮事件
         createButton.onClick.AddListener(OnCreatClick);
         reflashButton.onClick.AddListener(OnReflashClick);
@@ -65,6 +75,7 @@ public class HomePanel : BasePanel
 
     public override void OnClose()
     {
+        tank.SetActive(false);
         EventSystem.RemoveEvent(Events.MsgGetAchieve, OnMsgGetAchieve);
         EventSystem.RemoveEvent(Events.MsgGetRoomList, OnMsgGetRoomList);
         EventSystem.RemoveEvent(Events.MsgCreateRoom, OnMsgCreateRoom);

@@ -15,7 +15,7 @@ public class LoginPanel : BasePanel
 
     public override void OnInit() // 初始化
     {
-        skinPath = "LoginPanel";
+        panelName = "LoginPanel";
         layer = PanelManager.Layer.Panel;
     }
 

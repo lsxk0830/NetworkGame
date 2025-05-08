@@ -45,7 +45,7 @@ public static class PanelManager
         BasePanel panel = root.gameObject.AddComponent<T>();
         panel.OnInit();
 
-        Addressables.LoadAssetAsync<GameObject>(panel.skinPath).Completed += handle =>
+        Addressables.LoadAssetAsync<GameObject>(panel.panelName).Completed += handle =>
         {
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {

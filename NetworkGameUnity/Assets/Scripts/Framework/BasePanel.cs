@@ -1,10 +1,8 @@
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class BasePanel : MonoBehaviour
 {
-    public string skinPath; // 皮肤路径
+    public string panelName; // 皮肤路径
     public GameObject go;
     public PanelManager.Layer layer = PanelManager.Layer.Panel; // 层级
 

@@ -17,7 +17,7 @@ public class ResultPanel : BasePanel
 
     public override void OnInit()
     {
-        skinPath = "ResultPanel";
+        panelName = "ResultPanel";
         layer = PanelManager.Layer.Tip;
     }
 
