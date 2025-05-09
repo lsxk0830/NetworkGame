@@ -33,7 +33,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - UIPanel
   - m_GUID: c49183660cae8ac4881e3a02a1c88878
-    m_Address: HomePanel
+    m_Address: HomePanelView
     m_ReadOnly: 0
     m_SerializedLabels:
     - UIPanel

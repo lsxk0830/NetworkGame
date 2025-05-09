@@ -124,7 +124,7 @@ public class LoginPanel : BasePanel
             }
             Debug.Log($"收到OnMsgLogin协议:登录成功");
             GameMain.id = msg.id;
-            PanelManager.Open<HomePanel>();
+            PanelManager.Open<HomePanelView>();
             // 关闭界面
             OnClose();
 

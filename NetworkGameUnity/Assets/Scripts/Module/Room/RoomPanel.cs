@@ -79,7 +79,7 @@ public class RoomPanel : BasePanel
         if (msg.result == 0) // 成功退出房间
         {
             PanelManager.Open<TipPanel>("退出房间");
-            PanelManager.Open<HomePanel>();
+            PanelManager.Open<HomePanelView>();
             Close();
         }
         else

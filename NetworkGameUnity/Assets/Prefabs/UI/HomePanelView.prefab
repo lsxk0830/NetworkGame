@@ -1975,7 +1975,7 @@ GameObject:
   - component: {fileID: 222688824084194692}
   - component: {fileID: 114097357759839538}
   m_Layer: 5
-  m_Name: HomePanel
+  m_Name: HomePanelView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
