@@ -120,7 +120,7 @@ public class Room
             ownerId = SwitchOwner();
         if (status == Status.FIGHT) // 战斗状态退出，战斗状态退出游戏视为输掉游戏
         {
-            player.data.lost++;
+            player.data.Lost++;
             MsgLeaveBattle msg = new MsgLeaveBattle();
             msg.id = player.id;
             Broadcast(msg);
@@ -201,8 +201,8 @@ public class Room
             // 赋值
             playerInfo.id = player.id;
             playerInfo.camp = player.camp;
-            playerInfo.win = player.data.win;
-            playerInfo.lost = player.data.lost;
+            playerInfo.win = player.data.Win;
+            playerInfo.lost = player.data.Lost;
             playerInfo.isOwner = isOwner(player) ? 1 : 0;
             msg.Players[i] = playerInfo;
             i++;
@@ -369,9 +369,9 @@ public class Room
         {
             Player player = PlayerManager.GetPlayer(id);
             if (player.camp == winCamp)
-                player.data.win++;
+                player.data.Win++;
             else
-                player.data.lost++;
+                player.data.Lost++;
         }
         // 发送Result
         MsgBattleResult msg = new MsgBattleResult();

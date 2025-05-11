@@ -12,8 +12,8 @@ public partial class MsgHandler
         Player player = c.player;
         if (player == null)
             return;
-        msg.win = player.data.win;
-        msg.lost = player.data.lost;
+        msg.win = player.data.Win;
+        msg.lost = player.data.Lost;
         player.Send(msg);
     }
 
@@ -174,9 +174,9 @@ public partial class MsgHandler
             {
                 Player player = PlayerManager.GetPlayer(id);
                 if (player.camp == msg.winCamp)
-                    player.data.win++;
+                    player.data.Win++;
                 else
-                    player.data.lost++;
+                    player.data.Lost++;
             }
             room.Broadcast(msg);
         }
