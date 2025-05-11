@@ -12,6 +12,7 @@ public class HomePanelView : BasePanel
 
     // UI组件
     [Header("UI Bindings")]
+    [SerializeField][LabelText("头像按钮")] private Button faceBtn;
     [SerializeField] private TMP_Text userNameText;
     [SerializeField] private TMP_Text scoreText;
     [SerializeField] private Button createButton;
@@ -31,6 +32,7 @@ public class HomePanelView : BasePanel
         layer = PanelManager.Layer.Panel;
 
         // 寻找组件
+        faceBtn = transform.Find("Top/FaceBtn").GetComponent<Button>();
         userNameText = transform.Find("Top/UserNameText").GetComponent<TMP_Text>();
         scoreText = transform.Find("Top/RecordText").GetComponent<TMP_Text>();
         createButton = transform.Find("CtrlPanel/CreateBtn").GetComponent<Button>();
@@ -41,7 +43,7 @@ public class HomePanelView : BasePanel
         tankModel = Array.Find(rootObjects, obj => obj.name == "TankA");
         mainCamera = Camera.main;
 
-
+        faceBtn.onClick.AddListener(OnFaceClick);
         createButton.onClick.AddListener(OnCreateRoomClick);
         refreshButton.onClick.AddListener(OnRefreshClick);
         GloablMono.Instance.OnUpdate += OnUpdate;
@@ -119,6 +121,12 @@ public class HomePanelView : BasePanel
     #endregion
 
     #region UI事件回调
+
+    private void OnFaceClick() // 头像按钮点击回调
+    {
+        this.Log("头像按钮点击回调");
+        Controller.HandleFace();
+    }
     private void OnCreateRoomClick()
     {
         Controller.HandleCreateRoom();

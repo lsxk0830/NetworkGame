@@ -1,4 +1,5 @@
 using System;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class HomePanelController
@@ -63,7 +64,7 @@ public class HomePanelController
             fail: () => PanelManager.Open<TipPanel>("进入房间失败"));
     }
 
-    private void HandleOperationResponse(int result, Action success,Action fail)
+    private void HandleOperationResponse(int result, Action success, Action fail)
     {
         model.isWaitingServerResponse = false;
         view.SetInteractionState(true);
@@ -74,6 +75,10 @@ public class HomePanelController
     #endregion
 
     #region 用户操作处理
+    public void HandleFace()
+    {
+        PanelManager.Open<FacePanelView>();
+    }
     public void HandleCreateRoom()
     {
         if (!ValidateOperation()) return;

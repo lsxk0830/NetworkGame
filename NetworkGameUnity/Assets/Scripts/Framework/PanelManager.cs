@@ -25,7 +25,7 @@ public static class PanelManager
         Addressables.LoadAssetsAsync<GameObject>("UIPanel", panel =>
         {
             panelCache.Add(panel.name, panel);
-            //Debug.Log($"加载面板：{panel.name}");
+            Debug.Log($"加载面板：{panel.name}");
             if (panel.name == typeof(LoginPanel).FullName)
                 EventSystem.InvokeEvent(Events.PanelLoadSuccess); // 触发面板加载成功事件
         }).Completed += operation => { Addressables.Release(operation); };
