@@ -61,7 +61,7 @@ public class UploadController : ControllerBase
             .FirstOrDefaultAsync(u => u.ID == id);
 
         return user != null
-            ? Ok(new { user.ID, user.UserName, AvatarUrl = $"/api/images/{user.AvatarPath}" })
+            ? Ok(new { user.ID, user.Name, AvatarUrl = $"/api/images/{user.AvatarPath}" })
             : NotFound();
     }
 
@@ -78,7 +78,7 @@ public class UploadController : ControllerBase
             .Select(u => new
             {
                 u.ID,
-                u.UserName,
+                u.Name,
                 AvatarUrl = $"/api/images/{u.AvatarPath}"
             }).ToListAsync();
 
@@ -89,7 +89,7 @@ public class UploadController : ControllerBase
 // AppDbContext.cs
 public class AppDbContext : DbContext
 {
-    public DbSet<PlayerData> Users { get; set; }
+    public DbSet<User> Users { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 }

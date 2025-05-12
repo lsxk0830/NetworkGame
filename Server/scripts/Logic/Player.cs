@@ -3,7 +3,7 @@
 /// </summary>
 public class Player
 {
-    public string id = "";
+    public long id ;
 
     /// <summary>
     /// 客户端状态ClientState
@@ -13,7 +13,7 @@ public class Player
     /// <summary>
     /// 数据库数据
     /// </summary>
-    public PlayerData data;
+    public User data;
 
     public Player(ClientState state)
     {

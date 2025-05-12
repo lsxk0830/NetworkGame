@@ -1,218 +1,203 @@
 using MySql.Data.MySqlClient;
-using Newtonsoft.Json;
+using System.Data;
 using System.Text.RegularExpressions;
 
-/// <summary>
-/// 用于处理数据库相关事务
-/// 连接MySQL数据库、Register、创建角色、获取玩家数据、更新角色数据、检测用户名密码
-/// </summary>
 public class DbManager
 {
+    private static MySqlConnection _connection;
+    private const string DefaultAvatar = "default_avatar.png";
+
     /// <summary>
-    /// 数据库连接对象
+    /// 数据库连接（使用自动重连）
     /// </summary>
-    public static MySqlConnection mysql;
-
-    /// <summary>
-    /// 连接MySQL数据库
-    /// </summary>m>
-    public static bool Connect(string db, string ip, int port, string user, string pw)
+    public static void Connect(string server, string database, uint port, string uid, string password)
     {
-        mysql = new MySqlConnection();
-        string s = $"Database={db};Data Source={ip};port={port};User Id={user};Password={pw}";
-        mysql.ConnectionString = s;
+        var builder = new MySqlConnectionStringBuilder
+        {
+            Server = server,
+            Database = database,
+            Port = port,
+            UserID = uid,
+            Password = password,
+            CharacterSet = "utf8mb4",
+            SslMode = MySqlSslMode.Preferred,
+            Pooling = true,
+            MinimumPoolSize = 5,
+            MaximumPoolSize = 100
+        };
 
-        try // 连接
+        _connection = new MySqlConnection(builder.ToString());
+
+        try
         {
-            mysql.Open();
-            Console.WriteLine("[数据库] Connect succ");
-            return true;
+            _connection.Open();
+            InitializeDatabase();
+            Console.WriteLine($"Database connected! Thread: {Environment.CurrentManagedThreadId}");
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Console.WriteLine("[数据库] Connect fail," + e.Message);
-            return false;
+            Console.WriteLine($"Connection error: {ex.Message}");
         }
     }
 
     /// <summary>
-    /// 注册
+    /// 初始化数据库结构
     /// </summary>
-    public static bool Register(string id, string pw)
+    private static void InitializeDatabase()
     {
-        if (!DbManager.IsSafeString(id))
-        {
-            Console.WriteLine("[数据库] Register fail, id not safe");
-            return false;
-        }
-        if (!DbManager.IsSafeString(pw))
-        {
-            Console.WriteLine("[数据库] Register fail, pw not safe");
-            return false;
-        }
-        if (!IsAccountExist(id)) //能否注册
-        {
-            Console.WriteLine("[数据库] Register fail, id exist");
-            return false;
-        }
-        //写入数据库User表
-        string sql = string.Format("insert into account set id ='{0}' ,pw ='{1}';", id, pw);
+        ExecuteNonQuery(@"
+            CREATE TABLE IF NOT EXISTS Account (
+                ID BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                Name VARCHAR(255) UNIQUE NOT NULL,
+                PW CHAR(64) NOT NULL COMMENT 'SHA256哈希值',
+                Coin INT UNSIGNED DEFAULT 0,
+                Diamond INT UNSIGNED DEFAULT 0,
+                Win INT UNSIGNED DEFAULT 0,
+                Lost INT UNSIGNED DEFAULT 0,
+                AvatarPath VARCHAR(255) DEFAULT 'default_avatar.png',
+                CreateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                LastLogin TIMESTAMP NULL,
+                INDEX idx_coin (Coin),
+                INDEX idx_diamond (Diamond)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    }
+
+    /// <summary>
+    /// 用户注册（返回用户ID）
+    /// </summary>
+    public static long Register(string name, string password)
+    {
+        if (!ValidateName(name) || !ValidatePassword(password))
+            return -1;
+
+        const string sql = @"
+            INSERT INTO Account 
+            (Name, PW, Coin, Diamond, AvatarPath)
+            VALUES
+            (@name, SHA2(@password, 256), 100, 50, @avatar)
+            RETURNING ID;";
+
         try
         {
-            MySqlCommand cmd = new MySqlCommand(sql, mysql);
-            cmd.ExecuteNonQuery();
-            return true;
+            using var cmd = new MySqlCommand(sql, _connection);
+            cmd.Parameters.AddWithValue("@name", name);
+            cmd.Parameters.AddWithValue("@password", password);
+            cmd.Parameters.AddWithValue("@avatar", DefaultAvatar);
+            return Convert.ToInt64(cmd.ExecuteScalar());
         }
-        catch (Exception e)
+        catch (MySqlException ex) when (ex.Number == 1062)
         {
-            Console.WriteLine("[数据库] Register fail " + e.Message);
-            return false;
+            Console.WriteLine($"用户名已存在: {name}");
+            return -1;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"注册失败: {ex.Message}");
+            return -1;
         }
     }
 
     /// <summary>
-    /// 创建角色
+    /// 用户登录验证（返回完整用户对象）
     /// </summary>
-    public static bool CreatePlayer(string id)
+    public static User Login(string name, string password)
     {
-        if (!DbManager.IsSafeString(id))
-        {
-            Console.WriteLine("[数据库] CreatePlayer fail, id not safe");
-            return false;
-        }
-        PlayerData playerData = new PlayerData(); //序列化
-        string data = JsonConvert.SerializeObject(playerData);
-        //写入数据库
-        string sql = string.Format("insert into player set id ='{0}' ,data ='{1}';", id, data);
-        try
-        {
-            MySqlCommand cmd = new MySqlCommand(sql, mysql);
-            cmd.ExecuteNonQuery();
-            return true;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("[数据库] CreatePlayer err, " + e.Message);
-            return false;
-        }
-    }
+        const string sql = @"
+            SELECT 
+                ID, Name, Coin, Diamond, 
+                Win, Lost, AvatarPath, LastLogin
+            FROM Account 
+            WHERE Name = @name 
+              AND PW = SHA2(@password, 256);";
 
-    /// <summary>
-    /// 获取玩家数据
-    /// </summary>
-    public static PlayerData GetPlayerData(string id)
-    {
-        if (!DbManager.IsSafeString(id))
-        {
-            Console.WriteLine("[数据库] GetPlayerData fail, id not safe");
-            return null;
-        }
-        //sql
-        string sql = string.Format("select * from player where id ='{0}';", id);
         try
         {
-            //查询
-            MySqlCommand cmd = new MySqlCommand(sql, mysql);
-            MySqlDataReader dataReader = cmd.ExecuteReader();
-            if (!dataReader.HasRows)
+            using var cmd = new MySqlCommand(sql, _connection);
+            cmd.Parameters.AddWithValue("@name", name);
+            cmd.Parameters.AddWithValue("@password", password);
+
+            using var reader = cmd.ExecuteReader();
+            if (!reader.Read()) return null;
+
+            return new User
             {
-                dataReader.Close();
-                return null;
-            }
-            //读取
-            dataReader.Read();
-            string data = dataReader.GetString("data");
-            //反序列化
-            PlayerData playerData = JsonConvert.DeserializeObject<PlayerData>(data);
-            dataReader.Close();
-            return playerData;
+                ID = reader.GetInt64("ID"),
+                Name = reader.GetString("Name"),
+                Coin = reader.GetInt32("Coin"),
+                Diamond = reader.GetInt32("Diamond"),
+                Win = reader.GetInt32("Win"),
+                Lost = reader.GetInt32("Lost"),
+                AvatarPath = reader.GetString("AvatarPath"),
+                LastLogin = reader.IsDBNull("LastLogin") ?
+                    DateTime.MinValue : reader.GetDateTime("LastLogin")
+            };
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Console.WriteLine("[数据库] GetPlayerData fail, " + e.Message);
+            Console.WriteLine($"登录失败: {ex.Message}");
             return null;
         }
     }
 
     /// <summary>
-    /// 检测用户名密码
+    /// 更新用户数据（线程安全）
     /// </summary>
-    public static bool CheckPassword(string id, string pw)
+    public static bool UpdateUser(User user)
     {
-        if (!DbManager.IsSafeString(id) || !DbManager.IsSafeString(pw))
-        {
-            Console.WriteLine("[数据库] CheckPassword fail, id or pw not safe");
-            return false;
-        }
-        //查询
-        string sql = string.Format("select * from account where id='{0}' and pw='{1}';", id, pw);
+        const string sql = @"
+            UPDATE Account 
+            SET 
+                Coin = @coin,
+                Diamond = @diamond,
+                Win = @win,
+                Lost = @lost,
+                AvatarPath = @avatar,
+                LastLogin = CURRENT_TIMESTAMP
+            WHERE ID = @id;";
+
         try
         {
-            MySqlCommand cmd = new MySqlCommand(sql, mysql);
-            MySqlDataReader dataReader = cmd.ExecuteReader();
-            bool hasRows = dataReader.HasRows;
-            dataReader.Close();
-            return hasRows;
+            using var cmd = new MySqlCommand(sql, _connection);
+            cmd.Parameters.AddWithValue("@id", user.ID);
+            cmd.Parameters.AddWithValue("@coin", user.Coin);
+            cmd.Parameters.AddWithValue("@diamond", user.Diamond);
+            cmd.Parameters.AddWithValue("@win", user.Win);
+            cmd.Parameters.AddWithValue("@lost", user.Lost);
+            cmd.Parameters.AddWithValue("@avatar", user.AvatarPath);
+
+            return cmd.ExecuteNonQuery() > 0;
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Console.WriteLine("[数据库] CheckPassword err, " + e.Message);
+            Console.WriteLine($"更新失败: {ex.Message}");
             return false;
         }
     }
 
-    /// <summary>
-    /// 更新角色数据
-    /// </summary>
-    public static bool UpdatePlayerData(string id, PlayerData playerData)
+    #region 验证工具
+    private static bool ValidateName(string name)
     {
-        string data = JsonConvert.SerializeObject(playerData);
-        string sql = string.Format("update player set data='{0}' where id ='{1}';", data, id);
-        try //更新
+        return Regex.IsMatch(name, @"^[\p{L}\p{N}]{4,20}$");
+    }
+
+    private static bool ValidatePassword(string password)
+    {
+        return Regex.IsMatch(password, @"^(?=.*[A-Za-z])(?=.*\d).{8,}$");
+    }
+    #endregion
+
+    #region 执行工具
+    private static void ExecuteNonQuery(string sql)
+    {
+        try
         {
-            MySqlCommand cmd = new MySqlCommand(sql, mysql);
+            using var cmd = new MySqlCommand(sql, _connection);
             cmd.ExecuteNonQuery();
-            return true;
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Console.WriteLine("[数据库] UpdatePlayerData err, " + e.Message);
-            return false;
+            Console.WriteLine($"执行失败: {ex.Message}");
         }
     }
-
-    #region 私有方法 防sql注入、是否存在该用户、检测用户名密码
-
-    /// <summary>
-    /// 判定安全字符串,防sql注入
-    /// </summary>
-    private static bool IsSafeString(string str)
-    {
-        return !Regex.IsMatch(str, @"[-|;|,|\/|\(|\)|\[|\]|\}|\{|%|@|\*|!|\']");
-    }
-
-    /// <summary>
-    /// 是否存在该用户
-    /// </summary>
-    private static bool IsAccountExist(string id)
-    {
-        if (!DbManager.IsSafeString(id))
-            return false;
-        string s = string.Format("select * from account where id='{0}';", id); //sql语句
-        try //查询
-        {
-            MySqlCommand cmd = new MySqlCommand(s, mysql);
-            MySqlDataReader dataReader = cmd.ExecuteReader();
-            bool hasRows = dataReader.HasRows;
-            dataReader.Close();
-            return !hasRows;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("[数据库] IsSafeString err, " + e.Message);
-            return false;
-        }
-    }
-
-    #endregion 私有方法 防sql注入、是否存在该用户、检测用户名密码
+    #endregion
 }

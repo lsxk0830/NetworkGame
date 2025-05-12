@@ -46,7 +46,7 @@ public partial class MsgHandler
             other.Send(msgKick);
             NetManager.Close(other.state); //断开连接
         }
-        PlayerData playerData = DbManager.GetPlayerData(msg.id);    //获取玩家数据
+        User playerData = DbManager.GetPlayerData(msg.id);    //获取玩家数据
         if (playerData == null)
         {
             msg.result = 1;
