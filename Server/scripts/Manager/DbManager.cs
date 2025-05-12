@@ -3,18 +3,18 @@ using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 
 /// <summary>
-/// ÓÃÓÚ´¦ÀíÊı¾İ¿âÏà¹ØÊÂÎñ
-/// Á¬½ÓMySQLÊı¾İ¿â¡¢Register¡¢´´½¨½ÇÉ«¡¢»ñÈ¡Íæ¼ÒÊı¾İ¡¢¸üĞÂ½ÇÉ«Êı¾İ¡¢¼ì²âÓÃ»§ÃûÃÜÂë
+/// ç”¨äºå¤„ç†æ•°æ®åº“ç›¸å…³äº‹åŠ¡
+/// è¿æ¥MySQLæ•°æ®åº“ã€Registerã€åˆ›å»ºè§’è‰²ã€è·å–ç©å®¶æ•°æ®ã€æ›´æ–°è§’è‰²æ•°æ®ã€æ£€æµ‹ç”¨æˆ·åå¯†ç 
 /// </summary>
 public class DbManager
 {
     /// <summary>
-    /// Êı¾İ¿âÁ¬½Ó¶ÔÏó
+    /// æ•°æ®åº“è¿æ¥å¯¹è±¡
     /// </summary>
     public static MySqlConnection mysql;
 
     /// <summary>
-    /// Á¬½ÓMySQLÊı¾İ¿â
+    /// è¿æ¥MySQLæ•°æ®åº“
     /// </summary>m>
     public static bool Connect(string db, string ip, int port, string user, string pw)
     {
@@ -22,40 +22,40 @@ public class DbManager
         string s = $"Database={db};Data Source={ip};port={port};User Id={user};Password={pw}";
         mysql.ConnectionString = s;
 
-        try // Á¬½Ó
+        try // è¿æ¥
         {
             mysql.Open();
-            Console.WriteLine("[Êı¾İ¿â] Connect succ");
+            Console.WriteLine("[æ•°æ®åº“] Connect succ");
             return true;
         }
         catch (Exception e)
         {
-            Console.WriteLine("[Êı¾İ¿â] Connect fail," + e.Message);
+            Console.WriteLine("[æ•°æ®åº“] Connect fail," + e.Message);
             return false;
         }
     }
 
     /// <summary>
-    /// ×¢²á
+    /// æ³¨å†Œ
     /// </summary>
     public static bool Register(string id, string pw)
     {
         if (!DbManager.IsSafeString(id))
         {
-            Console.WriteLine("[Êı¾İ¿â] Register fail, id not safe");
+            Console.WriteLine("[æ•°æ®åº“] Register fail, id not safe");
             return false;
         }
         if (!DbManager.IsSafeString(pw))
         {
-            Console.WriteLine("[Êı¾İ¿â] Register fail, pw not safe");
+            Console.WriteLine("[æ•°æ®åº“] Register fail, pw not safe");
             return false;
         }
-        if (!IsAccountExist(id)) //ÄÜ·ñ×¢²á
+        if (!IsAccountExist(id)) //èƒ½å¦æ³¨å†Œ
         {
-            Console.WriteLine("[Êı¾İ¿â] Register fail, id exist");
+            Console.WriteLine("[æ•°æ®åº“] Register fail, id exist");
             return false;
         }
-        //Ğ´ÈëÊı¾İ¿âUser±í
+        //å†™å…¥æ•°æ®åº“Userè¡¨
         string sql = string.Format("insert into account set id ='{0}' ,pw ='{1}';", id, pw);
         try
         {
@@ -65,24 +65,24 @@ public class DbManager
         }
         catch (Exception e)
         {
-            Console.WriteLine("[Êı¾İ¿â] Register fail " + e.Message);
+            Console.WriteLine("[æ•°æ®åº“] Register fail " + e.Message);
             return false;
         }
     }
 
     /// <summary>
-    /// ´´½¨½ÇÉ«
+    /// åˆ›å»ºè§’è‰²
     /// </summary>
     public static bool CreatePlayer(string id)
     {
         if (!DbManager.IsSafeString(id))
         {
-            Console.WriteLine("[Êı¾İ¿â] CreatePlayer fail, id not safe");
+            Console.WriteLine("[æ•°æ®åº“] CreatePlayer fail, id not safe");
             return false;
         }
-        PlayerData playerData = new PlayerData(); //ĞòÁĞ»¯
+        PlayerData playerData = new PlayerData(); //åºåˆ—åŒ–
         string data = JsonConvert.SerializeObject(playerData);
-        //Ğ´ÈëÊı¾İ¿â
+        //å†™å…¥æ•°æ®åº“
         string sql = string.Format("insert into player set id ='{0}' ,data ='{1}';", id, data);
         try
         {
@@ -92,26 +92,26 @@ public class DbManager
         }
         catch (Exception e)
         {
-            Console.WriteLine("[Êı¾İ¿â] CreatePlayer err, " + e.Message);
+            Console.WriteLine("[æ•°æ®åº“] CreatePlayer err, " + e.Message);
             return false;
         }
     }
 
     /// <summary>
-    /// »ñÈ¡Íæ¼ÒÊı¾İ
+    /// è·å–ç©å®¶æ•°æ®
     /// </summary>
     public static PlayerData GetPlayerData(string id)
     {
         if (!DbManager.IsSafeString(id))
         {
-            Console.WriteLine("[Êı¾İ¿â] GetPlayerData fail, id not safe");
+            Console.WriteLine("[æ•°æ®åº“] GetPlayerData fail, id not safe");
             return null;
         }
         //sql
         string sql = string.Format("select * from player where id ='{0}';", id);
         try
         {
-            //²éÑ¯
+            //æŸ¥è¯¢
             MySqlCommand cmd = new MySqlCommand(sql, mysql);
             MySqlDataReader dataReader = cmd.ExecuteReader();
             if (!dataReader.HasRows)
@@ -119,32 +119,32 @@ public class DbManager
                 dataReader.Close();
                 return null;
             }
-            //¶ÁÈ¡
+            //è¯»å–
             dataReader.Read();
             string data = dataReader.GetString("data");
-            //·´ĞòÁĞ»¯
+            //ååºåˆ—åŒ–
             PlayerData playerData = JsonConvert.DeserializeObject<PlayerData>(data);
             dataReader.Close();
             return playerData;
         }
         catch (Exception e)
         {
-            Console.WriteLine("[Êı¾İ¿â] GetPlayerData fail, " + e.Message);
+            Console.WriteLine("[æ•°æ®åº“] GetPlayerData fail, " + e.Message);
             return null;
         }
     }
 
     /// <summary>
-    /// ¼ì²âÓÃ»§ÃûÃÜÂë
+    /// æ£€æµ‹ç”¨æˆ·åå¯†ç 
     /// </summary>
     public static bool CheckPassword(string id, string pw)
     {
         if (!DbManager.IsSafeString(id) || !DbManager.IsSafeString(pw))
         {
-            Console.WriteLine("[Êı¾İ¿â] CheckPassword fail, id or pw not safe");
+            Console.WriteLine("[æ•°æ®åº“] CheckPassword fail, id or pw not safe");
             return false;
         }
-        //²éÑ¯
+        //æŸ¥è¯¢
         string sql = string.Format("select * from account where id='{0}' and pw='{1}';", id, pw);
         try
         {
@@ -156,19 +156,19 @@ public class DbManager
         }
         catch (Exception e)
         {
-            Console.WriteLine("[Êı¾İ¿â] CheckPassword err, " + e.Message);
+            Console.WriteLine("[æ•°æ®åº“] CheckPassword err, " + e.Message);
             return false;
         }
     }
 
     /// <summary>
-    /// ¸üĞÂ½ÇÉ«Êı¾İ
+    /// æ›´æ–°è§’è‰²æ•°æ®
     /// </summary>
     public static bool UpdatePlayerData(string id, PlayerData playerData)
     {
         string data = JsonConvert.SerializeObject(playerData);
         string sql = string.Format("update player set data='{0}' where id ='{1}';", data, id);
-        try //¸üĞÂ
+        try //æ›´æ–°
         {
             MySqlCommand cmd = new MySqlCommand(sql, mysql);
             cmd.ExecuteNonQuery();
@@ -176,15 +176,15 @@ public class DbManager
         }
         catch (Exception e)
         {
-            Console.WriteLine("[Êı¾İ¿â] UpdatePlayerData err, " + e.Message);
+            Console.WriteLine("[æ•°æ®åº“] UpdatePlayerData err, " + e.Message);
             return false;
         }
     }
 
-    #region Ë½ÓĞ·½·¨ ·Àsql×¢Èë¡¢ÊÇ·ñ´æÔÚ¸ÃÓÃ»§¡¢¼ì²âÓÃ»§ÃûÃÜÂë
+    #region ç§æœ‰æ–¹æ³• é˜²sqlæ³¨å…¥ã€æ˜¯å¦å­˜åœ¨è¯¥ç”¨æˆ·ã€æ£€æµ‹ç”¨æˆ·åå¯†ç 
 
     /// <summary>
-    /// ÅĞ¶¨°²È«×Ö·û´®,·Àsql×¢Èë
+    /// åˆ¤å®šå®‰å…¨å­—ç¬¦ä¸²,é˜²sqlæ³¨å…¥
     /// </summary>
     private static bool IsSafeString(string str)
     {
@@ -192,14 +192,14 @@ public class DbManager
     }
 
     /// <summary>
-    /// ÊÇ·ñ´æÔÚ¸ÃÓÃ»§
+    /// æ˜¯å¦å­˜åœ¨è¯¥ç”¨æˆ·
     /// </summary>
     private static bool IsAccountExist(string id)
     {
         if (!DbManager.IsSafeString(id))
             return false;
-        string s = string.Format("select * from account where id='{0}';", id); //sqlÓï¾ä
-        try //²éÑ¯
+        string s = string.Format("select * from account where id='{0}';", id); //sqlè¯­å¥
+        try //æŸ¥è¯¢
         {
             MySqlCommand cmd = new MySqlCommand(s, mysql);
             MySqlDataReader dataReader = cmd.ExecuteReader();
@@ -209,10 +209,10 @@ public class DbManager
         }
         catch (Exception e)
         {
-            Console.WriteLine("[Êı¾İ¿â] IsSafeString err, " + e.Message);
+            Console.WriteLine("[æ•°æ®åº“] IsSafeString err, " + e.Message);
             return false;
         }
     }
 
-    #endregion Ë½ÓĞ·½·¨ ·Àsql×¢Èë¡¢ÊÇ·ñ´æÔÚ¸ÃÓÃ»§¡¢¼ì²âÓÃ»§ÃûÃÜÂë
+    #endregion ç§æœ‰æ–¹æ³• é˜²sqlæ³¨å…¥ã€æ˜¯å¦å­˜åœ¨è¯¥ç”¨æˆ·ã€æ£€æµ‹ç”¨æˆ·åå¯†ç 
 }

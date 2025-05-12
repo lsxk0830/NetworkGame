@@ -6,7 +6,7 @@ public class PlayerData
     /// <summary>
     /// 用户唯一ID
     /// </summary>
-    public string ID;
+    public long ID;
 
     /// <summary>
     /// 用户名
