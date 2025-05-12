@@ -38,7 +38,7 @@ public class NetManager
                 else
                     ReadClientfd(s);
             }
-            Timer();  // 定时
+            //Timer();  // 定时
         }
     }
 

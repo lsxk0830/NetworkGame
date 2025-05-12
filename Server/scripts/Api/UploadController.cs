@@ -43,7 +43,7 @@ public class UploadController : ControllerBase
         return Ok(new { fileName });
     }
 
-    [HttpGet("images/{id}")]
+    [HttpGet("images/{ID}")]
     public IActionResult GetImage(string id)
     {
         var file = Directory.GetFiles(_uploadPath, $"{id}.*").FirstOrDefault();
@@ -52,7 +52,7 @@ public class UploadController : ControllerBase
         return PhysicalFile(file, $"image/{Path.GetExtension(file)[1..]}");
     }
 
-    [HttpGet("users/{id}")]
+    [HttpGet("users/{ID}")]
     public async Task<IActionResult> GetUser(int id)
     {
         var user = await _dbContext.Users

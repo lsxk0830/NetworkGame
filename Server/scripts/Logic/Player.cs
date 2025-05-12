@@ -3,7 +3,7 @@
 /// </summary>
 public class Player
 {
-    public long id ;
+    public long ID;
 
     /// <summary>
     /// 客户端状态ClientState
@@ -31,12 +31,13 @@ public class Player
 
     // 坐标和旋转
     public float x;
+
     public float y;
     public float z;
     public float ex;
     public float ey;
     public float ez;
-        
+
     /// <summary>
     /// 在哪个房间
     /// </summary>

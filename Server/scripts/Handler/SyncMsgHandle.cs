@@ -11,14 +11,14 @@ public partial class MsgHandler
         MsgSyncTank msg = (MsgSyncTank)msgBase;
         Player player = c.player;
         if (player == null) return;
-        // room 
+        // room
         Room room = RoomManager.GetRoom(player.roomId);
         if (room == null) return;
         // status
         if (room.status != Room.Status.FIGHT) return;
         // 是否作弊
         if (Math.Abs(player.x - msg.x) > 5 || Math.Abs(player.y - msg.y) > 5 || Math.Abs(player.z - msg.z) > 5)
-            Console.WriteLine($"疑似作弊；{player.id}");
+            Console.WriteLine($"疑似作弊；{player.ID}");
         // 更新信息
         player.x = msg.x;
         player.y = msg.y;
@@ -27,7 +27,7 @@ public partial class MsgHandler
         player.ey = msg.ey;
         player.ez = msg.ez;
         // 广播
-        msg.id = player.id;
+        msg.id = player.ID;
         room.Broadcast(msg);
     }
 
@@ -39,12 +39,12 @@ public partial class MsgHandler
         MsgFire msg = (MsgFire)msgBase;
         Player player = c.player;
         if (player == null) return;
-        // room 
+        // room
         Room room = RoomManager.GetRoom(player.roomId);
         if (room == null) return;
         // status
         if (room.status != Room.Status.FIGHT) return;
-        msg.id = player.id;
+        msg.id = player.ID;
         room.Broadcast(msg);
     }
 
@@ -59,13 +59,13 @@ public partial class MsgHandler
         // targetPlayer
         Player targetPlayer = PlayerManager.GetPlayer(msg.targetId);
         if (targetPlayer == null) return;
-        // room 
+        // room
         Room room = RoomManager.GetRoom(player.roomId);
         if (room == null) return;
         // status
         if (room.status != Room.Status.FIGHT) return;
         // 发送者校验
-        if (player.id != msg.id) return;
+        if (player.ID != msg.id) return;
         // 状态
         int damage = 35;
         targetPlayer.hp -= damage;

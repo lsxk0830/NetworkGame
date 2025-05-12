@@ -41,36 +41,36 @@ public class RoomManager
         return true;
     }
 
-    /// <summary>
-    /// 生成MsgGetRoomList协议
-    /// </summary>
-    public static MsgBase ToMsg()
-    {
-        MsgGetRoomList msg = new MsgGetRoomList();
-        int count = rooms.Count;
-        msg.rooms = new RoomInfo[count];
-        //rooms
-        int i = 0;
-        foreach (Room room in rooms.Values)
-        {
-            RoomInfo roomInfo = new RoomInfo
-            {
-                id = room.id,
-                count = room.playerIds.Count,
-                status = (int)room.status
-            };
-            msg.rooms[i] = roomInfo;
-            i++;
-        }
-        return msg;
-    }
+    //    /// <summary>
+    //    /// 生成MsgGetRoomList协议
+    //    /// </summary>
+    //    public static MsgBase ToMsg()
+    //    {
+    //        MsgGetRoomList msg = new MsgGetRoomList();
+    //        int count = rooms.Count;
+    //        msg.rooms = new RoomInfo[count];
+    //        //rooms
+    //        int i = 0;
+    //        foreach (Room room in rooms.Values)
+    //        {
+    //            RoomInfo roomInfo = new RoomInfo
+    //            {
+    //                id = room.id,
+    //                count = room.playerIds.Count,
+    //                status = (int)room.status
+    //            };
+    //            msg.rooms[i] = roomInfo;
+    //            i++;
+    //        }
+    //        return msg;
+    //    }
 
-    /// <summary>
-    /// Update
-    /// </summary>
-    public static void Update()
-    {
-        foreach (Room room in rooms.Values)
-            room.Update();
-    }
+    //    /// <summary>
+    //    /// Update
+    //    /// </summary>
+    //    public static void Update()
+    //    {
+    //        foreach (Room room in rooms.Values)
+    //            room.Update();
+    //    }
 }

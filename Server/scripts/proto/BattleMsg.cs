@@ -5,7 +5,8 @@
 /// </summary>
 public class MsgEnterBattle : MsgBase
 {
-    public MsgEnterBattle() { protoName = "MsgEnterBattle"; }
+    public MsgEnterBattle()
+    { protoName = "MsgEnterBattle"; }
 
     /// <summary>
     /// 服务器返回的坦克列表信息
@@ -23,7 +24,8 @@ public class MsgEnterBattle : MsgBase
 /// </summary>
 public class MsgBattleResult : MsgBase
 {
-    public MsgBattleResult() { protoName = "MsgBattleResult"; }
+    public MsgBattleResult()
+    { protoName = "MsgBattleResult"; }
 
     /// <summary>
     /// 获胜的阵营
@@ -36,10 +38,11 @@ public class MsgBattleResult : MsgBase
 /// </summary>
 public class MsgLeaveBattle : MsgBase
 {
-    public MsgLeaveBattle() { protoName = "MsgLeaveBattle"; }
+    public MsgLeaveBattle()
+    { protoName = "MsgLeaveBattle"; }
 
     /// <summary>
     /// 服务器返回的玩家Id
     /// </summary>
-    public string id { get; set; } = "";
+    public long id { get; set; }
 }

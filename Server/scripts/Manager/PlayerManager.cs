@@ -4,12 +4,12 @@
 public class PlayerManager
 {
     // 玩家列表
-    private static Dictionary<string, Player> players = new Dictionary<string, Player>();
+    private static Dictionary<long, Player> players = new Dictionary<long, Player>();
 
     /// <summary>
     /// 玩家是否在线
     /// </summary>
-    public static bool IsOnline(string id)
+    public static bool IsOnline(long id)
     {
         return players.ContainsKey(id);
     }
@@ -17,7 +17,7 @@ public class PlayerManager
     /// <summary>
     /// 获取玩家
     /// </summary>
-    public static Player GetPlayer(string id)
+    public static Player GetPlayer(long id)
     {
         if (players.ContainsKey(id))
             return players[id];
@@ -27,7 +27,7 @@ public class PlayerManager
     /// <summary>
     /// 添加玩家
     /// </summary>
-    public static void AddPlayer(string id, Player player)
+    public static void AddPlayer(long id, Player player)
     {
         players.Add(id, player);
     }
@@ -35,7 +35,7 @@ public class PlayerManager
     /// <summary>
     /// 删除玩家
     /// </summary>
-    public static void RemovePlayer(string id)
+    public static void RemovePlayer(long id)
     {
         players.Remove(id);
     }
@@ -45,7 +45,7 @@ public class PlayerManager
     /// </summary>
     public static void Broadcast(MsgBase msg)
     {
-        foreach (string id in players.Keys)
+        foreach (long id in players.Keys)
         {
             Player player = GetPlayer(id);
             player.Send(msg);

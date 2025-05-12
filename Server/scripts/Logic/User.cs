@@ -42,25 +42,4 @@ public class User
     /// 上次登录时间
     /// </summary>
     public DateTime LastLogin { get; set; }
-
-    /// <summary>
-    /// 胜率
-    /// </summary>
-    public float WinRate =>
-        (Win + Lost) == 0 ? 0 : (float)Win / (Win + Lost) * 100;
-
-    /// <summary>
-    /// 添加金币
-    /// </summary>
-    public void AddCoins(int amount) => Coin = Math.Max(Coin + amount, 0);
-
-    /// <summary>
-    /// 消费钻石
-    /// </summary>
-    public bool SpendDiamonds(int amount)
-    {
-        if (Diamond < amount) return false;
-        Diamond -= amount;
-        return true;
-    }
 }
