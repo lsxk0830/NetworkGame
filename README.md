@@ -28,3 +28,7 @@ HTTP服务器->>+文件存储: 读取文件数据
 HTTP服务器-->>-Unity客户端: 返回图片(200 OK with image/webp)
 ```
 
+#### 文件安装
+
+[坦克大战](https://cloud.189.cn/t/v2yU7rjQjuuq（访问码：k1yq）)
+
