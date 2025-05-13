@@ -1,6 +1,5 @@
 using System;
 using TMPro;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class TipPanel : BasePanel
@@ -12,7 +11,6 @@ public class TipPanel : BasePanel
 
     public override void OnInit()
     {
-        panelName = "TipPanel";
         layer = PanelManager.Layer.Tip;
     }
 

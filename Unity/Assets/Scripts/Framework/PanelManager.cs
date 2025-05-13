@@ -26,7 +26,7 @@ public static class PanelManager
         {
             panelCache.Add(panel.name, panel);
             //Debug.Log($"加载面板：{panel.name}");
-            if (panel.name == typeof(LoginPanel).FullName)
+            if (panel.name == typeof(LoginPanelView).FullName)
                 EventSystem.InvokeEvent(Events.PanelLoadSuccess); // 触发面板加载成功事件
         }).Completed += operation => { Addressables.Release(operation); };
     }
@@ -36,7 +36,7 @@ public static class PanelManager
     /// </summary>
     public static void Open<T>(params object[] para) where T : BasePanel
     {
-        string panelName = typeof(T).ToString();
+        string panelName = typeof(T).FullName;
         if (panels.ContainsKey(panelName))
         {
             panels[panelName].OnShow();
@@ -48,7 +48,7 @@ public static class PanelManager
         GameObject go = GameObject.Instantiate(panelCache[panelName]);
         go.name = panelName;
         BasePanel panel = go.AddComponent<T>();
-        go.transform.SetParent(layers[panel.layer],false);
+        go.transform.SetParent(layers[panel.layer], false);
         panels.Add(panelName, panel);
         panel.OnInit();
         panel.OnShow(para);

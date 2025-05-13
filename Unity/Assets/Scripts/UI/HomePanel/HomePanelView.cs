@@ -28,7 +28,6 @@ public class HomePanelView : BasePanel
     #region 生命周期
     public override void OnInit()
     {
-        panelName = "HomePanelView";
         layer = PanelManager.Layer.Panel;
 
         // 寻找组件

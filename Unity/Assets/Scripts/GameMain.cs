@@ -43,7 +43,7 @@ public class GameMain : MonoBehaviour
     private void OnPanelLoadSuccess()
     {
         Debug.Log("打开登录界面");
-        PanelManager.Open<LoginPanel>();
+        PanelManager.Open<LoginPanelView>();
         EventSystem.RemoveEvent(Events.PanelLoadSuccess, OnPanelLoadSuccess);
     }
 

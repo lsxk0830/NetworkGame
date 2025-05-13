@@ -12,7 +12,6 @@ public class RegisterPanel : BasePanel
 
     public override void OnInit() // 初始化
     {
-        panelName = "RegisterPanel";
         layer = PanelManager.Layer.Panel;
     }
 

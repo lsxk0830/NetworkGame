@@ -18,7 +18,7 @@ MonoBehaviour:
   m_GUID: 8a493f9bcf1bb7a4281d487dceb67e7d
   m_SerializeEntries:
   - m_GUID: 6ef8bb197ad66694197fc0e5fff4c4d6
-    m_Address: LoginPanel
+    m_Address: LoginPanelView
     m_ReadOnly: 0
     m_SerializedLabels:
     - UIPanel

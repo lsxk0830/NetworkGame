@@ -17,7 +17,6 @@ public class ResultPanel : BasePanel
 
     public override void OnInit()
     {
-        panelName = "ResultPanel";
         layer = PanelManager.Layer.Tip;
     }
 
