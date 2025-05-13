@@ -8,23 +8,23 @@
 
 ```mermaid
 sequenceDiagram
-    participant Client
-    participant Controller
-    participant Database
+    participant Untiy
+    participant 服务器
+    participant 数据库
     
-    Client->>Controller: POST /api/auth/login
-    Controller->>Database: 查询用户
-    Database-->>Controller: 返回用户数据
+    Untiy->>服务器: POST /api/auth/login
+    服务器->>数据库: 查询用户
+    数据库-->>服务器: 返回用户数据
     alt 用户存在
-        Controller->>Controller: 验证密码哈希
+        服务器->>服务器: 验证密码哈希
         alt 密码正确
-            Controller->>Database: 更新最后登录时间
-            Controller-->>Client: 200 + 用户数据
+            服务器->>数据库: 更新最后登录时间
+            服务器-->>Untiy: 200 + 用户数据
         else 密码错误
-            Controller-->>Client: 401 错误
+            服务器-->>Untiy: 401 错误
         end
     else 用户不存在
-        Controller-->>Client: 401 错误
+        服务器-->>Untiy: 401 错误
     end
 ```
 
@@ -54,5 +54,5 @@ HTTP服务器-->>-Unity客户端: 返回图片(200 OK with image/webp)
 
 #### 文件安装
 
-[坦克大战](https://cloud.189.cn/t/v2yU7rjQjuuq（访问码：k1yq）)
+[坦克大战](https://cloud.189.cn/t/v2yU7rjQjuuq（访问码：k1yq）)：https://cloud.189.cn/t/v2yU7rjQjuuq（访问码：k1yq）
 

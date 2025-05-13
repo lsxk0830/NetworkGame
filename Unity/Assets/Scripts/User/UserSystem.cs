@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 
+/// <summary>
+/// 用户系统，主要存放所有用户的信息
+/// </summary>
 public class UserSystem : Singleton<UserSystem>
 {
     public Dictionary<long, User> Users;

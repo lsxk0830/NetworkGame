@@ -3,6 +3,7 @@ using UnityEngine;
 public class GameMain : MonoBehaviour
 {
     public static string id = ""; // 玩家角色ID
+    public static bool NetConnect = false;
 
     private void Awake()
     {
@@ -25,6 +26,7 @@ public class GameMain : MonoBehaviour
 
     private void OnConnectSuccess(string msg)
     {
+        NetConnect = true;
         Debug.Log("服务器连接成功");
     }
 

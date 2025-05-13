@@ -57,7 +57,10 @@ public class LoginPanelView : BasePanel
 
     private void OnLoginClick()
     {
-        controller.OnLogin(idInput.text, pwInput.text);
+        if (!GameMain.NetConnect)
+            PanelManager.Open<TipPanel>("服务器未连接成功,请检查网络");
+        else
+            controller.OnLogin(idInput.text, pwInput.text);
     }
 
     private void OnRegisterClick()

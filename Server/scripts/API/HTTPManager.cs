@@ -7,7 +7,11 @@ public class HTTPManager
     public static async Task StartAsync(CancellationToken token)
     {
         using var listener = new HttpListener();
-        listener.Prefixes.Add("http://*:5000/");
+#if DEBUG
+        listener.Prefixes.Add("http://127.0.0.1:5000/"); // "http://*:5000/"绑定到所有地址.*需要管理员权限
+#else
+        listener.Prefixes.Add("http://0.0.0.0:5000/");
+#endif
         listener.Start();
 
         try
@@ -35,7 +39,7 @@ public class HTTPManager
         }
     }
 
-    static async Task ProcessRequestAsync(HttpListenerContext context, CancellationToken token)
+    private static async Task ProcessRequestAsync(HttpListenerContext context, CancellationToken token)
     {
         try
         {
