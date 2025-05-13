@@ -25,7 +25,7 @@ public static class PanelManager
         Addressables.LoadAssetsAsync<GameObject>("UIPanel", panel =>
         {
             panelCache.Add(panel.name, panel);
-            Debug.Log($"加载面板：{panel.name}");
+            //Debug.Log($"加载面板：{panel.name}");
             if (panel.name == typeof(LoginPanel).FullName)
                 EventSystem.InvokeEvent(Events.PanelLoadSuccess); // 触发面板加载成功事件
         }).Completed += operation => { Addressables.Release(operation); };
@@ -59,11 +59,23 @@ public static class PanelManager
     /// <summary>
     /// 关闭面板
     /// </summary>
-    public static void Close(string name)
+    public static void Close<T>()
     {
-        if (!panels.ContainsKey(name)) // 没有打开
+        string panelName = typeof(T).FullName;
+        if (!panels.ContainsKey(panelName)) // 没有打开
             return;
-        BasePanel panel = panels[name];
+        BasePanel panel = panels[panelName];
+        panel.OnClose();
+    }
+
+    /// <summary>
+    /// 关闭面板
+    /// </summary>
+    public static void Close(string panelName)
+    {
+        if (!panels.ContainsKey(panelName)) // 没有打开
+            return;
+        BasePanel panel = panels[panelName];
         panel.OnClose();
     }
 }

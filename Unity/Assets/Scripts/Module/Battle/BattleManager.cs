@@ -162,8 +162,8 @@ public class BattleManager : MonoBehaviour
     public static void EnterBattle(MsgEnterBattle msg)
     {
         Reset(); // 重置
-        PanelManager.Close("RoomPanel"); // 可以放到房间系统的监听中
-        PanelManager.Close("ResultPanel");
+        PanelManager.Close<RoomPanel>(); // 可以放到房间系统的监听中
+        PanelManager.Close<ResultPanel>();
         foreach (var tank in msg.tanks) // 生成坦克
         {
             GenerateTank(tank);

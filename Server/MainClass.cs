@@ -17,13 +17,12 @@
             #region 测试数据库
 
             // 注册新用户
-            //long userId = DbManager.Register("Test1", "QQqqq");
+            //long userId = DbManager.Register("Test2", "QQqq123456");
 
-            //// 用户登录
-            //User user = DbManager.Login("user123", "Pass123!");
+            // 用户登录
+            //User user = DbManager.Login("Test2", "QQqq123456");
             //if (user != null)
             //{
-            //    更新数据
             //    user.Win++;
             //    user.Coin++;
             //    DbManager.UpdateUser(user);

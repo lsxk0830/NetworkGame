@@ -1,6 +1,7 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using Newtonsoft.Json;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -70,7 +71,7 @@ public class LoginPanel : BasePanel
     private void OnLoginClick()
     {
 #if UNITY_EDITOR
-        idInput.text = "Test1";
+        idInput.text = "Test2";
         pwInput.text = "QQqq123456";
 #endif
         if (idInput.text == "" || pwInput.text == "")
@@ -81,7 +82,7 @@ public class LoginPanel : BasePanel
         MsgLogin LoginData = new MsgLogin()
         {
             Name = idInput.text,
-            PW = Sha256(pwInput.text)
+            PW = pwInput.text
         };
         HTTPManager.Instance.Post(API.Login, LoginData, LoginCallback).Forget();
     }
@@ -115,7 +116,20 @@ public class LoginPanel : BasePanel
 
     private void LoginCallback(string result)
     {
-        this.Log(result);
+        //Debug.LogError($"{result}");
+        Accept<User> accept = JsonConvert.DeserializeObject<Accept<User>>(result);
+        if (accept == null)
+        {
+            PanelManager.Open<TipPanel>("服务器异常，返回空数据");
+            Debug.LogError($"登录错误:{result}");
+            return;
+        }
+        if (accept.code == 200)
+        {
+            UserSystem.Instance.Init(accept.data);
+            PanelManager.Close<LoginPanel>();
+            PanelManager.Open<HomePanelView>();
+        }
     }
 
     // /// <summary>
@@ -142,15 +156,4 @@ public class LoginPanel : BasePanel
     //     else
     //         PanelManager.Open<TipPanel>("登录失败");
     // }
-
-    /// <summary>
-    /// 客户端预处理（SHA256哈希）
-    /// </summary>
-    public string Sha256(string input)
-    {
-        using var sha = SHA256.Create();
-        var bytes = Encoding.UTF8.GetBytes(input);
-        var hash = sha.ComputeHash(bytes);
-        return BitConverter.ToString(hash).Replace("-", "").ToLower();
-    }
 }

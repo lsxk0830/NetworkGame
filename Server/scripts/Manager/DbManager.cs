@@ -121,7 +121,7 @@ public class DbManager
         const string sql = @"
             SELECT
                 ID, Name, Coin, Diamond,
-                Win, Lost, AvatarPath, LastLogin
+                Win, Lost, AvatarPath, CreateTime, LastLogin
             FROM Account
             WHERE Name = @name
               AND PW = SHA2(@password, 256);";
@@ -147,6 +147,7 @@ public class DbManager
                             Win = reader.GetInt32("Win"),
                             Lost = reader.GetInt32("Lost"),
                             AvatarPath = reader.GetString("AvatarPath"),
+                            CreateTime = reader.GetDateTime("CreateTime"),
                             LastLogin = DateTime.Now
                         };
                     }

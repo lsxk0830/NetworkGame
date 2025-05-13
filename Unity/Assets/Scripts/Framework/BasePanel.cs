@@ -10,7 +10,7 @@ public class BasePanel : MonoBehaviour
     /// </summary>
     public void Close()
     {
-        string name = this.GetType().ToString();
+        string name = this.GetType().FullName;
         //Debug.Log($"关闭：{name}");
         PanelManager.Close(name);
     }

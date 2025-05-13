@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Newtonsoft.Json;
+using System.Net;
 using System.Text;
 
 public class HTTPManager
@@ -43,21 +44,37 @@ public class HTTPManager
             context.Response.AddHeader("Access-Control-Allow-Methods", "POST");
             context.Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
 
-            if (context.Request.HttpMethod == "POST" &&
-                context.Request.Url.AbsolutePath == "/api/login")
+            if (context.Request.HttpMethod == "POST" && context.Request.Url.AbsolutePath == "/api/login")
             {
                 // 读取请求内容
                 using var reader = new StreamReader(context.Request.InputStream);
                 string requestBody = await reader.ReadToEndAsync();
-
                 Console.WriteLine($"Post接收：{requestBody}");
+                byte[] buffer;
 
-                // 构造响应
-                byte[] buffer = Encoding.UTF8.GetBytes($"Received: {requestBody}");
+                if (string.IsNullOrEmpty(requestBody))
+                {
+                    await SendResponse(context, 400, "Bad Request", "用户名或密码不能为空");
+                    return;
+                }
+                // 解析请求数据
+                LoginRequest? request = JsonConvert.DeserializeObject<LoginRequest>(requestBody);
+                if (request == null || string.IsNullOrEmpty(request.Name) || string.IsNullOrEmpty(request.PW))
+                {
+                    await SendResponse(context, 400, "Bad Request", "用户名或密码不能为空");
+                    return;
+                }
+                //模拟数据库查询
+                User user = DbManager.Login(request.Name, request.PW);
+                if (user == null)
+                {
+                    await SendResponse(context, 401, "Unauthorized", "用户名或密码错误");
+                    return;
+                }
 
-                context.Response.ContentType = "text/plain";
-                context.Response.ContentLength64 = buffer.Length;
-                await context.Response.OutputStream.WriteAsync(buffer);
+                //登录成功，返回用户信息 + Token
+                //user.token = GenerateJwtToken(user.Username) // 生成 JWT Token（示例）
+                await SendResponse(context, 200, "OK", user);
             }
             else
             {
@@ -76,5 +93,28 @@ public class HTTPManager
         {
             context.Response.Close();
         }
+    }
+
+    /// <summary>
+    /// 辅助方法：发送标准化的 JSON 响应
+    /// </summary>
+    private static async Task SendResponse(HttpListenerContext context, int statusCode, string message, object data)
+    {
+        var response = new
+        {
+            code = statusCode,
+            message = message,
+            data = data
+        };
+
+        string jsonResponse = JsonConvert.SerializeObject(response);
+        byte[] buffer = Encoding.UTF8.GetBytes(jsonResponse);
+
+        context.Response.StatusCode = statusCode;
+        context.Response.ContentType = "application/json";
+        context.Response.ContentLength64 = buffer.Length;
+
+        await context.Response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+        context.Response.OutputStream.Close();
     }
 }
