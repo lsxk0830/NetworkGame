@@ -1,0 +1,86 @@
+using Newtonsoft.Json;
+using UnityEngine;
+
+public class RegisterPanelController
+{
+    private RegisterPanelView view;
+
+    public RegisterPanelController(RegisterPanelView view)
+    {
+        this.view = view;
+    }
+
+    public void OnRegister(string Name, string PW, string RePW)
+    {
+        if (Name == "" || PW == "")
+        {
+            PanelManager.Open<TipPanel>("用户名和密码不能为空");
+            return;
+        }
+        if (PW != RePW)
+        {
+            PanelManager.Open<TipPanel>("两次输入的密码不相同");
+            return;
+        }
+        MsgRegister RegisterData = new MsgRegister()
+        {
+            Name = Name,
+            PW = PW
+        };
+        HTTPManager.Instance.Post(API.Register, RegisterData, RegisteSuccess, RegisterFail).Forget();
+    }
+
+    #region 网络请求
+
+    private void RegisteSuccess(string result)
+    {
+        if (string.IsNullOrWhiteSpace(result))
+        {
+            PanelManager.Open<TipPanel>("服务器异常，返回空数据");
+            Debug.LogError($"登录错误:{result}");
+        }
+
+        Accept<User> accept = JsonConvert.DeserializeObject<Accept<User>>(result);
+        if (accept == null)
+        {
+            PanelManager.Open<TipPanel>("服务器异常，返回空数据");
+            Debug.LogError($"登录错误:{result}");
+            return;
+        }
+        if (accept.code == 200)
+        {
+            Debug.Log("注册成功");
+            PanelManager.Open<TipPanel>("注册成功");
+            view.OnClose();
+        }
+    }
+
+    private void RegisterFail(long code, string error)
+    {
+        switch (code)
+        {
+            case 400:
+                PanelManager.Open<TipPanel>($"注册失败,错误码:{code},error");
+                Debug.LogError($"注册失败,错误码:{code},error");
+                break;
+            case 401:
+                PanelManager.Open<TipPanel>($"注册失败,错误码:{code},error");
+                Debug.LogError($"注册失败,错误码:{code},error");
+                break;
+            case 429:
+                PanelManager.Open<TipPanel>($"注册失败,错误码:{code},error");
+                Debug.LogError($"注册失败,错误码:{code},error");
+                break;
+            case 500:
+                PanelManager.Open<TipPanel>($"注册失败,错误码:{code},error");
+                Debug.LogError($"注册失败,错误码:{code},error");
+                break;
+            default:
+                PanelManager.Open<TipPanel>($"注册失败,错误码:{code},error");
+                Debug.LogError($"注册失败,错误码:{code},error");
+                break;
+        }
+    }
+
+    #endregion
+}

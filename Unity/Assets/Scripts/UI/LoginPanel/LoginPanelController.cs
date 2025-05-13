@@ -36,10 +36,6 @@ public class LoginPanelController
     /// </summary>
     public void OnLogin(string name, string pw)
     {
-// #if UNITY_EDITOR
-//         name = "Test2";
-//         pw = "QQqq123456";
-// #endif
         if (name == "" || pw == "")
         {
             PanelManager.Open<TipPanel>("用户名和密码不能为空");
@@ -50,7 +46,7 @@ public class LoginPanelController
             Name = name,
             PW = pw
         };
-        HTTPManager.Instance.Post(API.Login, LoginData, LoginCallback).Forget();
+        HTTPManager.Instance.Post(API.Login, LoginData, LoginSuccess, LoginFail).Forget();
     }
 
     /// <summary>
@@ -58,7 +54,7 @@ public class LoginPanelController
     /// </summary>
     public void OnRegister()
     {
-        PanelManager.Open<RegisterPanel>();
+        PanelManager.Open<RegisterPanelView>();
     }
 
     /// <summary>
@@ -93,7 +89,7 @@ public class LoginPanelController
 
     #region 网络消息回调
 
-    private void LoginCallback(string result)
+    private void LoginSuccess(string result)
     {
         if (string.IsNullOrWhiteSpace(result))
         {
@@ -121,6 +117,33 @@ public class LoginPanelController
                 PlayerPrefs.SetString(view.GetName(), view.GetPW());
                 model.LastLoginUser = $"{view.GetName()},{view.GetPW()}";
             }
+        }
+    }
+
+    private void LoginFail(long code, string error)
+    {
+        switch (code)
+        {
+            case 400:
+                PanelManager.Open<TipPanel>("请求格式错误");
+                Debug.LogError("请求格式错误");
+                break;
+            case 401:
+                PanelManager.Open<TipPanel>("用户名或密码错误");
+                Debug.LogError("用户名或密码错误");
+                break;
+            case 429:
+                PanelManager.Open<TipPanel>("尝试次数过多，请稍后再试");
+                Debug.LogError("尝试次数过多，请稍后再试");
+                break;
+            case 500:
+                PanelManager.Open<TipPanel>("服务器开小差了，请联系开发人员");
+                Debug.LogError("服务器开小差了，请联系开发人员");
+                break;
+            default:
+                PanelManager.Open<TipPanel>($"连接失败: {error}");
+                Debug.LogError($"连接失败: {error}");
+                break;
         }
     }
 

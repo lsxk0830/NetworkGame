@@ -23,7 +23,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - UIPanel
   - m_GUID: 4372e5fa582b4964388fd8d053c70a86
-    m_Address: RegisterPanel
+    m_Address: RegisterPanelView
     m_ReadOnly: 0
     m_SerializedLabels:
     - UIPanel
