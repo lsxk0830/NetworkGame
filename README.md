@@ -1,10 +1,34 @@
 # Unity3D网络游戏实战笔记
 
 - 计划：登录等一系列操作通过HTTP请求操作，进入游戏通过Socket操作
-
 - 目前：一直Socket操作
+- 
 
-  
+#### 登录
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Controller
+    participant Database
+    
+    Client->>Controller: POST /api/auth/login
+    Controller->>Database: 查询用户
+    Database-->>Controller: 返回用户数据
+    alt 用户存在
+        Controller->>Controller: 验证密码哈希
+        alt 密码正确
+            Controller->>Database: 更新最后登录时间
+            Controller-->>Client: 200 + 用户数据
+        else 密码错误
+            Controller-->>Client: 401 错误
+        end
+    else 用户不存在
+        Controller-->>Client: 401 错误
+    end
+```
+
+
 
 #### 头像上传流程
 

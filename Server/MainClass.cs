@@ -2,7 +2,8 @@
 {
     internal class MainClass
     {
-        private static void Main(string[] args)
+        private static CancellationTokenSource _cts = new();
+        private static async Task Main(string[] args)
         {
 #if DEBUG
             if (!DbManager.Connect("tankdb", "127.0.0.1", 3306, "root", ""))
@@ -16,13 +17,13 @@
             #region 测试数据库
 
             // 注册新用户
-            //long userId = DbManager.Register("abc1", "Pass123#");
+            //long userId = DbManager.Register("Test1", "QQqqq");
 
             //// 用户登录
-            //var user = DbManager.Login("user123", "Pass123!");
+            //User user = DbManager.Login("user123", "Pass123!");
             //if (user != null)
             //{
-            //    // 更新数据
+            //    更新数据
             //    user.Win++;
             //    user.Coin++;
             //    DbManager.UpdateUser(user);
@@ -31,7 +32,23 @@
 
             #endregion 测试数据库
 
-            //NetManager.StartLoop(8888);
+            AppDomain.CurrentDomain.ProcessExit += (s, e) => Cleanup();
+
+            var httpTask = HTTPManager.StartAsync(_cts.Token);
+            var networkTask = Task.Run(() => NetManager.StartLoop(8888, _cts.Token));
+
+            await Task.WhenAll(httpTask, networkTask); // 等待所有任务完成
+        }
+
+
+        private static void Cleanup()
+        {
+            if (_cts != null)
+            {
+                _cts.Cancel();
+                _cts.Dispose();
+                _cts = null;
+            }
         }
     }
 }

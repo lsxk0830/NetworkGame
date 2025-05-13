@@ -1,11 +1,9 @@
 using MySql.Data.MySqlClient;
-using System.Data;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
 
 public class DbManager
 {
-    private static MySqlConnection? _connection;
+    private static MySqlConnection? connection;
     private const string DefaultAvatar = "default_avatar.png"; // 默认头像路径
     private const int DefaultCoin = 100; // 默认金币数
     private const int DefaultDiamond = 100; // 默认钻石数
@@ -29,11 +27,11 @@ public class DbManager
             MaximumPoolSize = 100
         };
 
-        _connection = new MySqlConnection(builder.ToString());
+        connection = new MySqlConnection(builder.ToString());
 
         try
         {
-            _connection.Open();
+            connection.Open();
             InitializeDatabase();
             Console.WriteLine($"数据库连接成功! 线程: {Environment.CurrentManagedThreadId}");
             return true;
@@ -92,7 +90,7 @@ public class DbManager
 
         try
         {
-            using var cmd = new MySqlCommand(sql, _connection);
+            using var cmd = new MySqlCommand(sql, connection);
             cmd.Parameters.AddWithValue("@name", name);
             cmd.Parameters.AddWithValue("@password", password);
             cmd.Parameters.AddWithValue("@coin", coin);
@@ -131,7 +129,7 @@ public class DbManager
         try
         {
             User user = null;
-            using (var cmd = new MySqlCommand(sql, _connection))// 分离读取和更新操作
+            using (var cmd = new MySqlCommand(sql, connection))// 分离读取和更新操作
             {
                 cmd.Parameters.AddWithValue("@name", name);
                 cmd.Parameters.AddWithValue("@password", password);
@@ -177,7 +175,7 @@ public class DbManager
 
         try
         {
-            using var cmd = new MySqlCommand(sql, _connection);
+            using var cmd = new MySqlCommand(sql, connection);
             cmd.Parameters.AddWithValue("@ID", user.ID);
             cmd.Parameters.AddWithValue("@LastLogin", DateTime.Now);
 
@@ -208,7 +206,7 @@ public class DbManager
 
         try
         {
-            using var cmd = new MySqlCommand(sql, _connection);
+            using var cmd = new MySqlCommand(sql, connection);
             cmd.Parameters.AddWithValue("@ID", user.ID);
             cmd.Parameters.AddWithValue("@coin", user.Coin);
             cmd.Parameters.AddWithValue("@diamond", user.Diamond);
@@ -249,7 +247,7 @@ public class DbManager
     {
         try
         {
-            using var cmd = new MySqlCommand(sql, _connection);
+            using var cmd = new MySqlCommand(sql, connection);
             cmd.ExecuteNonQuery();
         }
         catch (Exception ex)

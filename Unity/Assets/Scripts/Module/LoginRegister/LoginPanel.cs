@@ -1,3 +1,6 @@
+using System;
+using System.Security.Cryptography;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,9 +41,7 @@ public class LoginPanel : BasePanel
         idInput.onEndEdit.AddListener(IdInputEnd); // 用户名输入名结束
 
         // 网络协议监听
-        EventSystem.RegisterEvent(Events.MsgLogin, OnMsgLogin);
-
-
+        //EventSystem.RegisterEvent(Events.MsgLogin, OnMsgLogin);
 
         RememberPwToggle.isOn = PlayerPrefs.GetInt("RememberPwToggle") == 0 ? true : false;
         if (RememberPwToggle.isOn)
@@ -61,25 +62,28 @@ public class LoginPanel : BasePanel
     public override void OnClose() // 关闭
     {
         gameObject.SetActive(false);
-        EventSystem.RemoveEvent(Events.MsgLogin, OnMsgLogin);
+        //EventSystem.RemoveEvent(Events.MsgLogin, OnMsgLogin);
     }
 
     #region UI事件
 
     private void OnLoginClick()
     {
+#if UNITY_EDITOR
+        idInput.text = "Test1";
+        pwInput.text = "QQqq123456";
+#endif
         if (idInput.text == "" || pwInput.text == "")
         {
             PanelManager.Open<TipPanel>("用户名和密码不能为空");
             return;
         }
-        // 发送
-        MsgLogin msgLogin = new MsgLogin()
+        MsgLogin LoginData = new MsgLogin()
         {
-            id = idInput.text,
-            pw = pwInput.text
+            Name = idInput.text,
+            PW = Sha256(pwInput.text)
         };
-        NetManager.Send(msgLogin);
+        HTTPManager.Instance.Post(API.Login, LoginData, LoginCallback).Forget();
     }
 
     private void onRegisterClick()
@@ -109,28 +113,44 @@ public class LoginPanel : BasePanel
 
     #endregion
 
-    /// <summary>
-    /// 收到登录协议
-    /// </summary>
-    private void OnMsgLogin(MsgBase msgBse)
+    private void LoginCallback(string result)
     {
-        MsgLogin msg = (MsgLogin)msgBse;
-        if (msg.result == 0)
-        {
-            PlayerPrefs.SetInt("RememberPwToggle", RememberPwToggle.isOn ? 0 : 1); // 是否保存密码
-            if (RememberPwToggle.isOn)
-            {
-                PlayerPrefs.SetString("idPw", $"{idInput.text},{pwInput.text}");
-            }
-            Debug.Log($"收到OnMsgLogin协议:登录成功");
-            GameMain.id = msg.id;
-            PanelManager.Open<HomePanelView>();
-            // 关闭界面
-            OnClose();
+        this.Log(result);
+    }
 
-            BattleManager.Init();
-        }
-        else
-            PanelManager.Open<TipPanel>("登录失败");
+    // /// <summary>
+    // /// 收到登录协议
+    // /// </summary>
+    // private void OnMsgLogin(MsgBase msgBse)
+    // {
+    //     MsgLogin msg = (MsgLogin)msgBse;
+    //     if (msg.result == 0)
+    //     {
+    //         PlayerPrefs.SetInt("RememberPwToggle", RememberPwToggle.isOn ? 0 : 1); // 是否保存密码
+    //         if (RememberPwToggle.isOn)
+    //         {
+    //             PlayerPrefs.SetString("idPw", $"{idInput.text},{pwInput.text}");
+    //         }
+    //         Debug.Log($"收到OnMsgLogin协议:登录成功");
+    //         GameMain.id = msg.id;
+    //         PanelManager.Open<HomePanelView>();
+    //         // 关闭界面
+    //         OnClose();
+
+    //         BattleManager.Init();
+    //     }
+    //     else
+    //         PanelManager.Open<TipPanel>("登录失败");
+    // }
+
+    /// <summary>
+    /// 客户端预处理（SHA256哈希）
+    /// </summary>
+    public string Sha256(string input)
+    {
+        using var sha = SHA256.Create();
+        var bytes = Encoding.UTF8.GetBytes(input);
+        var hash = sha.ComputeHash(bytes);
+        return BitConverter.ToString(hash).Replace("-", "").ToLower();
     }
 }
