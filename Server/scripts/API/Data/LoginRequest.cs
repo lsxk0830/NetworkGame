@@ -1,5 +1,5 @@
 ﻿[Serializable]
-public class LoginRequest
+public class LoginRegisterRequest
 {
     public string Name;
     public string PW;

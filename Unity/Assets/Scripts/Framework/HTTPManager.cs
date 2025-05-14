@@ -33,7 +33,7 @@ public class HTTPManager : Singleton<HTTPManager>
         {
             // 捕获 UnityWebRequest 异常（如 401）
             OnFailed.Invoke(ex.ResponseCode, ex.Message);
-            //Debug.LogError($"UnityWebRequest 异常: {ex.Message}");
+            Debug.LogError($"UnityWebRequest 异常: {ex.Message}");
         }
         catch (Exception ex)
         {

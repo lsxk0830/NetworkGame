@@ -28,6 +28,37 @@ sequenceDiagram
     end
 ```
 
+#### 服务器HTTP
+
+```mermaid
+graph LR
+A[请求入口] --> B[中间件1]
+B --> C[中间件2]
+C --> D[...]
+D --> E[路由处理]
+E --> F[响应返回]
+```
+
+```mermaid
+sequenceDiagram
+    participant Unity
+    participant HttpListener
+    participant MiddlewarePipeline
+    participant RouteTable
+    participant AuthController
+    
+    Unity->>HttpListener: HTTP Request
+    HttpListener->>MiddlewarePipeline: 传递Context
+    MiddlewarePipeline->>ExceptionMiddleware: 异常捕获
+    MiddlewarePipeline->>CorsMiddleware: 跨域处理
+    MiddlewarePipeline->>RouteTable: 路由分发
+    RouteTable->>AuthController: 调用对应方法
+    AuthController-->>RouteTable: 返回结果
+    RouteTable-->>MiddlewarePipeline: 响应数据
+    MiddlewarePipeline-->>HttpListener: 返回处理结果
+    HttpListener-->>Unity: HTTP Response
+```
+
 
 
 #### 头像上传流程

@@ -12,17 +12,17 @@ public class TipPanel : BasePanel
     public override void OnInit()
     {
         layer = PanelManager.Layer.Tip;
+
+        text = transform.Find("Text").GetComponent<TMP_Text>();
+        okBtn = transform.Find("OKBtn").GetComponent<Button>();
     }
 
     public override void OnShow(params object[] args)
     {
-        text = transform.Find("Text").GetComponent<TMP_Text>();
-        okBtn = transform.Find("OKBtn").GetComponent<Button>();
         if (args.Length == 1)
         {
             text.text = (string)args[0];
-            clickCallback = Close;
-            okBtn.onClick.AddListener(Click);
+            clickCallback = OnClose;
         }
         else if (args.Length == 2)
         {
@@ -30,6 +30,12 @@ public class TipPanel : BasePanel
             clickCallback = (Action)args[1];
         }
         okBtn.onClick.AddListener(Click);
+    }
+
+    public override void OnClose()
+    {
+        okBtn.onClick.RemoveListener(Click);
+        gameObject.SetActive(false);
     }
 
     private void Click()

@@ -91,6 +91,7 @@ public class LoginPanelController
 
     private void LoginSuccess(string result)
     {
+        this.Log($"登录回调：{result}");
         if (string.IsNullOrWhiteSpace(result))
         {
             PanelManager.Open<TipPanel>("服务器异常，返回空数据");

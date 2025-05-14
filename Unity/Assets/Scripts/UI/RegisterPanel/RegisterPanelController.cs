@@ -34,20 +34,21 @@ public class RegisterPanelController
 
     private void RegisteSuccess(string result)
     {
+        this.Log(result);
         if (string.IsNullOrWhiteSpace(result))
         {
             PanelManager.Open<TipPanel>("服务器异常，返回空数据");
             Debug.LogError($"登录错误:{result}");
         }
 
-        Accept<User> accept = JsonConvert.DeserializeObject<Accept<User>>(result);
+        Accept<long> accept = JsonConvert.DeserializeObject<Accept<long>>(result);
         if (accept == null)
         {
             PanelManager.Open<TipPanel>("服务器异常，返回空数据");
             Debug.LogError($"登录错误:{result}");
             return;
         }
-        if (accept.code == 200)
+        if (accept.code == 200 && accept.data != -1)
         {
             Debug.Log("注册成功");
             PanelManager.Open<TipPanel>("注册成功");

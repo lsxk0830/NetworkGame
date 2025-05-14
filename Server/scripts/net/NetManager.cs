@@ -23,7 +23,7 @@ public class NetManager
         listenfd.Bind(ipEp);
         // Listen
         listenfd.Listen(0); // 最多可容纳等待接受的连接数，0表示不限制
-        Console.WriteLine("服务器启动成功");
+        Console.WriteLine("服务器启动");
 
         // 循环
         try
