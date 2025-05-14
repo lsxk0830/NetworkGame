@@ -5,20 +5,20 @@ public class MsgHit : MsgBase
 {
     public MsgHit() { protoName = "MsgHit"; }
 
-    //击中点
-    public float x = 0;
-    public float y = 0;
-    public float z = 0;
-
     /// <summary>
     /// 服务端补充，击中谁
     /// </summary>
-    public string targetId = "";
+    public long targetID;
 
     /// <summary>
     /// 服务端补充，哪个坦克
     /// </summary>
-    public string id = "";
+    public long ID;
+
+    //击中点
+    public float x = 0;
+    public float y = 0;
+    public float z = 0;
 
     /// <summary>
     /// 服务端补充，被击中坦克血量

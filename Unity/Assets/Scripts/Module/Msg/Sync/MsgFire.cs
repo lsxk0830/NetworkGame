@@ -18,6 +18,5 @@ public class MsgFire : MsgBase
     /// <summary>
     /// 服务端补充，哪个坦克
     /// </summary>
-    public string id = "";
-
+    public long ID;
 }

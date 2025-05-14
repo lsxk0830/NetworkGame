@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class GameMain : MonoBehaviour
 {
-    public static string id = ""; // 玩家角色ID
+    public static long ID; // 玩家角色ID
     public static bool NetConnect = false;
 
     private void Awake()
@@ -12,8 +12,8 @@ public class GameMain : MonoBehaviour
 
         EventSystem.RegisterEvent(Events.SocketOnConnectSuccess, OnConnectSuccess);
         EventSystem.RegisterEvent(Events.SocketOnConnectFail, OnConnectFail);
-        EventSystem.RegisterEvent(Events.MsgKick, OnMsgKick);
         EventSystem.RegisterEvent(Events.PanelLoadSuccess, OnPanelLoadSuccess);
+        EventSystem.RegisterEvent(Events.MsgKick, OnMsgKick);
         EventSystem.RegisterEvent(Events.MsgPing, OnPong);
         PanelManager.Init();
         NetManager.ConnectAsync(); // 循环连接服务器

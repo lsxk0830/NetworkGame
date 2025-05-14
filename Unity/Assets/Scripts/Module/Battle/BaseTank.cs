@@ -14,7 +14,7 @@ public class BaseTank : MonoBehaviour
     public float fired = 0.5f; // 炮弹Cd时间
     public float lastFireTime = 0; // 上一次发射炮弹时间
     public float hp = 100;
-    public string id = ""; // 哪一玩家
+    public long ID; // 哪一玩家
     public int camp = 0; // 阵营
     protected Rigidbody mRigidbody;
 
@@ -80,7 +80,7 @@ public class BaseTank : MonoBehaviour
     /// <summary>
     /// 被攻击
     /// </summary>
-    public void Attacked(string winID, float att)
+    public void Attacked(long winID, float att)
     {
         if (isDie()) return;
 

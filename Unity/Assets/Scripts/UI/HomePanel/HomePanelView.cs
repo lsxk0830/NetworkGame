@@ -66,9 +66,9 @@ public class HomePanelView : BasePanel
     #endregion
 
     #region 数据更新
-    public void UpdatePlayerInfo(string id, string score)
+    public void UpdatePlayerInfo(string Name, string score)
     {
-        userNameText.text = id;
+        userNameText.text = Name;
         scoreText.text = score;
     }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 public class HomePanelModel
 {
     // 玩家数据
-    public string playerId;
+    public long playerID;
     public int winCount{get; set;}
     public int lostCount{get; set;}
 

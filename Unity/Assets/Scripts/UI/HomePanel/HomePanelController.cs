@@ -17,8 +17,8 @@ public class HomePanelController
         EventSystem.RegisterEvent(Events.MsgCreateRoom, HandleCreateRoomResponse);
         EventSystem.RegisterEvent(Events.MsgEnterRoom, HandleEnterRoomResponse);
 
-        model.playerId = GameMain.id;
-        view.UpdatePlayerInfo(model.playerId, "0胜 0负");
+        model.playerID = GameMain.ID;
+        view.UpdatePlayerInfo(UserSystem.Instance.GetUser(model.playerID).Name, "0胜 0负");
         NetManager.Send(new MsgGetAchieve());
         NetManager.Send(new MsgGetRoomList());
     }
@@ -29,7 +29,7 @@ public class HomePanelController
         var response = (MsgGetAchieve)msg;
         model.winCount = response.win;
         model.lostCount = response.lost;
-        view.UpdatePlayerInfo(model.playerId, $"{model.winCount}胜 >> {model.lostCount}负");
+        view.UpdatePlayerInfo(UserSystem.Instance.GetUser(model.playerID).Name, $"{model.winCount}胜 >> {model.lostCount}负");
     }
 
     private void HandleRoomListResponse(MsgBase msg)

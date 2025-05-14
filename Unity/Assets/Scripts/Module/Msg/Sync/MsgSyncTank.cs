@@ -23,6 +23,5 @@ public class MsgSyncTank : MsgBase
     /// <summary>
     /// 服务端补充，哪个坦克
     /// </summary>
-    public string id = "";
-
+    public long ID;
 }

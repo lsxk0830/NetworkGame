@@ -71,11 +71,11 @@ public class Bullet : MonoBehaviour
         if (hitTank == null || tank == null)
             return;
         // 不是自己发出的炮弹
-        if (tank.id != GameMain.id)
+        if (tank.ID != GameMain.ID)
             return;
         MsgHit msg = new MsgHit();
-        msg.targetId = hitTank.id;
-        msg.id = tank.id;
+        msg.targetID = hitTank.ID;
+        msg.ID = tank.ID;
         msg.x = transform.position.x;
         msg.y = transform.position.y;
         msg.z = transform.position.z;

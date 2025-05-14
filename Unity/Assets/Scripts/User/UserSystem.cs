@@ -34,4 +34,11 @@ public class UserSystem : Singleton<UserSystem>
         if (Users.ContainsKey(ID))
             Users.Remove(ID);
     }
+
+    public User GetUser(long ID)
+    {
+        if (Users.ContainsKey(ID))
+            return Users[ID];
+        return null;
+    }
 }

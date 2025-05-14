@@ -8,5 +8,5 @@ public class MsgLeaveBattle : MsgBase
     /// <summary>
     /// 服务器返回的玩家Id
     /// </summary>
-    public string id = "";
+    public long ID;
 }

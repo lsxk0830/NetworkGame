@@ -9,7 +9,7 @@ public class BattleManager : MonoBehaviour
     /// <summary>
     /// 战场中的坦克。添加坦克、删除坦克、获取坦克、获取玩家控制的坦克
     /// </summary>
-    public static Dictionary<string, BaseTank> tanks = new Dictionary<string, BaseTank>();
+    public static Dictionary<long, BaseTank> tanks = new Dictionary<long, BaseTank>();
 
     /// <summary>
     /// 初始化
@@ -28,26 +28,26 @@ public class BattleManager : MonoBehaviour
     /// <summary>
     /// 添加坦克
     /// </summary>
-    public static void AddTank(string id, BaseTank tank)
+    public static void AddTank(long ID, BaseTank tank)
     {
-        tanks[id] = tank;
+        tanks[ID] = tank;
     }
 
     /// <summary>
     /// 删除坦克
     /// </summary>
-    public static void RemoveTank(string id)
+    public static void RemoveTank(long ID)
     {
-        tanks.Remove(id);
+        tanks.Remove(ID);
     }
 
     /// <summary>
     /// 获取坦克
     /// </summary>
-    public static BaseTank GetTank(string id)
+    public static BaseTank GetTank(long ID)
     {
-        if (tanks.ContainsKey(id))
-            return tanks[id];
+        if (tanks.ContainsKey(ID))
+            return tanks[ID];
         return null;
     }
 
@@ -56,7 +56,7 @@ public class BattleManager : MonoBehaviour
     /// </summary>
     public static BaseTank GetCtrlTank()
     {
-        return GetTank(GameMain.id);
+        return GetTank(GameMain.ID);
     }
 
     /// <summary>
@@ -103,11 +103,11 @@ public class BattleManager : MonoBehaviour
     {
         MsgLeaveBattle msg = (MsgLeaveBattle)msgBse;
         // 查找坦克
-        BaseTank tank = GetTank(msg.id);
+        BaseTank tank = GetTank(msg.ID);
         if (tank == null)
             return;
         // 删除坦克
-        RemoveTank(msg.id);
+        RemoveTank(msg.ID);
         GameObject.Destroy(tank.gameObject);
     }
 
@@ -117,10 +117,10 @@ public class BattleManager : MonoBehaviour
     private static void OnMsgSyncTank(MsgBase msgBse)
     {
         MsgSyncTank msg = (MsgSyncTank)msgBse;
-        if (msg.id == GameMain.id) // 不能同步自己
+        if (msg.ID == GameMain.ID) // 不能同步自己
             return;
         // 查找坦克
-        SyncTank tank = (SyncTank)GetTank(msg.id);
+        SyncTank tank = (SyncTank)GetTank(msg.ID);
         if (tank == null)
             return;
         tank.SyncPos(msg); // 移动同步
@@ -132,10 +132,10 @@ public class BattleManager : MonoBehaviour
     private static void OnMsgFire(MsgBase msgBse)
     {
         MsgFire msg = (MsgFire)msgBse;
-        if (msg.id == GameMain.id) // 不能同步自己
+        if (msg.ID == GameMain.ID) // 不能同步自己
             return;
         // 查找坦克
-        SyncTank tank = (SyncTank)GetTank(msg.id);
+        SyncTank tank = (SyncTank)GetTank(msg.ID);
         if (tank == null)
             return;
         tank.SyncFire(msg); // 开火
@@ -148,10 +148,10 @@ public class BattleManager : MonoBehaviour
     {
         MsgHit msg = (MsgHit)msgBse;
         // 查找坦克
-        BaseTank tank = GetTank(msg.targetId);
+        BaseTank tank = GetTank(msg.targetID);
         if (tank == null)
             return;
-        tank.Attacked(msg.id, msg.damage); // 被击中
+        tank.Attacked(msg.ID, msg.damage); // 被击中
     }
 
     #endregion
@@ -176,11 +176,11 @@ public class BattleManager : MonoBehaviour
     private static void GenerateTank(TankInfo tankInfo)
     {
         // GameObject
-        string objName = $"Tank_{tankInfo.id}";
+        string objName = $"Tank_{tankInfo.ID}";
         GameObject tankObj = new GameObject(objName);
         // AddComponent
         BaseTank tank;
-        if (tankInfo.id == GameMain.id)
+        if (tankInfo.ID == GameMain.ID)
         {
             tank = tankObj.AddComponent<CtrlTank>();
             tankObj.AddComponent<CameraFollow>();
@@ -189,7 +189,7 @@ public class BattleManager : MonoBehaviour
             tank = tankObj.AddComponent<SyncTank>();
         // 属性
         tank.camp = tankInfo.camp;
-        tank.id = tankInfo.id;
+        tank.ID = tankInfo.ID;
         tank.hp = tankInfo.hp;
         // pos rot
         Vector3 pos = new Vector3(tankInfo.x, tankInfo.y, tankInfo.z);
@@ -202,6 +202,6 @@ public class BattleManager : MonoBehaviour
         else
             tank.Init("TankCC");
         // 列表
-        AddTank(tankInfo.id, tank);
+        AddTank(tankInfo.ID, tank);
     }
 }
