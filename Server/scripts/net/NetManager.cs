@@ -133,9 +133,9 @@ public class NetManager
     public static void Close(ClientState state)
     {
         // 事件分发
-        MethodInfo? mei = typeof(MsgDisconnect).GetMethod("OnDisconnect");
+        MethodInfo? mei = typeof(EventHandler).GetMethod("OnDisconnect");
         object[] ob = { state };
-        mei.Invoke(null, ob);
+        mei?.Invoke(null, ob);
         // 关闭
         state.socket.Close();
         clients.Remove(state.socket);
@@ -195,7 +195,7 @@ public class NetManager
         //组装长度
         sendBytes[0] = (byte)(len % 256);
         sendBytes[1] = (byte)(len / 256);
-        Array.Copy(nameBytes, 0, sendBytes, 2, nameBytes.Length);//组装名字   
+        Array.Copy(nameBytes, 0, sendBytes, 2, nameBytes.Length);//组装名字
         Array.Copy(bodyBytes, 0, sendBytes, 2 + nameBytes.Length, bodyBytes.Length);//组装消息体
         try
         {
@@ -209,16 +209,15 @@ public class NetManager
         }
     }
 
-
     /// <summary>
     /// 定时器
     /// </summary>
     private static void Timer()
     {
         //消息分发
-        MethodInfo mei = typeof(MsgDisconnect).GetMethod(name: "OnTimer");
+        MethodInfo? mei = typeof(EventHandler).GetMethod(name: "OnTimer");
         object[] ob = { };
-        mei.Invoke(null, ob);
+        mei?.Invoke(null, ob);
     }
 
     /// <summary>

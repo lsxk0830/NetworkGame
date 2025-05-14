@@ -27,8 +27,8 @@ public class RoomManager
     {
         maxId++;
         Room room = new Room();
-        room.id = maxId;
-        rooms.Add(room.id, room);
+        room.RoomID = maxId;
+        rooms.Add(room.RoomID, room);
         return room;
     }
 

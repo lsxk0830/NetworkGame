@@ -4,9 +4,9 @@
 public class Room
 {
     /// <summary>
-    /// ID
+    /// 房间ID
     /// </summary>
-    public int id = 0;
+    public int RoomID = 0;
 
     /// <summary>
     /// 最大玩家数
@@ -84,7 +84,7 @@ public class Room
         playerIds[id] = true;
         // 设置玩家数据
         player.camp = SwitchCamp();
-        player.roomId = this.id;
+        player.roomId = this.RoomID;
         // 设置房主
         if (ownerId == -1)
             ownerId = player.ID;
@@ -120,14 +120,16 @@ public class Room
             ownerId = SwitchOwner();
         if (status == Status.FIGHT) // 战斗状态退出，战斗状态退出游戏视为输掉游戏
         {
-            player.data.Lost++;
+            User? user = UserManager.GetUser(player.ID);
+            if (user == null) return false;
+            user.Lost++;
             MsgLeaveBattle msg = new MsgLeaveBattle();
             msg.id = player.ID;
             Broadcast(msg);
         }
         if (playerIds.Count == 0) // 房间为空
         {
-            RoomManager.RemoveRoom(this.id);
+            RoomManager.RemoveRoom(this.RoomID);
             //PlayerManager.Broadcast(RoomManager.ToMsg()); // 告诉全员有房间被删除
         }
         // 广播
@@ -194,12 +196,12 @@ public class Room
     //    msg.Players = new PlayerInfo[count];
     //    // Players
     //    int i = 0;
-    //    foreach (string id in playerIds.Keys)
+    //    foreach (string RoomID in playerIds.Keys)
     //    {
-    //        Player player = PlayerManager.GetPlayer(id);
+    //        Player player = PlayerManager.GetPlayer(RoomID);
     //        PlayerInfo playerInfo = new PlayerInfo();
     //        // 赋值
-    //        playerInfo.id = player.ID;
+    //        playerInfo.RoomID = player.ID;
     //        playerInfo.camp = player.camp;
     //        playerInfo.win = player.data.Win;
     //        playerInfo.lost = player.data.Lost;
@@ -368,10 +370,12 @@ public class Room
         foreach (long id in playerIds.Keys)  // 统计信息
         {
             Player player = PlayerManager.GetPlayer(id);
+            User user = UserManager.GetUser(id);
+            if (player == null || user == null) return;
             if (player.camp == winCamp)
-                player.data.Win++;
+                user.Win++;
             else
-                player.data.Lost++;
+                user.Lost++;
         }
         // 发送Result
         MsgBattleResult msg = new MsgBattleResult();

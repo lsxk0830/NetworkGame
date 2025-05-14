@@ -5,7 +5,7 @@ using System.Collections.Generic;
 /// </summary>
 public class UserSystem : Singleton<UserSystem>
 {
-    public Dictionary<long, User> Users;
+    private Dictionary<long, User> Users;
 
     public void Init(User user)
     {
