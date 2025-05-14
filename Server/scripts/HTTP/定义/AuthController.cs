@@ -26,9 +26,18 @@ public static class AuthController
             return;
         }
 
-        //登录成功，返回用户信息 + Token
-        //user.token = GenerateJwtToken(user.Username) // 生成 JWT Token（示例）
-        Console.WriteLine($"用户登录成功");
+        if (!UserManager.IsOnline(user.ID))
+        {
+            UserManager.AddUser(user.ID, user);
+            Console.WriteLine($"用户登录成功");
+        }
+        else
+        {
+            Console.WriteLine($"用户已在线,旧用户踢下线");
+            MsgKick msg = new MsgKick();
+            UserManager.Send(user.ID, msg);
+            UserManager.RemoveUser(user.ID);
+        }
         await SendResponse(context, 200, user);
     }
 

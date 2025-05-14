@@ -1,5 +1,5 @@
 /// <summary>
-/// 玩家管理器。是否在线、获取玩家、添加玩家、删除玩家
+/// 玩家管理器。战斗玩家的管理
 /// </summary>
 public class PlayerManager
 {
@@ -9,35 +9,25 @@ public class PlayerManager
     /// <summary>
     /// 玩家是否在线
     /// </summary>
-    public static bool IsOnline(long id)
-    {
-        return players.ContainsKey(id);
-    }
+    public static bool IsOnline(long id) => players.ContainsKey(id);
 
     /// <summary>
     /// 获取玩家
     /// </summary>
-    public static Player GetPlayer(long id)
-    {
-        if (players.ContainsKey(id))
-            return players[id];
-        return null;
-    }
+    public static Player? GetPlayer(long id) => players.ContainsKey(id) ? players[id] : null;
 
     /// <summary>
     /// 添加玩家
     /// </summary>
-    public static void AddPlayer(long id, Player player)
-    {
-        players.Add(id, player);
-    }
+    public static void AddPlayer(long id, Player player) => players.Add(id, player);
 
     /// <summary>
     /// 删除玩家
     /// </summary>
     public static void RemovePlayer(long id)
     {
-        players.Remove(id);
+        if (players.ContainsKey(id))
+            players.Remove(id);
     }
 
     /// <summary>
@@ -47,8 +37,8 @@ public class PlayerManager
     {
         foreach (long id in players.Keys)
         {
-            Player player = GetPlayer(id);
-            player.Send(msg);
+            Player? player = GetPlayer(id);
+            player?.Send(msg);
         }
     }
 }

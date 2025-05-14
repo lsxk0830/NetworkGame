@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public static class NetManager
@@ -21,8 +22,7 @@ public static class NetManager
     private static bool isConnecting = false; // 是否正在连接
     private static bool isClosing = false; // 是否正在关闭
 
-    public static bool isUsePing = true; // 是否启用心跳
-    public static int pingInterval = 30; // 心跳间隔时间
+    public const int pingInterval = 4; // 心跳间隔时间30秒
     private static float lastPingTime = 0; // 上一次发送Ping的时间
     private static float lastPongTime = 0; // 上一次收到Pong的时间
 
@@ -273,13 +273,13 @@ public static class NetManager
     /// </summary>
     public static void PingUpdate()
     {
-        if (!isUsePing) return; // 是否启用
         // 发送PING
         if (Time.time - lastPingTime > pingInterval)
         {
             MsgPing msgPing = new MsgPing();
             Send(msgPing);
             lastPingTime = Time.time;
+            Debug.Log($"发送Ping协议");
         }
         // 检测PONG时间
         if (Time.time - lastPongTime > pingInterval * 4)

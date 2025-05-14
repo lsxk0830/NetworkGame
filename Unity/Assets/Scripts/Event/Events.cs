@@ -8,7 +8,8 @@ public static class Events
     #endregion 服务器
 
     #region 消息协议
-
+    public static string MsgPing = "MsgPing"; //心跳协议
+    public static string MsgPong = "MsgPong"; //心跳协议
     public static string MsgRegister = "MsgRegister"; //注册协议
     public static string MsgKick = "MsgKick"; //被踢下线
     public static string MsgLogin = "MsgLogin"; //登录消息

@@ -14,7 +14,7 @@ public class GameMain : MonoBehaviour
         EventSystem.RegisterEvent(Events.SocketOnConnectFail, OnConnectFail);
         EventSystem.RegisterEvent(Events.MsgKick, OnMsgKick);
         EventSystem.RegisterEvent(Events.PanelLoadSuccess, OnPanelLoadSuccess);
-
+        EventSystem.RegisterEvent(Events.MsgPing, OnPong);
         PanelManager.Init();
         NetManager.ConnectAsync(); // 循环连接服务器
     }
@@ -47,6 +47,11 @@ public class GameMain : MonoBehaviour
         Debug.Log("打开登录界面");
         PanelManager.Open<LoginPanelView>();
         EventSystem.RemoveEvent(Events.PanelLoadSuccess, OnPanelLoadSuccess);
+    }
+
+    private void OnPong(MsgBase msgBse)
+    {
+        Debug.Log(msgBse.protoName);
     }
 
     private void OnDestroy()

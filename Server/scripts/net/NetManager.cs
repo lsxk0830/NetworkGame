@@ -133,7 +133,7 @@ public class NetManager
     public static void Close(ClientState state)
     {
         // 事件分发
-        MethodInfo mei = typeof(EventHandler).GetMethod("OnDisconnect");
+        MethodInfo? mei = typeof(MsgDisconnect).GetMethod("OnDisconnect");
         object[] ob = { state };
         mei.Invoke(null, ob);
         // 关闭
@@ -166,14 +166,14 @@ public class NetManager
         MsgBase msgBase = MsgBase.Decode(protoName, readBuff.bytes, readBuff.readIdx, bodyCount);
         readBuff.readIdx += bodyCount;
         readBuff.CheckAndMoveBytes();
-        //Console.WriteLine("Receive:" + protoName);
+        Console.WriteLine("Receive:" + protoName);
         //分发消息
-        MethodInfo mi = typeof(MsgHandler).GetMethod(protoName);
+        MethodInfo? mi = typeof(MsgHandler).GetMethod(protoName);
         object[] o = { state, msgBase };
         if (mi != null)
             mi.Invoke(null, o);
         else
-            Console.WriteLine($"OnReceiveData Invoke fail {protoName}");
+            Console.WriteLine($"接收数据失败: {protoName}");
         //继续读取消息
         if (readBuff.length > 2)
             OnReceiveData(state);
@@ -216,7 +216,7 @@ public class NetManager
     private static void Timer()
     {
         //消息分发
-        MethodInfo mei = typeof(EventHandler).GetMethod(name: "OnTimer");
+        MethodInfo mei = typeof(MsgDisconnect).GetMethod(name: "OnTimer");
         object[] ob = { };
         mei.Invoke(null, ob);
     }

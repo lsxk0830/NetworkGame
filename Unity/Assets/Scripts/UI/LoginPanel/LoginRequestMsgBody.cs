@@ -1,7 +1,7 @@
 /// <summary>
 /// 登录Post请求
 /// </summary>
-public class MsgLogin
+public class LoginRequestMsgBody
 {
     //客户端发
     public string Name;

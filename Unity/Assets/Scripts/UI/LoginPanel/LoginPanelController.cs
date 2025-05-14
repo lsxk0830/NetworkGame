@@ -41,7 +41,7 @@ public class LoginPanelController
             PanelManager.Open<TipPanel>("用户名和密码不能为空");
             return;
         }
-        MsgLogin LoginData = new MsgLogin()
+        LoginRequestMsgBody LoginData = new LoginRequestMsgBody()
         {
             Name = name,
             PW = pw
@@ -110,7 +110,6 @@ public class LoginPanelController
             UserSystem.Instance.Init(accept.data);
             PanelManager.Close<LoginPanelView>();
             PanelManager.Open<HomePanelView>();
-
             bool state = view.GetRememberPwToggleState();
             model.RememberPwToggleState = state;
             if (state)
@@ -118,6 +117,11 @@ public class LoginPanelController
                 PlayerPrefs.SetString(view.GetName(), view.GetPW());
                 model.LastLoginUser = $"{view.GetName()},{view.GetPW()}";
             }
+            MsgBindUser msg = new MsgBindUser()
+            {
+                ID = accept.data.ID
+            };
+            NetManager.Send(msg);
         }
     }
 

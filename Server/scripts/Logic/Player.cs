@@ -10,11 +10,6 @@ public class Player
     /// </summary>
     public ClientState state;
 
-    /// <summary>
-    /// 数据库数据
-    /// </summary>
-    public User data;
-
     public Player(ClientState state)
     {
         this.state = state;
@@ -31,7 +26,6 @@ public class Player
 
     // 坐标和旋转
     public float x;
-
     public float y;
     public float z;
     public float ex;
