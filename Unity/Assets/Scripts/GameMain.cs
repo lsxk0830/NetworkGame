@@ -34,8 +34,12 @@ public class GameMain : MonoBehaviour
     {
         GloablMono.Instance.OnUpdate -= OnUpdate;
         Debug.LogError("断开连接");
-        PanelManager.Instance.Open<TipPanel>(err);
-        NetManager.ConnectAsync(); // 循环连接连接服务器
+        GloablMono.Instance.TriggerFromOtherThread(() =>
+        {
+            PanelManager.Instance.Open<TipPanel>(err);
+            NetManager.ConnectAsync(); // 在主线程中循环连接连接服务器
+        });
+
     }
 
     private void OnMsgKick(MsgBase msgBse)

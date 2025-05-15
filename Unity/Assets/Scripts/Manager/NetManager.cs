@@ -59,7 +59,7 @@ public static class NetManager
 #if UNITY_EDITOR
                 socket.BeginConnect("127.0.0.1", 8888, ConnectCallback, socket);
 #else
-            socket.BeginConnect("111.229.57.137", 8888, ConnectCallback, socket);
+                socket.BeginConnect("111.229.57.137", 8888, ConnectCallback, socket);
 #endif
                 // 等待连接完成或超时
                 var IsCanceled = await UniTask.WaitForSeconds(5, cancellationToken: cts.Token).SuppressCancellationThrow();
@@ -145,7 +145,7 @@ public static class NetManager
                 cts = null;
                 isConnecting = false;
             }
-            EventManager.Instance.InvokeEvent(Events.SocketOnConnectSuccess, "");
+            EventManager.Instance.InvokeEvent(Events.SocketOnConnectSuccess, "服务器连接成功");
             //开始接收
             socket.BeginReceive(readBuff.bytes, readBuff.writeIdx, readBuff.remain, 0, ReceiveCallback, socket);
         }
@@ -192,7 +192,7 @@ public static class NetManager
         }
         catch (SocketException ex)
         {
-            Debug.LogError($"Socket接收消息错误: {ex}");
+            Debug.LogError($"Socket接收消息异常: {ex}");
             if
             (
                 ex.SocketErrorCode == SocketError.ConnectionReset || //远程强制关闭
@@ -200,7 +200,7 @@ public static class NetManager
                 ex.SocketErrorCode == SocketError.NotConnected ||// 未建立连接
                 ex.SocketErrorCode == SocketError.NetworkDown // 网络不可用
             )
-                EventManager.Instance.InvokeEvent(Events.SocketOnConnectFail, "服务器断开连接");
+                EventManager.Instance.InvokeEvent(Events.SocketOnConnectFail, "异常服务器断开连接");
         }
     }
 
