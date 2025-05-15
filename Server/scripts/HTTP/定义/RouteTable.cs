@@ -40,7 +40,7 @@ public class RouteTable
 
     public async Task HandleRequest(HttpListenerContext context)
     {
-        Console.WriteLine($"HandleRequest");
+        //Console.WriteLine($"HandleRequest");
         var path = context.Request.Url?.AbsolutePath.ToLower() ?? "";
         var method = context.Request.HttpMethod.ToUpper();
 

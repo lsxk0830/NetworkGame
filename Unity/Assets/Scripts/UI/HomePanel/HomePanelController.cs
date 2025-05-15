@@ -17,7 +17,8 @@ public class HomePanelController
     public void UpdateUI()
     {
         view.UpdateUserInfo(model.GetUser());
-        HTTPManager.Instance.SetAvatar(model.GetUser().AvatarPath, view.GetAvatarImage()).Forget();
+        if (model.GetUser().AvatarPath != "defaultAvatar")
+            HTTPManager.Instance.SetAvatar(model.GetUser().AvatarPath, view.GetAvatarImage()).Forget();
         //NetManager.Send(new MsgGetRoomList());
     }
 
