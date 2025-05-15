@@ -2,13 +2,12 @@ using UnityEngine;
 
 public class GameMain : MonoBehaviour
 {
-    public static long ID; // 玩家角色ID
+    public static long ID; // 用户ID
     public static bool NetConnect = false;
 
     private void Awake()
     {
         new GameObject("MonoUpdate").AddComponent<GloablMono>();
-        GloablMono.Instance.OnUpdate += OnUpdate;
 
         EventManager.Instance.RegisterEvent(Events.SocketOnConnectSuccess, OnConnectSuccess);
         EventManager.Instance.RegisterEvent(Events.SocketOnConnectFail, OnConnectFail);
@@ -26,12 +25,14 @@ public class GameMain : MonoBehaviour
 
     private void OnConnectSuccess(string msg)
     {
+        GloablMono.Instance.OnUpdate += OnUpdate;
         NetConnect = true;
         Debug.Log("服务器连接成功");
     }
 
     private void OnConnectFail(string err)
     {
+        GloablMono.Instance.OnUpdate -= OnUpdate;
         Debug.LogError("断开连接");
         PanelManager.Instance.Open<TipPanel>(err);
         NetManager.ConnectAsync(); // 循环连接连接服务器

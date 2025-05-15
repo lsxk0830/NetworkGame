@@ -84,7 +84,7 @@ public static class NetManager
         else // 没有数据在发送
         {
             socket.Close();
-            EventManager.Instance.InvokeEvent(Events.SocketOnConnectFail, "");
+            EventManager.Instance.InvokeEvent(Events.SocketOnConnectFail, "服务断开");
         }
     }
 
@@ -294,6 +294,7 @@ public static class NetManager
     private static void OnMsgPong(MsgBase msgBase)
     {
         lastPongTime = Time.time;
+        Debug.Log($"接收Pong协议");
     }
 
     #endregion 事件监听【PONG协议】
