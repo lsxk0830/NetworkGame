@@ -4,9 +4,9 @@ using UnityEngine;
 public class HomePanelModel
 {
     // 玩家数据
-    public long playerID;
-    public int winCount{get; set;}
-    public int lostCount{get; set;}
+    public long ID;
+    public int winCount { get; set; }
+    public int lostCount { get; set; }
 
     // 房间数据
     public List<RoomInfo> rooms = new List<RoomInfo>();
@@ -18,4 +18,9 @@ public class HomePanelModel
 
     // 网络状态
     public bool isWaitingServerResponse;
+
+    public User GetUser()
+    {
+        return UserManager.Instance.GetUser(ID);
+    }
 }

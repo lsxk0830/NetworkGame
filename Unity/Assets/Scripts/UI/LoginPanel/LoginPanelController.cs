@@ -107,7 +107,7 @@ public class LoginPanelController
         }
         if (accept.code == 200)
         {
-            UserSystem.Instance.Init(accept.data);
+            UserManager.Instance.Init(accept.data);
             PanelManager.Close<LoginPanelView>();
             PanelManager.Open<HomePanelView>();
             bool state = view.GetRememberPwToggleState();

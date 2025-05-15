@@ -1,5 +1,4 @@
 using System;
-using UnityEngine.UI;
 using UnityEngine;
 
 public class HomePanelController
@@ -11,26 +10,16 @@ public class HomePanelController
     {
         model = new HomePanelModel();
         this.view = view;
+        model.ID = GameMain.ID;
+    }
 
-        EventSystem.RegisterEvent(Events.MsgGetAchieve, HandleAchieveResponse);
-        EventSystem.RegisterEvent(Events.MsgGetRoomList, HandleRoomListResponse);
-        EventSystem.RegisterEvent(Events.MsgCreateRoom, HandleCreateRoomResponse);
-        EventSystem.RegisterEvent(Events.MsgEnterRoom, HandleEnterRoomResponse);
-
-        model.playerID = GameMain.ID;
-        view.UpdatePlayerInfo(UserSystem.Instance.GetUser(model.playerID).Name, "0胜 0负");
-        NetManager.Send(new MsgGetAchieve());
+    public void UpdateUI()
+    {
+        view.UpdateUserInfo(model.GetUser());
         NetManager.Send(new MsgGetRoomList());
     }
 
     #region 网络响应处理
-    private void HandleAchieveResponse(MsgBase msg)
-    {
-        var response = (MsgGetAchieve)msg;
-        model.winCount = response.win;
-        model.lostCount = response.lost;
-        view.UpdatePlayerInfo(UserSystem.Instance.GetUser(model.playerID).Name, $"{model.winCount}胜 >> {model.lostCount}负");
-    }
 
     private void HandleRoomListResponse(MsgBase msg)
     {
@@ -75,6 +64,16 @@ public class HomePanelController
     #endregion
 
     #region 用户操作处理
+
+    public void HandleQuit()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
     public void HandleFace()
     {
         PanelManager.Open<FacePanelView>();
@@ -140,10 +139,17 @@ public class HomePanelController
     }
     #endregion
 
-    #region 资源清理
-    public void Destroy()
+    #region 事件监听
+
+    public void Addlistener()
     {
-        EventSystem.RemoveEvent(Events.MsgGetAchieve, HandleAchieveResponse);
+        EventSystem.RegisterEvent(Events.MsgGetRoomList, HandleRoomListResponse);
+        EventSystem.RegisterEvent(Events.MsgCreateRoom, HandleCreateRoomResponse);
+        EventSystem.RegisterEvent(Events.MsgEnterRoom, HandleEnterRoomResponse);
+    }
+
+    public void Removelistener()
+    {
         EventSystem.RemoveEvent(Events.MsgGetRoomList, HandleRoomListResponse);
         EventSystem.RemoveEvent(Events.MsgCreateRoom, HandleCreateRoomResponse);
         EventSystem.RemoveEvent(Events.MsgEnterRoom, HandleEnterRoomResponse);

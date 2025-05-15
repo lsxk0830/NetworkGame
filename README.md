@@ -1,8 +1,56 @@
-# Unity3D网络游戏实战笔记
+# Unity3D+C#服务器+MySQL网络游戏开发
 
-- 计划：登录等一系列操作通过HTTP请求操作，进入游戏通过Socket操作
-- 目前：一直Socket操作
-- 
+#### 流程图
+
+```mermaid
+graph TD
+    A[启动客户端] --> B[自动Socket连接]
+    B -->|成功| C[启动Ping/Pong心跳检测]
+    B -->|失败| D[循环重试连接]
+    
+    E[输入账号密码] --> F{Socket已连接?}
+    F -->|是| G[HTTP Post登录]
+    F -->|否| H[阻止登录并提示]
+    
+    G --> I[登录成功]
+    I --> J[发送绑定用户协议]
+    J --> K[服务器绑定UserID和Socket]
+    
+    K --> L{账号是否已登录?}
+    L -->|是| M[服务器Socket发送踢下线协议]
+    L -->|否| N[直接登录]
+    M --> O[旧客户端退回登录界面]
+    
+    N --> P[HTTP Get头像]
+    
+    P --> Q[开始游戏]
+    
+    Q --> R[HTTP Get房间列表]
+    R --> S[Socket订阅房间变更事件]
+    
+    S --> T[创建房间]
+    T --> U[客户端Socket发送创建房间协议]
+    S --> V[进入房间]
+    V --> W[客户端Socket发送进入房间协议]
+    W --> X[客户端Socket发送获取所有玩家协议]
+    
+    X --> Y[进入游戏]
+    Y --> Z[全程Socket通信]
+    
+    Z --> AA[游戏结束]
+    AA --> AB[Socket发送结果协议]
+    AB --> AC[服务端同步数据]
+    AC --> AD[HTTP Get用户信息]
+    AD --> AE[更新UI数据]
+    
+    style A fill:#f9f,stroke:#333
+    style E fill:#bbf,stroke:#333
+    style R fill:#9f9,stroke:#333
+    style Y fill:#f96,stroke:#333
+    style AA fill:#f99,stroke:#333
+```
+
+
 
 #### 登录
 
@@ -65,8 +113,6 @@ sequenceDiagram
     MiddlewarePipeline-->>HttpListener: 返回处理结果
     HttpListener-->>Unity: HTTP Response
 ```
-
-
 
 #### 头像上传流程
 

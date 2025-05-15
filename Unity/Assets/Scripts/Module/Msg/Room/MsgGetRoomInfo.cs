@@ -1,5 +1,5 @@
 /// <summary>
-/// 获取房间信息
+/// 获取房间玩家信息
 /// </summary>
 public class MsgGetRoomInfo : MsgBase
 {
@@ -8,5 +8,5 @@ public class MsgGetRoomInfo : MsgBase
     /// <summary>
     /// 房间的玩家信息
     /// </summary>
-    public PlayerInfo[] Players;
+    public Player[] Players;
 }

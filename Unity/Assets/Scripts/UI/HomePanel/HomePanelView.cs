@@ -10,11 +10,15 @@ public class HomePanelView : BasePanel
     // 依赖注入
     public HomePanelController Controller;
 
-    // UI组件
-    [Header("UI Bindings")]
+    [Header("Text")]
+    [SerializeField][LabelText("姓名")] private TMP_Text nameText;
+    [SerializeField][LabelText("金币")] private TMP_Text scoreText;
+    [SerializeField][LabelText("钻石")] private TMP_Text diamondText;
+
+    [Header("Button")]
     [SerializeField][LabelText("头像按钮")] private Button faceBtn;
-    [SerializeField] private TMP_Text userNameText;
-    [SerializeField] private TMP_Text scoreText;
+    [SerializeField][LabelText("退出游戏")] private Button quitBtn;
+
     [SerializeField] private Button createButton;
     [SerializeField] private Button refreshButton;
     [SerializeField] private Transform roomListContent;
@@ -31,9 +35,13 @@ public class HomePanelView : BasePanel
         layer = PanelManager.Layer.Panel;
 
         // 寻找组件
-        faceBtn = transform.Find("Top/FaceBtn").GetComponent<Button>();
-        userNameText = transform.Find("Top/UserNameText").GetComponent<TMP_Text>();
+        nameText = transform.Find("Top/UserNameText").GetComponent<TMP_Text>();
         scoreText = transform.Find("Top/RecordText").GetComponent<TMP_Text>();
+        diamondText = transform.Find("Top/DiamondCountText").GetComponent<TMP_Text>();
+
+        quitBtn = transform.Find("Top/QuitBtn").GetComponent<Button>();
+        faceBtn = transform.Find("Top/FaceBtn").GetComponent<Button>();
+
         createButton = transform.Find("CtrlPanel/CreateBtn").GetComponent<Button>();
         refreshButton = transform.Find("CtrlPanel/ReflashBtn").GetComponent<Button>();
         roomListContent = transform.Find("ListPanel/ScrollView/Viewport/Content");
@@ -41,13 +49,8 @@ public class HomePanelView : BasePanel
         GameObject[] rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
         tankModel = Array.Find(rootObjects, obj => obj.name == "TankA");
         mainCamera = Camera.main;
-
-        faceBtn.onClick.AddListener(OnFaceClick);
-        createButton.onClick.AddListener(OnCreateRoomClick);
-        refreshButton.onClick.AddListener(OnRefreshClick);
-        GloablMono.Instance.OnUpdate += OnUpdate;
-
         Controller = new HomePanelController(this);
+        Controller.UpdateUI();
     }
 
     public override void OnShow(params object[] args)
@@ -57,19 +60,32 @@ public class HomePanelView : BasePanel
         mainCamera.transform.SetPositionAndRotation(
             new Vector3(-1, 10, -14),
             Quaternion.Euler(15, 0, 0));
+
+        quitBtn.onClick.AddListener(OnQuitClick);
+        faceBtn.onClick.AddListener(OnFaceClick);
+        createButton.onClick.AddListener(OnCreateRoomClick);
+        refreshButton.onClick.AddListener(OnRefreshClick);
+        GloablMono.Instance.OnUpdate += OnUpdate;
+        Controller.Addlistener();
     }
 
     public override void OnClose()
     {
         tankModel.SetActive(false);
+        faceBtn.onClick.RemoveListener(OnFaceClick);
+        createButton.onClick.RemoveListener(OnCreateRoomClick);
+        refreshButton.onClick.RemoveListener(OnRefreshClick);
+        GloablMono.Instance.OnUpdate -= OnUpdate;
+        Controller.Removelistener();
     }
     #endregion
 
     #region 数据更新
-    public void UpdatePlayerInfo(string Name, string score)
+    public void UpdateUserInfo(User user)
     {
-        userNameText.text = Name;
-        scoreText.text = score;
+        nameText.text = user.Name;
+        scoreText.text = $"{user.Win}胜 >> {user.Lost}负";
+        diamondText.text = user.Diamond.ToString();
     }
 
     public void UpdateRoomList(List<RoomInfo> rooms)
@@ -120,7 +136,11 @@ public class HomePanelView : BasePanel
     #endregion
 
     #region UI事件回调
-
+    private void OnQuitClick() // 退出按钮点击回调
+    {
+        this.Log("退出游戏");
+        Controller.HandleQuit();
+    }
     private void OnFaceClick() // 头像按钮点击回调
     {
         this.Log("头像按钮点击回调");
