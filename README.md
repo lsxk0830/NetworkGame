@@ -7,9 +7,7 @@
 - [ ] Version3：根据逻辑开发流程开发。对应分支V3.0
 - [ ] Version3：修改UI全部自适应，测试,修复一些异常Bug
 - [ ] Version4：修改战斗逻辑，随机地图等开发
-
 #### 流程图
-
 ```mermaid
 graph TD
     A[启动客户端] --> B[自动Socket连接]
@@ -57,18 +55,14 @@ graph TD
     style Y fill:#f96,stroke:#333
     style AA fill:#f99,stroke:#333
 ```
-
-
-
 #### 登录
-
 ```mermaid
 sequenceDiagram
     participant Untiy
     participant 服务器
     participant 数据库
     
-    Untiy->>服务器: POST /api/auth/login
+    Untiy->>服务器: POST /api/login
     服务器->>数据库: 查询用户
     数据库-->>服务器: 返回用户数据
     alt 用户存在
@@ -90,9 +84,7 @@ sequenceDiagram
         服务器-->>Untiy: 401 错误
     end
 ```
-
 #### 服务器HTTP
-
 ```mermaid
 graph LR
 A[请求入口] --> B[中间件1]
@@ -101,7 +93,6 @@ C --> D[...]
 D --> E[路由处理]
 E --> F[响应返回]
 ```
-
 ```mermaid
 sequenceDiagram
     participant Unity
@@ -121,9 +112,7 @@ sequenceDiagram
     MiddlewarePipeline-->>HttpListener: 返回处理结果
     HttpListener-->>Unity: HTTP Response
 ```
-
 #### 头像上传流程
-
 ```mermaid
 sequenceDiagram
 Unity客户端->>+HTTP服务器: POST /api/upload (multipart/form-data)
@@ -131,9 +120,7 @@ HTTP服务器->>+文件存储: 保存图片到/uploads/user_123/abc.webp
 HTTP服务器->>+MySQL: 插入记录(id=1, user_id=123, path='uploads/user_123/abc.webp')
 HTTP服务器-->>-Unity客户端: 返回{url: '/cdn/uploads/user_123/abc.webp'}
 ```
-
 #### 头像下载流程
-
 ```mermaid
 sequenceDiagram
 Unity客户端->>+HTTP服务器: GET /api/images/1
@@ -143,8 +130,7 @@ HTTP服务器->>+文件存储: 读取文件数据
 文件存储-->>-HTTP服务器: 返回图片字节流
 HTTP服务器-->>-Unity客户端: 返回图片(200 OK with image/webp)
 ```
-
 #### 文件安装
+[Navicat、XAMPP](https://cloud.189.cn/t/v2yU7rjQjuuq（访问码：k1yq）)：https://cloud.189.cn/t/v2yU7rjQjuuq（访问码：k1yq）
 
-[坦克大战](https://cloud.189.cn/t/v2yU7rjQjuuq（访问码：k1yq）)：https://cloud.189.cn/t/v2yU7rjQjuuq（访问码：k1yq）
-
+[UI]([Battle Simulator Game (Community) – Figma](https://www.figma.com/design/vitePE5vk3yjmvhUbn1WUJ/Battle-Simulator-Game--Community-?node-id=0-1&p=f&t=wCLfdAk8gCtfEXvk-0))：[Battle Simulator Game (Community) – Figma](https://www.figma.com/design/vitePE5vk3yjmvhUbn1WUJ/Battle-Simulator-Game--Community-?node-id=0-1&p=f&t=wCLfdAk8gCtfEXvk-0)
