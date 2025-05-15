@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 
 public class HomePanelView : BasePanel
 {
-    // 依赖注入
     public HomePanelController Controller;
 
     [Header("Text")]
@@ -173,5 +172,14 @@ public class HomePanelView : BasePanel
         createButton.interactable = interactable;
         refreshButton.interactable = interactable;
     }
+    #endregion
+
+    #region UI更新
+
+    public Image GetAvatarImage()
+    {
+        return faceBtn.GetComponent<Image>(); ;
+    }
+
     #endregion
 }

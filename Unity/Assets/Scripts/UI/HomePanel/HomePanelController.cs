@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class HomePanelController
@@ -16,7 +17,8 @@ public class HomePanelController
     public void UpdateUI()
     {
         view.UpdateUserInfo(model.GetUser());
-        NetManager.Send(new MsgGetRoomList());
+        HTTPManager.Instance.SetAvatar(model.GetUser().AvatarPath, view.GetAvatarImage()).Forget();
+        //NetManager.Send(new MsgGetRoomList());
     }
 
     #region 网络响应处理
@@ -61,6 +63,7 @@ public class HomePanelController
         if (result == 0) success?.Invoke();
         else fail?.Invoke();
     }
+
     #endregion
 
     #region 用户操作处理

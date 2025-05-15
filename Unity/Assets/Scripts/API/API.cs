@@ -13,6 +13,12 @@ public static class API
 #endif
 
 #if UNITY_EDITOR
+    public static string GetAvatar = "http://127.0.0.1:5000/api/getavatar"; // 获取用户头像信息
+#else
+    public static string GetAvatar = "http://111.229.57.137:5000/api/getavatar";
+#endif
+
+#if UNITY_EDITOR
     public static string GetUser = "http://127.0.0.1:5000/api/getuser"; // 获取用户信息Get
 #else
     public static string GetUser = "http://111.229.57.137:5000/api/getuser";
