@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: UI
+  m_EditorClassIdentifier: 
+  m_GroupName: UI
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 8a493f9bcf1bb7a4281d487dceb67e7d
+  m_SerializeEntries:
+  - m_GUID: 6ef8bb197ad66694197fc0e5fff4c4d6
+    m_Address: LoginPanelView
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+  - m_GUID: 4372e5fa582b4964388fd8d053c70a86
+    m_Address: RegisterPanelView
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+  - m_GUID: a26cc27872f88104abf22bb7d583dc5d
+    m_Address: ResultPanel
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+  - m_GUID: c49183660cae8ac4881e3a02a1c88878
+    m_Address: HomePanelView
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+  - m_GUID: 37cd54564004926419b427fdfcb425dd
+    m_Address: RoomPanel
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+  - m_GUID: 4718cc914ae8f3942a74335763ac5921
+    m_Address: TipPanel
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+  - m_GUID: 5e856d2ca0e6b5c42a3d8de41d301c53
+    m_Address: FacePanelView
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 0c62968f62d51d848b11533011becdd3, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 3b4f08bafde624f4d9615459419accc7, type: 2}
+    - {fileID: 11400000, guid: 068fc97323008484088da6a01d7ccae2, type: 2}

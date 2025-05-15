@@ -1,2 +1,0 @@
-xampp-win32-7.1.12-0.exe
-navicatformysql（14天试用）
