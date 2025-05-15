@@ -38,10 +38,10 @@ public class HomePanelController
         HandleOperationResponse(response.result,
             success: () =>
             {
-                PanelManager.Open<RoomPanel>();
+                PanelManager.Instance.Open<RoomPanel>();
                 view.Close();
             },
-            fail: () => PanelManager.Open<TipPanel>("创建房间失败"));
+            fail: () => PanelManager.Instance.Open<TipPanel>("创建房间失败"));
     }
 
     private void HandleEnterRoomResponse(MsgBase msg)
@@ -50,10 +50,10 @@ public class HomePanelController
         HandleOperationResponse(response.result,
             success: () =>
             {
-                PanelManager.Open<RoomPanel>();
+                PanelManager.Instance.Open<RoomPanel>();
                 view.Close();
             },
-            fail: () => PanelManager.Open<TipPanel>("进入房间失败"));
+            fail: () => PanelManager.Instance.Open<TipPanel>("进入房间失败"));
     }
 
     private void HandleOperationResponse(int result, Action success, Action fail)
@@ -80,7 +80,7 @@ public class HomePanelController
 
     public void HandleFace()
     {
-        PanelManager.Open<FacePanelView>();
+        PanelManager.Instance.Open<FacePanelView>();
     }
     public void HandleCreateRoom()
     {
@@ -107,7 +107,7 @@ public class HomePanelController
     {
         if (model.isWaitingServerResponse)
         {
-            PanelManager.Open<TipPanel>("请等待服务器响应");
+            PanelManager.Instance.Open<TipPanel>("请等待服务器响应");
             return false;
         }
         return true;
@@ -147,16 +147,16 @@ public class HomePanelController
 
     public void Addlistener()
     {
-        EventSystem.RegisterEvent(Events.MsgGetRoomList, HandleRoomListResponse);
-        EventSystem.RegisterEvent(Events.MsgCreateRoom, HandleCreateRoomResponse);
-        EventSystem.RegisterEvent(Events.MsgEnterRoom, HandleEnterRoomResponse);
+        EventManager.Instance.RegisterEvent(Events.MsgGetRoomList, HandleRoomListResponse);
+        EventManager.Instance.RegisterEvent(Events.MsgCreateRoom, HandleCreateRoomResponse);
+        EventManager.Instance.RegisterEvent(Events.MsgEnterRoom, HandleEnterRoomResponse);
     }
 
     public void Removelistener()
     {
-        EventSystem.RemoveEvent(Events.MsgGetRoomList, HandleRoomListResponse);
-        EventSystem.RemoveEvent(Events.MsgCreateRoom, HandleCreateRoomResponse);
-        EventSystem.RemoveEvent(Events.MsgEnterRoom, HandleEnterRoomResponse);
+        EventManager.Instance.RemoveEvent(Events.MsgGetRoomList, HandleRoomListResponse);
+        EventManager.Instance.RemoveEvent(Events.MsgCreateRoom, HandleCreateRoomResponse);
+        EventManager.Instance.RemoveEvent(Events.MsgEnterRoom, HandleEnterRoomResponse);
     }
     #endregion
 }

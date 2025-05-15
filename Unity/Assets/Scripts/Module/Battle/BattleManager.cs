@@ -17,12 +17,12 @@ public class BattleManager : MonoBehaviour
     public static void Init()
     {
         // 添加监听
-        EventSystem.RegisterEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
-        EventSystem.RegisterEvent(Events.MsgBattleResult, OnMsgBattleResult);
-        EventSystem.RegisterEvent(Events.MsgLeaveBattle, OnMsgLeaveBattle);
-        EventSystem.RegisterEvent(Events.MsgSyncTank, OnMsgSyncTank);
-        EventSystem.RegisterEvent(Events.MsgFire, OnMsgFire);
-        EventSystem.RegisterEvent(Events.MsgHit, OnMsgHit);
+        EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
+        EventManager.Instance.RegisterEvent(Events.MsgBattleResult, OnMsgBattleResult);
+        EventManager.Instance.RegisterEvent(Events.MsgLeaveBattle, OnMsgLeaveBattle);
+        EventManager.Instance.RegisterEvent(Events.MsgSyncTank, OnMsgSyncTank);
+        EventManager.Instance.RegisterEvent(Events.MsgFire, OnMsgFire);
+        EventManager.Instance.RegisterEvent(Events.MsgHit, OnMsgHit);
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ public class BattleManager : MonoBehaviour
         BaseTank tank = GetCtrlTank();
         if (tank != null && tank.camp == msg.winCamp)
             isWin = true;
-        PanelManager.Open<ResultPanel>(isWin);
+        PanelManager.Instance.Open<ResultPanel>(isWin);
     }
 
     /// <summary>
@@ -162,8 +162,8 @@ public class BattleManager : MonoBehaviour
     public static void EnterBattle(MsgEnterBattle msg)
     {
         Reset(); // 重置
-        PanelManager.Close<RoomPanel>(); // 可以放到房间系统的监听中
-        PanelManager.Close<ResultPanel>();
+        PanelManager.Instance.Close<RoomPanel>(); // 可以放到房间系统的监听中
+        PanelManager.Instance.Close<ResultPanel>();
         foreach (var tank in msg.tanks) // 生成坦克
         {
             GenerateTank(tank);

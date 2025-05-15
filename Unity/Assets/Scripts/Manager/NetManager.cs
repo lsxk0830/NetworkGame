@@ -84,7 +84,7 @@ public static class NetManager
         else // 没有数据在发送
         {
             socket.Close();
-            EventSystem.InvokeEvent(Events.SocketOnConnectFail, "");
+            EventManager.Instance.InvokeEvent(Events.SocketOnConnectFail, "");
         }
     }
 
@@ -145,14 +145,14 @@ public static class NetManager
                 cts = null;
                 isConnecting = false;
             }
-            EventSystem.InvokeEvent(Events.SocketOnConnectSuccess, "");
+            EventManager.Instance.InvokeEvent(Events.SocketOnConnectSuccess, "");
             //开始接收
             socket.BeginReceive(readBuff.bytes, readBuff.writeIdx, readBuff.remain, 0, ReceiveCallback, socket);
         }
         catch (SocketException ex)
         {
             Debug.LogError($"Socket Connect fail {ex.ToString()}.IP:{((IPEndPoint)socket.RemoteEndPoint).Address}");
-            EventSystem.InvokeEvent(Events.SocketOnConnectFail, "服务器断开连接");
+            EventManager.Instance.InvokeEvent(Events.SocketOnConnectFail, "服务器断开连接");
             lock (_lock) isConnecting = false;
         }
         catch (Exception ex)
@@ -200,7 +200,7 @@ public static class NetManager
                 ex.SocketErrorCode == SocketError.NotConnected ||// 未建立连接
                 ex.SocketErrorCode == SocketError.NetworkDown // 网络不可用
             )
-                EventSystem.InvokeEvent(Events.SocketOnConnectFail, "服务器断开连接");
+                EventManager.Instance.InvokeEvent(Events.SocketOnConnectFail, "服务器断开连接");
         }
     }
 
@@ -260,7 +260,7 @@ public static class NetManager
                 }
             }
             if (msgBase != null) // 分发消息
-                EventSystem.InvokeEvent(msgBase.protoName, msgBase);
+                EventManager.Instance.InvokeEvent(msgBase.protoName, msgBase);
             else // 没消息了
                 break;
         }
@@ -314,8 +314,8 @@ public static class NetManager
         msgCount = 0; // 消息列表长度
         lastPingTime = Time.time; // 上一次发送PING时间
         lastPongTime = Time.time; // 上一次收到PONG时间
-        if (!EventSystem.ContainerMsgBase.ContainsKey("MsgPong")) // 监听PONG协议
-            EventSystem.RegisterEvent("MsgPong", OnMsgPong);
+        if (!EventManager.Instance.ContainerMsgBase.ContainsKey("MsgPong")) // 监听PONG协议
+            EventManager.Instance.RegisterEvent("MsgPong", OnMsgPong);
     }
 
     /// <summary>

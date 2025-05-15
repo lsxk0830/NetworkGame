@@ -10,12 +10,12 @@ public class GameMain : MonoBehaviour
         new GameObject("MonoUpdate").AddComponent<GloablMono>();
         GloablMono.Instance.OnUpdate += OnUpdate;
 
-        EventSystem.RegisterEvent(Events.SocketOnConnectSuccess, OnConnectSuccess);
-        EventSystem.RegisterEvent(Events.SocketOnConnectFail, OnConnectFail);
-        EventSystem.RegisterEvent(Events.PanelLoadSuccess, OnPanelLoadSuccess);
-        EventSystem.RegisterEvent(Events.MsgKick, OnMsgKick);
-        EventSystem.RegisterEvent(Events.MsgPing, OnPong);
-        PanelManager.Init();
+        EventManager.Instance.RegisterEvent(Events.SocketOnConnectSuccess, OnConnectSuccess);
+        EventManager.Instance.RegisterEvent(Events.SocketOnConnectFail, OnConnectFail);
+        EventManager.Instance.RegisterEvent(Events.PanelLoadSuccess, OnPanelLoadSuccess);
+        EventManager.Instance.RegisterEvent(Events.MsgKick, OnMsgKick);
+        EventManager.Instance.RegisterEvent(Events.MsgPing, OnPong);
+        PanelManager.Instance.Init();
         NetManager.ConnectAsync(); // 循环连接服务器
     }
 
@@ -33,20 +33,20 @@ public class GameMain : MonoBehaviour
     private void OnConnectFail(string err)
     {
         Debug.LogError("断开连接");
-        PanelManager.Open<TipPanel>(err);
+        PanelManager.Instance.Open<TipPanel>(err);
         NetManager.ConnectAsync(); // 循环连接连接服务器
     }
 
     private void OnMsgKick(MsgBase msgBse)
     {
-        PanelManager.Open<TipPanel>("被踢下线");
+        PanelManager.Instance.Open<TipPanel>("被踢下线");
     }
 
     private void OnPanelLoadSuccess()
     {
         Debug.Log("打开登录界面");
-        PanelManager.Open<LoginPanelView>();
-        EventSystem.RemoveEvent(Events.PanelLoadSuccess, OnPanelLoadSuccess);
+        PanelManager.Instance.Open<LoginPanelView>();
+        EventManager.Instance.RemoveEvent(Events.PanelLoadSuccess, OnPanelLoadSuccess);
     }
 
     private void OnPong(MsgBase msgBse)
@@ -56,8 +56,8 @@ public class GameMain : MonoBehaviour
 
     private void OnDestroy()
     {
-        EventSystem.RemoveEvent(Events.SocketOnConnectSuccess, OnConnectSuccess);
-        EventSystem.RemoveEvent(Events.SocketOnConnectFail, OnConnectFail);
-        EventSystem.RemoveEvent(Events.MsgKick, OnMsgKick);
+        EventManager.Instance.RemoveEvent(Events.SocketOnConnectSuccess, OnConnectSuccess);
+        EventManager.Instance.RemoveEvent(Events.SocketOnConnectFail, OnConnectFail);
+        EventManager.Instance.RemoveEvent(Events.MsgKick, OnMsgKick);
     }
 }

@@ -49,7 +49,7 @@ public class ResultPanel : BasePanel
 
     private void OnOkClick()
     {
-        PanelManager.Open<RoomPanel>();
+        PanelManager.Instance.Open<RoomPanel>();
         Close();
     }
 }

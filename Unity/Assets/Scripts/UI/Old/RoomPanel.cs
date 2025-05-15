@@ -28,9 +28,9 @@ public class RoomPanel : BasePanel
         closeBtn.onClick.AddListener(OnCloseClick);
         // 协议监听
 
-        EventSystem.RegisterEvent(Events.MsgGetRoomInfo, OnMsgGetRoomInfo);
-        EventSystem.RegisterEvent(Events.MsgLeaveRoom, OnMsgLeaveRoom);
-        EventSystem.RegisterEvent(Events.MsgStartBattle, OnMsgStartBattle);
+        EventManager.Instance.RegisterEvent(Events.MsgGetRoomInfo, OnMsgGetRoomInfo);
+        EventManager.Instance.RegisterEvent(Events.MsgLeaveRoom, OnMsgLeaveRoom);
+        EventManager.Instance.RegisterEvent(Events.MsgStartBattle, OnMsgStartBattle);
         // 发送查询
         MsgGetRoomInfo msg = new MsgGetRoomInfo();
         NetManager.Send(msg);
@@ -39,9 +39,9 @@ public class RoomPanel : BasePanel
     public override void OnClose()
     {
         // 协议取消监听
-        EventSystem.RemoveEvent(Events.MsgGetRoomInfo, OnMsgGetRoomInfo);
-        EventSystem.RemoveEvent(Events.MsgLeaveRoom, OnMsgLeaveRoom);
-        EventSystem.RemoveEvent(Events.MsgStartBattle, OnMsgStartBattle);
+        EventManager.Instance.RemoveEvent(Events.MsgGetRoomInfo, OnMsgGetRoomInfo);
+        EventManager.Instance.RemoveEvent(Events.MsgLeaveRoom, OnMsgLeaveRoom);
+        EventManager.Instance.RemoveEvent(Events.MsgStartBattle, OnMsgStartBattle);
     }
 
     #region 协议事件
@@ -77,12 +77,12 @@ public class RoomPanel : BasePanel
         Debug.Log($"收到退出房间协议");
         if (msg.result == 0) // 成功退出房间
         {
-            PanelManager.Open<TipPanel>("退出房间");
-            PanelManager.Open<HomePanelView>();
+            PanelManager.Instance.Open<TipPanel>("退出房间");
+            PanelManager.Instance.Open<HomePanelView>();
             Close();
         }
         else
-            PanelManager.Open<TipPanel>("退出房间失败");
+            PanelManager.Instance.Open<TipPanel>("退出房间失败");
     }
 
     /// <summary>
@@ -95,7 +95,7 @@ public class RoomPanel : BasePanel
         if (msg.result == 0)//开战
             Close();
         else // 开战失败
-            PanelManager.Open<TipPanel>("开战失败!两队至少都需要一名玩家，只有队长可以开始战斗！");
+            PanelManager.Instance.Open<TipPanel>("开战失败!两队至少都需要一名玩家，只有队长可以开始战斗！");
     }
 
     /// <summary>
