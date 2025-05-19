@@ -13,6 +13,7 @@ public class UserManager : Singleton<UserManager>
         {
             {user.ID,user}
         };
+        GameMain.ID = user.ID;
     }
 
     public void AddUser(User user)

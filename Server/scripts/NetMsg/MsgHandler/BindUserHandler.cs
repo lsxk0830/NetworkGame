@@ -5,8 +5,8 @@
     /// </summary>
     public static void MsgBindUser(ClientState c, MsgBase msgBase)
     {
-        Console.WriteLine("BindUser协议处理"); ;
-        MsgBindUser msg = new MsgBindUser();
+        Console.WriteLine("接收:MsgBindUser协议"); ;
+        MsgBindUser msg = (MsgBindUser)msgBase;
         UserManager.AddUserCS(msg.ID, c);
     }
 }

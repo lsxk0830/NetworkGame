@@ -100,7 +100,7 @@ public class NetManager
         }
         if (readBuff.remain <= 0)
         {
-            Console.WriteLine($"Receive fail,maybe msg leng > buff capacity");
+            Console.WriteLine($"接收消息失败,maybe msg leng > buff capacity");
             Close(state);
             return;
         }
@@ -111,14 +111,14 @@ public class NetManager
         }
         catch (SocketException ex)
         {
-            Console.WriteLine($"Receive SocketException {ex.ToString()}");
+            Console.WriteLine($"接收Socekt异常: {ex.ToString()}");
             Close(state);
             return;
         }
         // 客户端关闭
         if (count <= 0)
         {
-            Console.WriteLine($"Socket close : {clientfd.RemoteEndPoint}");
+            //Console.WriteLine($"关闭Socket : {clientfd.RemoteEndPoint}");
             Close(state);
             return;
         }
@@ -156,7 +156,7 @@ public class NetManager
         string protoName = MsgBase.DecodeName(readBuff.bytes, readBuff.readIdx, out int nameCount);
         if (protoName == "")
         {
-            Console.WriteLine("OnReceiveData MsgBase.DecodeName fail");
+            Console.WriteLine("接收数据 MsgBase.DecodeName 失败");
             Close(state);
             return;
         }
@@ -166,7 +166,7 @@ public class NetManager
         MsgBase msgBase = MsgBase.Decode(protoName, readBuff.bytes, readBuff.readIdx, bodyCount);
         readBuff.readIdx += bodyCount;
         readBuff.CheckAndMoveBytes();
-        Console.WriteLine("接收:" + protoName + "协议");
+        //Console.WriteLine("接收:" + protoName + "协议");
         //分发消息
         MethodInfo? mi = typeof(MsgHandler).GetMethod(protoName);
         object[] o = { state, msgBase };

@@ -6,19 +6,8 @@ public partial class EventHandler
     /// <param name="c"></param>
     public static void OnDisconnect(ClientState c)
     {
-        Console.WriteLine("Close");
-        if (c.player != null) //Player下线
-        {
-            // 离开战场
-            int roomId = c.player.roomId;
-            if (roomId >= 0)
-            {
-                Room room = RoomManager.GetRoom(roomId);
-                room.RemovePlayer(c.player.ID);
-            }
-            // DbManager.UpdatePlayerData(c.player.ID, c.player.data); 可能需要更新用户状态
-            PlayerManager.RemovePlayer(c.player.ID); //移除
-        }
+        Console.WriteLine($"关闭Socket:{c.socket.RemoteEndPoint}");
+        UserManager.RemoveUser(c);
     }
 
     /// <summary>
