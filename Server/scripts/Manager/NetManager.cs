@@ -70,7 +70,7 @@ public class NetManager
         try
         {
             Socket clientfd = listenfd.Accept();
-            Console.WriteLine($"接收{clientfd.RemoteEndPoint.ToString()}的远程连接");
+            Console.WriteLine($"接收{clientfd.RemoteEndPoint}的远程连接");
             ClientState state = new ClientState();
             state.socket = clientfd;
             state.lastPingTime = GetTimeStamp();
@@ -118,7 +118,7 @@ public class NetManager
         // 客户端关闭
         if (count <= 0)
         {
-            Console.WriteLine($"Socket close : {clientfd.RemoteEndPoint.ToString()}");
+            Console.WriteLine($"Socket close : {clientfd.RemoteEndPoint}");
             Close(state);
             return;
         }
@@ -166,7 +166,7 @@ public class NetManager
         MsgBase msgBase = MsgBase.Decode(protoName, readBuff.bytes, readBuff.readIdx, bodyCount);
         readBuff.readIdx += bodyCount;
         readBuff.CheckAndMoveBytes();
-        Console.WriteLine("Receive:" + protoName);
+        Console.WriteLine("接收:" + protoName + "协议");
         //分发消息
         MethodInfo? mi = typeof(MsgHandler).GetMethod(protoName);
         object[] o = { state, msgBase };
