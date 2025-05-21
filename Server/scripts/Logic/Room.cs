@@ -21,7 +21,7 @@ public class Room
     /// <summary>
     /// 玩家列表
     /// </summary>
-    public Dictionary<long, bool> playerIds = new Dictionary<long, bool>();
+    public Dictionary<long, Player> playerIds = new Dictionary<long, Player>();
 
     /// <summary>
     /// 房主id
@@ -86,7 +86,7 @@ public class Room
             return false;
         }
         // 加入列表
-        playerIds[id] = true;
+        playerIds[id] = player;
         // 设置玩家数据
         player.camp = SwitchCamp();
         player.roomId = this.RoomID;

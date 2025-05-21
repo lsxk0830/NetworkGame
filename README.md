@@ -130,7 +130,27 @@ HTTP服务器->>+文件存储: 读取文件数据
 文件存储-->>-HTTP服务器: 返回图片字节流
 HTTP服务器-->>-Unity客户端: 返回图片(200 OK with image/webp)
 ```
+#### 打开房间大厅
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+    Client->>Server: GET /rooms (初始加载)
+    Server->>Client: 200 OK [所有房间数据]
+    Client->>Server: 订阅room_updates
+    loop 实时监听
+        Server->>Client: 服务器推送{"action":"delete","roomId":123}
+        Server->>Client: 服务器推送{"action":"create","room":{...}}
+        Client->>Client: 从本地缓存移除房间123
+        Client->>Client: 从本地缓存新增房间456
+    end
+```
+
+
+
 #### 文件安装
+
 [Navicat、XAMPP](https://cloud.189.cn/t/v2yU7rjQjuuq（访问码：k1yq）)：https://cloud.189.cn/t/v2yU7rjQjuuq（访问码：k1yq）
 
 [UI](https://www.figma.com/design/vitePE5vk3yjmvhUbn1WUJ/Battle-Simulator-Game--Community-?node-id=0-1&p=f&t=wCLfdAk8gCtfEXvk-0)：[Battle Simulator Game (Community) – Figma](https://www.figma.com/design/vitePE5vk3yjmvhUbn1WUJ/Battle-Simulator-Game--Community-?node-id=0-1&p=f&t=wCLfdAk8gCtfEXvk-0)

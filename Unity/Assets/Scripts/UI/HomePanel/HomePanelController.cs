@@ -69,6 +69,9 @@ public class HomePanelController
 
     #region 用户操作处理
 
+    /// <summary>
+    /// 退出游戏
+    /// </summary>
     public void HandleQuit()
     {
 #if UNITY_EDITOR
@@ -78,10 +81,23 @@ public class HomePanelController
 #endif
     }
 
+    /// <summary>
+    /// 设置头像面板
+    /// </summary>
     public void HandleFace()
     {
         PanelManager.Instance.Open<FacePanelView>();
     }
+
+    /// <summary>
+    /// 开始游戏（打开房间大厅）
+    /// </summary>
+    public void HandlePlay()
+    {
+        view.SetRoom(true);
+        HTTPManager.Instance.Get(API.GetRooms, GetRoomsSuccess, GetRoomsFail).Forget();
+    }
+
     public void HandleCreateRoom()
     {
         if (!ValidateOperation()) return;
@@ -96,10 +112,10 @@ public class HomePanelController
         SetWaitingState();
     }
 
-    public void HandleJoinRoom(int roomId)
+    public void HandleJoinRoom(string roomId)
     {
         if (!ValidateOperation()) return;
-        NetManager.Send(new MsgEnterRoom { id = roomId });
+        NetManager.Send(new MsgEnterRoom { roomID = roomId });
         SetWaitingState();
     }
 
@@ -158,5 +174,21 @@ public class HomePanelController
         EventManager.Instance.RemoveEvent(Events.MsgCreateRoom, HandleCreateRoomResponse);
         EventManager.Instance.RemoveEvent(Events.MsgEnterRoom, HandleEnterRoomResponse);
     }
+    #endregion
+
+    #region 网络回调
+
+    private void GetRoomsSuccess(string result)
+    {
+
+        Debug.Log($"成功获取数据:{result}");
+
+    }
+
+    private void GetRoomsFail(long ID, string result)
+    {
+        PanelManager.Instance.Open<TipPanel>($"获取房间列表失败:{result}");
+    }
+
     #endregion
 }

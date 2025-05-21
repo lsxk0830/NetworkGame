@@ -9,7 +9,7 @@ public class Player
     /// <summary>
     /// 账号ID
     /// </summary>
-    public string id = "";
+    public long ID;
 
     /// <summary>
     /// 阵营 1-第一个阵营 2-第二个阵营

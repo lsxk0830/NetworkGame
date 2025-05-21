@@ -8,5 +8,5 @@ public class MsgGetRoomList : MsgBase
     /// <summary>
     /// 服务器返回的所有房间信息
     /// </summary>
-    public RoomInfo[] rooms;
+    public Room[] rooms;
 }

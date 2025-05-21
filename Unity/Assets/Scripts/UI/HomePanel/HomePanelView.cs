@@ -17,6 +17,11 @@ public class HomePanelView : BasePanel
     [Header("Button")]
     [SerializeField][LabelText("头像按钮")] private Button faceBtn;
     [SerializeField][LabelText("退出游戏")] private Button quitBtn;
+    [SerializeField][LabelText("开始游戏")] private Button playBtn;
+
+    [Header("物体")]
+    [SerializeField][LabelText("房间列表")] private GameObject ListPanelGo;
+    [SerializeField][LabelText("进入房间？")] private GameObject CtrlPanelGo;
 
     [SerializeField] private Button createButton;
     [SerializeField] private Button refreshButton;
@@ -40,6 +45,10 @@ public class HomePanelView : BasePanel
 
         quitBtn = transform.Find("Top/QuitBtn").GetComponent<Button>();
         faceBtn = transform.Find("Top/FaceBtn").GetComponent<Button>();
+        playBtn = transform.Find("Down/PlayBtn").GetComponent<Button>();
+
+        ListPanelGo = transform.Find("ListPanel").gameObject;
+        CtrlPanelGo = transform.Find("CtrlPanel").gameObject;
 
         createButton = transform.Find("CtrlPanel/CreateBtn").GetComponent<Button>();
         refreshButton = transform.Find("CtrlPanel/ReflashBtn").GetComponent<Button>();
@@ -62,6 +71,7 @@ public class HomePanelView : BasePanel
 
         quitBtn.onClick.AddListener(OnQuitClick);
         faceBtn.onClick.AddListener(OnFaceClick);
+        playBtn.onClick.AddListener(OnPlayClick);
         createButton.onClick.AddListener(OnCreateRoomClick);
         refreshButton.onClick.AddListener(OnRefreshClick);
         GloablMono.Instance.OnUpdate += OnUpdate;
@@ -71,7 +81,9 @@ public class HomePanelView : BasePanel
     public override void OnClose()
     {
         tankModel.SetActive(false);
+        quitBtn.onClick.RemoveListener(OnQuitClick);
         faceBtn.onClick.RemoveListener(OnFaceClick);
+        playBtn.onClick.RemoveListener(OnPlayClick);
         createButton.onClick.RemoveListener(OnCreateRoomClick);
         refreshButton.onClick.RemoveListener(OnRefreshClick);
         GloablMono.Instance.OnUpdate -= OnUpdate;
@@ -87,7 +99,7 @@ public class HomePanelView : BasePanel
         diamondText.text = user.Diamond.ToString();
     }
 
-    public void UpdateRoomList(List<RoomInfo> rooms)
+    public void UpdateRoomList(List<Room> rooms)
     {
         foreach (Transform child in roomListContent)
         {
@@ -100,12 +112,12 @@ public class HomePanelView : BasePanel
             item.SetActive(true);
 
             var texts = item.GetComponentsInChildren<TMP_Text>();
-            texts[0].text = room.id.ToString();
-            texts[1].text = $"{room.count}/4";
+            texts[0].text = room.RoomID;
+            texts[1].text = $"{room.PlayerCount}/4";
             texts[2].text = room.status == 0 ? "等待中" : "战斗中";
 
             var button = item.GetComponentInChildren<Button>();
-            button.onClick.AddListener(() => OnRoomItemClick(room.id));
+            button.onClick.AddListener(() => OnRoomItemClick(room.RoomID));
         }
     }
 
@@ -145,6 +157,12 @@ public class HomePanelView : BasePanel
         this.Log("头像按钮点击回调");
         Controller.HandleFace();
     }
+    private void OnPlayClick() // 头像按钮点击回调
+    {
+        this.Log("开始游戏");
+        Controller.HandlePlay();
+    }
+
     private void OnCreateRoomClick()
     {
         Controller.HandleCreateRoom();
@@ -155,7 +173,7 @@ public class HomePanelView : BasePanel
         Controller.HandleRefreshRooms();
     }
 
-    private void OnRoomItemClick(int roomId)
+    private void OnRoomItemClick(string roomId)
     {
         Controller.HandleJoinRoom(roomId);
     }
@@ -178,7 +196,16 @@ public class HomePanelView : BasePanel
 
     public Image GetAvatarImage()
     {
-        return faceBtn.GetComponent<Image>(); ;
+        return faceBtn.GetComponent<Image>();
+    }
+
+    /// <summary>
+    /// 是否打开房间列表
+    /// </summary>
+    public void SetRoom(bool isActive)
+    {
+        ListPanelGo.SetActive(isActive);
+        CtrlPanelGo.SetActive(isActive);
     }
 
     #endregion

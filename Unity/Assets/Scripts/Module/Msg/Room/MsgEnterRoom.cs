@@ -8,7 +8,7 @@ public class MsgEnterRoom : MsgBase
     /// <summary>
     /// 请求加入房间的房间序号（id）
     /// </summary>
-    public int id = 0;
+    public string roomID;
 
     /// <summary>
     /// 服务器返回的执行结果 0-成功进入 其他数值-进入失败
