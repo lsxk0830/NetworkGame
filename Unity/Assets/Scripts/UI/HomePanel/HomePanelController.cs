@@ -1,5 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class HomePanelController
@@ -180,8 +181,17 @@ public class HomePanelController
 
     private void GetRoomsSuccess(string result)
     {
-
-        Debug.Log($"成功获取数据:{result}");
+        Accept<Room[]> accept = JsonConvert.DeserializeObject<Accept<Room[]>>(result);
+        if (accept == null)
+        {
+            PanelManager.Instance.Open<TipPanel>("服务器异常，返回空数据");
+            Debug.LogError($"登录错误:{result}");
+            return;
+        }
+        if (accept.code == 200)
+        {
+            Debug.Log($"获取成功");
+        }
 
     }
 
