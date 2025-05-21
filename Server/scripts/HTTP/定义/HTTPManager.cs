@@ -24,10 +24,19 @@ public static class HTTPManager
 #if DEBUG
         listener.Prefixes.Add("http://127.0.0.1:5000/"); // "http://*:5000/"绑定到所有地址.*需要管理员权限
 #else
-        listener.Prefixes.Add("http://0.0.0.0:5000/");
+        listener.Prefixes.Add("http://*:5000/");
 #endif
-        listener.Start();
-        Console.WriteLine($"HTTP监听服务启动");
+
+        try
+        {
+            listener.Start();
+            Console.WriteLine($"HTTP监听服务启动");
+        }
+        catch (HttpListenerException ex)
+        {
+            Console.WriteLine($"启动失败: {ex.Message},ErrorCode={ex.ErrorCode}");
+            return; // 或者根据情况处理
+        }
 
         var finalHandler = routeTable.HandleRequest;
         var pipelineHandler = pipeline.Build(finalHandler);
