@@ -82,7 +82,7 @@ public class DbManager
         }
 
         const string sql = @"
-            INSERT INTO account
+            INSERT INTO Account
             (Name, PW, Coin, Diamond, AvatarPath)
             VALUES
             (@name, SHA2(@password, 256), @coin, @diamond, @avatar);
