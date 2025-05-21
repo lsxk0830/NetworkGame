@@ -19,7 +19,7 @@ public static partial class AuthController
 #if DEBUG
             string localPath = Path.Combine("E:\\Temp", avatarPath);
 #else
-            string localPath = Path.Combine("E:\\Temp", avatarPath);
+            string localPath = Path.Combine("/www/wwwroot/TankServer/Tex", avatarPath);
 #endif
             Console.WriteLine($"头像路径:{localPath}");
             if (!File.Exists(localPath))
