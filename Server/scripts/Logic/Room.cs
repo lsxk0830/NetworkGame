@@ -6,7 +6,12 @@ public class Room
     /// <summary>
     /// 房间ID
     /// </summary>
-    public int RoomID = 0;
+    public string RoomID = "";
+
+    /// <summary>
+    /// 房间人数
+    /// </summary>
+    public int PlayerCount = 0;
 
     /// <summary>
     /// 最大玩家数
@@ -56,7 +61,7 @@ public class Room
     public bool AddPlayer(long id)
     {
         // 获取玩家
-        Player player = PlayerManager.GetPlayer(id);
+        Player? player = PlayerManager.GetPlayer(id);
         if (player == null)
         {
             Console.WriteLine("Room.AddPlayer fail,reach is null");
@@ -99,7 +104,7 @@ public class Room
     public bool RemovePlayer(long id)
     {
         // 获取玩家
-        Player player = PlayerManager.GetPlayer(id);
+        Player? player = PlayerManager.GetPlayer(id);
         if (player == null)
         {
             Console.WriteLine("Room.RemovePlayer fail,player is null");
@@ -114,7 +119,7 @@ public class Room
         // 删除列表
         playerIds.Remove(id);
         player.camp = 0;
-        player.roomId = -1;
+        player.roomId = "";
         // 设置房主
         if (isOwner(player))
             ownerId = SwitchOwner();

@@ -1,0 +1,18 @@
+﻿using System.Net;
+
+public static partial class AuthController
+{
+    [Route("/api/getrooms", "GET")]
+    public static async Task GetRooms(HttpListenerContext context)
+    {
+#if DEBUG
+        RoomManager.CreateRoom();
+        RoomManager.CreateRoom();
+        RoomManager.CreateRoom();
+#endif
+        //模拟数据库查询
+        Room[] rooms = RoomManager.GetRooms();
+        await SendResponse(context, 200, rooms);
+        context.Response.OutputStream.Close();
+    }
+}

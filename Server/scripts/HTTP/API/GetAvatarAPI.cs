@@ -16,7 +16,11 @@ public static partial class AuthController
             }
 
             // 2. 拼接本地头像文件路径（假设头像存储在 ./avatars/ 目录下）
-            string localPath = Path.Combine("avatars", avatarPath);
+#if DEBUG
+            string localPath = Path.Combine("E:\\Temp", avatarPath);
+#else
+            string localPath = Path.Combine("E:\\Temp", avatarPath);
+#endif
             Console.WriteLine($"头像路径:{localPath}");
             if (!File.Exists(localPath))
             {

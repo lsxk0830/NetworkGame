@@ -33,9 +33,9 @@ public class Player
     public float ez;
 
     /// <summary>
-    /// 在哪个房间
+    /// 房间ID
     /// </summary>
-    public int roomId = -1;
+    public string roomId = "";
 
     /// <summary>
     /// 阵营

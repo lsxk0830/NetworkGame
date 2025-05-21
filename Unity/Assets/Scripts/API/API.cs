@@ -23,4 +23,10 @@ public static class API
 #else
     public static string GetUser = "http://111.229.57.137:5000/api/getuser";
 #endif
+
+#if UNITY_EDITOR
+    public static string GetRooms = "http://127.0.0.1:5000/api/getrooms"; // 获取所有房间
+#else
+    public static string GetRooms = "http://111.229.57.137:5000/api/getrooms";
+#endif
 }
