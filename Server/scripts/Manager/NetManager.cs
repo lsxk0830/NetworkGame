@@ -166,7 +166,7 @@ public class NetManager
         MsgBase msgBase = MsgBase.Decode(protoName, readBuff.bytes, readBuff.readIdx, bodyCount);
         readBuff.readIdx += bodyCount;
         readBuff.CheckAndMoveBytes();
-        //Console.WriteLine("接收:" + protoName + "协议");
+        Console.WriteLine("接收:" + protoName + "协议");
         //分发消息
         MethodInfo? mi = typeof(MsgHandler).GetMethod(protoName);
         object[] o = { state, msgBase };
