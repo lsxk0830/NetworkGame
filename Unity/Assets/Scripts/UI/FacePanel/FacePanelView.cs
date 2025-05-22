@@ -1,38 +1,49 @@
-using UnityEngine;
 using UnityEngine.UI;
 
 public class FacePanelView : BasePanel
 {
     public FacePanelController control;
-    public Image face;
+    private Image FaceImage;
     public Button downloadBtn;
     public Button changeBtn;
 
     public override void OnInit()
     {
-        face = transform.Find("FaceImage").GetComponent<Image>();
+        FaceImage = transform.Find("FaceImage").GetComponent<Image>();
         downloadBtn = transform.Find("DownloadBtn").GetComponent<Button>();
         changeBtn = transform.Find("ChangeBtn").GetComponent<Button>();
 
-        downloadBtn.onClick.AddListener(OnDownloadClick);
-        changeBtn.onClick.AddListener(OnChangeClick);
-
         control = new FacePanelController();
-
-        control.Show();
+        HomePanelView view = (HomePanelView)PanelManager.Instance.panels[typeof(HomePanelView).FullName];
+        FaceImage.sprite = view.faceBtn.GetComponent<Image>().sprite;
     }
 
+    public override void OnShow(params object[] args)
+    {
+        downloadBtn.onClick.AddListener(OnDownloadClick);
+        changeBtn.onClick.AddListener(OnChangeClick);
+    }
+
+    public override void OnClose()
+    {
+        downloadBtn.onClick.RemoveListener(OnDownloadClick);
+        changeBtn.onClick.RemoveListener(OnChangeClick);
+    }
+
+    /// <summary>
+    /// 下载图片
+    /// </summary>
     private void OnDownloadClick()
     {
         control.DownloadImage();
     }
+
+    /// <summary>
+    /// 切换图片
+    /// </summary>
     private void OnChangeClick()
     {
-        control.ChangeImage(face.GetComponent<Image>()).Forget();
+        control.ChangeImage(FaceImage).Forget();
     }
-    public override void OnClose()
-    {
-        base.OnClose();
-        control.Close();
-    }
+
 }

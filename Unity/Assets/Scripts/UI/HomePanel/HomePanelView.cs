@@ -15,7 +15,7 @@ public class HomePanelView : BasePanel
     [SerializeField][LabelText("钻石")] private TMP_Text diamondText;
 
     [Header("Button")]
-    [SerializeField][LabelText("头像按钮")] private Button faceBtn;
+    [LabelText("头像按钮")] public Button faceBtn;
     [SerializeField][LabelText("退出游戏")] private Button quitBtn;
     [SerializeField][LabelText("开始游戏")] private Button playBtn;
 

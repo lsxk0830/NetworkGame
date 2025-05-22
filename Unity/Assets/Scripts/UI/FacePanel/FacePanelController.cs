@@ -14,10 +14,6 @@ public class FacePanelController
     {
         model = new FacePanelModel();
     }
-    public void Show()
-    {
-
-    }
 
     public async UniTaskVoid ChangeImage(Image targetImage)
     {
@@ -145,10 +141,6 @@ public class FacePanelController
     }
 
     public void DownloadImage()
-    {
-
-    }
-    public void Close()
     {
 
     }
