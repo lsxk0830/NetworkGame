@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
@@ -99,19 +100,52 @@ public class HTTPManager : Singleton<HTTPManager>
     #region GetImage
 
     /// <summary>
-    /// 获取用户头像
+    /// 获取服务器用户头像
     /// </summary>
-    public async UniTask SetAvatar(string avatarPath, UnityEngine.UI.Image image)
+    public async UniTask GetSetAvatarByDB(string avatarPath, UnityEngine.UI.Image image)
     {
         if (image == null) return;
 
-        Texture2D texture = await GetAvatar(avatarPath);
+        Texture2D texture = await GetAvatarByDB(avatarPath);
         if (texture != null)
         {
-            image.sprite = Sprite.Create(texture,
+            image.sprite = Sprite.Create
+            (
+                texture,
                 new Rect(0, 0, texture.width, texture.height),
                 new Vector2(0.5f, 0.5f)
             );
+        }
+    }
+
+    /// <summary>
+    /// 获取用户头像（返回 Texture2D）
+    /// </summary>
+    public async UniTask<Texture2D> GetImage(string url)
+    {
+        try
+        {
+            using (var request = UnityWebRequestTexture.GetTexture(url))
+            {
+                request.timeout = Timeout;
+                await request.SendWebRequest().ToUniTask();
+
+                if (request.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError($"头像下载失败: {request.error}.使用默认头像");
+                    return null;
+                }
+                else
+                {
+                    Texture2D texture = DownloadHandlerTexture.GetContent(request);
+                    return texture;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"获取头像失败: {url}\n错误: {ex.Message}");
+            return null; // 返回默认头像或 null
         }
     }
 
@@ -161,40 +195,42 @@ public class HTTPManager : Singleton<HTTPManager>
     #region GetImage
 
     /// <summary>
-    /// 获取用户头像（返回 Texture2D）
+    /// 获取服务器用户头像（返回 Texture2D）
     /// </summary>
-    /// <param name="avatarPath">头像路径（如 "user/123/avatar.png"）</param>
-    private Texture2D defaultAvatar;
-    private async UniTask<Texture2D> GetAvatar(string avatarPath)
+    private async UniTask<Texture2D> GetAvatarByDB(string avatarPath)
     {
         string url = $"{API.GetAvatar}?path={UnityWebRequest.EscapeURL($"{avatarPath}.png")}"; // http://127.0.0.1:5000/api/getavatar?path=user/123/avatar.png
-        try
-        {
-            using (var request = UnityWebRequestTexture.GetTexture(url))
-            {
-                request.timeout = Timeout;
-                await request.SendWebRequest().ToUniTask();
-
-                if (request.result != UnityWebRequest.Result.Success)
-                {
-                    Debug.LogError($"头像下载失败: {request.error}.使用默认头像");
-                    return defaultAvatar;
-                }
-                else
-                {
-                    Texture2D texture = DownloadHandlerTexture.GetContent(request);
-                    return texture;
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"获取头像失败: {url}\n错误: {ex.Message}");
-            return defaultAvatar; // 返回默认头像或 null
-        }
+        Texture2D texture = await GetImage(url);
+        if (texture != null)
+            SaveTexToPersistentPath(texture, avatarPath).Forget();
+        return texture;
     }
 
     #endregion GetImage
+
+    #region  SaveTex
+
+    /// <summary>
+    /// 保存服务器头像下载的头像到持久化目录
+    /// </summary>
+    private async UniTaskVoid SaveTexToPersistentPath(Texture2D texture, string avatarPath)
+    {
+        string folder = Path.Combine(Application.persistentDataPath + "/Avatar");
+        if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+        string path = $"{folder}/{avatarPath}.png";
+        try
+        {
+            byte[] pngBytes = texture.EncodeToPNG(); // 转换为PNG字节
+            await File.WriteAllBytesAsync(path, pngBytes); // 异步写入文件
+            Debug.Log($"保存图片到本地:{path}");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"保存失败: {ex.Message}.保存:{path}");
+        }
+    }
+
+    #endregion
 
     #endregion
 }

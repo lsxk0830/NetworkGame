@@ -58,7 +58,7 @@ public class HomePanelView : BasePanel
         tankModel = Array.Find(rootObjects, obj => obj.name == "TankA");
         mainCamera = Camera.main;
         Controller = new HomePanelController(this);
-        Controller.UpdateUI();
+        Controller.UpdateUI().Forget();
     }
 
     public override void OnShow(params object[] args)

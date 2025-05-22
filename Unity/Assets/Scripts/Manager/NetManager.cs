@@ -56,9 +56,11 @@ public static class NetManager
             socket.NoDelay = true; // 禁用Nagle算法
             try
             {
-#if UNITY_EDITOR
+#if DEV
+                Debug.Log($"连接:127.0.0.1");
                 socket.BeginConnect("127.0.0.1", 8888, ConnectCallback, socket);
 #else
+                Debug.Log($"连接:111.229.57.137");
                 socket.BeginConnect("111.229.57.137", 8888, ConnectCallback, socket);
 #endif
                 // 等待连接完成或超时
