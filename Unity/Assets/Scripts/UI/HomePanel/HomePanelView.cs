@@ -154,7 +154,6 @@ public class HomePanelView : BasePanel
     }
     private void OnFaceClick() // 头像按钮点击回调
     {
-        this.Log("头像按钮点击回调");
         Controller.HandleFace();
     }
     private void OnPlayClick() // 头像按钮点击回调
