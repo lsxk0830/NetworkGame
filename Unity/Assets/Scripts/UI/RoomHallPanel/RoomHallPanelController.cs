@@ -37,7 +37,7 @@ public class RoomHallPanelController
     {
         var response = (MsgGetRoomList)msg;
         view.DeleteLastGo();
-        view.LoadNowGo(response.rooms.ToList());
+        view.LoadNowGo(response.rooms);
     }
 
     /// <summary>
@@ -56,7 +56,7 @@ public class RoomHallPanelController
     }
 
     /// <summary>
-    /// 进入放假协议
+    /// 进入房间协议
     /// </summary>
     private void HandleEnterRoomResponse(MsgBase msg)
     {

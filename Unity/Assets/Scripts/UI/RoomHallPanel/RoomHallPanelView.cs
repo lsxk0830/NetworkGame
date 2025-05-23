@@ -38,7 +38,7 @@ public class RoomHallPanelView : BasePanel
     {
         if (args.Length > 0)
         {
-            List<Room> rooms = ((Room[])args).ToList();
+            Room[] rooms = (Room[])args;
             DeleteLastGo();
             LoadNowGo(rooms);
         }
@@ -75,7 +75,7 @@ public class RoomHallPanelView : BasePanel
     /// <summary>
     /// 加载这次的房间列表对象
     /// </summary>
-    public void LoadNowGo(List<Room> rooms)
+    public void LoadNowGo(Room[] rooms)
     {
         foreach (var room in rooms)
         {
