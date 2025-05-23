@@ -12,6 +12,12 @@ public static partial class AuthController
             await SendResponse(context, 400, "图片上传失败");
             return;
         }
+        User? user = UserManager.GetUser(request.ID);
+        if (user == null)
+        {
+            await SendResponse(context, 401, "用户不存在");
+            return;
+        }
         string avatarPath = request.ID + "_" + GetTimeStamp() + ".png";
         // 2. 拼接本地头像文件路径（假设头像存储在 ./avatars/ 目录下）
 #if DEBUG
@@ -20,12 +26,6 @@ public static partial class AuthController
         string localPath = Path.Combine("/www/wwwroot/TankServer/Tex", avatarPath);
 #endif
         await File.WriteAllBytesAsync(localPath, request.avatarBytes);
-        User? user = UserManager.GetUser(request.ID);
-        if (user == null)
-        {
-            await SendResponse(context, 401, "用户不存在");
-            return;
-        }
         user.AvatarPath = avatarPath;
         bool result = DbManager.UpdateUser(user); //数据库更新
 
