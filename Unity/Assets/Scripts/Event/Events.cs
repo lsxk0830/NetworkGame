@@ -18,7 +18,7 @@ public static class Events
     public static string MsgStartBattle = "MsgStartBattle"; //开战
 
     public static string MsgGetAchieve = "MsgGetAchieve"; //查询成绩
-    public static string MsgGetRoomList = "MsgGetRoomList"; //获取房间列表
+    public static string MsgGetRooms = "MsgGetRooms"; //获取房间列表
     public static string MsgCreateRoom = "MsgCreateRoom"; //新建房间
     public static string MsgEnterRoom = "MsgEnterRoom"; //进入房间
 

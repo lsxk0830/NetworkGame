@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using UnityEngine;
 
 public class RoomHallPanelController
 {
@@ -14,14 +14,14 @@ public class RoomHallPanelController
 
     public void Addlistener()
     {
-        EventManager.Instance.RegisterEvent(Events.MsgGetRoomList, HandleRoomListResponse);
+        EventManager.Instance.RegisterEvent(Events.MsgGetRooms, HandleRoomListResponse);
         EventManager.Instance.RegisterEvent(Events.MsgCreateRoom, HandleCreateRoomResponse);
         EventManager.Instance.RegisterEvent(Events.MsgEnterRoom, HandleEnterRoomResponse);
     }
 
     public void Removelistener()
     {
-        EventManager.Instance.RemoveEvent(Events.MsgGetRoomList, HandleRoomListResponse);
+        EventManager.Instance.RemoveEvent(Events.MsgGetRooms, HandleRoomListResponse);
         EventManager.Instance.RemoveEvent(Events.MsgCreateRoom, HandleCreateRoomResponse);
         EventManager.Instance.RemoveEvent(Events.MsgEnterRoom, HandleEnterRoomResponse);
     }
@@ -38,6 +38,7 @@ public class RoomHallPanelController
         var response = (MsgGetRooms)msg;
         view.DeleteLastGo();
         view.LoadNowGo(response.rooms);
+        Debug.Log($"接收:MsgGetRooms协议,房间数:{response.rooms.Length}");
     }
 
     /// <summary>

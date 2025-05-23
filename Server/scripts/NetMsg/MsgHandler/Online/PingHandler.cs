@@ -5,8 +5,7 @@ public partial class MsgHandler
     /// </summary>
     public static void MsgPing(ClientState c, MsgBase msgBase)
     {
-        //Console.WriteLine("MsgPing");
-
+        Console.WriteLine("接收:MsgPing协议");
         c.lastPingTime = NetManager.GetTimeStamp();
         MsgPong msgPong = new MsgPong();
         NetManager.Send(c, msgPong);

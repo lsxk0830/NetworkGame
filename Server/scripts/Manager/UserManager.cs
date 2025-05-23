@@ -71,6 +71,7 @@ public class UserManager
     {
         if (cs.user == null) return;
         RemoveUser(cs.user.ID);
+        Console.WriteLine($"删除用户,用户ID:{cs.user.ID}");
     }
 
     #endregion
