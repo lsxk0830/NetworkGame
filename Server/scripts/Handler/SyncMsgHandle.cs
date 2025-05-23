@@ -15,7 +15,7 @@ public partial class MsgHandler
         Room room = RoomManager.GetRoom(player.roomId);
         if (room == null) return;
         // status
-        if (room.status != Room.Status.FIGHT) return;
+        if ((Room.Status)room.status != Room.Status.FIGHT) return;
         // 是否作弊
         if (Math.Abs(player.x - msg.x) > 5 || Math.Abs(player.y - msg.y) > 5 || Math.Abs(player.z - msg.z) > 5)
             Console.WriteLine($"疑似作弊；{player.ID}");
@@ -43,7 +43,7 @@ public partial class MsgHandler
         Room room = RoomManager.GetRoom(player.roomId);
         if (room == null) return;
         // status
-        if (room.status != Room.Status.FIGHT) return;
+        if ((Room.Status)room.status != Room.Status.FIGHT) return;
         msg.id = player.ID;
         room.Broadcast(msg);
     }
@@ -63,7 +63,7 @@ public partial class MsgHandler
         Room room = RoomManager.GetRoom(player.roomId);
         if (room == null) return;
         // status
-        if (room.status != Room.Status.FIGHT) return;
+        if ((Room.Status)room.status != Room.Status.FIGHT) return;
         // 发送者校验
         if (player.ID != msg.id) return;
         // 状态

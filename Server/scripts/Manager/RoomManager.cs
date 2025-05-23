@@ -63,30 +63,6 @@ public class RoomManager
     }
 
     //    /// <summary>
-    //    /// 生成MsgGetRoomList协议
-    //    /// </summary>
-    //    public static MsgBase ToMsg()
-    //    {
-    //        MsgGetRoomList msg = new MsgGetRoomList();
-    //        int count = rooms.Count;
-    //        msg.rooms = new RoomInfo[count];
-    //        //rooms
-    //        int i = 0;
-    //        foreach (Room room in rooms.Values)
-    //        {
-    //            RoomInfo roomInfo = new RoomInfo
-    //            {
-    //                id = room.id,
-    //                count = room.playerIds.Count,
-    //                status = (int)room.status
-    //            };
-    //            msg.rooms[i] = roomInfo;
-    //            i++;
-    //        }
-    //        return msg;
-    //    }
-
-    //    /// <summary>
     //    /// Update
     //    /// </summary>
     //    public static void Update()
@@ -95,7 +71,34 @@ public class RoomManager
     //            room.Update();
     //    }
 
-    #region
+    #region 网络协议
+
+    /// <summary>
+    /// 生成MsgGetRooms协议
+    /// </summary>
+    public static MsgBase SendRoomsToMsg()
+    {
+        MsgGetRooms msg = new MsgGetRooms();
+        int count = rooms.Count;
+        msg.rooms = new Room[count];
+
+        int i = 0;
+        foreach (Room room in rooms.Values)
+        {
+            msg.rooms[i] = new Room
+            {
+                RoomID = room.RoomID,
+                PlayerCount = room.playerIds.Count,
+                status = (int)room.status
+            };
+            i++;
+        }
+        return msg;
+    }
+
+    #endregion
+
+    #region 私有方法
 
     /// <summary>
     /// 生成房间ID（时间戳+4位随机数）
@@ -106,5 +109,6 @@ public class RoomManager
         int randomNum = _random.Next(1000, 9999);
         return $"{timestamp}{randomNum}";
     }
+
     #endregion
 }

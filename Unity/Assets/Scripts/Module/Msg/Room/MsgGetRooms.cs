@@ -1,9 +1,9 @@
 /// <summary>
 /// 获取房间列表
 /// </summary>
-public class MsgGetRoomList : MsgBase
+public class MsgGetRooms : MsgBase
 {
-    public MsgGetRoomList() { protoName = "MsgGetRoomList"; }
+    public MsgGetRooms() { protoName = "MsgGetRooms"; }
 
     /// <summary>
     /// 服务器返回的所有房间信息

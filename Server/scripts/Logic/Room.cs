@@ -28,7 +28,7 @@ public class Room
     /// </summary>
     public long ownerId = -1;
 
-    public Status status = Status.PREPARE;
+    public int status = (int)Status.PREPARE;
 
     /// <summary>
     /// 状态
@@ -74,7 +74,7 @@ public class Room
             return false;
         }
         // 准备状态才能加入
-        if (status != Status.PREPARE)
+        if ((Room.Status)status != Status.PREPARE)
         {
             Console.WriteLine("Room.AddPlayer fail,not PREPARE");
             return false;
@@ -123,7 +123,7 @@ public class Room
         // 设置房主
         if (isOwner(player))
             ownerId = SwitchOwner();
-        if (status == Status.FIGHT) // 战斗状态退出，战斗状态退出游戏视为输掉游戏
+        if ((Room.Status)status == Status.FIGHT) // 战斗状态退出，战斗状态退出游戏视为输掉游戏
         {
             User? user = UserManager.GetUser(player.ID);
             if (user == null) return false;
@@ -222,7 +222,7 @@ public class Room
     /// </summary>
     public bool CanStartBattle()
     {
-        if (status != Status.PREPARE) return false; // 已经是战斗状态
+        if ((Room.Status)status != Status.PREPARE) return false; // 已经是战斗状态
         // 统计每个阵营的玩家数
         int count1 = 0;
         int count2 = 0;
@@ -303,7 +303,7 @@ public class Room
     {
         if (!CanStartBattle())
             return false;
-        status = Status.FIGHT; // 状态
+        status = (int)Status.FIGHT; // 状态
         ResetPlayers(); // 重置属性
         MsgEnterBattle msg = new MsgEnterBattle();
         msg.mapId = 1;
@@ -363,7 +363,7 @@ public class Room
     /// </summary>
     public void Update()
     {
-        if (status != Status.FIGHT) // 状态判断
+        if ((Room.Status)status != Status.FIGHT) // 状态判断
             return;
         if (NetManager.GetTimeStamp() - lastJudgeTime > 10f) // 时间判断
             return;
@@ -371,7 +371,7 @@ public class Room
         int winCamp = Judgment(); // 胜负判断
         if (winCamp == 0)
             return;
-        status = Status.PREPARE; // 某一方胜利，结束战斗
+        status = (int)Status.PREPARE; // 某一方胜利，结束战斗
         foreach (long id in playerIds.Keys)  // 统计信息
         {
             Player player = PlayerManager.GetPlayer(id);

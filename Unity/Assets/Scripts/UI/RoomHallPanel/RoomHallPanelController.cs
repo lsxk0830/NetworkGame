@@ -35,7 +35,7 @@ public class RoomHallPanelController
     /// </summary>
     private void HandleRoomListResponse(MsgBase msg)
     {
-        var response = (MsgGetRoomList)msg;
+        var response = (MsgGetRooms)msg;
         view.DeleteLastGo();
         view.LoadNowGo(response.rooms);
     }
@@ -93,7 +93,7 @@ public class RoomHallPanelController
     /// </summary>
     public void HandleRefreshRooms()
     {
-        NetManager.Send(new MsgGetRoomList());
+        NetManager.Send(new MsgGetRooms());
     }
 
     /// <summary>

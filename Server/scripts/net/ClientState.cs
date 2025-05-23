@@ -6,7 +6,7 @@ using System.Net.Sockets;
 /// </summary>
 public class ClientState
 {
-    public Socket socket;
+    public Socket? socket;
     public ByteArray readBuff = new ByteArray();
 
     /// <summary>
@@ -15,7 +15,7 @@ public class ClientState
     public long lastPingTime = 0;
 
     /// <summary>
-    /// 玩家
+    /// 玩家,使用玩家是因为在对战中主要是玩家对战而不是用户对战
     /// </summary>
-    public Player player;
+    public Player? player;
 }
