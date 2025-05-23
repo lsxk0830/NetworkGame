@@ -6,7 +6,6 @@ public class UserManager
     // 用户列表
     private static Dictionary<long, User> Users = new Dictionary<long, User>();
     private static Dictionary<long, ClientState> UserCSs = new Dictionary<long, ClientState>(); // Socket和用户ID的映射
-    private static Dictionary<ClientState, long> CSUsers = new Dictionary<ClientState, long>(); // Socket和用户ID的映射
 
     /// <summary>
     /// 用户是否在线
@@ -48,7 +47,6 @@ public class UserManager
     public static void AddUserCS(long id, ClientState cs)
     {
         UserCSs.Add(id, cs);
-        CSUsers.Add(cs, id);
     }
 
     #endregion
@@ -63,11 +61,7 @@ public class UserManager
         if (Users.ContainsKey(id))
             Users.Remove(id);
         if (UserCSs.ContainsKey(id))
-        {
-            ClientState cs = UserCSs[id];
-            CSUsers.Remove(cs);
             UserCSs.Remove(id);
-        }
     }
 
     /// <summary>
@@ -75,14 +69,8 @@ public class UserManager
     /// </summary>
     public static void RemoveUser(ClientState cs)
     {
-        if (CSUsers.ContainsKey(cs))
-        {
-            long id = CSUsers[cs];
-            Users.Remove(id);
-            UserCSs.Remove(id);
-            CSUsers.Remove(cs);
-            Console.WriteLine($"删除用户：{id}");
-        }
+        if (cs.user == null) return;
+        RemoveUser(cs.user.ID);
     }
 
     #endregion
