@@ -39,7 +39,7 @@ public class PanelManager : Singleton<PanelManager>
         string panelName = typeof(T).FullName;
         if (panels.ContainsKey(panelName))
         {
-            panels[panelName].OnShow();
+            panels[panelName].OnShow(para);
             return;
         }
 
