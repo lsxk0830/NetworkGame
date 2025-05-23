@@ -1,7 +1,6 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using System.Collections.Generic;
 using System;
 using UnityEngine.SceneManagement;
 
@@ -19,17 +18,7 @@ public class HomePanelView : BasePanel
     [SerializeField][LabelText("退出游戏")] private Button quitBtn;
     [SerializeField][LabelText("开始游戏")] private Button playBtn;
 
-    [Header("物体")]
-    [SerializeField][LabelText("房间列表")] private GameObject ListPanelGo;
-    [SerializeField][LabelText("进入房间？")] private GameObject CtrlPanelGo;
-
-    [SerializeField] private Button createButton;
-    [SerializeField] private Button refreshButton;
-    [SerializeField] private Transform roomListContent;
-    [SerializeField] private GameObject roomPrefab;
-
-    // 场景对象
-    [Header("Scene References")]
+    [Header("场景对象")]
     [SerializeField] private GameObject tankModel;
     [SerializeField] private Camera mainCamera;
 
@@ -47,13 +36,6 @@ public class HomePanelView : BasePanel
         faceBtn = transform.Find("Top/FaceBtn").GetComponent<Button>();
         playBtn = transform.Find("Down/PlayBtn").GetComponent<Button>();
 
-        ListPanelGo = transform.Find("ListPanel").gameObject;
-        CtrlPanelGo = transform.Find("CtrlPanel").gameObject;
-
-        createButton = transform.Find("CtrlPanel/CreateBtn").GetComponent<Button>();
-        refreshButton = transform.Find("CtrlPanel/ReflashBtn").GetComponent<Button>();
-        roomListContent = transform.Find("ListPanel/ScrollView/Viewport/Content");
-        roomPrefab = transform.Find("Room").gameObject;
         GameObject[] rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
         tankModel = Array.Find(rootObjects, obj => obj.name == "TankA");
         mainCamera = Camera.main;
@@ -63,7 +45,6 @@ public class HomePanelView : BasePanel
 
     public override void OnShow(params object[] args)
     {
-        roomPrefab.SetActive(false);
         tankModel.SetActive(true);
         mainCamera.transform.SetPositionAndRotation(
             new Vector3(-1, 10, -14),
@@ -72,10 +53,7 @@ public class HomePanelView : BasePanel
         quitBtn.onClick.AddListener(OnQuitClick);
         faceBtn.onClick.AddListener(OnFaceClick);
         playBtn.onClick.AddListener(OnPlayClick);
-        createButton.onClick.AddListener(OnCreateRoomClick);
-        refreshButton.onClick.AddListener(OnRefreshClick);
         GloablMono.Instance.OnUpdate += OnUpdate;
-        Controller.Addlistener();
     }
 
     public override void OnClose()
@@ -84,41 +62,18 @@ public class HomePanelView : BasePanel
         quitBtn.onClick.RemoveListener(OnQuitClick);
         faceBtn.onClick.RemoveListener(OnFaceClick);
         playBtn.onClick.RemoveListener(OnPlayClick);
-        createButton.onClick.RemoveListener(OnCreateRoomClick);
-        refreshButton.onClick.RemoveListener(OnRefreshClick);
         GloablMono.Instance.OnUpdate -= OnUpdate;
-        Controller.Removelistener();
     }
+
     #endregion
 
     #region 数据更新
+
     public void UpdateUserInfo(User user)
     {
         nameText.text = user.Name;
         scoreText.text = $"{user.Win}胜 >> {user.Lost}负";
         diamondText.text = user.Diamond.ToString();
-    }
-
-    public void UpdateRoomList(List<Room> rooms)
-    {
-        foreach (Transform child in roomListContent)
-        {
-            if (child.gameObject != roomPrefab)
-                Destroy(child.gameObject);
-        }
-        foreach (var room in rooms)
-        {
-            var item = Instantiate(roomPrefab, roomListContent);
-            item.SetActive(true);
-
-            var texts = item.GetComponentsInChildren<TMP_Text>();
-            texts[0].text = room.RoomID;
-            texts[1].text = $"{room.PlayerCount}/4";
-            texts[2].text = room.status == 0 ? "等待中" : "战斗中";
-
-            var button = item.GetComponentInChildren<Button>();
-            button.onClick.AddListener(() => OnRoomItemClick(room.RoomID));
-        }
     }
 
     #endregion
@@ -158,24 +113,9 @@ public class HomePanelView : BasePanel
     }
     private void OnPlayClick() // 头像按钮点击回调
     {
-        this.Log("开始游戏");
         Controller.HandlePlay();
     }
 
-    private void OnCreateRoomClick()
-    {
-        Controller.HandleCreateRoom();
-    }
-
-    private void OnRefreshClick()
-    {
-        Controller.HandleRefreshRooms();
-    }
-
-    private void OnRoomItemClick(string roomId)
-    {
-        Controller.HandleJoinRoom(roomId);
-    }
     #endregion
 
     #region 外部控制
@@ -184,11 +124,6 @@ public class HomePanelView : BasePanel
         tankModel.transform.Rotate(Vector3.up, delta);
     }
 
-    public void SetInteractionState(bool interactable)
-    {
-        createButton.interactable = interactable;
-        refreshButton.interactable = interactable;
-    }
     #endregion
 
     #region UI更新
@@ -196,15 +131,6 @@ public class HomePanelView : BasePanel
     public Image GetAvatarImage()
     {
         return faceBtn.GetComponent<Image>();
-    }
-
-    /// <summary>
-    /// 是否打开房间列表
-    /// </summary>
-    public void SetRoom(bool isActive)
-    {
-        ListPanelGo.SetActive(isActive);
-        CtrlPanelGo.SetActive(isActive);
     }
 
     #endregion

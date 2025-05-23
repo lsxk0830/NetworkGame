@@ -45,51 +45,6 @@ public class HomePanelController
         //NetManager.Send(new MsgGetRoomList());
     }
 
-    #region 网络响应处理
-
-    private void HandleRoomListResponse(MsgBase msg)
-    {
-        var response = (MsgGetRoomList)msg;
-        model.rooms.Clear();
-        if (response.rooms != null) model.rooms.AddRange(response.rooms);
-        view.UpdateRoomList(model.rooms);
-    }
-
-    private void HandleCreateRoomResponse(MsgBase msg)
-    {
-        var response = (MsgCreateRoom)msg;
-        HandleOperationResponse(response.result,
-            success: () =>
-            {
-                PanelManager.Instance.Open<RoomPanel>();
-                view.Close();
-            },
-            fail: () => PanelManager.Instance.Open<TipPanel>("创建房间失败"));
-    }
-
-    private void HandleEnterRoomResponse(MsgBase msg)
-    {
-        var response = (MsgEnterRoom)msg;
-        HandleOperationResponse(response.result,
-            success: () =>
-            {
-                PanelManager.Instance.Open<RoomPanel>();
-                view.Close();
-            },
-            fail: () => PanelManager.Instance.Open<TipPanel>("进入房间失败"));
-    }
-
-    private void HandleOperationResponse(int result, Action success, Action fail)
-    {
-        model.isWaitingServerResponse = false;
-        view.SetInteractionState(true);
-
-        if (result == 0) success?.Invoke();
-        else fail?.Invoke();
-    }
-
-    #endregion
-
     #region 用户操作处理
 
     /// <summary>
@@ -117,46 +72,9 @@ public class HomePanelController
     /// </summary>
     public void HandlePlay()
     {
-        view.SetRoom(true);
         HTTPManager.Instance.Get(API.GetRooms, GetRoomsSuccess, GetRoomsFail).Forget();
     }
 
-    public void HandleCreateRoom()
-    {
-        if (!ValidateOperation()) return;
-        NetManager.Send(new MsgCreateRoom());
-        SetWaitingState();
-    }
-
-    public void HandleRefreshRooms()
-    {
-        if (!ValidateOperation()) return;
-        NetManager.Send(new MsgGetRoomList());
-        SetWaitingState();
-    }
-
-    public void HandleJoinRoom(string roomId)
-    {
-        if (!ValidateOperation()) return;
-        NetManager.Send(new MsgEnterRoom { roomID = roomId });
-        SetWaitingState();
-    }
-
-    private bool ValidateOperation()
-    {
-        if (model.isWaitingServerResponse)
-        {
-            PanelManager.Instance.Open<TipPanel>("请等待服务器响应");
-            return false;
-        }
-        return true;
-    }
-
-    private void SetWaitingState()
-    {
-        model.isWaitingServerResponse = true;
-        view.SetInteractionState(false);
-    }
     #endregion
 
     #region 坦克控制
@@ -182,22 +100,6 @@ public class HomePanelController
     }
     #endregion
 
-    #region 事件监听
-
-    public void Addlistener()
-    {
-        EventManager.Instance.RegisterEvent(Events.MsgGetRoomList, HandleRoomListResponse);
-        EventManager.Instance.RegisterEvent(Events.MsgCreateRoom, HandleCreateRoomResponse);
-        EventManager.Instance.RegisterEvent(Events.MsgEnterRoom, HandleEnterRoomResponse);
-    }
-
-    public void Removelistener()
-    {
-        EventManager.Instance.RemoveEvent(Events.MsgGetRoomList, HandleRoomListResponse);
-        EventManager.Instance.RemoveEvent(Events.MsgCreateRoom, HandleCreateRoomResponse);
-        EventManager.Instance.RemoveEvent(Events.MsgEnterRoom, HandleEnterRoomResponse);
-    }
-    #endregion
 
     #region 网络回调
 
@@ -212,7 +114,8 @@ public class HomePanelController
         }
         if (accept.code == 200)
         {
-            Debug.Log($"获取成功");
+            PanelManager.Instance.Open<RoomHallPanelView>(accept.data);
+            Debug.Log($"获取房间大厅信息成功");
         }
 
     }
