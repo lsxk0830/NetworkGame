@@ -36,7 +36,6 @@ public static partial class AuthController
             context.Response.ContentLength64 = fileBytes.Length;
 
             await context.Response.OutputStream.WriteAsync(fileBytes, 0, fileBytes.Length);
-            context.Response.OutputStream.Close();
         }
         catch (Exception ex)
         {

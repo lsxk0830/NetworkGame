@@ -41,6 +41,5 @@ public static partial class AuthController
             Console.WriteLine($"更新用户头像失败");
             await SendResponse(context, 500, "服务器错误");
         }
-        context.Response.OutputStream.Close();
     }
 }

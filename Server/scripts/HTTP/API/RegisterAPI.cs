@@ -24,6 +24,5 @@ public static partial class AuthController
         //user.token = GenerateJwtToken(user.Username) // 生成 JWT Token（示例）
         Console.WriteLine($"用户注册成功");
         await SendResponse(context, 200, id);
-        context.Response.OutputStream.Close();
     }
 }

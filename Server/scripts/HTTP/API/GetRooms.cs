@@ -10,9 +10,7 @@ public static partial class AuthController
         RoomManager.CreateRoom();
         RoomManager.CreateRoom();
 #endif
-        //模拟数据库查询
         Room[] rooms = RoomManager.GetRooms();
         await SendResponse(context, 200, rooms);
-        context.Response.OutputStream.Close();
     }
 }

@@ -33,6 +33,5 @@ public static partial class AuthController
             UserManager.RemoveUser(user.ID);
         }
         await SendResponse(context, 200, user);
-        context.Response.OutputStream.Close();
     }
 }
