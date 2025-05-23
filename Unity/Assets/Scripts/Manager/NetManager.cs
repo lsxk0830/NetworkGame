@@ -56,13 +56,7 @@ public static class NetManager
             socket.NoDelay = true; // 禁用Nagle算法
             try
             {
-#if DEV
-                Debug.Log($"连接:127.0.0.1");
-                socket.BeginConnect("127.0.0.1", 8888, ConnectCallback, socket);
-#else
-                Debug.Log($"连接:111.229.57.137");
-                socket.BeginConnect("111.229.57.137", 8888, ConnectCallback, socket);
-#endif
+                socket.BeginConnect(API.IP, 8888, ConnectCallback, socket);
                 // 等待连接完成或超时
                 var IsCanceled = await UniTask.WaitForSeconds(5, cancellationToken: cts.Token).SuppressCancellationThrow();
                 if (IsCanceled) return;

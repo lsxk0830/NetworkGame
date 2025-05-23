@@ -1,6 +1,12 @@
 public static class API
 {
 #if DEV
+    public static string IP = "127.0.0.1"; // Socket连接IP
+#else
+    public static string IP = "111.229.57.137";
+#endif
+
+#if DEV
     public static string Login = "http://127.0.0.1:5000/api/login"; // 登录Post
 #else
     public static string Login = "http://111.229.57.137:5000/api/login";
