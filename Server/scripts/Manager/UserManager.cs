@@ -5,6 +5,7 @@ public class UserManager
 {
     // 用户列表
     private static Dictionary<long, User> Users = new Dictionary<long, User>();
+
     private static Dictionary<long, ClientState> UserCSs = new Dictionary<long, ClientState>(); // Socket和用户ID的映射
 
     /// <summary>
@@ -21,13 +22,35 @@ public class UserManager
     }
 
     /// <summary>
-    /// 发送数据
+    /// 发送数据,单个用户
     /// </summary>
     public static void Send(long ID, MsgBase msgBase)
     {
         if (Users.ContainsKey(ID))
         {
             NetManager.Send(UserCSs[ID], msgBase);
+        }
+    }
+
+    /// <summary>
+    /// 发送数据,所有用户
+    /// </summary>
+    public static void Send(MsgBase msgBase)
+    {
+        foreach (var cs in UserCSs.Values)
+        {
+            NetManager.Send(cs, msgBase);
+        }
+    }
+
+    /// <summary>
+    /// 发送数据,所有用户,除了c用户
+    /// </summary>
+    public static void SendExcept(ClientState c, MsgBase msgBase)
+    {
+        foreach (var cs in UserCSs.Values)
+        {
+            if (cs != c) NetManager.Send(cs, msgBase);
         }
     }
 
@@ -49,7 +72,7 @@ public class UserManager
         UserCSs.Add(id, cs);
     }
 
-    #endregion
+    #endregion 用户上线添加用户
 
     #region 用户离线删除用户
 
@@ -74,5 +97,5 @@ public class UserManager
         Console.WriteLine($"删除用户,用户ID:{cs.user.ID}");
     }
 
-    #endregion
+    #endregion 用户离线删除用户
 }

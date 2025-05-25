@@ -47,13 +47,15 @@ public class RoomHallPanelController
     private void HandleCreateRoomResponse(MsgBase msg)
     {
         var response = (MsgCreateRoom)msg;
-        HandleOperationResponse(response.result,
-            success: () =>
-            {
-                PanelManager.Instance.Open<RoomPanel>();
-                view.Close();
-            },
-            fail: () => PanelManager.Instance.Open<TipPanel>("创建房间失败"));
+        if (response.result == 0)
+        {
+            PanelManager.Instance.Open<RoomPanel>();
+            view.Close();
+        }
+        else
+        {
+            PanelManager.Instance.Open<TipPanel>("创建房间失败");
+        }
     }
 
     /// <summary>
@@ -71,6 +73,9 @@ public class RoomHallPanelController
             fail: () => PanelManager.Instance.Open<TipPanel>("进入房间失败"));
     }
 
+    /// <summary>
+    /// 处理操作响应
+    /// </summary>
     private void HandleOperationResponse(int result, Action success, Action fail)
     {
         if (result == 0) success?.Invoke();

@@ -29,30 +29,6 @@
 //    }
 
 //    /// <summary>
-//    /// 创建房间
-//    /// </summary>
-//    public static void MsgCreateRoom(ClientState c, MsgBase msgBase)
-//    {
-//        MsgCreateRoom msg = (MsgCreateRoom)msgBase;
-//        Player player = c.player;
-//        if (player == null)
-//            return;
-//        // 已经在房间里
-//        if (player.roomId >= 0)
-//        {
-//            msg.result = 1;
-//            player.Send(msg);
-//            return;
-//        }
-//        // 创建
-//        Room room = RoomManager.AddRoom();
-//        room.AddPlayer(player.ID);
-//        msg.result = 0;
-//        player.Send(msg);
-//        PlayerManager.Broadcast(RoomManager.ToMsg()); // 告诉全员有新房间
-//    }
-
-//    /// <summary>
 //    /// 进入房间
 //    /// </summary>
 //    public static void MsgEnterRoom(ClientState c, MsgBase msgBase)
