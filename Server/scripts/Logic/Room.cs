@@ -21,7 +21,7 @@ public class Room
     /// <summary>
     /// 玩家列表
     /// </summary>
-    public Dictionary<long, Player> playerIds = new Dictionary<long, Player>();
+    public Dictionary<long, Player> playerIds = new();
 
     /// <summary>
     /// 房主id
@@ -58,41 +58,33 @@ public class Room
     /// <summary>
     /// 添加玩家,true-加入成功，false-加入失败
     /// </summary>
-    public bool AddPlayer(long id)
+    public bool AddPlayer(Player newPlayer)
     {
-        // 获取玩家
-        Player? player = PlayerManager.GetPlayer(id);
-        if (player == null)
+        if (newPlayer == null)
         {
-            Console.WriteLine("Room.AddPlayer fail,reach is null");
+            Console.WriteLine("房间添加玩家失败，要添加的玩家是空");
             return false;
         }
-        // 房间人数
+        if (playerIds.ContainsKey(newPlayer.ID))
+        {
+            Console.WriteLine("房间添加玩家失败，玩家已在房间中");
+            return false;
+        }
         if (playerIds.Count >= maxPlayer)
         {
-            Console.WriteLine("Room.AddPlayer fail,reach maxPLayer");
+            Console.WriteLine("房间添加玩家失败，房间人数已满");
             return false;
         }
-        // 准备状态才能加入
         if ((Room.Status)status != Status.PREPARE)
         {
-            Console.WriteLine("Room.AddPlayer fail,not PREPARE");
+            Console.WriteLine("房间添加玩家失败，房间已在战斗中");
             return false;
         }
-        // 已经在房间里
-        if (playerIds.ContainsKey(id))
-        {
-            Console.WriteLine("Room.AddPlayer fail,already in this room");
-            return false;
-        }
-        // 加入列表
-        playerIds[id] = player;
+        playerIds.Add(newPlayer.ID, newPlayer);
         // 设置玩家数据
-        player.camp = SwitchCamp();
-        player.roomId = this.RoomID;
-        // 设置房主
-        if (ownerId == -1)
-            ownerId = player.ID;
+        newPlayer.camp = SwitchCamp();
+        newPlayer.roomId = this.RoomID;
+        if (ownerId == -1) ownerId = newPlayer.ID; // 设置房主
         // 广播
         //Broadcast(ToMsg());
         return true;
@@ -104,16 +96,15 @@ public class Room
     public bool RemovePlayer(long id)
     {
         // 获取玩家
-        Player? player = PlayerManager.GetPlayer(id);
-        if (player == null)
-        {
-            Console.WriteLine("Room.RemovePlayer fail,player is null");
-            return false;
-        }
-        // 没有在房间里
         if (!playerIds.ContainsKey(id))
         {
-            Console.WriteLine("Room.RemovePlayer fail,not in this room");
+            Console.WriteLine("房间移除玩家失败,房间不存在该玩家");
+            return false;
+        }
+        Player? player = playerIds[id];
+        if (player == null)
+        {
+            Console.WriteLine("房间移除玩家失败，玩家为空");
             return false;
         }
         // 删除列表
@@ -128,6 +119,7 @@ public class Room
             User? user = UserManager.GetUser(player.ID);
             if (user == null) return false;
             user.Lost++;
+            DbManager.UpdateUser(user);
             MsgLeaveBattle msg = new MsgLeaveBattle();
             msg.id = player.ID;
             Broadcast(msg);
@@ -142,6 +134,8 @@ public class Room
         return true;
     }
 
+    #region 内部实现
+
     /// <summary>
     /// 分配阵营
     /// </summary>
@@ -149,9 +143,8 @@ public class Room
     {
         int count1 = 0;
         int count2 = 0;
-        foreach (long id in playerIds.Keys)
+        foreach (Player player in playerIds.Values)
         {
-            Player player = PlayerManager.GetPlayer(id);
             if (player.camp == 1) count1++;
             if (player.camp == 2) count2++;
         }
@@ -161,7 +154,7 @@ public class Room
     /// <summary>
     /// 是否是房主
     /// </summary>
-    public bool isOwner(Player player)
+    private bool isOwner(Player player)
     {
         return player.ID == ownerId;
     }
@@ -181,14 +174,15 @@ public class Room
     /// <summary>
     /// 广播消息
     /// </summary>
-    public void Broadcast(MsgBase msg)
+    private void Broadcast(MsgBase msg)
     {
-        foreach (long id in playerIds.Keys)
+        foreach (Player player in playerIds.Values)
         {
-            Player player = PlayerManager.GetPlayer(id);
             player.Send(msg);
         }
     }
+
+    #endregion 内部实现
 
     ///// <summary>
     ///// 生成MsgGetRoomInfo协议
@@ -222,13 +216,12 @@ public class Room
     /// </summary>
     public bool CanStartBattle()
     {
-        if ((Room.Status)status != Status.PREPARE) return false; // 已经是战斗状态
+        if ((Room.Status)status == Status.FIGHT) return false; // 已经是战斗状态
         // 统计每个阵营的玩家数
         int count1 = 0;
         int count2 = 0;
-        foreach (long id in playerIds.Keys)
+        foreach (Player player in playerIds.Values)
         {
-            Player player = PlayerManager.GetPlayer(id);
             if (player.camp == 1) count1++;
             else count2++;
         }
@@ -260,9 +253,8 @@ public class Room
         // 位置和旋转
         int count1 = 0;
         int count2 = 0;
-        foreach (long id in playerIds.Keys)
+        foreach (Player player in playerIds.Values)
         {
-            Player player = PlayerManager.GetPlayer(id);
             player.hp = 100;
             if (player.camp == 1)
             {
@@ -309,9 +301,8 @@ public class Room
         msg.mapId = 1;
         msg.tanks = new TankInfo[playerIds.Count];
         int i = 0;
-        foreach (long id in playerIds.Keys)
+        foreach (Player player in playerIds.Values)
         {
-            Player player = PlayerManager.GetPlayer(id);
             msg.tanks[i] = PlayerToTankInfo(player);
             i++;
         }
@@ -335,9 +326,8 @@ public class Room
         // 存活人数
         int count1 = 0;
         int count2 = 0;
-        foreach (long id in playerIds.Keys)
+        foreach (Player player in playerIds.Values)
         {
-            Player player = PlayerManager.GetPlayer(id);
             if (!IsDie(player))
             {
                 if (player.camp == 1) count1++;
@@ -372,11 +362,11 @@ public class Room
         if (winCamp == 0)
             return;
         status = (int)Status.PREPARE; // 某一方胜利，结束战斗
-        foreach (long id in playerIds.Keys)  // 统计信息
+        foreach (Player player in playerIds.Values)  // 统计信息
         {
-            Player player = PlayerManager.GetPlayer(id);
-            User user = UserManager.GetUser(id);
-            if (player == null || user == null) return;
+            if (player == null) continue;
+            User? user = UserManager.GetUser(player.ID);
+            if (user == null) continue;
             if (player.camp == winCamp)
                 user.Win++;
             else
