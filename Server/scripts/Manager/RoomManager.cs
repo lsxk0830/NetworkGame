@@ -7,6 +7,7 @@ public class RoomManager
     /// 房间列表
     /// </summary>
     public static Dictionary<string, Room> rooms = new Dictionary<string, Room>();
+
     private static readonly Random _random = new Random();
 
     /// <summary>
@@ -46,7 +47,6 @@ public class RoomManager
     /// </summary>
     public static void RemoveRoom(string roomID)
     {
-
         var emptyRooms = new List<string>();
 
         foreach (var pair in rooms)
@@ -96,7 +96,7 @@ public class RoomManager
         return msg;
     }
 
-    #endregion
+    #endregion 网络协议
 
     #region 私有方法
 
@@ -110,5 +110,5 @@ public class RoomManager
         return $"{timestamp}{randomNum}";
     }
 
-    #endregion
+    #endregion 私有方法
 }

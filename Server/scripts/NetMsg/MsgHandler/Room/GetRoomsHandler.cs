@@ -6,6 +6,7 @@
     public static void MsgGetRooms(ClientState cs, MsgBase msgBase)
     {
         Console.WriteLine($"接收:MsgGetRooms协议");
+
         User? user = cs.user;
         if (user == null) return;
         NetManager.Send(cs, RoomManager.SendRoomsToMsg());

@@ -3,7 +3,15 @@
 /// </summary>
 public class Player
 {
+    /// <summary>
+    /// 用户ID
+    /// </summary>
     public long ID;
+
+    /// <summary>
+    /// 房间ID
+    /// </summary>
+    public string roomId = "";
 
     /// <summary>
     /// 客户端状态ClientState
@@ -26,16 +34,12 @@ public class Player
 
     // 坐标和旋转
     public float x;
+
     public float y;
     public float z;
     public float ex;
     public float ey;
     public float ez;
-
-    /// <summary>
-    /// 房间ID
-    /// </summary>
-    public string roomId = "";
 
     /// <summary>
     /// 阵营

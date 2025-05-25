@@ -56,38 +56,47 @@ public class Room
     };
 
     /// <summary>
-    /// 添加玩家,true-加入成功，false-加入失败
+    /// 添加玩家
     /// </summary>
-    public bool AddPlayer(Player newPlayer)
+    public void AddPlayer(Player newPlayer)
     {
+        MsgEnterRoom msg = new MsgEnterRoom() { result = -1 };
         if (newPlayer == null)
         {
             Console.WriteLine("房间添加玩家失败，要添加的玩家是空");
-            return false;
+            return;
         }
         if (playerIds.ContainsKey(newPlayer.ID))
         {
+            newPlayer.Send(msg);
             Console.WriteLine("房间添加玩家失败，玩家已在房间中");
-            return false;
+            return;
         }
         if (playerIds.Count >= maxPlayer)
         {
+            newPlayer.Send(msg);
             Console.WriteLine("房间添加玩家失败，房间人数已满");
-            return false;
+            return;
         }
         if ((Room.Status)status != Status.PREPARE)
         {
+            newPlayer.Send(msg);
             Console.WriteLine("房间添加玩家失败，房间已在战斗中");
-            return false;
+            return;
         }
         playerIds.Add(newPlayer.ID, newPlayer);
+        PlayerCount++;
+
         // 设置玩家数据
         newPlayer.camp = SwitchCamp();
         newPlayer.roomId = this.RoomID;
         if (ownerId == -1) ownerId = newPlayer.ID; // 设置房主
-        // 广播
-        //Broadcast(ToMsg());
-        return true;
+
+        msg.roomID = this.RoomID;
+        msg.result = 0;
+        msg.ownerId = this.ownerId;
+        msg.players = playerIds.Values.ToArray();
+        Broadcast(msg); // 广播
     }
 
     /// <summary>
@@ -178,38 +187,12 @@ public class Room
     {
         foreach (Player player in playerIds.Values)
         {
-            player.Send(msg);
+            //NetManager.Send(player.state, msg);
+            // player.Send(msg);
         }
     }
 
     #endregion 内部实现
-
-    ///// <summary>
-    ///// 生成MsgGetRoomInfo协议
-    ///// </summary>
-    ///// <returns></returns>
-    //public MsgBase ToMsg()
-    //{
-    //    MsgGetRoomInfo msg = new MsgGetRoomInfo();
-    //    int count = playerIds.Count;
-    //    msg.Players = new PlayerInfo[count];
-    //    // Players
-    //    int i = 0;
-    //    foreach (string RoomID in playerIds.Keys)
-    //    {
-    //        Player player = PlayerManager.GetPlayer(RoomID);
-    //        PlayerInfo playerInfo = new PlayerInfo();
-    //        // 赋值
-    //        playerInfo.RoomID = player.ID;
-    //        playerInfo.camp = player.camp;
-    //        playerInfo.win = player.data.Win;
-    //        playerInfo.lost = player.data.Lost;
-    //        playerInfo.isOwner = isOwner(player) ? 1 : 0;
-    //        msg.Players[i] = playerInfo;
-    //        i++;
-    //    }
-    //    return msg;
-    //}
 
     /// <summary>
     /// 能否开战

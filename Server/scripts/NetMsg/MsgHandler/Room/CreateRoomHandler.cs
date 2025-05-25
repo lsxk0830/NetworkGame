@@ -5,6 +5,8 @@
     /// </summary>
     public static void MsgCreateRoom(ClientState cs, MsgBase msgBase)
     {
+        Console.WriteLine($"接收:MsgCreateRoom协议");
+
         MsgCreateRoom msg = (MsgCreateRoom)msgBase;
         User? user = cs.user;
         if (user == null) return;

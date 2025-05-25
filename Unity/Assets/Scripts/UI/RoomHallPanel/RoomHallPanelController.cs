@@ -51,6 +51,7 @@ public class RoomHallPanelController
         {
             PanelManager.Instance.Open<RoomPanel>();
             view.Close();
+            // ToDo 创建一个人物
         }
         else
         {
@@ -64,22 +65,16 @@ public class RoomHallPanelController
     private void HandleEnterRoomResponse(MsgBase msg)
     {
         var response = (MsgEnterRoom)msg;
-        HandleOperationResponse(response.result,
-            success: () =>
-            {
-                PanelManager.Instance.Open<RoomPanel>();
-                view.Close();
-            },
-            fail: () => PanelManager.Instance.Open<TipPanel>("进入房间失败"));
-    }
-
-    /// <summary>
-    /// 处理操作响应
-    /// </summary>
-    private void HandleOperationResponse(int result, Action success, Action fail)
-    {
-        if (result == 0) success?.Invoke();
-        else fail?.Invoke();
+        if (response.result == 0)
+        {
+            PanelManager.Instance.Open<RoomPanel>();
+            view.Close();
+            Debug.Log($"房间详细信息:{response.players.Length}");
+        }
+        else
+        {
+            PanelManager.Instance.Open<TipPanel>("进入房间失败");
+        }
     }
 
     #endregion

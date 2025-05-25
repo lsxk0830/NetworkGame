@@ -28,22 +28,6 @@
 //        player.Send(RoomManager.ToMsg());
 //    }
 
-//    /// <summary>
-//    /// 进入房间
-//    /// </summary>
-//    public static void MsgEnterRoom(ClientState c, MsgBase msgBase)
-//    {
-//        MsgEnterRoom msg = (MsgEnterRoom)msgBase;
-//        Player player = c.player;
-//        if (player == null)
-//            return;
-//        // 已经在房间里
-//        if (player.roomId >= 0)
-//        {
-//            msg.result = 1;
-//            player.Send(msg);
-//            return;
-//        }
 //        // 获取房间
 //        Room room = RoomManager.GetRoom(msg.id);
 //        if (room == null)
