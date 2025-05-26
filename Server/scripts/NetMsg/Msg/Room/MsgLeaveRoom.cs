@@ -1,9 +1,9 @@
-/// <summary>
-/// 退出房间
-/// </summary>
-public class MsgLeaveRoom : MsgBase
+﻿public class MsgLeaveRoom : MsgBase
 {
-    public MsgLeaveRoom() { protoName = "MsgLeaveRoom"; }
+    public MsgLeaveRoom()
+    {
+        protoName = "MsgLeaveRoom";
+    }
 
     /// <summary>
     /// 服务器返回的结果 0-离开成功 其他数值-离开失败
@@ -11,7 +11,7 @@ public class MsgLeaveRoom : MsgBase
     public int result = 0;
 
     /// <summary>
-    /// 请求退出房间的房间序号（id）
+    /// 请求退出的房间ID
     /// </summary>
     public string roomID;
 

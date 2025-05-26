@@ -67,28 +67,6 @@
 //    }
 
 //    /// <summary>
-//    /// 离开房间
-//    /// </summary>
-//    public static void MsgLeaveRoom(ClientState c, MsgBase msgBase)
-//    {
-//        MsgLeaveRoom msg = (MsgLeaveRoom)msgBase;
-//        Player player = c.player;
-//        if (player == null)
-//            return;
-//        Room room = RoomManager.GetRoom(player.roomId);
-//        if (room == null)
-//        {
-//            msg.result = 1;
-//            player.Send(msg);
-//            return;
-//        }
-//        room.RemovePlayer(player.ID);
-//        // 返回协议
-//        msg.result = 0;
-//        player.Send(msg);
-//    }
-
-//    /// <summary>
 //    /// 请求开始战斗
 //    /// </summary>
 //    public static void MsgStartBattle(ClientState c, MsgBase msgBase)

@@ -51,12 +51,13 @@ public class RoomManager
 
         foreach (var pair in rooms)
         {
-            if (pair.Value.PlayerCount == 0)
+            if (pair.Value.playerIds.Count == 0)
                 emptyRooms.Add(pair.Key);
         }
 
         foreach (var roomId in emptyRooms)
         {
+            rooms[roomId] = null;
             rooms.Remove(roomId);
             Console.WriteLine($"房间已移除: {roomId}");
         }
@@ -88,7 +89,6 @@ public class RoomManager
             msg.rooms[i] = new Room
             {
                 RoomID = room.RoomID,
-                PlayerCount = room.playerIds.Count,
                 status = (int)room.status
             };
             i++;

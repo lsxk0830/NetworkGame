@@ -11,11 +11,6 @@ public class Room
     public string RoomID = "";
 
     /// <summary>
-    /// 房间人数
-    /// </summary>
-    public int PlayerCount = 0;
-
-    /// <summary>
     /// 最大玩家数
     /// </summary>
     public int maxPlayer = 6;
@@ -83,7 +78,6 @@ public class Room
             return false;
         }
         playerIds.Add(newPlayer.ID, newPlayer);
-        PlayerCount++;
 
         // 设置玩家数据
         newPlayer.camp = SwitchCamp();
@@ -122,7 +116,6 @@ public class Room
             return;
         }
         playerIds.Add(newPlayer.ID, newPlayer);
-        PlayerCount++;
 
         // 设置玩家数据
         newPlayer.camp = SwitchCamp();
@@ -152,30 +145,35 @@ public class Room
             Console.WriteLine("房间移除玩家失败，玩家为空");
             return false;
         }
-        // 删除列表
-        playerIds.Remove(id);
-        player.camp = 0;
-        player.roomId = "";
-        // 设置房主
-        if (isOwner(player))
-            ownerId = SwitchOwner();
+        if (id == ownerId) ownerId = SwitchOwner(); // 设置房主
         if ((Room.Status)status == Status.FIGHT) // 战斗状态退出，战斗状态退出游戏视为输掉游戏
         {
-            User? user = UserManager.GetUser(player.ID);
+            User? user = UserManager.GetUser(id);
             if (user == null) return false;
             user.Lost++;
             DbManager.UpdateUser(user);
-            MsgLeaveBattle msg = new MsgLeaveBattle();
-            msg.id = player.ID;
+            MsgLeaveBattle msg = new MsgLeaveBattle()
+            {
+                id = player.ID
+            };
             Broadcast(msg);
         }
+
+        playerIds.Remove(id); // 移除列表
+
         if (playerIds.Count == 0) // 房间为空
         {
+            UserManager.SendExcept(player.state, new MsgDeleteRoom()
+            {
+                result = 0,
+                roomID = this.RoomID,
+            });// 全员通知
             RoomManager.RemoveRoom(this.RoomID);
-            //PlayerManager.Broadcast(RoomManager.ToMsg()); // 告诉全员有房间被删除
+            return true;
         }
         // 广播
-        //Broadcast(ToMsg());
+        Broadcast(new MsgLeaveRoom() { ID = id });
+        player = null;
         return true;
     }
 
@@ -194,14 +192,6 @@ public class Room
             if (player.camp == 2) count2++;
         }
         return count1 <= count2 ? 1 : 2;
-    }
-
-    /// <summary>
-    /// 是否是房主
-    /// </summary>
-    private bool isOwner(Player player)
-    {
-        return player.ID == ownerId;
     }
 
     /// <summary>

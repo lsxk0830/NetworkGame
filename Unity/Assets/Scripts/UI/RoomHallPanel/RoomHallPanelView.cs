@@ -1,8 +1,6 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using System.Collections.Generic;
-using System.Linq;
 
 /// <summary>
 /// 房间大厅面板
@@ -36,17 +34,13 @@ public class RoomHallPanelView : BasePanel
 
     public override void OnShow(params object[] args)
     {
-        if (args.Length > 0)
-        {
-            Room[] rooms = (Room[])args;
-            DeleteLastGo();
-            LoadNowGo(rooms);
-        }
-        else
-            DeleteLastGo();
+        DeleteLastGo();
+
         createButton.onClick.AddListener(OnCreateRoomClick);
         refreshButton.onClick.AddListener(OnRefreshClick);
         Controller.Addlistener();
+
+        NetManager.Send(new MsgGetRooms());
     }
 
     public override void OnClose()
@@ -59,6 +53,21 @@ public class RoomHallPanelView : BasePanel
     #endregion
 
     #region 更新面板对象
+
+    /// <summary>
+    /// 删除指定房间对象
+    /// </summary>
+    public void DeleteGo(string roomID)
+    {
+        for (int i = 0; i < roomListContent.childCount; i++)
+        {
+            if (roomListContent.GetChild(i).name == roomID)
+            {
+                Destroy(roomListContent.GetChild(i).gameObject);
+                break;
+            }
+        }
+    }
 
     /// <summary>
     /// 删除上次的房间列表对象
@@ -80,11 +89,12 @@ public class RoomHallPanelView : BasePanel
         foreach (var room in rooms)
         {
             var item = Instantiate(roomPrefab, roomListContent);
+            item.name = room.RoomID;
             item.SetActive(true);
 
             var texts = item.GetComponentsInChildren<TMP_Text>();
             texts[0].text = room.RoomID;
-            texts[1].text = $"{room.PlayerCount}/4";
+            texts[1].text = $"{room.playerIds.Count}/4";
             texts[2].text = room.status == 0 ? "等待中" : "战斗中";
 
             var button = item.GetComponentInChildren<Button>();

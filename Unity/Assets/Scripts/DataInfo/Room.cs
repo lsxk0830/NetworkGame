@@ -13,11 +13,6 @@ public class Room
     public string RoomID;
 
     /// <summary>
-    /// 房间人数
-    /// </summary>
-    public int PlayerCount = 0;
-
-    /// <summary>
     /// 玩家列表
     /// </summary>
     public Dictionary<long, Player> playerIds = new Dictionary<long, Player>();

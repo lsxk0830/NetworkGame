@@ -72,7 +72,7 @@ public class HomePanelController
     /// </summary>
     public void HandlePlay()
     {
-        HTTPManager.Instance.Get(API.GetRooms, GetRoomsSuccess, GetRoomsFail).Forget();
+        PanelManager.Instance.Open<RoomHallPanelView>();
     }
 
     #endregion
@@ -98,32 +98,5 @@ public class HomePanelController
     {
         model.isRotatingTank = false;
     }
-    #endregion
-
-
-    #region 网络回调
-
-    private void GetRoomsSuccess(string result)
-    {
-        Accept<Room[]> accept = JsonConvert.DeserializeObject<Accept<Room[]>>(result);
-        if (accept == null)
-        {
-            PanelManager.Instance.Open<TipPanel>("服务器异常，返回空数据");
-            Debug.LogError($"登录错误:{result}");
-            return;
-        }
-        if (accept.code == 200)
-        {
-            PanelManager.Instance.Open<RoomHallPanelView>(accept.data);
-            Debug.Log($"获取房间大厅信息成功");
-        }
-
-    }
-
-    private void GetRoomsFail(long ID, string result)
-    {
-        PanelManager.Instance.Open<TipPanel>($"获取房间列表失败:{result}");
-    }
-
     #endregion
 }

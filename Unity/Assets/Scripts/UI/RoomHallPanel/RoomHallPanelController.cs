@@ -16,6 +16,7 @@ public class RoomHallPanelController
     {
         EventManager.Instance.RegisterEvent(Events.MsgGetRooms, HandleRoomListResponse);
         EventManager.Instance.RegisterEvent(Events.MsgCreateRoom, HandleCreateRoomResponse);
+        EventManager.Instance.RegisterEvent(Events.MsgDeleteRoom, HandleDeleteRoomResponse);
         EventManager.Instance.RegisterEvent(Events.MsgEnterRoom, HandleEnterRoomResponse);
     }
 
@@ -23,6 +24,7 @@ public class RoomHallPanelController
     {
         EventManager.Instance.RemoveEvent(Events.MsgGetRooms, HandleRoomListResponse);
         EventManager.Instance.RemoveEvent(Events.MsgCreateRoom, HandleCreateRoomResponse);
+        EventManager.Instance.RemoveEvent(Events.MsgDeleteRoom, HandleDeleteRoomResponse);
         EventManager.Instance.RemoveEvent(Events.MsgEnterRoom, HandleEnterRoomResponse);
     }
 
@@ -49,12 +51,28 @@ public class RoomHallPanelController
         var response = (MsgCreateRoom)msg;
         if (response.result == 0)
         {
-            PanelManager.Instance.Open<RoomPanel>(response);
+            PanelManager.Instance.Open<RoomPanelView>(response);
             view.Close();
         }
         else
         {
             PanelManager.Instance.Open<TipPanel>("创建房间失败");
+        }
+    }
+
+    /// <summary>
+    /// 删除房间协议
+    /// </summary>
+    private void HandleDeleteRoomResponse(MsgBase msg)
+    {
+        var response = (MsgDeleteRoom)msg;
+        if (response.result == 0)
+        {
+            view.DeleteGo(response.roomID);
+        }
+        else
+        {
+            PanelManager.Instance.Open<TipPanel>("接收删除房间协议失败");
         }
     }
 
@@ -66,7 +84,7 @@ public class RoomHallPanelController
         var response = (MsgEnterRoom)msg;
         if (response.result == 0)
         {
-            PanelManager.Instance.Open<RoomPanel>(response);
+            PanelManager.Instance.Open<RoomPanelView>(response);
             view.Close();
         }
         else
