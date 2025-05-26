@@ -49,9 +49,8 @@ public class RoomHallPanelController
         var response = (MsgCreateRoom)msg;
         if (response.result == 0)
         {
-            PanelManager.Instance.Open<RoomPanel>();
+            PanelManager.Instance.Open<RoomPanel>(response);
             view.Close();
-            // ToDo 创建一个人物
         }
         else
         {
@@ -67,9 +66,8 @@ public class RoomHallPanelController
         var response = (MsgEnterRoom)msg;
         if (response.result == 0)
         {
-            PanelManager.Instance.Open<RoomPanel>();
+            PanelManager.Instance.Open<RoomPanel>(response);
             view.Close();
-            Debug.Log($"房间详细信息:{response.players.Length}");
         }
         else
         {

@@ -50,7 +50,8 @@ public class UserManager
     {
         foreach (var cs in UserCSs.Values)
         {
-            if (cs != c) NetManager.Send(cs, msgBase);
+            if (cs != c)
+                NetManager.Send(cs, msgBase);
         }
     }
 

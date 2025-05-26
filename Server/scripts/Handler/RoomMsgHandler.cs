@@ -37,7 +37,7 @@
 //            return;
 //        }
 //        // 进入
-//        if (!room.AddPlayer(player.ID))
+//        if (!room.EnterRoomAddPlayer(player.ID))
 //        {
 //            msg.result = 1;
 //            player.Send(msg);

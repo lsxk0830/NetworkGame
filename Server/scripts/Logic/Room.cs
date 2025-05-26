@@ -58,9 +58,44 @@ public class Room
     };
 
     /// <summary>
-    /// 添加玩家
+    /// 创建房间时添加玩家
     /// </summary>
-    public void AddPlayer(Player newPlayer)
+    public bool CreateRoomAddPlayer(Player newPlayer)
+    {
+        if (newPlayer == null)
+        {
+            Console.WriteLine("房间添加玩家失败，要添加的玩家是空");
+            return false;
+        }
+        if (playerIds.ContainsKey(newPlayer.ID))
+        {
+            Console.WriteLine("房间添加玩家失败，玩家已在房间中");
+            return false;
+        }
+        if (playerIds.Count >= maxPlayer)
+        {
+            Console.WriteLine("房间添加玩家失败，房间人数已满");
+            return false;
+        }
+        if ((Room.Status)status != Status.PREPARE)
+        {
+            Console.WriteLine("房间添加玩家失败，房间已在战斗中");
+            return false;
+        }
+        playerIds.Add(newPlayer.ID, newPlayer);
+        PlayerCount++;
+
+        // 设置玩家数据
+        newPlayer.camp = SwitchCamp();
+        newPlayer.roomId = this.RoomID;
+        ownerId = newPlayer.ID; // 设置房主
+        return true;
+    }
+
+    /// <summary>
+    /// 进入房间时添加玩家
+    /// </summary>
+    public void EnterRoomAddPlayer(Player newPlayer)
     {
         MsgEnterRoom msg = new MsgEnterRoom() { result = -1 };
         if (newPlayer == null)
@@ -92,7 +127,6 @@ public class Room
         // 设置玩家数据
         newPlayer.camp = SwitchCamp();
         newPlayer.roomId = this.RoomID;
-        if (ownerId == -1) ownerId = newPlayer.ID; // 设置房主
 
         msg.roomID = this.RoomID;
         msg.result = 0;

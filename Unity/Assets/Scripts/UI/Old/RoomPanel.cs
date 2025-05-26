@@ -12,34 +12,64 @@ public class RoomPanel : BasePanel
     public override void OnInit()
     {
         layer = PanelManager.Layer.Panel;
-    }
-
-    public override void OnShow(params object[] para)
-    {
         // 寻找组件
         startBtn = transform.Find("CtrlPanel/StartBtn").GetComponent<Button>();
         closeBtn = transform.Find("CtrlPanel/CloseBtn").GetComponent<Button>();
         content = transform.Find("ListPanel/ScrollView/Viewport/Content");
         playerObj = transform.Find("Player").gameObject;
-        //不激活玩家信息
-        playerObj.SetActive(false);
+    }
+
+    public override void OnShow(params object[] para)
+    {
+        if (para[0].GetType() == typeof(MsgCreateRoom))
+        {
+            var response = (MsgCreateRoom)para[0];
+            Player player = new Player()
+            {
+                ID = GameMain.ID,
+                roomId = response.roomID
+            };
+            Debug.Log($"创建房间");
+            GeneratePlayerInfo(player);
+        }
+        else if (para[0].GetType() == typeof(MsgEnterRoom))
+        {
+            var response = (MsgEnterRoom)para[0];
+
+            for (int i = content.childCount - 1; i >= 0; i--) // 删除之前的
+            {
+                GameObject go = content.GetChild(i).gameObject;
+                Destroy(go);
+            }
+            if (response.players == null) return;
+            for (int i = 0; i < response.players.Length; i++)// 重新生成
+            {
+                GeneratePlayerInfo(response.players[i]);
+            }
+
+            Debug.Log($"进入房间");
+        }
+        else
+        {
+            Debug.LogError($"打开房间异常");
+        }
+
         //按钮事件
         startBtn.onClick.AddListener(OnStartClick);
         closeBtn.onClick.AddListener(OnCloseClick);
         // 协议监听
-
-        EventManager.Instance.RegisterEvent(Events.MsgGetRoomInfo, OnMsgGetRoomInfo);
+        //EventManager.Instance.RegisterEvent(Events.MsgGetRoomInfo, OnMsgGetRoomInfo);
         EventManager.Instance.RegisterEvent(Events.MsgLeaveRoom, OnMsgLeaveRoom);
         EventManager.Instance.RegisterEvent(Events.MsgStartBattle, OnMsgStartBattle);
         // 发送查询
-        MsgGetRoomInfo msg = new MsgGetRoomInfo();
-        NetManager.Send(msg);
+        // MsgGetRoomInfo msg = new MsgGetRoomInfo();
+        // NetManager.Send(msg);
     }
 
     public override void OnClose()
     {
         // 协议取消监听
-        EventManager.Instance.RemoveEvent(Events.MsgGetRoomInfo, OnMsgGetRoomInfo);
+        //EventManager.Instance.RemoveEvent(Events.MsgGetRoomInfo, OnMsgGetRoomInfo);
         EventManager.Instance.RemoveEvent(Events.MsgLeaveRoom, OnMsgLeaveRoom);
         EventManager.Instance.RemoveEvent(Events.MsgStartBattle, OnMsgStartBattle);
     }

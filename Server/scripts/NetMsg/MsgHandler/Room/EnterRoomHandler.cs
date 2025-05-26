@@ -29,7 +29,7 @@
             {
                 ID = c.user.ID,
             };
-            room.AddPlayer(player);
+            room.EnterRoomAddPlayer(player);
         }
     }
 }

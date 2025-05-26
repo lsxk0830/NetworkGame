@@ -12,7 +12,13 @@
         if (user == null) return;
 
         Room room = RoomManager.CreateRoom(); // 创建房间
-        msg.result = 0;
+        Player player = new Player(cs)
+        {
+            ID = user.ID,
+        };
+        bool result = room.CreateRoomAddPlayer(player);
+        msg.result = result ? 0 : -1;
+        msg.roomID = room.RoomID;
         NetManager.Send(cs, msg); //返回创建房间的结果
         UserManager.SendExcept(cs, msg); // 全员通知
     }

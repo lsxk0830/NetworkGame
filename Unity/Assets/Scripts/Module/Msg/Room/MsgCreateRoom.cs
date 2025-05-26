@@ -13,5 +13,5 @@ public class MsgCreateRoom : MsgBase
     /// <summary>
     /// 返回的房间ID
     /// </summary>
-    public string roomID { get; set; } = "";
+    public string roomID = "";
 }
