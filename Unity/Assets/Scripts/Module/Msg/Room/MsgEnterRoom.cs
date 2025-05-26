@@ -23,5 +23,5 @@ public class MsgEnterRoom : MsgBase
     /// <summary>
     /// 服务器返回的房间玩家信息
     /// </summary>
-    public Player[] players { get; set; }
+    public Player[] players;
 }

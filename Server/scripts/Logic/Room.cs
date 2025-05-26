@@ -1,4 +1,6 @@
-﻿/// <summary>
+﻿using Newtonsoft.Json;
+
+/// <summary>
 /// 添加玩家、删除玩家、生成MsgGetRoomInfo协议
 /// </summary>
 public class Room
@@ -187,8 +189,7 @@ public class Room
     {
         foreach (Player player in playerIds.Values)
         {
-            //NetManager.Send(player.state, msg);
-            // player.Send(msg);
+            player.Send(msg);
         }
     }
 

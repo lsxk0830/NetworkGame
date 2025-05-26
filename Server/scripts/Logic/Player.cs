@@ -1,6 +1,9 @@
+using Newtonsoft.Json;
+
 /// <summary>
 /// 玩家
 /// </summary>
+[Serializable]
 public class Player
 {
     /// <summary>
@@ -16,7 +19,7 @@ public class Player
     /// <summary>
     /// 客户端状态ClientState
     /// </summary>
-    public ClientState state;
+    [JsonIgnore] public ClientState state;
 
     public Player(ClientState state)
     {
