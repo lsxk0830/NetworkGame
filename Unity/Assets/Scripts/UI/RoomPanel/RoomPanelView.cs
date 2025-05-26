@@ -92,6 +92,7 @@ public class RoomPanelView : BasePanel
     /// </summary>
     private void UpdateUI(params object[] para)
     {
+        DeleteLastGo();
         if (para[0].GetType() == typeof(MsgCreateRoom)) //创建房间
         {
             var response = (MsgCreateRoom)para[0];
@@ -140,6 +141,17 @@ public class RoomPanelView : BasePanel
                 Destroy(go);
                 break;
             }
+        }
+    }
+
+    /// <summary>
+    /// 删除之前的物体
+    /// </summary>
+    public void DeleteLastGo()
+    {
+        for (int i = content.childCount - 1; i >= 0; i--) // 删除指定玩家
+        {
+            Destroy(content.GetChild(i).gameObject);
         }
     }
 
