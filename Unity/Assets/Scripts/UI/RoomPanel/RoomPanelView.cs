@@ -129,14 +129,14 @@ public class RoomPanelView : BasePanel
     }
 
     /// <summary>
-    /// 根据roomID删除指定的物体
+    /// 根据ID删除指定的玩家
     /// </summary>
-    public void DeleteGoByRoomID(string roomId)
+    public void DeletePlayerGoByID(long ID)
     {
         for (int i = content.childCount - 1; i >= 0; i--) // 删除指定玩家
         {
             GameObject go = content.GetChild(i).gameObject;
-            if (go.name == roomId)
+            if (go.name == ID.ToString())
             {
                 Destroy(go);
                 break;

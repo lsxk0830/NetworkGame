@@ -56,7 +56,7 @@ public class RoomPanelController
             }
             else
             {
-                view.DeleteGoByRoomID(msg.roomID);
+                view.DeletePlayerGoByID(msg.ID);
                 Debug.Log($"其他玩家退出房间");
             }
         }
