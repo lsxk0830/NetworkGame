@@ -29,6 +29,9 @@ public class LoginPanelView : BasePanel
         isShowPwToggle = transform.Find("IsShowPwToggle").GetComponent<Toggle>();
         RememberPwToggle = transform.Find("RememberPwToggle").GetComponent<Toggle>();
         controller.SetToggleState();
+#if DEV
+        transform.Find("DEV").gameObject.SetActive(true);
+#endif
     }
 
     public override void OnShow(params object[] para) // 显示
@@ -39,6 +42,18 @@ public class LoginPanelView : BasePanel
         isShowPwToggle.onValueChanged.AddListener(OnPwShowChangeClick);
         readPwBtn.onClick.AddListener(OnReadPwClick);
         idInput.onEndEdit.AddListener(IdInputEnd); // 用户名输入名结束
+
+#if DEV
+        foreach (Button btn in transform.Find("DEV").GetComponentsInChildren<Button>())
+        {
+            btn.onClick.AddListener(() =>
+            {
+                idInput.text = btn.gameObject.name;
+                pwInput.text = "QQqq123456";
+                OnLoginClick();
+            });
+        }
+#endif
     }
 
     public override void OnClose() // 关闭
