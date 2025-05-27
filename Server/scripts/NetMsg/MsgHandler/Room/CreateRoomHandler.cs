@@ -19,6 +19,7 @@
         bool result = room.CreateRoomAddPlayer(player);
         msg.result = result ? 0 : -1;
         msg.roomID = room.RoomID;
+        msg.ID = user.ID;
         NetManager.Send(cs, msg); //返回创建房间的结果
         UserManager.SendExcept(cs, msg); // 全员通知
     }

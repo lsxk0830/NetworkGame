@@ -17,4 +17,9 @@ public class MsgCreateRoom : MsgBase
     /// 返回的房间ID
     /// </summary>
     public string roomID { get; set; } = "";
+
+    /// <summary>
+    /// 指定的用户ID创建的房间
+    /// </summary>
+    public long ID { get; set; }
 }

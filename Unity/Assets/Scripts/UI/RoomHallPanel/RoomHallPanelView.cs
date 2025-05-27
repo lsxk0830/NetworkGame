@@ -102,6 +102,21 @@ public class RoomHallPanelView : BasePanel
         }
     }
 
+    public void LoadOneRoom(string roomID)
+    {
+        var item = Instantiate(roomPrefab, roomListContent);
+        item.name = roomID;
+        item.SetActive(true);
+
+        var texts = item.GetComponentsInChildren<TMP_Text>();
+        texts[0].text = roomID;
+        texts[1].text = $"1/4";
+        texts[2].text = "等待中";
+
+        var button = item.GetComponentInChildren<Button>();
+        button.onClick.AddListener(() => OnRoomItemClick(roomID));
+    }
+
     #endregion
 
     #region UI事件回调
