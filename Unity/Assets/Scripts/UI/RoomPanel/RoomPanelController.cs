@@ -12,24 +12,38 @@ public class RoomPanelController
 
     public void AddListener()
     {
+        EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, OnMsgEnterRoom);
         EventManager.Instance.RegisterEvent(Events.MsgLeaveRoom, OnMsgLeaveRoom);
         EventManager.Instance.RegisterEvent(Events.MsgStartBattle, OnMsgStartBattle);
     }
 
     public void RemoveListener()
     {
+        EventManager.Instance.RemoveEvent(Events.MsgEnterBattle, OnMsgEnterRoom);
         EventManager.Instance.RemoveEvent(Events.MsgLeaveRoom, OnMsgLeaveRoom);
         EventManager.Instance.RemoveEvent(Events.MsgStartBattle, OnMsgStartBattle);
     }
 
     #region 协议事件
 
+    private void OnMsgEnterRoom(MsgBase msgBase)
+    {
+        MsgEnterRoom msg = (MsgEnterRoom)msgBase;
+        if (msg.result == 0) // 成功退出房间
+        {
+            view.DeleteLastGo();
+            view.UpdateUIEnterRoom(msg);
+        }
+        else
+            PanelManager.Instance.Open<TipPanel>($"用户进入房间异常");
+    }
+
     /// <summary>
     /// 收到退出房间协议
     /// </summary>
-    private void OnMsgLeaveRoom(MsgBase msgBse)
+    private void OnMsgLeaveRoom(MsgBase msgBase)
     {
-        MsgLeaveRoom msg = (MsgLeaveRoom)msgBse;
+        MsgLeaveRoom msg = (MsgLeaveRoom)msgBase;
         Debug.Log($"收到退出房间协议");
         if (msg.result == 0) // 成功退出房间
         {
@@ -53,10 +67,10 @@ public class RoomPanelController
     /// <summary>
     /// 收到开战协议
     /// </summary>
-    private void OnMsgStartBattle(MsgBase msgBse)
+    private void OnMsgStartBattle(MsgBase msgBase)
     {
         Debug.Log($"收到开战协议");
-        MsgStartBattle msg = (MsgStartBattle)msgBse;
+        MsgStartBattle msg = (MsgStartBattle)msgBase;
         if (msg.result == 0)//开战
         {
             view.OnClose();

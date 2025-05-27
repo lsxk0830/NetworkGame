@@ -25,7 +25,14 @@ public class RoomPanelView : BasePanel
     public override void OnShow(params object[] para)
     {
         gameObject.SetActive(true);
-        UpdateUI(para);
+
+        DeleteLastGo();
+        if (para[0].GetType() == typeof(MsgCreateRoom)) //创建房间
+            UpdateUICreateRoom((MsgCreateRoom)para[0]);
+        else if (para[0].GetType() == typeof(MsgEnterRoom)) // 进入房间
+            UpdateUIEnterRoom((MsgEnterRoom)para[0]);
+        else
+            PanelManager.Instance.Open<TipPanel>("打开房间异常");
 
         //按钮事件
         startBtn.onClick.AddListener(OnStartClick);
@@ -88,44 +95,37 @@ public class RoomPanelView : BasePanel
     #region  更新UI
 
     /// <summary>
-    /// 更新UI,根据创建房间还是进入房间进行不同逻辑操作
+    /// 创建房间时更新UI
     /// </summary>
-    private void UpdateUI(params object[] para)
+    private void UpdateUICreateRoom(MsgCreateRoom response)
     {
-        DeleteLastGo();
-        if (para[0].GetType() == typeof(MsgCreateRoom)) //创建房间
+        Player player = new Player()
         {
-            var response = (MsgCreateRoom)para[0];
-            Player player = new Player()
-            {
-                ID = GameMain.ID,
-                roomId = response.roomID
-            };
-            Debug.Log($"创建房间");
-            controller.roomID = response.roomID;
-            GeneratePlayerInfo(player);
-        }
-        else if (para[0].GetType() == typeof(MsgEnterRoom)) // 进入房间
-        {
-            var response = (MsgEnterRoom)para[0];
+            ID = GameMain.ID,
+            roomId = response.roomID
+        };
+        Debug.Log($"创建房间");
+        controller.roomID = response.roomID;
+        GeneratePlayerInfo(player);
+    }
 
-            for (int i = content.childCount - 1; i >= 0; i--) // 删除之前的
-            {
-                GameObject go = content.GetChild(i).gameObject;
-                Destroy(go);
-            }
-            if (response.players == null) return;
-            for (int i = 0; i < response.players.Length; i++)// 重新生成
-            {
-                GeneratePlayerInfo(response.players[i]);
-            }
-            controller.roomID = response.roomID;
-            Debug.Log($"进入房间");
-        }
-        else
+    /// <summary>
+    /// 进入房间时更新UI
+    /// </summary>
+    public void UpdateUIEnterRoom(MsgEnterRoom response)
+    {
+        for (int i = content.childCount - 1; i >= 0; i--) // 删除之前的
         {
-            Debug.LogError($"打开房间异常");
+            GameObject go = content.GetChild(i).gameObject;
+            Destroy(go);
         }
+        if (response.players == null) return;
+        for (int i = 0; i < response.players.Length; i++)// 重新生成
+        {
+            GeneratePlayerInfo(response.players[i]);
+        }
+        controller.roomID = response.roomID;
+        Debug.Log($"进入房间");
     }
 
     /// <summary>
