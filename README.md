@@ -4,9 +4,9 @@
 
 - [x] Version1：项目完整运行，全程Socket连接。对应分支V1.0
 - [x] Version2：简单修改UI，确定完整的逻辑开发流程。初步修改。对应分支V2.0
-- [ ] Version3：根据逻辑开发流程开发。对应分支V3.0
-- [ ] Version3：修改UI全部自适应，测试,修复一些异常Bug
-- [ ] Version4：修改战斗逻辑，随机地图等开发
+- [x] Version3：根据逻辑开发流程开发。对应分支V3.0
+- [ ] Version4：战斗逻辑开发。对应分支V4.0
+- [ ] Version5：细节优化等
 #### 流程图
 ```mermaid
 graph TD
