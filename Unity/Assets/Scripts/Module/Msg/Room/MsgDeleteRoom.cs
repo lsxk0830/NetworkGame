@@ -11,10 +11,10 @@ public class MsgDeleteRoom : MsgBase
     /// <summary>
     /// 服务器返回的执行结果 0-创建成功 其他数值-创建失败
     /// </summary>
-    public int result { get; set; } = 0;
+    public int result;
 
     /// <summary>
     /// 删除的房间ID
     /// </summary>
-    public string roomID { get; set; } = "";
+    public string roomID;
 }
