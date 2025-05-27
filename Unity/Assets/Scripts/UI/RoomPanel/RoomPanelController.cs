@@ -12,14 +12,14 @@ public class RoomPanelController
 
     public void AddListener()
     {
-        EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, OnMsgEnterRoom);
+        EventManager.Instance.RegisterEvent(Events.MsgEnterRoom, OnMsgEnterRoom);
         EventManager.Instance.RegisterEvent(Events.MsgLeaveRoom, OnMsgLeaveRoom);
         EventManager.Instance.RegisterEvent(Events.MsgStartBattle, OnMsgStartBattle);
     }
 
     public void RemoveListener()
     {
-        EventManager.Instance.RemoveEvent(Events.MsgEnterBattle, OnMsgEnterRoom);
+        EventManager.Instance.RemoveEvent(Events.MsgEnterRoom, OnMsgEnterRoom);
         EventManager.Instance.RemoveEvent(Events.MsgLeaveRoom, OnMsgLeaveRoom);
         EventManager.Instance.RemoveEvent(Events.MsgStartBattle, OnMsgStartBattle);
     }
