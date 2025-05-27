@@ -1,5 +1,5 @@
 /// <summary>
-/// Ping协议
+/// 心跳Ping
 /// </summary>
 public class MsgPing : MsgBase
 {

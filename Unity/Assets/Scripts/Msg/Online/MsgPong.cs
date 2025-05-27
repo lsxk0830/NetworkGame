@@ -1,5 +1,5 @@
 /// <summary>
-/// Pong协议
+/// 心跳Pong
 /// </summary>
 public class MsgPong : MsgBase
 {

@@ -1,5 +1,5 @@
 /// <summary>
-/// BindUser协议
+/// Socket绑定用户
 /// </summary>
 public class MsgBindUser : MsgBase
 {
