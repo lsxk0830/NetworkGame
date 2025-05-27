@@ -11,7 +11,7 @@ public class BasePanel : MonoBehaviour
     {
         string name = this.GetType().FullName;
         //Debug.Log($"关闭：{name}");
-        PanelManager.Close(name);
+        PanelManager.Instance.Close(name);
     }
 
     /// <summary>

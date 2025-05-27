@@ -38,7 +38,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - UIPanel
   - m_GUID: 37cd54564004926419b427fdfcb425dd
-    m_Address: RoomPanel
+    m_Address: RoomPanelView
     m_ReadOnly: 0
     m_SerializedLabels:
     - UIPanel
@@ -49,6 +49,11 @@ MonoBehaviour:
     - UIPanel
   - m_GUID: 5e856d2ca0e6b5c42a3d8de41d301c53
     m_Address: FacePanelView
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+  - m_GUID: d6e1e365e9ebefc4c98ec9300ceb8525
+    m_Address: RoomHallPanelView
     m_ReadOnly: 0
     m_SerializedLabels:
     - UIPanel

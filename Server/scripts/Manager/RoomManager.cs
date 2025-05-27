@@ -3,31 +3,41 @@
 /// </summary>
 public class RoomManager
 {
-    private static int maxId = 1; // 最大Id
-
     /// <summary>
     /// 房间列表
     /// </summary>
-    public static Dictionary<int, Room> rooms = new Dictionary<int, Room>();
+    public static Dictionary<string, Room> rooms = new Dictionary<string, Room>();
+
+    private static readonly Random _random = new Random();
 
     /// <summary>
     /// 获取房间
     /// </summary>
-    public static Room GetRoom(int id)
+    public static Room GetRoom(string roomID)
     {
-        if (rooms.ContainsKey(id))
-            return rooms[id];
+        if (rooms.ContainsKey(roomID))
+            return rooms[roomID];
         return null;
+    }
+
+    public static Room[] GetRooms()
+    {
+        return rooms.Values.ToArray();
     }
 
     /// <summary>
     /// 创建房间
     /// </summary>
-    public static Room AddRoom()
+    public static Room CreateRoom()
     {
-        maxId++;
+        string roomId;
+        do
+        {
+            roomId = GetRoomID();
+        } while (rooms.ContainsKey(roomId)); // 防止冲突
+
         Room room = new Room();
-        room.RoomID = maxId;
+        room.RoomID = roomId;
         rooms.Add(room.RoomID, room);
         return room;
     }
@@ -35,35 +45,23 @@ public class RoomManager
     /// <summary>
     /// 删除房间
     /// </summary>
-    public static bool RemoveRoom(int id)
+    public static void RemoveRoom(string roomID)
     {
-        rooms.Remove(id);
-        return true;
-    }
+        var emptyRooms = new List<string>();
 
-    //    /// <summary>
-    //    /// 生成MsgGetRoomList协议
-    //    /// </summary>
-    //    public static MsgBase ToMsg()
-    //    {
-    //        MsgGetRoomList msg = new MsgGetRoomList();
-    //        int count = rooms.Count;
-    //        msg.rooms = new RoomInfo[count];
-    //        //rooms
-    //        int i = 0;
-    //        foreach (Room room in rooms.Values)
-    //        {
-    //            RoomInfo roomInfo = new RoomInfo
-    //            {
-    //                id = room.id,
-    //                count = room.playerIds.Count,
-    //                status = (int)room.status
-    //            };
-    //            msg.rooms[i] = roomInfo;
-    //            i++;
-    //        }
-    //        return msg;
-    //    }
+        foreach (var pair in rooms)
+        {
+            if (pair.Value.playerIds.Count == 0)
+                emptyRooms.Add(pair.Key);
+        }
+
+        foreach (var roomId in emptyRooms)
+        {
+            rooms[roomId] = null;
+            rooms.Remove(roomId);
+            Console.WriteLine($"房间已移除: {roomId}");
+        }
+    }
 
     //    /// <summary>
     //    /// Update
@@ -73,4 +71,44 @@ public class RoomManager
     //        foreach (Room room in rooms.Values)
     //            room.Update();
     //    }
+
+    #region 网络协议
+
+    /// <summary>
+    /// 生成MsgGetRooms协议
+    /// </summary>
+    public static MsgBase SendRoomsToMsg()
+    {
+        MsgGetRooms msg = new MsgGetRooms();
+        int count = rooms.Count;
+        msg.rooms = new Room[count];
+
+        int i = 0;
+        foreach (Room room in rooms.Values)
+        {
+            msg.rooms[i] = new Room
+            {
+                RoomID = room.RoomID,
+                status = (int)room.status
+            };
+            i++;
+        }
+        return msg;
+    }
+
+    #endregion 网络协议
+
+    #region 私有方法
+
+    /// <summary>
+    /// 生成房间ID（时间戳+4位随机数）
+    /// </summary>
+    private static string GetRoomID()
+    {
+        long timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        int randomNum = _random.Next(1000, 9999);
+        return $"{timestamp}{randomNum}";
+    }
+
+    #endregion 私有方法
 }

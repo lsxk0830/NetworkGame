@@ -56,11 +56,7 @@ public static class NetManager
             socket.NoDelay = true; // 禁用Nagle算法
             try
             {
-#if UNITY_EDITOR
-                socket.BeginConnect("127.0.0.1", 8888, ConnectCallback, socket);
-#else
-            socket.BeginConnect("111.229.57.137", 8888, ConnectCallback, socket);
-#endif
+                socket.BeginConnect(API.IP, 8888, ConnectCallback, socket);
                 // 等待连接完成或超时
                 var IsCanceled = await UniTask.WaitForSeconds(5, cancellationToken: cts.Token).SuppressCancellationThrow();
                 if (IsCanceled) return;
@@ -84,7 +80,7 @@ public static class NetManager
         else // 没有数据在发送
         {
             socket.Close();
-            EventSystem.InvokeEvent(Events.SocketOnConnectFail, "");
+            EventManager.Instance.InvokeEvent(Events.SocketOnConnectFail, "服务断开");
         }
     }
 
@@ -145,14 +141,14 @@ public static class NetManager
                 cts = null;
                 isConnecting = false;
             }
-            EventSystem.InvokeEvent(Events.SocketOnConnectSuccess, "");
+            EventManager.Instance.InvokeEvent(Events.SocketOnConnectSuccess, "服务器连接成功");
             //开始接收
             socket.BeginReceive(readBuff.bytes, readBuff.writeIdx, readBuff.remain, 0, ReceiveCallback, socket);
         }
         catch (SocketException ex)
         {
             Debug.LogError($"Socket Connect fail {ex.ToString()}.IP:{((IPEndPoint)socket.RemoteEndPoint).Address}");
-            EventSystem.InvokeEvent(Events.SocketOnConnectFail, "服务器断开连接");
+            EventManager.Instance.InvokeEvent(Events.SocketOnConnectFail, "服务器断开连接");
             lock (_lock) isConnecting = false;
         }
         catch (Exception ex)
@@ -192,7 +188,7 @@ public static class NetManager
         }
         catch (SocketException ex)
         {
-            Debug.LogError($"Socket接收消息错误: {ex}");
+            Debug.LogError($"Socket接收消息异常: {ex}");
             if
             (
                 ex.SocketErrorCode == SocketError.ConnectionReset || //远程强制关闭
@@ -200,7 +196,7 @@ public static class NetManager
                 ex.SocketErrorCode == SocketError.NotConnected ||// 未建立连接
                 ex.SocketErrorCode == SocketError.NetworkDown // 网络不可用
             )
-                EventSystem.InvokeEvent(Events.SocketOnConnectFail, "服务器断开连接");
+                EventManager.Instance.InvokeEvent(Events.SocketOnConnectFail, "异常服务器断开连接");
         }
     }
 
@@ -260,7 +256,7 @@ public static class NetManager
                 }
             }
             if (msgBase != null) // 分发消息
-                EventSystem.InvokeEvent(msgBase.protoName, msgBase);
+                EventManager.Instance.InvokeEvent(msgBase.protoName, msgBase);
             else // 没消息了
                 break;
         }
@@ -294,6 +290,7 @@ public static class NetManager
     private static void OnMsgPong(MsgBase msgBase)
     {
         lastPongTime = Time.time;
+        Debug.Log($"接收Pong协议");
     }
 
     #endregion 事件监听【PONG协议】
@@ -314,8 +311,8 @@ public static class NetManager
         msgCount = 0; // 消息列表长度
         lastPingTime = Time.time; // 上一次发送PING时间
         lastPongTime = Time.time; // 上一次收到PONG时间
-        if (!EventSystem.ContainerMsgBase.ContainsKey("MsgPong")) // 监听PONG协议
-            EventSystem.RegisterEvent("MsgPong", OnMsgPong);
+        if (!EventManager.Instance.ContainerMsgBase.ContainsKey("MsgPong")) // 监听PONG协议
+            EventManager.Instance.RegisterEvent("MsgPong", OnMsgPong);
     }
 
     /// <summary>

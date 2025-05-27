@@ -28,6 +28,7 @@ public class RegisterPanelView : BasePanel
     {
         registerBtn.onClick.AddListener(OnRegisterClick);
         closeBtn.onClick.AddListener(OnCloseClick);
+        gameObject.SetActive(true);
     }
 
     public override void OnClose()

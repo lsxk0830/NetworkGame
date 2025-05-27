@@ -4,9 +4,9 @@
 
 - [x] Version1：项目完整运行，全程Socket连接。对应分支V1.0
 - [x] Version2：简单修改UI，确定完整的逻辑开发流程。初步修改。对应分支V2.0
-- [ ] Version3：根据逻辑开发流程开发。对应分支V3.0
-- [ ] Version3：修改UI全部自适应，测试,修复一些异常Bug
-- [ ] Version4：修改战斗逻辑，随机地图等开发
+- [x] Version3：根据逻辑开发流程开发。对应分支V3.0
+- [ ] Version4：战斗逻辑开发。对应分支V4.0
+- [ ] Version5：细节优化等
 #### 流程图
 ```mermaid
 graph TD
@@ -29,22 +29,34 @@ graph TD
     
     N --> P[HTTP Get头像]
     
-    P --> Q[开始游戏]
+    Q[开始游戏]
     
-    Q --> R[HTTP Get房间列表]
-    R --> S[Socket订阅房间变更事件]
+    Q --> R[客户端Socket发送获取房间列表协议]
+    R --> S[Unity获取所有房间并加载]
     
     S --> T[创建房间]
-    T --> U[客户端Socket发送创建房间协议]
+    T --> U[客户端Socket发送创建房间协议，进入房间]
     S --> V[进入房间]
-    V --> W[客户端Socket发送进入房间协议]
-    W --> X[客户端Socket发送获取所有玩家协议]
+    V --> W[客户端Socket发送进入房间协议，进入房间]
+    W --> X[退出房间]
     
-    X --> Y[进入游戏]
-    Y --> Z[全程Socket通信]
+    X --> X1[客户端Socket发送离开房间协议]
+    X1 --> X2{房间人数是否为0}
+    X2 -->|是| X3[服务器广播发送删除房间协议]
+    X2 -->|否| X4[服务器对房间的Socekt发送玩家离开房间协议]
     
-    Z --> AA[游戏结束]
-    AA --> AB[Socket发送结果协议]
+    W --> Y[进入游戏]
+    Y --> Z1[客户端Socket发送开始战斗协议]
+    Z1 --> Z3[服务器接收开始战斗协议并转发给其他客户端]
+    Z1 --> Z2[进入加载界面,加载完成发送加载完成协议]
+    Z3 --> Z2[进入加载界面,加载完成发送加载完成协议]
+    Z2 -->|服务器收到加载完成协议数==等于房间数玩家| Z4[服务器发送进入战斗协议]
+    Z2 -->Z5[收到一个加载完成协议后等待10秒]
+    Z5 --> Z4[服务器发送进入战斗协议]
+   	Z4 --> Z6[客户端进入游戏]
+    
+    Z6 --> AA[游戏结束]
+    AA --> AB[Socket发送结束战斗协议]
     AB --> AC[服务端同步数据]
     AC --> AD[HTTP Get用户信息]
     AD --> AE[更新UI数据]
@@ -130,7 +142,27 @@ HTTP服务器->>+文件存储: 读取文件数据
 文件存储-->>-HTTP服务器: 返回图片字节流
 HTTP服务器-->>-Unity客户端: 返回图片(200 OK with image/webp)
 ```
+#### 打开房间大厅
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+    Client->>Server: GET /rooms (初始加载)
+    Server->>Client: 200 OK [所有房间数据]
+    Client->>Server: 订阅room_updates
+    loop 实时监听
+        Server->>Client: 服务器推送{"action":"delete","roomId":123}
+        Server->>Client: 服务器推送{"action":"create","room":{...}}
+        Client->>Client: 从本地缓存移除房间123
+        Client->>Client: 从本地缓存新增房间456
+    end
+```
+
+
+
 #### 文件安装
+
 [Navicat、XAMPP](https://cloud.189.cn/t/v2yU7rjQjuuq（访问码：k1yq）)：https://cloud.189.cn/t/v2yU7rjQjuuq（访问码：k1yq）
 
 [UI](https://www.figma.com/design/vitePE5vk3yjmvhUbn1WUJ/Battle-Simulator-Game--Community-?node-id=0-1&p=f&t=wCLfdAk8gCtfEXvk-0)：[Battle Simulator Game (Community) – Figma](https://www.figma.com/design/vitePE5vk3yjmvhUbn1WUJ/Battle-Simulator-Game--Community-?node-id=0-1&p=f&t=wCLfdAk8gCtfEXvk-0)

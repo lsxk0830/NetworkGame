@@ -9,7 +9,7 @@ public class HomePanelModel
     public int lostCount { get; set; }
 
     // 房间数据
-    public List<RoomInfo> rooms = new List<RoomInfo>();
+    public List<Room> rooms = new List<Room>();
 
     // 坦克控制状态
     [System.NonSerialized] public bool isRotatingTank;

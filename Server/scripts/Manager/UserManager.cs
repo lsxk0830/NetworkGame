@@ -3,17 +3,18 @@
 /// </summary>
 public class UserManager
 {
-    // 玩家列表
+    // 用户列表
     private static Dictionary<long, User> Users = new Dictionary<long, User>();
-    private static Dictionary<long, ClientState> UserCSs = new Dictionary<long, ClientState>();
+
+    private static Dictionary<long, ClientState> UserCSs = new Dictionary<long, ClientState>(); // Socket和用户ID的映射
 
     /// <summary>
-    /// 玩家是否在线
+    /// 用户是否在线
     /// </summary>
     public static bool IsOnline(long id) => Users.ContainsKey(id);
 
     /// <summary>
-    /// 获取玩家
+    /// 获取用户
     /// </summary>
     public static User? GetUser(long id)
     {
@@ -21,7 +22,43 @@ public class UserManager
     }
 
     /// <summary>
-    /// 添加玩家
+    /// 发送数据,单个用户
+    /// </summary>
+    public static void Send(long ID, MsgBase msgBase)
+    {
+        if (Users.ContainsKey(ID))
+        {
+            NetManager.Send(UserCSs[ID], msgBase);
+        }
+    }
+
+    /// <summary>
+    /// 发送数据,所有用户
+    /// </summary>
+    public static void Send(MsgBase msgBase)
+    {
+        foreach (var cs in UserCSs.Values)
+        {
+            NetManager.Send(cs, msgBase);
+        }
+    }
+
+    /// <summary>
+    /// 发送数据,所有用户,除了c用户
+    /// </summary>
+    public static void SendExcept(ClientState c, MsgBase msgBase)
+    {
+        foreach (var cs in UserCSs.Values)
+        {
+            if (cs != c)
+                NetManager.Send(cs, msgBase);
+        }
+    }
+
+    #region 用户上线添加用户
+
+    /// <summary>
+    /// 添加用户
     /// </summary>
     public static void AddUser(long id, User user)
     {
@@ -29,15 +66,19 @@ public class UserManager
     }
 
     /// <summary>
-    /// 添加玩家
+    /// 添加用户
     /// </summary>
     public static void AddUserCS(long id, ClientState cs)
     {
         UserCSs.Add(id, cs);
     }
 
+    #endregion 用户上线添加用户
+
+    #region 用户离线删除用户
+
     /// <summary>
-    /// 删除玩家
+    /// 删除用户
     /// </summary>
     public static void RemoveUser(long id)
     {
@@ -48,13 +89,14 @@ public class UserManager
     }
 
     /// <summary>
-    /// 发送数据
+    /// 删除用户
     /// </summary>
-    public static void Send(long ID, MsgBase msgBase)
+    public static void RemoveUser(ClientState cs)
     {
-        if (Users.ContainsKey(ID))
-        {
-            NetManager.Send(UserCSs[ID], msgBase);
-        }
+        if (cs.user == null) return;
+        RemoveUser(cs.user.ID);
+        Console.WriteLine($"删除用户,用户ID:{cs.user.ID}");
     }
+
+    #endregion 用户离线删除用户
 }

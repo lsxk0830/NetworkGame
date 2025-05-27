@@ -1,4 +1,8 @@
 using System;
+using System.IO;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class HomePanelController
@@ -13,58 +17,39 @@ public class HomePanelController
         model.ID = GameMain.ID;
     }
 
-    public void UpdateUI()
+    public async UniTaskVoid UpdateUI()
     {
-        view.UpdateUserInfo(model.GetUser());
-        NetManager.Send(new MsgGetRoomList());
-    }
-
-    #region 网络响应处理
-
-    private void HandleRoomListResponse(MsgBase msg)
-    {
-        var response = (MsgGetRoomList)msg;
-        model.rooms.Clear();
-        if (response.rooms != null) model.rooms.AddRange(response.rooms);
-        view.UpdateRoomList(model.rooms);
-    }
-
-    private void HandleCreateRoomResponse(MsgBase msg)
-    {
-        var response = (MsgCreateRoom)msg;
-        HandleOperationResponse(response.result,
-            success: () =>
+        User user = model.GetUser();
+        view.UpdateUserInfo(user);
+        if (user.AvatarPath != "defaultAvatar")
+        {
+            string path = Path.Combine($"{Application.persistentDataPath}/Avatar/{user.AvatarPath}.png");
+            Debug.Log($"加载图片的路径:{path}");
+            if (File.Exists(path))
             {
-                PanelManager.Open<RoomPanel>();
-                view.Close();
-            },
-            fail: () => PanelManager.Open<TipPanel>("创建房间失败"));
-    }
-
-    private void HandleEnterRoomResponse(MsgBase msg)
-    {
-        var response = (MsgEnterRoom)msg;
-        HandleOperationResponse(response.result,
-            success: () =>
+                Debug.Log($"加载本地图片");
+                Texture2D texture = await HTTPManager.Instance.GetImage(path);
+                if (texture == null) return;
+                view.GetAvatarImage().sprite = Sprite.Create
+                (texture,
+                    new Rect(0, 0, texture.width, texture.height),
+                    new Vector2(0.5f, 0.5f)
+                );
+            }
+            else
             {
-                PanelManager.Open<RoomPanel>();
-                view.Close();
-            },
-            fail: () => PanelManager.Open<TipPanel>("进入房间失败"));
+                Debug.Log($"加载网络图片");
+                HTTPManager.Instance.GetSetAvatarByDB(user.AvatarPath, view.GetAvatarImage()).Forget();
+            }
+        }
+        //NetManager.Send(new MsgGetRoomList());
     }
-
-    private void HandleOperationResponse(int result, Action success, Action fail)
-    {
-        model.isWaitingServerResponse = false;
-        view.SetInteractionState(true);
-
-        if (result == 0) success?.Invoke();
-        else fail?.Invoke();
-    }
-    #endregion
 
     #region 用户操作处理
 
+    /// <summary>
+    /// 退出游戏
+    /// </summary>
     public void HandleQuit()
     {
 #if UNITY_EDITOR
@@ -74,46 +59,22 @@ public class HomePanelController
 #endif
     }
 
+    /// <summary>
+    /// 设置头像面板
+    /// </summary>
     public void HandleFace()
     {
-        PanelManager.Open<FacePanelView>();
-    }
-    public void HandleCreateRoom()
-    {
-        if (!ValidateOperation()) return;
-        NetManager.Send(new MsgCreateRoom());
-        SetWaitingState();
+        PanelManager.Instance.Open<FacePanelView>();
     }
 
-    public void HandleRefreshRooms()
+    /// <summary>
+    /// 开始游戏（打开房间大厅）
+    /// </summary>
+    public void HandlePlay()
     {
-        if (!ValidateOperation()) return;
-        NetManager.Send(new MsgGetRoomList());
-        SetWaitingState();
+        PanelManager.Instance.Open<RoomHallPanelView>();
     }
 
-    public void HandleJoinRoom(int roomId)
-    {
-        if (!ValidateOperation()) return;
-        NetManager.Send(new MsgEnterRoom { id = roomId });
-        SetWaitingState();
-    }
-
-    private bool ValidateOperation()
-    {
-        if (model.isWaitingServerResponse)
-        {
-            PanelManager.Open<TipPanel>("请等待服务器响应");
-            return false;
-        }
-        return true;
-    }
-
-    private void SetWaitingState()
-    {
-        model.isWaitingServerResponse = true;
-        view.SetInteractionState(false);
-    }
     #endregion
 
     #region 坦克控制
@@ -136,23 +97,6 @@ public class HomePanelController
     public void EndTankRotation()
     {
         model.isRotatingTank = false;
-    }
-    #endregion
-
-    #region 事件监听
-
-    public void Addlistener()
-    {
-        EventSystem.RegisterEvent(Events.MsgGetRoomList, HandleRoomListResponse);
-        EventSystem.RegisterEvent(Events.MsgCreateRoom, HandleCreateRoomResponse);
-        EventSystem.RegisterEvent(Events.MsgEnterRoom, HandleEnterRoomResponse);
-    }
-
-    public void Removelistener()
-    {
-        EventSystem.RemoveEvent(Events.MsgGetRoomList, HandleRoomListResponse);
-        EventSystem.RemoveEvent(Events.MsgCreateRoom, HandleCreateRoomResponse);
-        EventSystem.RemoveEvent(Events.MsgEnterRoom, HandleEnterRoomResponse);
     }
     #endregion
 }

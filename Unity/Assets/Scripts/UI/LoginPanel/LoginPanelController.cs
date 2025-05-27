@@ -38,7 +38,7 @@ public class LoginPanelController
     {
         if (name == "" || pw == "")
         {
-            PanelManager.Open<TipPanel>("用户名和密码不能为空");
+            PanelManager.Instance.Open<TipPanel>("用户名和密码不能为空");
             return;
         }
         LoginRequestMsgBody LoginData = new LoginRequestMsgBody()
@@ -54,7 +54,7 @@ public class LoginPanelController
     /// </summary>
     public void OnRegister()
     {
-        PanelManager.Open<RegisterPanelView>();
+        PanelManager.Instance.Open<RegisterPanelView>();
     }
 
     /// <summary>
@@ -94,22 +94,22 @@ public class LoginPanelController
         this.Log($"登录回调：{result}");
         if (string.IsNullOrWhiteSpace(result))
         {
-            PanelManager.Open<TipPanel>("服务器异常，返回空数据");
+            PanelManager.Instance.Open<TipPanel>("服务器异常，返回空数据");
             Debug.LogError($"登录错误:{result}");
         }
 
         Accept<User> accept = JsonConvert.DeserializeObject<Accept<User>>(result);
         if (accept == null)
         {
-            PanelManager.Open<TipPanel>("服务器异常，返回空数据");
+            PanelManager.Instance.Open<TipPanel>("服务器异常，返回空数据");
             Debug.LogError($"登录错误:{result}");
             return;
         }
         if (accept.code == 200)
         {
             UserManager.Instance.Init(accept.data);
-            PanelManager.Close<LoginPanelView>();
-            PanelManager.Open<HomePanelView>();
+            PanelManager.Instance.Close<LoginPanelView>();
+            PanelManager.Instance.Open<HomePanelView>();
             bool state = view.GetRememberPwToggleState();
             model.RememberPwToggleState = state;
             if (state)
@@ -130,23 +130,23 @@ public class LoginPanelController
         switch (code)
         {
             case 400:
-                PanelManager.Open<TipPanel>("请求格式错误");
+                PanelManager.Instance.Open<TipPanel>("请求格式错误");
                 Debug.LogError("请求格式错误");
                 break;
             case 401:
-                PanelManager.Open<TipPanel>("用户名或密码错误");
+                PanelManager.Instance.Open<TipPanel>("用户名或密码错误");
                 Debug.LogError("用户名或密码错误");
                 break;
             case 429:
-                PanelManager.Open<TipPanel>("尝试次数过多，请稍后再试");
+                PanelManager.Instance.Open<TipPanel>("尝试次数过多，请稍后再试");
                 Debug.LogError("尝试次数过多，请稍后再试");
                 break;
             case 500:
-                PanelManager.Open<TipPanel>("服务器开小差了，请联系开发人员");
+                PanelManager.Instance.Open<TipPanel>("服务器开小差了，请联系开发人员");
                 Debug.LogError("服务器开小差了，请联系开发人员");
                 break;
             default:
-                PanelManager.Open<TipPanel>($"连接失败: {error}");
+                PanelManager.Instance.Open<TipPanel>($"连接失败: {error}");
                 Debug.LogError($"连接失败: {error}");
                 break;
         }

@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 public class DbManager
 {
     private static MySqlConnection? connection;
-    private const string DefaultAvatar = "default_avatar.png"; // 默认头像路径
+    private const string DefaultAvatar = "defaultAvatar"; // 默认头像路径
     private const int DefaultCoin = 100; // 默认金币数
     private const int DefaultDiamond = 100; // 默认钻石数
 
@@ -53,11 +53,11 @@ public class DbManager
                 ID BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 Name VARCHAR(100) UNIQUE NOT NULL  COMMENT'用户名',
                 PW CHAR(64) NOT NULL COMMENT '用户密码,SHA256哈希值',
-                Coin INT UNSIGNED DEFAULT 0  COMMENT'金币数',
-                Diamond INT UNSIGNED DEFAULT 0 COMMENT'钻石数',
+                Coin INT UNSIGNED  NOT NULL  COMMENT'金币数',
+                Diamond INT UNSIGNED  NOT NULL COMMENT'钻石数',
                 Win INT UNSIGNED DEFAULT 0  COMMENT'胜利局数',
                 Lost INT UNSIGNED DEFAULT 0  COMMENT'失败局数',
-                AvatarPath VARCHAR(255) DEFAULT 'default_avatar.png' COMMENT'默认头像路径',
+                AvatarPath VARCHAR(255)  NOT NULL COMMENT'默认头像路径',
                 CreateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT'创建用户时间',
                 LastLogin TIMESTAMP NULL COMMENT'上次登录时间',
                 INDEX idx_coin (Coin),
@@ -82,7 +82,7 @@ public class DbManager
         }
 
         const string sql = @"
-            INSERT INTO account
+            INSERT INTO Account
             (Name, PW, Coin, Diamond, AvatarPath)
             VALUES
             (@name, SHA2(@password, 256), @coin, @diamond, @avatar);
