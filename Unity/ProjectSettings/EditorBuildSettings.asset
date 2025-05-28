@@ -8,5 +8,14 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Tank.unity
     guid: a7672638d4adbfa4aaca1674e23fb067
+  - enabled: 1
+    path: Assets/Game.unity
+    guid: fbd1c238cf6216448b8ef881c305822b
+  - enabled: 1
+    path: Assets/Test/SceneTest.unity
+    guid: 10088c0ea35ace743a74a617b3c1664a
+  - enabled: 1
+    path: Assets/Test/LoadingScene.unity
+    guid: d9af12b16a045644889aa31db0994755
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 72be221e2d16e1e40a264eefeb7ada00, type: 2}

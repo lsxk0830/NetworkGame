@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class RoomPanelController
@@ -91,6 +92,13 @@ public class RoomPanelController
         Debug.Log($"发送开始战斗协议");
         MsgStartBattle msg = new MsgStartBattle();
         NetManager.Send(msg);
+        // ToDo: 加载游戏场景
+        SceneManagerAsync.Instance.SetLoadingProgressCallback(progress =>
+        {
+            Debug.Log($"加载进度: {progress * 100}%");
+            // 更新UI进度条等
+        });
+        SceneManagerAsync.Instance.LoadSceneAsync("Game").Forget();
     }
 
     /// <summary>
