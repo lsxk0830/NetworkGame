@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-/// <summary>
+﻿/// <summary>
 /// 添加玩家、删除玩家、生成MsgGetRoomInfo协议
 /// </summary>
 public class Room
@@ -26,6 +24,9 @@ public class Room
     public long ownerId = -1;
 
     public int status = (int)Status.PREPARE;
+
+    public int loadSuccess = 0; // 加载成功的玩家数
+    private int delaySeconds = 10; // 最长等待时间，单位秒
 
     /// <summary>
     /// 状态
@@ -229,6 +230,58 @@ public class Room
     }
 
     #endregion 内部实现
+
+    /// <summary>
+    /// 广播开战消息
+    /// </summary>
+    public void StartBattle(ClientState cs, MsgBase msg)
+    {
+        status = (int)Status.FIGHT; // 状态设置为战斗中
+        foreach (Player player in playerIds.Values)
+        {
+            if (player.state == cs) continue; // 排除发送者
+            player.Send(msg);
+        }
+    }
+
+    /// <summary>
+    /// 所有加载完成，准备进入游戏
+    /// </summary>
+    public void LoadSuccess()
+    {
+        loadSuccess++;
+
+        if (loadSuccess == 1) // 以收到一个玩家的加载成功消息为准，开始计时
+        {
+            Console.WriteLine($"当前时间：{DateTime.Now}");
+            Task.Delay(delaySeconds * 1000).ContinueWith(_ =>
+            {
+                Console.WriteLine($"当前时间：{DateTime.Now}");
+                if (loadSuccess >= playerIds.Count) return; // 如果加载成功的玩家数已经达到要求，则不再发送消息
+                MsgEnterBattle msgEnterBattle = new MsgEnterBattle()
+                {
+                    mapId = 1,
+                    tanks = new TankInfo[playerIds.Count]
+                };
+                foreach (Player player in playerIds.Values)
+                {
+                    player.Send(msgEnterBattle);
+                }
+            });
+        }
+        if (loadSuccess >= playerIds.Count)
+        {
+            MsgEnterBattle msgEnterBattle = new MsgEnterBattle()
+            {
+                mapId = 1,
+                tanks = new TankInfo[playerIds.Count]
+            };
+            foreach (Player player in playerIds.Values)
+            {
+                player.Send(msgEnterBattle);
+            }
+        }// 已经加载成功
+    }
 
     /// <summary>
     /// 能否开战
