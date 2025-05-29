@@ -10,7 +10,7 @@
         MsgEnterRoom msg = (MsgEnterRoom)msgBase;
         if (c.user == null)
         {
-            Console.WriteLine($"加入房间异常");
+            Console.WriteLine($"进入房间异常");
             msg.result = -1;
             NetManager.Send(c, msg);
             return;
@@ -19,7 +19,7 @@
         Room? room = RoomManager.GetRoom(msg.roomID);
         if (room == null)
         {
-            Console.WriteLine($"用户{c.user.ID}加入房间异常");
+            Console.WriteLine($"用户{c.user.ID}进入房间异常");
             msg.result = -1;
             NetManager.Send(c, msg);
         }

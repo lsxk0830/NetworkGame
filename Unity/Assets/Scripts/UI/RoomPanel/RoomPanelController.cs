@@ -90,6 +90,7 @@ public class RoomPanelController
     public void OnStartClick()
     {
         Debug.Log($"发送开始战斗协议");
+        PanelManager.Instance.Open<LoadingPanel>();
         MsgStartBattle msg = new MsgStartBattle();
         NetManager.Send(msg);
         // ToDo: 加载游戏场景
