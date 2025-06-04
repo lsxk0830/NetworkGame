@@ -7,6 +7,7 @@ M s g M o v e：【协议名】长度由“协议名长度”确定
 */
 using System;
 using System.Text;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class MsgBase
@@ -36,7 +37,8 @@ public class MsgBase
     {
         string s = Encoding.UTF8.GetString(bytes, offset, count);
         //Debug.Log("解码协议体:" + s);
-        MsgBase msgBase = (MsgBase)JsonUtility.FromJson(s, Type.GetType(protoName));
+        //MsgBase msgBase = (MsgBase)JsonUtility.FromJson(s, Type.GetType(protoName));
+        MsgBase msgBase = (MsgBase)JsonConvert.DeserializeObject(s, Type.GetType(protoName));
         return msgBase;
     }
 
