@@ -1,14 +1,14 @@
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class RoomPanelController
 {
     private RoomPanelView view;
-    public string roomID; // 房间ID
+    private RoomPanelModel model;
 
     public RoomPanelController(RoomPanelView view)
     {
         this.view = view;
+        model = new RoomPanelModel();
     }
 
     public void AddListener()
@@ -108,10 +108,18 @@ public class RoomPanelController
     public void OnCloseClick()
     {
         Debug.Log($"发送退出房间协议");
-        MsgLeaveRoom msg = new MsgLeaveRoom() { roomID = this.roomID };
+        MsgLeaveRoom msg = new MsgLeaveRoom() { roomID = model.room.RoomID };
         NetManager.Send(msg);
     }
 
     #endregion
 
+    #region 更新数据
+
+    public void UpdateModel(Room room)
+    {
+        model.room = room;
+    }
+
+    #endregion
 }

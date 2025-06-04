@@ -9,9 +9,9 @@ public class MsgEnterRoom : MsgBase
     }
 
     /// <summary>
-    /// 请求加入房间的房间序号（id）
+    /// 服务器返回的请求加入房间的房间信息
     /// </summary>
-    public string roomID;
+    public Room room;
 
     /// <summary>
     /// 服务器返回的执行结果 0-成功进入 其他数值-进入失败
@@ -19,12 +19,7 @@ public class MsgEnterRoom : MsgBase
     public int result = 0;
 
     /// <summary>
-    /// 房主id
+    /// 请求加入房间的房间序号（id）
     /// </summary>
-    public long ownerId = -1;
-
-    /// <summary>
-    /// 服务器返回的房间玩家信息
-    /// </summary>
-    public Player[] players;
+    public string roomID;
 }

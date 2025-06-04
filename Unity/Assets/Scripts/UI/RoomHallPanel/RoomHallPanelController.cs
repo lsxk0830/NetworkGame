@@ -51,14 +51,14 @@ public class RoomHallPanelController
         var response = (MsgCreateRoom)msg;
         if (response.result == 0)
         {
-            if (response.ID == GameMain.ID) // 自己创建的房间
+            if (response.room.ownerId == GameMain.ID) // 自己创建的房间
             {
                 PanelManager.Instance.Open<RoomPanelView>(response);
                 view.Close();
             }
             else
             {
-                view.LoadOneRoom(response.roomID); // 别人创建房间
+                view.LoadOneRoom(response.room.RoomID); // 别人创建房间
             }
         }
         else

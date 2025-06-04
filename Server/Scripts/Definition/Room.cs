@@ -126,8 +126,7 @@ public class Room
 
         msg.roomID = this.RoomID;
         msg.result = 0;
-        msg.ownerId = this.ownerId;
-        msg.players = playerIds.Values.ToArray();
+        msg.room = this;
         Broadcast(msg); // 广播
     }
 
@@ -187,7 +186,7 @@ public class Room
         return null; // 玩家不存在
     }
 
-    #endregion
+    #endregion 对玩家的操作
 
     #region 内部实现
 

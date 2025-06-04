@@ -102,10 +102,10 @@ public class RoomPanelView : BasePanel
         Player player = new Player()
         {
             ID = GameMain.ID,
-            roomId = response.roomID
+            roomId = response.room.RoomID
         };
         Debug.Log($"创建房间");
-        controller.roomID = response.roomID;
+        controller.UpdateModel(response.room);
         GeneratePlayerInfo(player);
     }
 
@@ -119,12 +119,10 @@ public class RoomPanelView : BasePanel
             GameObject go = content.GetChild(i).gameObject;
             Destroy(go);
         }
-        if (response.players == null) return;
-        for (int i = 0; i < response.players.Length; i++)// 重新生成
-        {
-            GeneratePlayerInfo(response.players[i]);
-        }
-        controller.roomID = response.roomID;
+        if (response.room.playerIds == null) return;
+        foreach (var player in response.room.playerIds.Values)
+            GeneratePlayerInfo(player);
+        controller.UpdateModel(response.room);
         Debug.Log($"进入房间");
     }
 
