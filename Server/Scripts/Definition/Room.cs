@@ -58,7 +58,7 @@ public class Room
     /// <summary>
     /// 创建房间时添加玩家
     /// </summary>
-    public bool CreateRoomAddPlayer(Player newPlayer)
+    public bool AddPlayer(Player newPlayer)
     {
         if (newPlayer == null)
         {

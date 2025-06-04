@@ -15,7 +15,7 @@ public class Room
     /// <summary>
     /// 玩家列表
     /// </summary>
-    public Dictionary<long, Player> playerIds = new Dictionary<long, Player>();
+    public Dictionary<long, Player> playerIds;
 
     /// <summary>
     /// 房主id
