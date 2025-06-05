@@ -76,6 +76,7 @@ public class RoomPanelController
         if (msg.result == 0)//开战
         {
             view.OnClose();
+            PanelManager.Instance.Close<HomePanelView>();
             PanelManager.Instance.Open<LoadingPanel>();
         }
         else // 开战失败
@@ -95,9 +96,10 @@ public class RoomPanelController
         {
             Debug.Log($"发送开始战斗协议");
             PanelManager.Instance.Open<LoadingPanel>();
-            MsgStartBattle msg = new MsgStartBattle();
-            NetManager.Send(msg);
             view.OnClose();
+            PanelManager.Instance.Close<HomePanelView>();
+            MsgStartBattle msg = new() { roomID = model.room.RoomID };
+            NetManager.Send(msg);
         }
         else
             PanelManager.Instance.Open<TipPanel>("人数不足，等待玩家加入");

@@ -45,6 +45,7 @@ public class HomePanelView : BasePanel
 
     public override void OnShow(params object[] args)
     {
+        gameObject.SetActive(true);
         tankModel.SetActive(true);
         mainCamera.transform.SetPositionAndRotation(
             new Vector3(-1, 10, -14),
@@ -58,6 +59,7 @@ public class HomePanelView : BasePanel
 
     public override void OnClose()
     {
+        gameObject.SetActive(false);
         tankModel.SetActive(false);
         quitBtn.onClick.RemoveListener(OnQuitClick);
         faceBtn.onClick.RemoveListener(OnFaceClick);
