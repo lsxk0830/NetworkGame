@@ -147,11 +147,17 @@ public class Room
             Console.WriteLine("房间移除玩家失败，玩家为空");
             return false;
         }
-        if (id == ownerId) ownerId = SwitchOwner(); // 设置房主
-        if (ownerId == -1)
+        playerIds.Remove(id); // 移除列表
+        if (id == ownerId) ownerId = SwitchOwner();// 设置房主
+        if (ownerId == -1 || playerIds.Count == 0)
         {
-            Console.WriteLine("房间设置房主失败，房间没人");
-            return false;
+            UserManager.SendExcept(player.state, new MsgDeleteRoom()
+            {
+                result = 0,
+                roomID = this.RoomID,
+            });// 全员通知
+            RoomManager.RemoveRoom(this.RoomID);
+            return true;
         }
         if ((Room.Status)status == Status.FIGHT) // 战斗状态退出，战斗状态退出游戏视为输掉游戏
         {
@@ -165,21 +171,12 @@ public class Room
             };
             Broadcast(msg);
         }
-
-        playerIds.Remove(id); // 移除列表
-
-        if (playerIds.Count == 0) // 房间为空
-        {
-            UserManager.SendExcept(player.state, new MsgDeleteRoom()
-            {
-                result = 0,
-                roomID = this.RoomID,
-            });// 全员通知
-            RoomManager.RemoveRoom(this.RoomID);
-            return true;
-        }
         // 广播
-        Broadcast(new MsgLeaveRoom() { ID = id });
+        Broadcast(new MsgLeaveRoom()
+        {
+            ID = id,
+            OwnerID = ownerId
+        });
         player = null;
         return true;
     }

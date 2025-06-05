@@ -76,6 +76,7 @@ public class RoomPanelController
         if (msg.result == 0)//开战
         {
             view.OnClose();
+            PanelManager.Instance.Open<LoadingPanel>();
         }
         else // 开战失败
             PanelManager.Instance.Open<TipPanel>("开战失败!两队至少都需要一名玩家，只有队长可以开始战斗！");
@@ -90,10 +91,17 @@ public class RoomPanelController
     /// </summary>
     public void OnStartClick()
     {
-        Debug.Log($"发送开始战斗协议");
-        PanelManager.Instance.Open<LoadingPanel>();
-        MsgStartBattle msg = new MsgStartBattle();
-        NetManager.Send(msg);
+        if (model.room.playerIds.Count >= 2)
+        {
+            Debug.Log($"发送开始战斗协议");
+            PanelManager.Instance.Open<LoadingPanel>();
+            MsgStartBattle msg = new MsgStartBattle();
+            NetManager.Send(msg);
+            view.OnClose();
+        }
+        else
+            PanelManager.Instance.Open<TipPanel>("人数不足，等待玩家加入");
+
         // ToDo: 加载游戏场景
         // SceneManagerAsync.Instance.SetLoadingProgressCallback(progress =>
         // {

@@ -54,7 +54,7 @@ public class RoomHallPanelController
             if (response.room.ownerId == GameMain.ID) // 自己创建的房间
             {
                 PanelManager.Instance.Open<RoomPanelView>(response);
-                view.Close();
+                view.OnClose();
             }
             else
             {
@@ -92,7 +92,7 @@ public class RoomHallPanelController
         if (response.result == 0)
         {
             PanelManager.Instance.Open<RoomPanelView>(response);
-            view.Close();
+            view.OnClose();
         }
         else
         {

@@ -34,6 +34,8 @@ public class RoomHallPanelView : BasePanel
 
     public override void OnShow(params object[] args)
     {
+        gameObject.SetActive(true);
+
         DeleteLastGo();
 
         createButton.onClick.AddListener(OnCreateRoomClick);
@@ -45,6 +47,7 @@ public class RoomHallPanelView : BasePanel
 
     public override void OnClose()
     {
+        gameObject.SetActive(false);
         createButton.onClick.RemoveListener(OnCreateRoomClick);
         refreshButton.onClick.RemoveListener(OnRefreshClick);
         Controller.Removelistener();
