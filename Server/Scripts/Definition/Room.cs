@@ -148,6 +148,11 @@ public class Room
             return false;
         }
         if (id == ownerId) ownerId = SwitchOwner(); // 设置房主
+        if (ownerId == -1)
+        {
+            Console.WriteLine("房间设置房主失败，房间没人");
+            return false;
+        }
         if ((Room.Status)status == Status.FIGHT) // 战斗状态退出，战斗状态退出游戏视为输掉游戏
         {
             User? user = UserManager.GetUser(id);

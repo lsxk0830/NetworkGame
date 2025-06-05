@@ -20,6 +20,7 @@
             // 返回协议
             msg.result = result ? 0 : -1;
             msg.ID = user.ID;
+            msg.OwnerID = room.ownerId;
             NetManager.Send(cs, msg);
         }
     }

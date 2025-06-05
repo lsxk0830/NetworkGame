@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -123,13 +122,15 @@ public class RoomPanelView : BasePanel
         foreach (var player in response.room.playerIds.Values)
             GeneratePlayerInfo(player);
         controller.UpdateModel(response.room);
+        startBtn.interactable = response.room.ownerId == GameMain.ID ? true : false;
         Debug.Log($"进入房间");
     }
 
     /// <summary>
     /// 根据ID删除指定的玩家
     /// </summary>
-    public void DeletePlayerGoByID(long ID)
+    /// <param name="myIsOwner">如果自己变成了房主，则打开开战按钮</param>
+    public void DeletePlayerGoByID(long ID, bool myIsOwner = false)
     {
         for (int i = content.childCount - 1; i >= 0; i--) // 删除指定玩家
         {
@@ -140,6 +141,7 @@ public class RoomPanelView : BasePanel
                 break;
             }
         }
+        startBtn.interactable = myIsOwner;
     }
 
     /// <summary>

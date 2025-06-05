@@ -30,7 +30,7 @@ public class RoomPanelController
     private void OnMsgEnterRoom(MsgBase msgBase)
     {
         MsgEnterRoom msg = (MsgEnterRoom)msgBase;
-        if (msg.result == 0) // 成功退出房间
+        if (msg.result == 0) // 成功进入房间
         {
             view.DeleteLastGo();
             view.UpdateUIEnterRoom(msg);
@@ -57,7 +57,8 @@ public class RoomPanelController
             }
             else
             {
-                view.DeletePlayerGoByID(msg.ID);
+                view.DeletePlayerGoByID(msg.ID, msg.OwnerID == GameMain.ID);
+                model.room.ownerId = msg.OwnerID;
                 Debug.Log($"其他玩家退出房间");
             }
         }

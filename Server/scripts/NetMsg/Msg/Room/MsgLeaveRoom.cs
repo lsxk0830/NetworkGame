@@ -1,4 +1,5 @@
-﻿public class MsgLeaveRoom : MsgBase
+﻿[Serializable]
+public class MsgLeaveRoom : MsgBase
 {
     public MsgLeaveRoom()
     {
@@ -19,4 +20,9 @@
     /// 请求退出的玩家ID
     /// </summary>
     public long ID;
+
+    /// <summary>
+    /// 房主ID
+    /// </summary>
+    public long OwnerID;
 }
