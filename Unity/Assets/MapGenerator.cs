@@ -1,15 +1,18 @@
 using UnityEngine;
 
+/// <summary>
+/// 地图生成器
+/// </summary>
 public class MapGenerator : MonoBehaviour
 {
     [Header("地图设置")]
     public int mapSize = 50;         // 地图边长
     public int obstacleCount = 30;   // 障碍物数量
-    public float minObstacleHeight = 1f;
-    public float maxObstacleHeight = 3f;
+    public float minObstacleHeight = 1f; // 最小障碍物高度
+    public float maxObstacleHeight = 3f; // 最大障碍物高度
 
     [Header("预制体")]
-    public GameObject destructiblePrefab;
+    public GameObject destructiblePrefab; // 可破坏预制件
 
     void Start()
     {
@@ -33,7 +36,7 @@ public class MapGenerator : MonoBehaviour
         // 生成随机障碍物
         for (int i = 0; i < obstacleCount; i++)
         {
-            Vector3 spawnPos = new Vector3(Random.Range(2, mapSize - 2), 0, Random.Range(2, mapSize - 2)
+            Vector3 spawnPos = new Vector3(Random.Range(2, mapSize - 2), 2, Random.Range(2, mapSize - 2)
             );
 
             GameObject obstacle = Instantiate(destructiblePrefab, spawnPos, Quaternion.identity);

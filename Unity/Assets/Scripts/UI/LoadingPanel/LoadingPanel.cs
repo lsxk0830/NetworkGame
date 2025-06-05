@@ -20,8 +20,16 @@ public class LoadingPanel : BasePanel
 
     public override void OnShow(params object[] args)
     {
+        gameObject.SetActive(true);
         Delay().Forget();
         EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, EnterGame);
+        // ToDo ： 加载资源
+    }
+
+    public override void OnClose()
+    {
+        gameObject.SetActive(false);
+        EventManager.Instance.RemoveEvent(Events.MsgEnterBattle, EnterGame);
     }
 
     private void EnterGame(MsgBase msgBase)
