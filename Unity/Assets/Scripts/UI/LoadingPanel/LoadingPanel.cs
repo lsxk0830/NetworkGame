@@ -21,9 +21,10 @@ public class LoadingPanel : BasePanel
     public override void OnShow(params object[] args)
     {
         gameObject.SetActive(true);
-        Delay().Forget();
         EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, EnterGame);
-        // ToDo ： 加载资源
+        Delay().Forget();
+        string sceneName = SwitchScene((int)args[0]);
+        SceneManagerAsync.Instance.LoadSceneAsync(sceneName).Forget(); // 加载场景
     }
 
     public override void OnClose()
@@ -32,14 +33,29 @@ public class LoadingPanel : BasePanel
         EventManager.Instance.RemoveEvent(Events.MsgEnterBattle, EnterGame);
     }
 
-    private void EnterGame(MsgBase msgBase)
+    /// <summary>
+    /// 收到进入游戏协议
+    /// </summary>
+    private async void EnterGame(MsgBase msgBase)
     {
         MsgEnterBattle msg = (MsgEnterBattle)msgBase;
-        Debug.Log($"进入游戏:{msg.mapId}");
-        // ToDo 进入游戏
+        Debug.Log($"进入游戏:MsgEnterBattle");
+        if (msg.result == 0)
+        {
+            success = true;
+            slider.value = 1;
+            prograss.text = $"进度:{100}%";
+            await UniTask.Delay(200);
+            SceneManagerAsync.Instance.Success(success);
+        }
+        else
+            PanelManager.Instance.Open<TipPanel>("进入游戏失败");
     }
 
-    private async UniTask Delay(int i = 0)
+    /// <summary>
+    /// 假的进度条
+    /// </summary>
+    private async UniTaskVoid Delay(int i = 0)
     {
         while (!success)
         {
@@ -48,6 +64,20 @@ public class LoadingPanel : BasePanel
             slider.value = i / 100;
             i++;
             if (i == 100) i = 99;
+        }
+    }
+
+    /// <summary>
+    /// 根据房间的地图ID生成场景
+    /// </summary>
+    private string SwitchScene(int mapID)
+    {
+        switch (mapID)
+        {
+            case 1:
+                return "Game";
+            default:
+                return "Game";
         }
     }
 }

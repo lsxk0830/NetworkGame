@@ -77,7 +77,7 @@ public class RoomPanelController
         {
             view.OnClose();
             PanelManager.Instance.Close<HomePanelView>();
-            PanelManager.Instance.Open<LoadingPanel>();
+            PanelManager.Instance.Open<LoadingPanel>(model.room.mapId);
         }
         else // 开战失败
             PanelManager.Instance.Open<TipPanel>("开战失败!两队至少都需要一名玩家，只有队长可以开始战斗！");
@@ -95,7 +95,7 @@ public class RoomPanelController
         if (model.room.playerIds.Count >= 2)
         {
             Debug.Log($"发送开始战斗协议");
-            PanelManager.Instance.Open<LoadingPanel>();
+            PanelManager.Instance.Open<LoadingPanel>(model.room.mapId);
             view.OnClose();
             PanelManager.Instance.Close<HomePanelView>();
             MsgStartBattle msg = new() { roomID = model.room.RoomID };

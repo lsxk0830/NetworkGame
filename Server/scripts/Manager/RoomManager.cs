@@ -36,8 +36,11 @@ public class RoomManager
             roomId = GetRoomID();
         } while (rooms.ContainsKey(roomId)); // 防止冲突
 
-        Room room = new Room();
-        room.RoomID = roomId;
+        Room room = new Room()
+        {
+            RoomID = roomId,
+            mapId = 1,
+        };
         rooms.Add(room.RoomID, room);
         return room;
     }

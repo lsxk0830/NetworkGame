@@ -9,6 +9,11 @@ public class Room
     public string RoomID = "";
 
     /// <summary>
+    /// 地图ID
+    /// </summary>
+    public int mapId = -1;
+
+    /// <summary>
     /// 最大玩家数
     /// </summary>
     public int maxPlayer = 6;
@@ -261,7 +266,6 @@ public class Room
                 if (loadSuccess >= playerIds.Count) return; // 如果加载成功的玩家数已经达到要求，则不再发送消息
                 MsgEnterBattle msgEnterBattle = new MsgEnterBattle()
                 {
-                    mapId = 1,
                     tanks = new TankInfo[playerIds.Count]
                 };
                 foreach (Player player in playerIds.Values)
@@ -274,7 +278,6 @@ public class Room
         {
             MsgEnterBattle msgEnterBattle = new MsgEnterBattle()
             {
-                mapId = 1,
                 tanks = new TankInfo[playerIds.Count]
             };
             foreach (Player player in playerIds.Values)
@@ -373,7 +376,6 @@ public class Room
         ResetPlayers(); // 重置属性
         MsgEnterBattle msg = new MsgEnterBattle()
         {
-            mapId = 1,
             tanks = new TankInfo[playerIds.Count]
         };
         int i = 0;

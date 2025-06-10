@@ -9,12 +9,12 @@ public class MsgEnterBattle : MsgBase
     }
 
     /// <summary>
+    /// 服务器返回的是否战斗结果 0-成功 其他数值-失败
+    /// </summary>
+    public int result = 0;
+
+    /// <summary>
     /// 服务器返回的坦克列表信息
     /// </summary>
     public TankInfo[] tanks { get; set; }
-
-    /// <summary>
-    /// 地图，只有一张
-    /// </summary>
-    public int mapId { get; set; } = 1;
 }

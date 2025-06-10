@@ -13,6 +13,11 @@ public class Room
     public string RoomID;
 
     /// <summary>
+    /// 地图ID
+    /// </summary>
+    public int mapId = -1;
+
+    /// <summary>
     /// 玩家列表
     /// </summary>
     public Dictionary<long, Player> playerIds;
