@@ -77,7 +77,7 @@ public class RoomPanelController
         {
             view.OnClose();
             PanelManager.Instance.Close<HomePanelView>();
-            PanelManager.Instance.Open<LoadingPanel>(model.room.mapId);
+            PanelManager.Instance.Open<LoadingPanel>(model.room);
         }
         else // 开战失败
             PanelManager.Instance.Open<TipPanel>("开战失败!两队至少都需要一名玩家，只有队长可以开始战斗！");
@@ -103,14 +103,6 @@ public class RoomPanelController
         }
         else
             PanelManager.Instance.Open<TipPanel>("人数不足，等待玩家加入");
-
-        // ToDo: 加载游戏场景
-        // SceneManagerAsync.Instance.SetLoadingProgressCallback(progress =>
-        // {
-        //     Debug.Log($"加载进度: {progress * 100}%");
-        //     // 更新UI进度条等
-        // });
-        // SceneManagerAsync.Instance.LoadSceneAsync("Game").Forget();
     }
 
     /// <summary>

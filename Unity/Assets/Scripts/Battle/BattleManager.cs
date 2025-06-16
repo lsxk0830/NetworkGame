@@ -17,7 +17,6 @@ public class BattleManager : MonoBehaviour
     public static void Init()
     {
         // 添加监听
-        EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
         EventManager.Instance.RegisterEvent(Events.MsgBattleResult, OnMsgBattleResult);
         EventManager.Instance.RegisterEvent(Events.MsgLeaveBattle, OnMsgLeaveBattle);
         EventManager.Instance.RegisterEvent(Events.MsgSyncTank, OnMsgSyncTank);
@@ -59,28 +58,7 @@ public class BattleManager : MonoBehaviour
         return GetTank(GameMain.ID);
     }
 
-    /// <summary>
-    /// 重置战场
-    /// </summary>
-    public static void Reset()
-    {
-        foreach (BaseTank tank in tanks.Values)
-        {
-            GameObject.Destroy(tank.gameObject);
-        }
-        tanks.Clear();
-    }
-
     #region 网络协议监听
-
-    /// <summary>
-    /// 收到战斗协议
-    /// </summary>
-    private static void OnMsgEnterBattle(MsgBase msgBse)
-    {
-        MsgEnterBattle msg = (MsgEnterBattle)msgBse;
-        EnterBattle(msg);
-    }
 
     /// <summary>
     /// 收到战斗结束协议
@@ -159,12 +137,11 @@ public class BattleManager : MonoBehaviour
     /// <summary>
     /// 开始战斗
     /// </summary>
-    public static void EnterBattle(MsgEnterBattle msg)
+    public void EnterBattle(TankInfo[] tanks)
     {
-        Reset(); // 重置
         PanelManager.Instance.Close<RoomPanelView>(); // 可以放到房间系统的监听中
         PanelManager.Instance.Close<ResultPanel>();
-        foreach (var tank in msg.tanks) // 生成坦克
+        foreach (var tank in tanks) // 生成坦克
         {
             GenerateTank(tank);
         }
@@ -198,9 +175,9 @@ public class BattleManager : MonoBehaviour
         tank.transform.eulerAngles = rot;
         // Init
         if (tankInfo.camp == 1)
-            tank.Init("TankC");
+            tank.Init("Tank_1");
         else
-            tank.Init("TankCC");
+            tank.Init("Tank_2");
         // 列表
         AddTank(tankInfo.ID, tank);
     }

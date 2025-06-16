@@ -1,9 +1,16 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-public class PointAtAimTarget : MonoBehaviour
+public class AimDetection : MonoBehaviour
 {
     [Tooltip("This object represents the aim target.  We always point toeards this")]
     public Transform AimTarget;
+
+    public Vector3 offset;
+
+    private void Start()
+    {
+        offset = transform.localEulerAngles;
+    }
 
     void Update()
     {
@@ -12,6 +19,6 @@ public class PointAtAimTarget : MonoBehaviour
             return;
         var dir = AimTarget.position - transform.position;
         if (dir.sqrMagnitude > 0.01f)
-            transform.rotation = Quaternion.LookRotation(dir);
+            transform.rotation = Quaternion.LookRotation(dir - offset);
     }
 }

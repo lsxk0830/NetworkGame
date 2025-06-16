@@ -17,24 +17,28 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 1009acbbf9a3d2b4fb8c4849015359a6
   m_SerializeEntries:
-  - m_GUID: acca3b020c185fa49a59a6177b1770fb
-    m_Address: TankA
+  - m_GUID: 745452e192efc89408578a4e15c0763f
+    m_Address: Tank_1
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: 2a8da8b4b21026d42b11cafdb0ae43a8
-    m_Address: TankB
+  - m_GUID: 935f3cb81cb505144a0868992f0b912f
+    m_Address: Tank_2
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: 84c9b2831d5d27e40987d5ad7557534e
-    m_Address: TankC
+  - m_GUID: eeee0ce60084cdf42a44d512af1f45ae
+    m_Address: Tank_3
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: c29541d8c54383d46a864d0bc5edac08
-    m_Address: TankD
+  - m_GUID: d8d2532a4e205bd409d22b86030363f8
+    m_Address: Tank_4
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: e8165baa2f60ddb4e9696c0ff9d07a51
-    m_Address: TankCC
+  - m_GUID: 83243c3f2cb0f4743995f0caa699b10e
+    m_Address: Tank_5
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: accff7d7269b7ad46b044ba1e6d8a7e4
+    m_Address: Tank_6
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

@@ -4,7 +4,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class BaseTank : MonoBehaviour
 {
-    private GameObject skin; // 坦克模型资源
+    private GameObject tank; // 坦克模型资源
     public float steer = 20; // 转向速度
     public float speed = 6; // 移动速度
     public float turretSpeed = 30f; // 炮塔旋转速度
@@ -26,21 +26,15 @@ public class BaseTank : MonoBehaviour
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
                 GameObject skinRes = handle.Result;
-                skin = Instantiate(skinRes);
-                skin.transform.parent = this.transform;
-                skin.transform.localPosition = Vector3.zero;
-                skin.transform.localEulerAngles = Vector3.zero;
-
-                // 物理
-                mRigidbody = gameObject.AddComponent<Rigidbody>();
-                BoxCollider boxCollider = gameObject.AddComponent<BoxCollider>();
-                boxCollider.center = new Vector3(0, 2.5f, 1.47f);
-                boxCollider.size = new Vector3(7, 5, 12);
+                tank = Instantiate(skinRes);
+                tank.transform.parent = this.transform;
+                tank.transform.localPosition = Vector3.zero;
+                tank.transform.localEulerAngles = Vector3.zero;
 
                 // 炮塔炮管
-                turret = skin.transform.Find("Turret");
+                turret = tank.transform.Find("Tank/Turret");
                 gun = turret.transform.Find("Gun");
-                firePoint = gun.transform.Find("FirePoint");
+                firePoint = turret.transform.Find("FirePoint");
             }
         };
         return handle;
