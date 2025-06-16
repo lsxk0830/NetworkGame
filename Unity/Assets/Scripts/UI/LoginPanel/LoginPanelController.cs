@@ -108,8 +108,11 @@ public class LoginPanelController
         if (accept.code == 200)
         {
             UserManager.Instance.Init(accept.data);
-            PanelManager.Instance.Close<LoginPanelView>();
-            PanelManager.Instance.Open<HomePanelView>();
+            GloablMono.Instance.TriggerFromOtherThread(() =>
+            {
+                PanelManager.Instance.Close<LoginPanelView>();
+                PanelManager.Instance.Open<HomePanelView>();
+            });
             bool state = view.GetRememberPwToggleState();
             model.RememberPwToggleState = state;
             if (state)

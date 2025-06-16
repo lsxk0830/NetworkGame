@@ -37,7 +37,7 @@ public class HomePanelView : BasePanel
         playBtn = transform.Find("Down/PlayBtn").GetComponent<Button>();
 
         GameObject[] rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
-        tankModel = Array.Find(rootObjects, obj => obj.name == "TankA");
+        tankModel = Array.Find(rootObjects, obj => obj.name == "Tank");
         mainCamera = Camera.main;
         Controller = new HomePanelController(this);
         Controller.UpdateUI().Forget();
