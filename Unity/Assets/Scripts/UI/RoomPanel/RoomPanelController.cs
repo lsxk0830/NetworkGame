@@ -95,7 +95,7 @@ public class RoomPanelController
         if (model.room.playerIds.Count >= 2)
         {
             Debug.Log($"发送开始战斗协议");
-            PanelManager.Instance.Open<LoadingPanel>(model.room.mapId);
+            PanelManager.Instance.Open<LoadingPanel>(model.room);
             view.OnClose();
             PanelManager.Instance.Close<HomePanelView>();
             MsgStartBattle msg = new() { roomID = model.room.RoomID };
