@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Cysharp.Threading.Tasks;
 
-public class SceneManagerAsync : MonoSingleton<SceneManagerAsync>
+public class SceneManagerAsync : Singleton<SceneManagerAsync>
 {
     private AsyncOperation currentOperation;
 
