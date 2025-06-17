@@ -21,6 +21,7 @@
             msg.result = result ? 0 : -1;
             msg.ID = user.ID;
             msg.OwnerID = room.ownerId;
+            cs.user.RoomID = "";
             NetManager.Send(cs, msg);
         }
     }

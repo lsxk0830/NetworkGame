@@ -29,6 +29,7 @@
             {
                 ID = c.user.ID,
             };
+            c.user.RoomID = room.RoomID;
             room.EnterRoomAddPlayer(player);
         }
     }

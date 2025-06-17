@@ -12,6 +12,11 @@ public class User
     public long ID { get; set; }
 
     /// <summary>
+    /// 房间ID
+    /// </summary>
+    public string RoomID { get; set; } = "";
+
+    /// <summary>
     /// 用户名
     /// </summary>
     [MaxLength(100)]
