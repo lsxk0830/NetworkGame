@@ -31,6 +31,8 @@ public class BaseTank : MonoBehaviour
                 tank.transform.localPosition = Vector3.zero;
                 tank.transform.localEulerAngles = Vector3.zero;
 
+                mRigidbody = tank.GetComponent<Rigidbody>();
+
                 // 炮塔炮管
                 turret = tank.transform.Find("Tank/Turret");
                 gun = turret.transform.Find("Gun");

@@ -13,7 +13,6 @@ public class LoadingPanel : BasePanel
     private TextMeshProUGUI prograss;
     private Room room;
     private bool success;
-    private BattleManager bm;
 
     public override void OnInit()
     {
@@ -25,7 +24,7 @@ public class LoadingPanel : BasePanel
     {
         gameObject.SetActive(true);
         EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, EnterGame);
-        Delay().Forget();
+        Loading().Forget();
         room = (Room)args[0];
         string sceneName = SwitchScene(room.mapId);
         SceneManagerAsync.Instance.LoadSceneAsync(sceneName).Forget(); // 加载场景
@@ -51,7 +50,8 @@ public class LoadingPanel : BasePanel
             prograss.text = $"进度:{100}%";
             await UniTask.Delay(200);
             SceneManagerAsync.Instance.Success(success);
-            bm.EnterBattle(msg.tanks);
+            await UniTask.Yield();
+            GloablMono.Instance.TriggerFromOtherThread(() => BattleManager.EnterBattle(msg.tanks));
         }
         else
             PanelManager.Instance.Open<TipPanel>("进入游戏失败");
@@ -60,19 +60,13 @@ public class LoadingPanel : BasePanel
     /// <summary>
     /// 假的进度条
     /// </summary>
-    private async UniTaskVoid Delay(int i = 0)
+    private async UniTaskVoid Loading(int i = 0)
     {
         while (!success)
         {
-            await UniTask.Delay(200);
-            if (1 == 1)
-            {
-                GameObject[] roots = SceneManager.GetActiveScene().GetRootGameObjects();
-                foreach (GameObject go in roots)
-                    if (go.TryGetComponent<BattleManager>(out BattleManager BattleManager)) bm = BattleManager;
-            }
-            prograss.text = $"进度:{1}%";
-            slider.value = i / 100;
+            await UniTask.Delay(50);
+            prograss.text = $"进度:{i}%";
+            slider.value = i / 100f;
             i++;
             if (i == 100) i = 99;
             if (i == 98)

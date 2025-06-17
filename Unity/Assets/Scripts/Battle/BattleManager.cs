@@ -11,10 +11,7 @@ public class BattleManager : MonoBehaviour
     /// </summary>
     public static Dictionary<long, BaseTank> tanks = new Dictionary<long, BaseTank>();
 
-    /// <summary>
-    /// 初始化
-    /// </summary>
-    public static void Init()
+    void Awake()
     {
         // 添加监听
         EventManager.Instance.RegisterEvent(Events.MsgBattleResult, OnMsgBattleResult);
@@ -137,10 +134,9 @@ public class BattleManager : MonoBehaviour
     /// <summary>
     /// 开始战斗
     /// </summary>
-    public void EnterBattle(TankInfo[] tanks)
+    public static void EnterBattle(TankInfo[] tanks)
     {
-        PanelManager.Instance.Close<RoomPanelView>(); // 可以放到房间系统的监听中
-        PanelManager.Instance.Close<ResultPanel>();
+        Debug.Log($"开始战斗");
         foreach (var tank in tanks) // 生成坦克
         {
             GenerateTank(tank);

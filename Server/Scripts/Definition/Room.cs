@@ -31,7 +31,7 @@ public class Room
     public int status = (int)Status.PREPARE;
 
     public int loadSuccess = 0; // 加载成功的玩家数
-    private int delaySeconds = 10; // 最长等待时间，单位秒
+    private int delaySeconds = 3; // 最长等待时间，单位秒
 
     /// <summary>
     /// 状态
@@ -264,26 +264,33 @@ public class Room
             {
                 Console.WriteLine($"当前时间：{DateTime.Now}");
                 if (loadSuccess >= playerIds.Count) return; // 如果加载成功的玩家数已经达到要求，则不再发送消息
-                MsgEnterBattle msgEnterBattle = new MsgEnterBattle()
+                MsgEnterBattle msg = new MsgEnterBattle()
                 {
                     tanks = new TankInfo[playerIds.Count]
                 };
+                int i = 0;
                 foreach (Player player in playerIds.Values)
                 {
-                    player.Send(msgEnterBattle);
+                    msg.tanks[i] = PlayerToTankInfo(player);
+                    i++;
                 }
+                Broadcast(msg); // 广播消息
+                return;
             });
         }
         if (loadSuccess >= playerIds.Count)
         {
-            MsgEnterBattle msgEnterBattle = new MsgEnterBattle()
+            MsgEnterBattle msg = new MsgEnterBattle()
             {
                 tanks = new TankInfo[playerIds.Count]
             };
+            int i = 0;
             foreach (Player player in playerIds.Values)
             {
-                player.Send(msgEnterBattle);
+                msg.tanks[i] = PlayerToTankInfo(player);
+                i++;
             }
+            Broadcast(msg); // 广播消息
         }// 已经加载成功
     }
 
