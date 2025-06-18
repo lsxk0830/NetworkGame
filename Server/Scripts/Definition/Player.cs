@@ -16,25 +16,6 @@ public class Player
     /// </summary>
     public string roomId = "";
 
-    /// <summary>
-    /// 客户端状态ClientState
-    /// </summary>
-    [JsonIgnore] public ClientState state;
-
-    public Player(ClientState state)
-    {
-        this.state = state;
-    }
-
-    /// <summary>
-    /// 发送数据
-    /// </summary>
-    /// <param name="msgBase">协议</param>
-    public void Send(MsgBase msgBase)
-    {
-        NetManager.Send(state, msgBase);
-    }
-
     // 坐标和旋转
     public float x;
 
@@ -53,4 +34,23 @@ public class Player
     /// 坦克生命值
     /// </summary>
     public int hp = 0;
+
+    /// <summary>
+    /// 客户端状态ClientState
+    /// </summary>
+    [JsonIgnore] public ClientState state;
+
+    public Player(ClientState state)
+    {
+        this.state = state;
+    }
+
+    /// <summary>
+    /// 发送数据
+    /// </summary>
+    /// <param name="msgBase">协议</param>
+    public void Send(MsgBase msgBase)
+    {
+        NetManager.Send(state, msgBase);
+    }
 }

@@ -134,7 +134,7 @@ public class BattleManager : MonoBehaviour
     /// <summary>
     /// 开始战斗
     /// </summary>
-    public static void EnterBattle(TankInfo[] tanks)
+    public static void EnterBattle(Player[] tanks)
     {
         Debug.Log($"开始战斗");
         foreach (var tank in tanks) // 生成坦克
@@ -146,7 +146,7 @@ public class BattleManager : MonoBehaviour
     /// <summary>
     /// 生成坦克
     /// </summary>
-    private static void GenerateTank(TankInfo tankInfo)
+    private static void GenerateTank(Player tankInfo)
     {
         // GameObject
         string objName = $"Tank_{tankInfo.ID}";

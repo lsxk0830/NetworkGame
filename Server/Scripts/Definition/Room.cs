@@ -54,11 +54,11 @@ public class Room
     /// </summary>
     private static float[,,] birthConfig = new float[2, 3, 6]
     {
-            { { -159f,-26.8f,41.65f,10.272f,173.876f,-3.192f}, { 1,1,1,1,1,1}, { 1,1,1,1,1,1} }, // 阵营1出生点
-            { { -73.04f,-28.45f,-71.28f,2,-40,2}, { 2,2,2,2,2,2},{ 2,2,2,2,2,2}} // 阵营2出生点
+        { { 4f,1f,5f,0f,0f,0f},  { 4f,1f,15f,0f,0f,0f}, { 4f,1f,40f,0f,0f,0f} },// 阵营1出生点
+        { { 45f,1f,40f,0f,0f,0f}, { 45f,1f,30f,0f,0f,0f},{ 45f,1f,20f,0f,0f,0f}} // 阵营2出生点
     };
 
-    #region 对玩家的操作
+    #region 添加玩家、删除玩家、获取玩家
 
     /// <summary>
     /// 创建房间时添加玩家
@@ -193,9 +193,9 @@ public class Room
         return null; // 玩家不存在
     }
 
-    #endregion 对玩家的操作
+    #endregion 添加玩家、删除玩家、获取玩家
 
-    #region 内部实现
+    #region 分配阵营、选择房主
 
     /// <summary>
     /// 分配阵营
@@ -224,6 +224,10 @@ public class Room
         return -1; // 房间没人
     }
 
+    #endregion 分配阵营、选择房主
+
+    #region 广播消息、广播开战、广播进入战斗
+
     /// <summary>
     /// 广播消息
     /// </summary>
@@ -235,12 +239,10 @@ public class Room
         }
     }
 
-    #endregion 内部实现
-
     /// <summary>
     /// 广播开战消息
     /// </summary>
-    public void StartBattle(ClientState cs, MsgBase msg)
+    public void BroadcastStartBattle(ClientState cs, MsgBase msg)
     {
         status = (int)Status.FIGHT; // 状态设置为战斗中
         foreach (Player player in playerIds.Values)
@@ -249,6 +251,27 @@ public class Room
             player.Send(msg);
         }
     }
+
+    /// <summary>
+    /// 广播进入战斗消息
+    /// </summary>
+    private void BroadcastEnterBattle()
+    {
+        MsgEnterBattle msg = new MsgEnterBattle()
+        {
+            tanks = new Player[playerIds.Count]
+        };
+        ResetPlayers(); // 重置属性
+        int i = 0;
+        foreach (Player player in playerIds.Values)
+        {
+            msg.tanks[i] = player;
+            i++;
+        }
+        Broadcast(msg); // 广播消息
+    }
+
+    #endregion 广播消息、广播开战、广播进入战斗
 
     /// <summary>
     /// 所有加载完成，准备进入游戏
@@ -264,33 +287,13 @@ public class Room
             {
                 Console.WriteLine($"当前时间：{DateTime.Now}");
                 if (loadSuccess >= playerIds.Count) return; // 如果加载成功的玩家数已经达到要求，则不再发送消息
-                MsgEnterBattle msg = new MsgEnterBattle()
-                {
-                    tanks = new TankInfo[playerIds.Count]
-                };
-                int i = 0;
-                foreach (Player player in playerIds.Values)
-                {
-                    msg.tanks[i] = PlayerToTankInfo(player);
-                    i++;
-                }
-                Broadcast(msg); // 广播消息
+                BroadcastEnterBattle(); // 否则广播进入战斗消息
                 return;
             });
         }
         if (loadSuccess >= playerIds.Count)
         {
-            MsgEnterBattle msg = new MsgEnterBattle()
-            {
-                tanks = new TankInfo[playerIds.Count]
-            };
-            int i = 0;
-            foreach (Player player in playerIds.Values)
-            {
-                msg.tanks[i] = PlayerToTankInfo(player);
-                i++;
-            }
-            Broadcast(msg); // 广播消息
+            BroadcastEnterBattle(); // 如果所有玩家都加载成功，广播进入战斗消息
         }// 已经加载成功
     }
 
@@ -308,9 +311,8 @@ public class Room
             if (player.camp == 1) count1++;
             else count2++;
         }
-        // 每个阵营至少要有 1 名玩家
-        if (count1 < 1 || count2 < 1)
-            return false;
+        if (count1 < 1 || count2 < 1) return false; // 每个阵营至少要有 1 名玩家
+
         return true;
     }
 
@@ -351,48 +353,6 @@ public class Room
             }
             player.hp = 100;
         }
-    }
-
-    /// <summary>
-    /// 玩家数据转成TankInfo
-    /// </summary>
-    public TankInfo PlayerToTankInfo(Player player)
-    {
-        TankInfo tankInfo = new TankInfo()
-        {
-            camp = player.camp,
-            id = player.ID,
-            hp = player.hp,
-            x = player.x,
-            y = player.y,
-            z = player.z,
-            ex = player.ex,
-            ey = player.ey,
-            ez = player.ez
-        };
-        return tankInfo;
-    }
-
-    /// <summary>
-    /// 开战
-    /// </summary>
-    public bool StartBattle()
-    {
-        if (!CanStartBattle()) return false;
-        status = (int)Status.FIGHT; // 状态
-        ResetPlayers(); // 重置属性
-        MsgEnterBattle msg = new MsgEnterBattle()
-        {
-            tanks = new TankInfo[playerIds.Count]
-        };
-        int i = 0;
-        foreach (Player player in playerIds.Values)
-        {
-            msg.tanks[i] = PlayerToTankInfo(player);
-            i++;
-        }
-        Broadcast(msg);
-        return true;
     }
 
     /// <summary>

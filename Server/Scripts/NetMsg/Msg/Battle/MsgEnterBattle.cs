@@ -16,5 +16,5 @@ public class MsgEnterBattle : MsgBase
     /// <summary>
     /// 服务器返回的坦克列表信息
     /// </summary>
-    public TankInfo[] tanks { get; set; }
+    public Player[] tanks { get; set; }
 }

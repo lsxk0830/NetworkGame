@@ -30,6 +30,13 @@
             NetManager.Send(cs, msg);
             return;
         }
-        room.StartBattle(cs, msg); // 广播开战消息
+        if (!room.CanStartBattle()) // 是否是房主
+        {
+            msg.result = -1;
+            NetManager.Send(cs, msg);
+            return;
+        }
+
+        room.BroadcastStartBattle(cs, msg); // 广播开战消息
     }
 }
