@@ -87,6 +87,7 @@ MonoBehaviour:
     m_LabelNames:
     - default
     - UIPanel
+    - Tank
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 6dad22eeef1a4e24c8849899d2393623, type: 2}

@@ -1,38 +1,55 @@
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 /// <summary>
 /// 战斗管理器。
 /// </summary>
 public class BattleManager : MonoBehaviour
 {
+    public CinemachineFreeLook cinemachineFreeLook;
+    private List<AsyncOperationHandle> handles;
+
     /// <summary>
     /// 战场中的坦克。添加坦克、删除坦克、获取坦克、获取玩家控制的坦克
     /// </summary>
-    public static Dictionary<long, BaseTank> tanks = new Dictionary<long, BaseTank>();
+    public static Dictionary<long, BaseTank> tanks;
+    private Transform tankParent;
 
     void Awake()
     {
-        // 添加监听
+        EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
         EventManager.Instance.RegisterEvent(Events.MsgBattleResult, OnMsgBattleResult);
         EventManager.Instance.RegisterEvent(Events.MsgLeaveBattle, OnMsgLeaveBattle);
         EventManager.Instance.RegisterEvent(Events.MsgSyncTank, OnMsgSyncTank);
         EventManager.Instance.RegisterEvent(Events.MsgFire, OnMsgFire);
         EventManager.Instance.RegisterEvent(Events.MsgHit, OnMsgHit);
+        handles = new List<AsyncOperationHandle>();
+        tanks = new Dictionary<long, BaseTank>();
+        tankParent = new GameObject("Tanks").transform;
+        tankParent.position = Vector3.zero;
+        cinemachineFreeLook = GetComponent<CinemachineFreeLook>();
     }
 
-    /// <summary>
-    /// 添加坦克
-    /// </summary>
-    public static void AddTank(long ID, BaseTank tank)
+    void OnDestroy()
     {
-        tanks[ID] = tank;
+        EventManager.Instance.RemoveEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
+        EventManager.Instance.RemoveEvent(Events.MsgBattleResult, OnMsgBattleResult);
+        EventManager.Instance.RemoveEvent(Events.MsgLeaveBattle, OnMsgLeaveBattle);
+        EventManager.Instance.RemoveEvent(Events.MsgSyncTank, OnMsgSyncTank);
+        EventManager.Instance.RemoveEvent(Events.MsgFire, OnMsgFire);
+        EventManager.Instance.RemoveEvent(Events.MsgHit, OnMsgHit);
+        tanks.Clear(); tanks = null;
+        foreach (var handle in handles) Addressables.Release(handle);
+        handles.Clear(); handles = null;
     }
 
     /// <summary>
     /// 删除坦克
     /// </summary>
-    public static void RemoveTank(long ID)
+    public void RemoveTank(long ID)
     {
         tanks.Remove(ID);
     }
@@ -50,7 +67,7 @@ public class BattleManager : MonoBehaviour
     /// <summary>
     /// 获取玩家控制的坦克
     /// </summary>
-    public static BaseTank GetCtrlTank()
+    public BaseTank GetCtrlTank()
     {
         return GetTank(GameMain.ID);
     }
@@ -58,9 +75,22 @@ public class BattleManager : MonoBehaviour
     #region 网络协议监听
 
     /// <summary>
+    /// 收到进入战斗协议
+    /// </summary>
+    private void OnMsgEnterBattle(MsgBase msgBse)
+    {
+        Debug.Log($"收到进入战斗协议");
+        MsgEnterBattle msg = (MsgEnterBattle)msgBse;
+        foreach (var tankInfo in msg.tanks) // 生成坦克
+        {
+            Init($"Tank_{UnityEngine.Random.Range(1, 7)}", tankInfo);
+        }
+    }
+
+    /// <summary>
     /// 收到战斗结束协议
     /// </summary>
-    private static void OnMsgBattleResult(MsgBase msgBse)
+    private void OnMsgBattleResult(MsgBase msgBse)
     {
         MsgEndBattle msg = (MsgEndBattle)msgBse;
         // 判断显示胜利还是失败
@@ -74,7 +104,7 @@ public class BattleManager : MonoBehaviour
     /// <summary>
     /// 收到玩家退出协议
     /// </summary>
-    private static void OnMsgLeaveBattle(MsgBase msgBse)
+    private void OnMsgLeaveBattle(MsgBase msgBse)
     {
         MsgLeaveBattle msg = (MsgLeaveBattle)msgBse;
         // 查找坦克
@@ -89,7 +119,7 @@ public class BattleManager : MonoBehaviour
     /// <summary>
     /// 收到同步协议
     /// </summary>
-    private static void OnMsgSyncTank(MsgBase msgBse)
+    private void OnMsgSyncTank(MsgBase msgBse)
     {
         MsgSyncTank msg = (MsgSyncTank)msgBse;
         if (msg.ID == GameMain.ID) // 不能同步自己
@@ -104,7 +134,7 @@ public class BattleManager : MonoBehaviour
     /// <summary>
     /// 收到开火协议
     /// </summary>
-    private static void OnMsgFire(MsgBase msgBse)
+    private void OnMsgFire(MsgBase msgBse)
     {
         MsgFire msg = (MsgFire)msgBse;
         if (msg.ID == GameMain.ID) // 不能同步自己
@@ -119,7 +149,7 @@ public class BattleManager : MonoBehaviour
     /// <summary>
     /// 收到击中协议
     /// </summary>
-    private static void OnMsgHit(MsgBase msgBse)
+    private void OnMsgHit(MsgBase msgBse)
     {
         MsgHit msg = (MsgHit)msgBse;
         // 查找坦克
@@ -131,50 +161,31 @@ public class BattleManager : MonoBehaviour
 
     #endregion
 
-    /// <summary>
-    /// 开始战斗
-    /// </summary>
-    public static void EnterBattle(Player[] tanks)
+    private void Init(string tankName, Player tankInfo)
     {
-        Debug.Log($"开始战斗");
-        foreach (var tank in tanks) // 生成坦克
+        AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>(tankName);
+        handle.Completed += handle =>
         {
-            GenerateTank(tank);
-        }
-    }
-
-    /// <summary>
-    /// 生成坦克
-    /// </summary>
-    private static void GenerateTank(Player tankInfo)
-    {
-        // GameObject
-        string objName = $"Tank_{tankInfo.ID}";
-        GameObject tankObj = new GameObject(objName);
-        // AddComponent
-        BaseTank tank;
-        if (tankInfo.ID == GameMain.ID)
-        {
-            tank = tankObj.AddComponent<CtrlTank>();
-            tankObj.AddComponent<CameraFollow>();
-        }
-        else
-            tank = tankObj.AddComponent<SyncTank>();
-        // 属性
-        tank.camp = tankInfo.camp;
-        tank.ID = tankInfo.ID;
-        tank.hp = tankInfo.hp;
-        // pos rot
-        Vector3 pos = new Vector3(tankInfo.x, tankInfo.y, tankInfo.z);
-        Vector3 rot = new Vector3(tankInfo.ex, tankInfo.ey, tankInfo.ez);
-        tank.transform.position = pos;
-        tank.transform.eulerAngles = rot;
-        // Init
-        if (tankInfo.camp == 1)
-            tank.Init("Tank_1");
-        else
-            tank.Init("Tank_2");
-        // 列表
-        AddTank(tankInfo.ID, tank);
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                GameObject tank = Instantiate(handle.Result);
+                tank.transform.parent = tankParent.transform;
+                BaseTank baseTank;
+                if (tankInfo.ID == GameMain.ID)
+                {
+                    baseTank = tank.AddComponent<CtrlTank>();
+                    cinemachineFreeLook.Follow = tank.transform.Find("Follow");
+                    cinemachineFreeLook.LookAt = tank.transform.Find("LookAt");
+                    CameraController cc = gameObject.AddComponent<CameraController>();
+                    cc.turret = tank.transform.Find("Tank/Turret");
+                    cc.fire = tank.transform.Find("Tank/Turret/FirePoint");
+                }
+                else
+                    baseTank = tank.AddComponent<SyncTank>();
+                tanks.Add(tankInfo.ID, baseTank);
+                baseTank.Init(tankInfo);
+            }
+        };
+        handles.Add(handle);
     }
 }

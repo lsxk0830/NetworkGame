@@ -41,6 +41,7 @@ public class LoadingPanel : BasePanel
     /// </summary>
     private async void EnterGame(MsgBase msgBase)
     {
+        EventManager.Instance.RemoveEvent(Events.MsgEnterBattle, EnterGame);
         MsgEnterBattle msg = (MsgEnterBattle)msgBase;
         Debug.Log($"进入游戏:MsgEnterBattle");
         if (msg.result == 0)
@@ -51,7 +52,10 @@ public class LoadingPanel : BasePanel
             await UniTask.Delay(200);
             SceneManagerAsync.Instance.Success(success);
             await UniTask.Yield();
-            GloablMono.Instance.TriggerFromOtherThread(() => BattleManager.EnterBattle(msg.tanks));
+            GloablMono.Instance.TriggerFromOtherThread(() =>
+            {
+                EventManager.Instance.InvokeEvent(Events.MsgEnterBattle, msg);
+            });
         }
         else
             PanelManager.Instance.Open<TipPanel>("进入游戏失败");

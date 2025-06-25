@@ -1,12 +1,8 @@
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class BaseTank : MonoBehaviour
 {
-    private GameObject tank; // 坦克模型资源
     public float steer = 20; // 转向速度
-    public float speed = 6; // 移动速度
     public float turretSpeed = 30f; // 炮塔旋转速度
     public Transform turret; // 炮塔
     public Transform gun; // 炮管
@@ -18,29 +14,20 @@ public class BaseTank : MonoBehaviour
     public int camp = 0; // 阵营
     protected Rigidbody mRigidbody;
 
-    public virtual AsyncOperationHandle Init(string tankName)
+    public virtual void Init(Player tankInfo)
     {
-        AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>(tankName);
-        handle.Completed += handle =>
-        {
-            if (handle.Status == AsyncOperationStatus.Succeeded)
-            {
-                GameObject skinRes = handle.Result;
-                tank = Instantiate(skinRes);
-                tank.transform.parent = this.transform;
-                tank.transform.localPosition = Vector3.zero;
-                tank.transform.localEulerAngles = Vector3.zero;
+        camp = tankInfo.camp;
+        ID = tankInfo.ID;
+        hp = tankInfo.hp;
+        Vector3 pos = new Vector3(tankInfo.x, tankInfo.y, tankInfo.z);
+        Vector3 rot = new Vector3(tankInfo.ex, tankInfo.ey, tankInfo.ez);
+        transform.position = pos;
+        transform.eulerAngles = rot;
 
-                mRigidbody = tank.GetComponent<Rigidbody>();
-
-                // 炮塔炮管
-                turret = tank.transform.Find("Tank/Turret");
-                gun = turret.transform.Find("Gun");
-                firePoint = turret.transform.Find("FirePoint");
-            }
-        };
-        return handle;
-
+        mRigidbody = GetComponent<Rigidbody>();
+        turret = transform.Find("Tank/Turret");
+        gun = turret.transform.Find("Gun");
+        firePoint = turret.transform.Find("FirePoint");
     }
 
     /// <summary>

@@ -13,33 +13,18 @@ public class SyncTank : BaseTank
     //private Vector3 forecastRot;
     //private float forecastTime;
 
+    public override void Init(Player tankInfo)
+    {
+        base.Init(tankInfo);
+        // 不受物理运动影响
+        mRigidbody.constraints = RigidbodyConstraints.FreezeAll;
+        mRigidbody.useGravity = false;
+        //GloablMono.Instance.OnUpdate += OnUpdate;
+    }
 
     private void OnUpdate()
     {
         ForecastUpdate();
-    }
-
-    public override AsyncOperationHandle Init(string tankName)
-    {
-        AsyncOperationHandle option = base.Init(tankName);
-        option.Completed += handle =>
-        {
-            if (handle.Status == AsyncOperationStatus.Succeeded)
-            {
-                // 不受物理运动影响
-                mRigidbody.constraints = RigidbodyConstraints.FreezeAll;
-                mRigidbody.useGravity = false;
-                // 初始化预测信息
-                //lastPos = transform.position;
-                //lastRot = transform.eulerAngles;
-                //forecastPos = transform.position;
-                //forecastRot = transform.eulerAngles;
-                //forecastTime = Time.time;
-
-                GloablMono.Instance.OnUpdate += OnUpdate;
-            }
-        };
-        return option;
     }
 
     /// <summary>

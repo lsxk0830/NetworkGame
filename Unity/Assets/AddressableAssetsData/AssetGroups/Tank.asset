@@ -20,27 +20,33 @@ MonoBehaviour:
   - m_GUID: 745452e192efc89408578a4e15c0763f
     m_Address: Tank_1
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Tank
   - m_GUID: 935f3cb81cb505144a0868992f0b912f
     m_Address: Tank_2
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Tank
   - m_GUID: eeee0ce60084cdf42a44d512af1f45ae
     m_Address: Tank_3
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Tank
   - m_GUID: d8d2532a4e205bd409d22b86030363f8
     m_Address: Tank_4
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Tank
   - m_GUID: 83243c3f2cb0f4743995f0caa699b10e
     m_Address: Tank_5
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Tank
   - m_GUID: accff7d7269b7ad46b044ba1e6d8a7e4
     m_Address: Tank_6
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Tank
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 0c62968f62d51d848b11533011becdd3, type: 2}
   m_SchemaSet:
