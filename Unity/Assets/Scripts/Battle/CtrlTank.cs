@@ -21,17 +21,12 @@ public class CtrlTank : BaseTank
         GloablMono.Instance.OnUpdate += OnUpdate;
     }
 
-    private void Update()
-    {
-        MoveUpdate();
-
-    }
     private void OnUpdate()
     {
         // 移动控制
-        MoveUpdate();
+        //MoveUpdate();
         // 炮塔控制
-        TurretUpdate();
+        //TurretUpdate();
         // 开炮
         FireUpdate();
         // 发送同步信息

@@ -16,6 +16,8 @@ public class GameMain : MonoBehaviour
         EventManager.Instance.RegisterEvent(Events.MsgPing, OnPong);
         PanelManager.Instance.Init();
         NetManager.ConnectAsync(); // 循环连接服务器
+
+        DontDestroyOnLoad(gameObject);
     }
 
     private void OnUpdate()
