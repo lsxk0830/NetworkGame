@@ -174,6 +174,7 @@ public class BattleManager : MonoBehaviour
                 if (tankInfo.ID == GameMain.ID)
                 {
                     baseTank = tank.AddComponent<CtrlTank>();
+                    tank.AddComponent<TankController>();
                     cinemachineFreeLook.Follow = tank.transform.Find("Follow");
                     cinemachineFreeLook.LookAt = tank.transform.Find("LookAt");
                     CameraController cc = gameObject.AddComponent<CameraController>();

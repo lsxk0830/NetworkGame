@@ -55,6 +55,7 @@ public class LoadingPanel : BasePanel
             GloablMono.Instance.TriggerFromOtherThread(() =>
             {
                 EventManager.Instance.InvokeEvent(Events.MsgEnterBattle, msg);
+                OnClose();
             });
         }
         else
