@@ -33,54 +33,6 @@ public class CtrlTank : BaseTank
         SyncUpdate();
     }
 
-    private void MoveUpdate()
-    {
-        if (isDie()) return;
-
-        Vector3 fwd = transform.forward;
-        fwd.y = 0;
-        if (fwd.sqrMagnitude < 0.01f) return;
-
-        // 1. 获取输入并转换到角色朝向空间
-        Vector3 input = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        input = Quaternion.LookRotation(fwd) * input;
-
-        // 2. 直接平滑速度（最简单的阻尼实现）
-        currentVelocity = Vector3.Lerp(currentVelocity, input * Speed, VelocityDamping * Time.deltaTime);
-
-        // 3. 移动角色
-        transform.position += currentVelocity * Time.deltaTime;
-
-        // 4. 简单旋转（仅当有水平输入或前进时旋转）
-        if (RotatePlayer && currentVelocity.sqrMagnitude > 0.01f)
-        {
-            // 仅当速度方向与当前朝向大致一致时才旋转（避免后退时旋转）
-            if (Vector3.Dot(currentVelocity.normalized, fwd) > 0.2f || Mathf.Abs(input.x) > 0.1f)
-            {
-                transform.rotation = Quaternion.Lerp(
-                    transform.rotation,
-                    Quaternion.LookRotation(currentVelocity.normalized),
-                    VelocityDamping * Time.deltaTime
-                );
-            }
-        }
-    }
-
-    private void TurretUpdate()
-    {
-        if (isDie()) return;
-
-        float axis = 0;
-        if (Input.GetKey(KeyCode.Q))
-            axis = -1;
-        else if (Input.GetKey(KeyCode.E))
-            axis = 1;
-        // 旋转角度
-        Vector3 le = turret.localEulerAngles;
-        le.y += axis * Time.deltaTime * turretSpeed;
-        turret.localEulerAngles = le;
-    }
-
     private void FireUpdate()
     {
         if (isDie()) return; // 是否死亡
@@ -104,8 +56,7 @@ public class CtrlTank : BaseTank
     private void SyncUpdate()
     {
         // 时间间隔判断
-        if (Time.time - lastSendSyncTime < syncInterval)
-            return;
+        if (Time.time - lastSendSyncTime < syncInterval) return;
         lastSendSyncTime = Time.time;
         // 发送同步协议
         MsgSyncTank msg = new MsgSyncTank();

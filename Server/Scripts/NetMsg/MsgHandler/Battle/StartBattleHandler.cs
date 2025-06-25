@@ -36,7 +36,7 @@
             NetManager.Send(cs, msg);
             return;
         }
-
-        room.BroadcastStartBattle(cs, msg); // 广播开战消息
+        room.status = (int)Room.Status.FIGHT; // 状态设置为战斗中
+        room.BroadcastExceptCS(cs.user.ID, msg); // 广播开战消息
     }
 }

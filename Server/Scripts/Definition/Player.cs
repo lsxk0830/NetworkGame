@@ -26,6 +26,11 @@ public class Player
     public float ez;
 
     /// <summary>
+    /// 炮塔旋转.y
+    /// </summary>
+    public float turretY = 0;
+
+    /// <summary>
     /// 阵营
     /// </summary>
     public int camp = 1;

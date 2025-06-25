@@ -240,15 +240,14 @@ public class Room
     }
 
     /// <summary>
-    /// 广播开战消息
+    /// 广播消息除了发送者
     /// </summary>
-    public void BroadcastStartBattle(ClientState cs, MsgBase msg)
+    public void BroadcastExceptCS(long id, MsgBase msg)
     {
-        status = (int)Status.FIGHT; // 状态设置为战斗中
-        foreach (Player player in playerIds.Values)
+        foreach (var item in playerIds)
         {
-            if (player.state == cs) continue; // 排除发送者
-            player.Send(msg);
+            if (item.Key == id) continue; // 排除发送者
+            item.Value.Send(msg);
         }
     }
 

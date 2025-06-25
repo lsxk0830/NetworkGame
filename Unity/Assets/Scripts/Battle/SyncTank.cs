@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
@@ -56,11 +57,6 @@ public class SyncTank : BaseTank
         // 预测位置
         Vector3 pos = new Vector3(msg.x, msg.y, msg.z);
         Vector3 rot = new Vector3(msg.ex, msg.ey, msg.ez);
-        //forecastPos = pos + 2 * (pos - lastPos);
-        //forecastRot = rot + 2 * (rot - lastRot);
-        //// 更新
-        //lastPos = pos;
-        //lastRot = rot;
         transform.position = pos;
         transform.eulerAngles = rot;
         //forecastTime = Time.time;
@@ -68,6 +64,7 @@ public class SyncTank : BaseTank
         Vector3 le = turret.localEulerAngles;
         le.y = msg.turretY;
         turret.localEulerAngles = le;
+        Debug.Log($"同步位置协议:{JsonConvert.SerializeObject(msg)}");
     }
 
     /// <summary>
