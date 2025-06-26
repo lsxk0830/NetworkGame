@@ -69,7 +69,7 @@ public class MapGenerator : MonoBehaviour
         {
             if (obstacles == null)
             {
-                Debug.LogError($"收到障碍协议");
+                //Debug.LogError($"收到障碍协议");
                 obstacles = new Dictionary<string, ObstacleListener>(msg.PosRotScales.Count);
 
                 for (int i = 0; i < msg.PosRotScales.Count; i++)
