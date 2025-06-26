@@ -12,6 +12,9 @@
         Room room = RoomManager.GetRoom(user.RoomID);
         if (room == null) return;
 
-        room.BroadcastExceptCS(user.ID, msg);
+        if (msg.result == -1)
+            room.CreateRandomObstacle(msg.mapSize, msg.obstacleCount);
+        else
+            room.BroadcastExceptCS(user.ID, msg);
     }
 }

@@ -17,14 +17,4 @@ public class MsgStartBattle : MsgBase
     /// 战斗开始的房间
     /// </summary>
     public string roomID;
-
-    /// <summary>
-    /// 地图大小
-    /// </summary>
-    public int mapSize;
-
-    /// <summary>
-    /// 障碍物数量
-    /// </summary>
-    public int obstacleCount;
 }

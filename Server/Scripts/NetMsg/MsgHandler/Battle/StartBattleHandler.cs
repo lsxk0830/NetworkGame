@@ -37,7 +37,6 @@
             return;
         }
         room.status = (int)Room.Status.FIGHT; // 状态设置为战斗中
-        room.CreateRandomObstacle(msg.mapSize, msg.obstacleCount); // 创建随机障碍物
         room.BroadcastExceptCS(cs.user.ID, msg); // 广播开战消息
     }
 }

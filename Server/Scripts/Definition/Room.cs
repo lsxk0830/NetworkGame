@@ -33,8 +33,6 @@ public class Room
     public int loadSuccess = 0; // 加载成功的玩家数
     private int delaySeconds = 3; // 最长等待时间，单位秒
 
-    private MsgObstacle MsgObstacle;
-
     /// <summary>
     /// 状态
     /// </summary>
@@ -271,7 +269,6 @@ public class Room
             i++;
         }
         Broadcast(msg); // 广播消息
-        Broadcast(MsgObstacle); // 广播障碍物消息
     }
 
     #endregion 广播消息、广播开战、广播进入战斗
@@ -286,7 +283,7 @@ public class Room
         // 创建随机障碍物逻辑
         Console.WriteLine("创建随机障碍物");
         Random random = new Random();
-        MsgObstacle = new MsgObstacle()
+        MsgObstacle MsgObstacle = new MsgObstacle()
         {
             PosRotScale = new ObstaclePosRotScale[obstacleCount]
         };
@@ -307,6 +304,7 @@ public class Room
             };
             MsgObstacle.PosRotScale[i] = posRotScale;
         }
+        Broadcast(MsgObstacle);
     }
 
     /// <summary>

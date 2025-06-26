@@ -21,6 +21,7 @@ public class MapGenerator : MonoBehaviour
     {
         parent = this.transform;
         GenerateMap();
+        NetManager.Send(new MsgObstacle());
         EventManager.Instance.RegisterEvent(Events.MsgObstacle, OnObstacle);
     }
     private void OnDestroy()
@@ -60,7 +61,7 @@ public class MapGenerator : MonoBehaviour
 
     void Update()
     {
-        if (obstacles == null) return;
+        if (obstacles == null || msg == null) return;
         for (int i = 0; i < obstacles.Count; i++)
         {
             msg.PosRotScales[i].ObstacleID = obstacles[i].name;
@@ -74,6 +75,8 @@ public class MapGenerator : MonoBehaviour
             msg.PosRotScales[i].ScaleY = obstacles[i].transform.localScale.y;
             msg.PosRotScales[i].ScaleX = obstacles[i].transform.localScale.z;
         }
+        msg.result = 0;
+        //NetManager.Send(msg);
     }
 
     /// <summary>

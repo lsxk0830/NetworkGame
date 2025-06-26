@@ -8,6 +8,21 @@ public class MsgObstacle : MsgBase
         protoName = "MsgObstacle";
     }
 
+    /// <summary>
+    /// -1为第一次发送消息
+    /// </summary>
+    public int result = -1;
+
+    /// <summary>
+    /// 地图大小
+    /// </summary>
+    public int mapSize;
+
+    /// <summary>
+    /// 障碍物数量
+    /// </summary>
+    public int obstacleCount;
+
     public ObstaclePosRotScale[] PosRotScale;
 }
 
