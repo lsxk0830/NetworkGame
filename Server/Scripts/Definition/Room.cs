@@ -33,6 +33,8 @@ public class Room
     public int loadSuccess = 0; // 加载成功的玩家数
     private int delaySeconds = 3; // 最长等待时间，单位秒
 
+    private Dictionary<string, ObstaclePosRotScale> obs;// 障碍物列表
+
     /// <summary>
     /// 状态
     /// </summary>
@@ -283,10 +285,7 @@ public class Room
         // 创建随机障碍物逻辑
         Console.WriteLine("创建随机障碍物");
         Random random = new Random();
-        MsgObstacle MsgObstacle = new MsgObstacle()
-        {
-            PosRotScale = new ObstaclePosRotScale[obstacleCount]
-        };
+        obs = new Dictionary<string, ObstaclePosRotScale>(obstacleCount);
         for (int i = 0; i < obstacleCount; i++)
         {
             ObstaclePosRotScale posRotScale = new ObstaclePosRotScale()
@@ -302,9 +301,8 @@ public class Room
                 ScaleY = random.Next(1, 3),
                 ScaleZ = random.Next(1, 3)
             };
-            MsgObstacle.PosRotScale[i] = posRotScale;
+            obs.Add(posRotScale.ObstacleID, posRotScale);
         }
-        Broadcast(MsgObstacle);
     }
 
     /// <summary>

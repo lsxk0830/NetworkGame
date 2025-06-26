@@ -13,16 +13,6 @@ public class MsgObstacle : MsgBase
     /// </summary>
     public int result = -1;
 
-    /// <summary>
-    /// 地图大小
-    /// </summary>
-    public int mapSize;
-
-    /// <summary>
-    /// 障碍物数量
-    /// </summary>
-    public int obstacleCount;
-
     public ObstaclePosRotScale[] PosRotScale;
 }
 
