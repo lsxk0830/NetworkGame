@@ -16,15 +16,15 @@ public class MsgStartBattle : MsgBase
     /// <summary>
     /// 战斗开始的房间
     /// </summary>
-    public string roomID;
+    public string roomID { get; set; }
 
     /// <summary>
     /// 地图大小
     /// </summary>
-    internal int mapSize;
+    public int mapSize { get; set; }
 
     /// <summary>
     /// 障碍物数量
     /// </summary>
-    internal int obstacleCount;
+    public int obstacleCount { get; set; }
 }

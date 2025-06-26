@@ -294,7 +294,10 @@ public class Room
     public MsgObstacleAll GetAllObstacle(MsgObstacleAll msg)
     {
         if (obs == null || obs.Count == 0) return null; // 没有障碍物
-        msg.PosRotScales.Clear(); // 清空之前的障碍物数据
+        if (msg.PosRotScales == null)
+            msg.PosRotScales = new List<ObstaclePosRotScale>();
+        else
+            msg.PosRotScales.Clear(); // 清空之前的障碍物数据
         foreach (var value in obs.Values)
         {
             msg.PosRotScales.Add(value);

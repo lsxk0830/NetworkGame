@@ -16,5 +16,5 @@ public class MsgLoadingCompletedBattle : MsgBase
     /// <summary>
     /// 准备战斗的房间
     /// </summary>
-    public string roomID;
+    public string roomID { get; set; }
 }

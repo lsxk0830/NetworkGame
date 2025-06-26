@@ -13,5 +13,5 @@ public class MsgObstacleOne : MsgBase
     /// <summary>
     /// 是否销毁
     /// </summary>
-    public bool IsDestory = false;
+    public bool IsDestory { get; set; } = false;
 }

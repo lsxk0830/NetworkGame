@@ -25,7 +25,7 @@ public class MapGenerator : MonoBehaviour
     {
         EventManager.Instance.RemoveEvent(Events.MsgObstacleAll, OnAllObstacle);
         EventManager.Instance.RemoveEvent(Events.MsgObstacleOne, OnOneObstacle);
-        obstacles.Clear();
+        obstacles?.Clear();
         obstacles = null;
     }
 
