@@ -82,26 +82,33 @@ public class MapGenerator : MonoBehaviour
     private void OnObstacle(MsgBase msgBse)
     {
         msg = (MsgObstacle)msgBse;
-        if (obstacles == null)
+        GloablMono.Instance.TriggerFromOtherThread(() =>
         {
-            obstacles = new List<GameObject>(msg.PosRotScales.Length);
-            for (int i = 0; i < msg.PosRotScales.Length; i++)
+            if (obstacles == null)
             {
-                Vector3 pos = new Vector3(msg.PosRotScales[i].PosX, msg.PosRotScales[i].PosY, msg.PosRotScales[i].PosZ);
-                Vector3 rot = new Vector3(msg.PosRotScales[i].RotX, msg.PosRotScales[i].RotY, msg.PosRotScales[i].RotZ);
-                GameObject obstacle = Instantiate(destructiblePrefab, pos, Quaternion.Euler(rot));
-                obstacles.Add(obstacle);
-                obstacle.transform.localScale = new Vector3(msg.PosRotScales[i].ScaleX, msg.PosRotScales[i].ScaleY, msg.PosRotScales[i].ScaleZ);
-                obstacle.name = msg.PosRotScales[i].ObstacleID;
-                obstacle.transform.parent = parent;
+                Debug.LogError($"收到障碍协议");
+                obstacles = new List<GameObject>(msg.PosRotScales.Length);
+                for (int i = 0; i < msg.PosRotScales.Length; i++)
+                {
+                    Vector3 pos = new Vector3(msg.PosRotScales[i].PosX, msg.PosRotScales[i].PosY, msg.PosRotScales[i].PosZ);
+                    Vector3 rot = new Vector3(msg.PosRotScales[i].RotX, msg.PosRotScales[i].RotY, msg.PosRotScales[i].RotZ);
+                    GameObject obstacle = Instantiate(destructiblePrefab, pos, Quaternion.Euler(rot));
+                    obstacles.Add(obstacle);
+                    obstacle.transform.localScale = new Vector3(msg.PosRotScales[i].ScaleX, msg.PosRotScales[i].ScaleY, msg.PosRotScales[i].ScaleZ);
+                    obstacle.name = msg.PosRotScales[i].ObstacleID;
+                    obstacle.transform.parent = parent;
+                }
             }
-        }
-        for (int i = 0; i < obstacles.Count; i++)
-        {
-            obstacles[i].name = msg.PosRotScales[i].ObstacleID;
-            obstacles[i].transform.position = new Vector3(msg.PosRotScales[i].PosX, msg.PosRotScales[i].PosY, msg.PosRotScales[i].PosZ);
-            obstacles[i].transform.rotation = Quaternion.Euler(new Vector3(msg.PosRotScales[i].RotX, msg.PosRotScales[i].RotY, msg.PosRotScales[i].RotZ));
-            obstacles[i].transform.localScale = new Vector3(msg.PosRotScales[i].ScaleX, msg.PosRotScales[i].ScaleY, msg.PosRotScales[i].ScaleZ);
-        }
+            else
+            {
+                for (int i = 0; i < obstacles.Count; i++)
+                {
+                    obstacles[i].name = msg.PosRotScales[i].ObstacleID;
+                    obstacles[i].transform.position = new Vector3(msg.PosRotScales[i].PosX, msg.PosRotScales[i].PosY, msg.PosRotScales[i].PosZ);
+                    obstacles[i].transform.rotation = Quaternion.Euler(new Vector3(msg.PosRotScales[i].RotX, msg.PosRotScales[i].RotY, msg.PosRotScales[i].RotZ));
+                    obstacles[i].transform.localScale = new Vector3(msg.PosRotScales[i].ScaleX, msg.PosRotScales[i].ScaleY, msg.PosRotScales[i].ScaleZ);
+                }
+            }
+        });
     }
 }

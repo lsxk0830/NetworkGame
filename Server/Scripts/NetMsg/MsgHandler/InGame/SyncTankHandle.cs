@@ -28,7 +28,7 @@ public partial class MsgHandler
         player.ey = msg.ey;
         player.ez = msg.ez;
         player.turretY = msg.turretY;
-        Console.WriteLine($"同步位置协议:{JsonConvert.SerializeObject(player)}");
+        //Console.WriteLine($"同步位置协议:{JsonConvert.SerializeObject(player)}");
         // 广播
         msg.id = player.ID;
         room.BroadcastExceptCS(user.ID, msg);

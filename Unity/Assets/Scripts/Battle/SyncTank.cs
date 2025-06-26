@@ -64,7 +64,7 @@ public class SyncTank : BaseTank
         Vector3 le = turret.localEulerAngles;
         le.y = msg.turretY;
         turret.localEulerAngles = le;
-        Debug.Log($"同步位置协议:{JsonConvert.SerializeObject(msg)}");
+        //Debug.Log($"同步位置协议:{JsonConvert.SerializeObject(msg)}");
     }
 
     /// <summary>
