@@ -8,12 +8,9 @@ public class MapGenerator : MonoBehaviour
 {
     [Header("地图设置")]
     [LabelText("地图边长")] public int mapSize = 50;
-    [LabelText("障碍物数量")] public int obstacleCount = 30;
-    [LabelText("最小障碍物高度")] public float minObstacleHeight = 1f;
-    [LabelText("最大障碍物高度")] public float maxObstacleHeight = 3f;
     [LabelText("可破坏预制件")] public GameObject destructiblePrefab;
     [LabelText("地面")] public GameObject Ground;
-    private List<GameObject> obstacles;
+    private Dictionary<string, ObstacleListener> obstacles;
     private Transform parent;
     private MsgObstacle msg;
 
@@ -27,6 +24,9 @@ public class MapGenerator : MonoBehaviour
     private void OnDestroy()
     {
         EventManager.Instance.RemoveEvent(Events.MsgObstacle, OnObstacle);
+        msg = null;
+        obstacles.Clear();
+        obstacles = null;
     }
 
     void GenerateMap()
@@ -59,26 +59,6 @@ public class MapGenerator : MonoBehaviour
         wall.transform.parent = parent;
     }
 
-    void Update()
-    {
-        if (obstacles == null || msg == null) return;
-        for (int i = 0; i < obstacles.Count; i++)
-        {
-            msg.PosRotScales[i].ObstacleID = obstacles[i].name;
-            msg.PosRotScales[i].PosX = obstacles[i].transform.position.x;
-            msg.PosRotScales[i].PosY = obstacles[i].transform.position.x;
-            msg.PosRotScales[i].PosZ = obstacles[i].transform.position.x;
-            msg.PosRotScales[i].RotX = obstacles[i].transform.rotation.eulerAngles.x;
-            msg.PosRotScales[i].RotY = obstacles[i].transform.rotation.eulerAngles.y;
-            msg.PosRotScales[i].RotZ = obstacles[i].transform.rotation.eulerAngles.z;
-            msg.PosRotScales[i].ScaleX = obstacles[i].transform.localScale.x;
-            msg.PosRotScales[i].ScaleY = obstacles[i].transform.localScale.y;
-            msg.PosRotScales[i].ScaleX = obstacles[i].transform.localScale.z;
-        }
-        msg.result = 0;
-        //NetManager.Send(msg);
-    }
-
     /// <summary>
     /// 收到障碍协议
     /// </summary>
@@ -90,13 +70,15 @@ public class MapGenerator : MonoBehaviour
             if (obstacles == null)
             {
                 Debug.LogError($"收到障碍协议");
-                obstacles = new List<GameObject>(msg.PosRotScales.Length);
-                for (int i = 0; i < msg.PosRotScales.Length; i++)
+                obstacles = new Dictionary<string, ObstacleListener>(msg.PosRotScales.Count);
+
+                for (int i = 0; i < msg.PosRotScales.Count; i++)
                 {
                     Vector3 pos = new Vector3(msg.PosRotScales[i].PosX, msg.PosRotScales[i].PosY, msg.PosRotScales[i].PosZ);
                     Vector3 rot = new Vector3(msg.PosRotScales[i].RotX, msg.PosRotScales[i].RotY, msg.PosRotScales[i].RotZ);
                     GameObject obstacle = Instantiate(destructiblePrefab, pos, Quaternion.Euler(rot));
-                    obstacles.Add(obstacle);
+                    ObstacleListener ol = obstacle.AddComponent<ObstacleListener>();
+                    obstacles.Add(msg.PosRotScales[i].ObstacleID, ol);
                     obstacle.transform.localScale = new Vector3(msg.PosRotScales[i].ScaleX, msg.PosRotScales[i].ScaleY, msg.PosRotScales[i].ScaleZ);
                     obstacle.name = msg.PosRotScales[i].ObstacleID;
                     obstacle.transform.parent = parent;
@@ -104,12 +86,17 @@ public class MapGenerator : MonoBehaviour
             }
             else
             {
-                for (int i = 0; i < obstacles.Count; i++)
+                if (!string.IsNullOrEmpty(msg.destoryID) && obstacles.TryGetValue(msg.destoryID, out ObstacleListener ol))
                 {
-                    obstacles[i].name = msg.PosRotScales[i].ObstacleID;
-                    obstacles[i].transform.position = new Vector3(msg.PosRotScales[i].PosX, msg.PosRotScales[i].PosY, msg.PosRotScales[i].PosZ);
-                    obstacles[i].transform.rotation = Quaternion.Euler(new Vector3(msg.PosRotScales[i].RotX, msg.PosRotScales[i].RotY, msg.PosRotScales[i].RotZ));
-                    obstacles[i].transform.localScale = new Vector3(msg.PosRotScales[i].ScaleX, msg.PosRotScales[i].ScaleY, msg.PosRotScales[i].ScaleZ);
+                    Destroy(ol.gameObject);
+                    obstacles.Remove(msg.destoryID);
+                }
+                foreach (var item in msg.PosRotScales)
+                {
+                    if (obstacles.TryGetValue(item.ObstacleID, out ObstacleListener obl))
+                    {
+                        obl.UpdateInfo(item);
+                    }
                 }
             }
         });

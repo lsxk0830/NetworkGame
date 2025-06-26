@@ -13,7 +13,12 @@ public class MsgObstacle : MsgBase
     /// </summary>
     public int result = -1;
 
-    public ObstaclePosRotScale[] PosRotScale;
+    public List<ObstaclePosRotScale> PosRotScale;
+
+    /// <summary>
+    /// 销毁的障碍物ID
+    /// </summary>
+    public string destoryID;
 }
 
 [Serializable]
