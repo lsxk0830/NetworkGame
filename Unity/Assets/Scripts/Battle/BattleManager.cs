@@ -41,6 +41,7 @@ public class BattleManager : MonoBehaviour
         EventManager.Instance.RemoveEvent(Events.MsgSyncTank, OnMsgSyncTank);
         EventManager.Instance.RemoveEvent(Events.MsgFire, OnMsgFire);
         EventManager.Instance.RemoveEvent(Events.MsgHit, OnMsgHit);
+
         tanks.Clear(); tanks = null;
         foreach (var handle in handles) Addressables.Release(handle);
         handles.Clear(); handles = null;
@@ -83,7 +84,7 @@ public class BattleManager : MonoBehaviour
         MsgEnterBattle msg = (MsgEnterBattle)msgBse;
         foreach (var tankInfo in msg.tanks) // 生成坦克
         {
-            Init($"Tank_{UnityEngine.Random.Range(1, 7)}", tankInfo);
+            Init(tankInfo);
         }
     }
 
@@ -161,9 +162,9 @@ public class BattleManager : MonoBehaviour
 
     #endregion
 
-    private void Init(string tankName, Player tankInfo)
+    private void Init(Player tankInfo)
     {
-        AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>(tankName);
+        AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>($"Tank_{tankInfo.skin}");
         handle.Completed += handle =>
         {
             if (handle.Status == AsyncOperationStatus.Succeeded)

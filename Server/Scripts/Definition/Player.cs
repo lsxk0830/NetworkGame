@@ -41,6 +41,11 @@ public class Player
     public int hp = 0;
 
     /// <summary>
+    /// 皮肤ID
+    /// </summary>
+    public int skin;
+
+    /// <summary>
     /// 客户端状态ClientState
     /// </summary>
     [JsonIgnore] public ClientState state;

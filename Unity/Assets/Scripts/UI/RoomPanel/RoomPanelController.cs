@@ -98,7 +98,12 @@ public class RoomPanelController
             PanelManager.Instance.Open<LoadingPanel>(model.room);
             view.OnClose();
             PanelManager.Instance.Close<HomePanelView>();
-            MsgStartBattle msg = new() { roomID = model.room.RoomID };
+            MsgStartBattle msg = new()
+            {
+                roomID = model.room.RoomID,
+                mapSize = 50,
+                obstacleCount = 30
+            };
             NetManager.Send(msg);
         }
         else

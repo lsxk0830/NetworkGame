@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -12,13 +13,19 @@ public class MapGenerator : MonoBehaviour
     [LabelText("最大障碍物高度")] public float maxObstacleHeight = 3f;
     [LabelText("可破坏预制件")] public GameObject destructiblePrefab;
     [LabelText("地面")] public GameObject Ground;
-
+    private List<GameObject> obstacles;
     private Transform parent;
+    private MsgObstacle msg;
 
     void Start()
     {
         parent = this.transform;
         GenerateMap();
+        EventManager.Instance.RegisterEvent(Events.MsgObstacle, OnObstacle);
+    }
+    private void OnDestroy()
+    {
+        EventManager.Instance.RemoveEvent(Events.MsgObstacle, OnObstacle);
     }
 
     void GenerateMap()
@@ -35,17 +42,6 @@ public class MapGenerator : MonoBehaviour
         CreateWall(new Vector3(mapSize / 2f, 1f, mapSize), new Vector3(mapSize, 2f, 1f));  // 上
         CreateWall(new Vector3(0, 1f, mapSize / 2f), new Vector3(1f, 2f, mapSize));       // 左
         CreateWall(new Vector3(mapSize, 1f, mapSize / 2f), new Vector3(1f, 2f, mapSize));// 右
-
-        // 生成随机障碍物
-        for (int i = 0; i < obstacleCount; i++)
-        {
-            Vector3 spawnPos = new Vector3(Random.Range(2, mapSize - 2), 2, Random.Range(2, mapSize - 2));
-
-            GameObject obstacle = Instantiate(destructiblePrefab, spawnPos, Quaternion.identity);
-            obstacle.transform.localScale = new Vector3(Random.Range(1f, 3f), Random.Range(minObstacleHeight, maxObstacleHeight), Random.Range(1f, 3f));
-            obstacle.name = $"obstacle_{i}";
-            obstacle.transform.parent = parent;
-        }
     }
 
     /// <summary>
@@ -64,9 +60,48 @@ public class MapGenerator : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        if (obstacles == null) return;
+        for (int i = 0; i < obstacles.Count; i++)
         {
-            GenerateMap();
+            msg.PosRotScales[i].ObstacleID = obstacles[i].name;
+            msg.PosRotScales[i].PosX = obstacles[i].transform.position.x;
+            msg.PosRotScales[i].PosY = obstacles[i].transform.position.x;
+            msg.PosRotScales[i].PosZ = obstacles[i].transform.position.x;
+            msg.PosRotScales[i].RotX = obstacles[i].transform.rotation.eulerAngles.x;
+            msg.PosRotScales[i].RotY = obstacles[i].transform.rotation.eulerAngles.y;
+            msg.PosRotScales[i].RotZ = obstacles[i].transform.rotation.eulerAngles.z;
+            msg.PosRotScales[i].ScaleX = obstacles[i].transform.localScale.x;
+            msg.PosRotScales[i].ScaleY = obstacles[i].transform.localScale.y;
+            msg.PosRotScales[i].ScaleX = obstacles[i].transform.localScale.z;
+        }
+    }
+
+    /// <summary>
+    /// 收到障碍协议
+    /// </summary>
+    private void OnObstacle(MsgBase msgBse)
+    {
+        msg = (MsgObstacle)msgBse;
+        if (obstacles == null)
+        {
+            obstacles = new List<GameObject>(msg.PosRotScales.Length);
+            for (int i = 0; i < msg.PosRotScales.Length; i++)
+            {
+                Vector3 pos = new Vector3(msg.PosRotScales[i].PosX, msg.PosRotScales[i].PosY, msg.PosRotScales[i].PosZ);
+                Vector3 rot = new Vector3(msg.PosRotScales[i].RotX, msg.PosRotScales[i].RotY, msg.PosRotScales[i].RotZ);
+                GameObject obstacle = Instantiate(destructiblePrefab, pos, Quaternion.Euler(rot));
+                obstacles.Add(obstacle);
+                obstacle.transform.localScale = new Vector3(msg.PosRotScales[i].ScaleX, msg.PosRotScales[i].ScaleY, msg.PosRotScales[i].ScaleZ);
+                obstacle.name = msg.PosRotScales[i].ObstacleID;
+                obstacle.transform.parent = parent;
+            }
+        }
+        for (int i = 0; i < obstacles.Count; i++)
+        {
+            obstacles[i].name = msg.PosRotScales[i].ObstacleID;
+            obstacles[i].transform.position = new Vector3(msg.PosRotScales[i].PosX, msg.PosRotScales[i].PosY, msg.PosRotScales[i].PosZ);
+            obstacles[i].transform.rotation = Quaternion.Euler(new Vector3(msg.PosRotScales[i].RotX, msg.PosRotScales[i].RotY, msg.PosRotScales[i].RotZ));
+            obstacles[i].transform.localScale = new Vector3(msg.PosRotScales[i].ScaleX, msg.PosRotScales[i].ScaleY, msg.PosRotScales[i].ScaleZ);
         }
     }
 }

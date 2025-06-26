@@ -33,6 +33,8 @@ public class Room
     public int loadSuccess = 0; // 加载成功的玩家数
     private int delaySeconds = 3; // 最长等待时间，单位秒
 
+    private MsgObstacle MsgObstacle;
+
     /// <summary>
     /// 状态
     /// </summary>
@@ -264,13 +266,48 @@ public class Room
         int i = 0;
         foreach (Player player in playerIds.Values)
         {
+            player.skin = new Random().Next(1, 7); // 随机皮肤ID
             msg.tanks[i] = player;
             i++;
         }
         Broadcast(msg); // 广播消息
+        Broadcast(MsgObstacle); // 广播障碍物消息
     }
 
     #endregion 广播消息、广播开战、广播进入战斗
+
+    /// <summary>
+    /// 创建随机障碍物
+    /// </summary>
+    /// <param name="mapSize">地图的大小</param>
+    /// <param name="obstacleCount">随机物数量</param>
+    public void CreateRandomObstacle(int mapSize, int obstacleCount)
+    {
+        // 创建随机障碍物逻辑
+        Console.WriteLine("创建随机障碍物");
+        Random random = new Random();
+        MsgObstacle = new MsgObstacle()
+        {
+            PosRotScale = new ObstaclePosRotScale[obstacleCount]
+        };
+        for (int i = 0; i < obstacleCount; i++)
+        {
+            ObstaclePosRotScale posRotScale = new ObstaclePosRotScale()
+            {
+                ObstacleID = i.ToString(),
+                PosX = random.Next(2, mapSize - 4),
+                PosY = 2,
+                PosZ = random.Next(2, mapSize - 4),
+                RotX = 0,
+                RotY = random.Next(0, 360),
+                RotZ = 0,
+                ScaleX = random.Next(1, 3),
+                ScaleY = random.Next(1, 3),
+                ScaleZ = random.Next(1, 3)
+            };
+            MsgObstacle.PosRotScale[i] = posRotScale;
+        }
+    }
 
     /// <summary>
     /// 所有加载完成，准备进入游戏

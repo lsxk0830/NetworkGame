@@ -18,6 +18,7 @@ public static class Events
     public static string MsgLeaveRoom = "MsgLeaveRoom"; //离开房间
 
     public static string MsgStartBattle = "MsgStartBattle"; //开战
+    public static string MsgObstacle = "MsgObstacle"; //随机生成场景中方块(障碍物)消息
     public static string MsgEnterBattle = "MsgEnterBattle"; //战斗协议
     public static string MsgBattleResult = "MsgBattleResult"; //战斗结束协议
     public static string MsgLeaveBattle = "MsgLeaveBattle"; //玩家退出协议
