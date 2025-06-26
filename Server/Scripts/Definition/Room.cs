@@ -51,6 +51,21 @@ public class Room
         FIGHT = 1
     }
 
+    #region Set信息
+
+    /// <summary>
+    /// 更新障碍物信息
+    /// </summary>
+    public void SetObstaclePosRotScale(string obID, ObstaclePosRotScale ObstaclePosRotScale)
+    {
+        if (obs.TryGetValue(obID, out ObstaclePosRotScale value))
+        {
+            value = ObstaclePosRotScale; // 更新障碍物位置
+        }
+    }
+
+    #endregion Set信息
+
     /// <summary>
     /// 阵营出生点
     /// </summary>
@@ -271,6 +286,20 @@ public class Room
             i++;
         }
         Broadcast(msg); // 广播消息
+    }
+
+    /// <summary>
+    /// 获取所有障碍物数据信息
+    /// </summary>
+    public MsgObstacleAll GetAllObstacle(MsgObstacleAll msg)
+    {
+        if (obs == null || obs.Count == 0) return null; // 没有障碍物
+        msg.PosRotScales.Clear(); // 清空之前的障碍物数据
+        foreach (var value in obs.Values)
+        {
+            msg.PosRotScales.Add(value);
+        }
+        return msg;
     }
 
     #endregion 广播消息、广播开战、广播进入战斗

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 /// <summary>
@@ -8,13 +7,15 @@ public class ObstacleListener : MonoBehaviour
 {
     [SerializeField] private float movementThreshold = 0.1f; // 移动阈值（单位：米）
     private Vector3 lastPosition;
-    private MsgObstacle msgObstacle;
+    private MsgObstacleOne msgOne;
     private ObstaclePosRotScale oprs;
 
     void Start()
     {
         lastPosition = transform.position;
-        msgObstacle = new MsgObstacle();
+        msgOne = new MsgObstacleOne();
+        oprs = new ObstaclePosRotScale() { ObstacleID = gameObject.name };
+        msgOne.PosRotScale = oprs;
     }
 
     void Update()
@@ -34,22 +35,17 @@ public class ObstacleListener : MonoBehaviour
     {
         Debug.Log($"物体 {gameObject.name} 移动了（距离超过阈值）");
         // 发送消息（例如调用 MessageCenter）
-        msgObstacle.result = 0;
-        msgObstacle.PosRotScales.Clear();
-        oprs = new ObstaclePosRotScale()
-        {
-            PosX = transform.position.x,
-            PosY = transform.position.y,
-            PosZ = transform.position.z,
-            RotX = transform.rotation.eulerAngles.x,
-            RotY = transform.rotation.eulerAngles.y,
-            RotZ = transform.rotation.eulerAngles.z,
-            ScaleX = transform.localScale.x,
-            ScaleY = transform.localScale.y,
-            ScaleZ = transform.localScale.z
-        };
-        msgObstacle.PosRotScales.Add(oprs);
-        NetManager.Send(msgObstacle);
+        oprs.PosX = transform.position.x;
+        oprs.PosY = transform.position.y;
+        oprs.PosZ = transform.position.z;
+        oprs.RotX = transform.rotation.eulerAngles.x;
+        oprs.RotY = transform.rotation.eulerAngles.y;
+        oprs.RotZ = transform.rotation.eulerAngles.z;
+        oprs.ScaleX = transform.localScale.x;
+        oprs.ScaleY = transform.localScale.y;
+        oprs.ScaleZ = transform.localScale.z;
+
+        NetManager.Send(msgOne);
     }
 
     internal void UpdateInfo(ObstaclePosRotScale item)
@@ -62,9 +58,7 @@ public class ObstacleListener : MonoBehaviour
 
     void OnDestroy()
     {
-        msgObstacle.result = 0;
-        msgObstacle.PosRotScales.Clear();
-        msgObstacle.destoryID = gameObject.name;
-        NetManager.Send(msgObstacle);
+        msgOne = null;
+        NetManager.Send(msgOne);
     }
 }
