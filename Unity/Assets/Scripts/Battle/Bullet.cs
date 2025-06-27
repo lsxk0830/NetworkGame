@@ -16,6 +16,7 @@ public class Bullet : MonoBehaviour
 
     public void Init()
     {
+        var self = this;
         ResManager.Instance.LoadAssetAsync<GameObject>("BulletPrefab", false,
         onLoaded: async handle =>
         {
@@ -28,7 +29,8 @@ public class Bullet : MonoBehaviour
             mRigidbody.useGravity = false;
 
             await UniTask.Delay(5000); // 5000毫秒 = 5秒
-            if (gameObject != null) Destroy(gameObject);
+            if (self != null && gameObject != null)
+                Destroy(gameObject);
         },
         error =>
         {
