@@ -248,7 +248,7 @@ public class Room
     /// <summary>
     /// 广播消息
     /// </summary>
-    private void Broadcast(MsgBase msg)
+    public void Broadcast(MsgBase msg)
     {
         foreach (Player player in playerIds.Values)
         {

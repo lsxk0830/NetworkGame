@@ -20,21 +20,20 @@ public class Bullet : MonoBehaviour
     public void Init()
     {
         ResManager.Instance.LoadAssetAsync<GameObject>("BulletPrefab", false,
-            onLoaded: handle =>
-            {
-                skin = Instantiate(handle, this.transform);
-                skin.transform.localPosition = Vector3.zero;
-                skin.transform.localEulerAngles = Vector3.zero;
+        onLoaded: handle =>
+        {
+            skin = Instantiate(handle, this.transform);
+            skin.transform.localPosition = Vector3.zero;
+            skin.transform.localEulerAngles = Vector3.zero;
 
-                // 物理
-                mRigidbody = gameObject.AddComponent<Rigidbody>();
-                mRigidbody.useGravity = false;
-            },
-            error =>
-            {
-                Debug.LogError($"Bullet.Init初始化执行异常");
-            }
-        ).Forget();
+            // 物理
+            mRigidbody = gameObject.AddComponent<Rigidbody>();
+            mRigidbody.useGravity = false;
+        },
+        error =>
+        {
+            Debug.LogError($"Bullet.Init初始化执行异常");
+        }).Forget();
     }
 
     private void OnCollisionEnter(Collision collisionInfo)
@@ -50,17 +49,16 @@ public class Bullet : MonoBehaviour
 
         // 显示爆炸效果
         ResManager.Instance.LoadAssetAsync<GameObject>("Fire", false,
-            handle =>
-            {
-                Instantiate(handle, transform.position, transform.rotation);
-                // 摧毁自身
-                Destroy(gameObject);
-            },
-            error =>
-            {
-                Debug.LogError($"Bullet.OnCollisionEnter执行异常");
-            }
-        ).Forget();
+        onLoaded: handle =>
+        {
+            Instantiate(handle, transform.position, transform.rotation);
+            // 摧毁自身
+            Destroy(gameObject);
+        },
+        error =>
+        {
+            Debug.LogError($"Bullet.OnCollisionEnter执行异常");
+        }).Forget();
     }
 
     /// <summary>

@@ -129,8 +129,7 @@ public class BattleManager : MonoBehaviour
             return;
         // 查找坦克
         SyncTank tank = (SyncTank)GetTank(msg.ID);
-        if (tank == null)
-            return;
+        if (tank == null) return;
         tank.SyncPos(msg); // 移动同步
     }
 
@@ -140,12 +139,10 @@ public class BattleManager : MonoBehaviour
     private void OnMsgFire(MsgBase msgBse)
     {
         MsgFire msg = (MsgFire)msgBse;
-        if (msg.ID == GameMain.ID) // 不能同步自己
-            return;
+        if (msg.ID == GameMain.ID) return;// 不能同步自己
         // 查找坦克
         SyncTank tank = (SyncTank)GetTank(msg.ID);
-        if (tank == null)
-            return;
+        if (tank == null) return;
         tank.SyncFire(msg); // 开火
     }
 

@@ -19,7 +19,7 @@ public class MsgFire : MsgBase
     public float ez = 0;
 
     /// <summary>
-    /// 服务端补充，哪个坦克
+    /// 哪个坦克开火的
     /// </summary>
     public long ID;
 }

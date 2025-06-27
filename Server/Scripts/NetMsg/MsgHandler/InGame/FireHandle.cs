@@ -3,17 +3,14 @@ public partial class MsgHandler
     /// <summary>
     /// 开火协议
     /// </summary>
-    public static void MsgFire(ClientState c, MsgBase msgBase)
+    public static void MsgFire(ClientState cs, MsgBase msgBase)
     {
-        //MsgFire msg = (MsgFire)msgBase;
-        //Player player = c.player;
-        //if (player == null) return;
-        //// room
-        //Room room = RoomManager.GetRoom(player.roomId);
-        //if (room == null) return;
-        //// status
-        //if ((Room.Status)room.status != Room.Status.FIGHT) return;
-        //msg.id = player.ID;
-        //room.Broadcast(msg);
+        MsgFire msg = (MsgFire)msgBase;
+        User? user = cs.user;
+        if (user == null) return;
+        Room room = RoomManager.GetRoom(user.RoomID);
+        if (room == null) return;
+
+        room.BroadcastExceptCS(cs.user.ID, msg);
     }
 }
