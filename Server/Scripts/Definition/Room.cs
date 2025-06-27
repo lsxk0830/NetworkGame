@@ -324,15 +324,15 @@ public class Room
             {
                 ObstacleID = i.ToString(),
                 PosX = random.Next(2, mapSize - 4),
-                PosY = 2,
+                ScaleY = random.Next(1, 3),
                 PosZ = random.Next(2, mapSize - 4),
                 RotX = 0,
                 RotY = random.Next(0, 360),
                 RotZ = 0,
                 ScaleX = random.Next(1, 3),
-                ScaleY = random.Next(1, 3),
                 ScaleZ = random.Next(1, 3)
             };
+            posRotScale.PosY = posRotScale.ScaleY / 2;
             obs.Add(posRotScale.ObstacleID, posRotScale);
         }
     }

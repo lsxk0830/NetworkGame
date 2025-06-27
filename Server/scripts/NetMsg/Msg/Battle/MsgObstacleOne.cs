@@ -8,7 +8,7 @@ public class MsgObstacleOne : MsgBase
         protoName = "MsgObstacleOne";
     }
 
-    public ObstaclePosRotScale PosRotScale;
+    public ObstaclePosRotScale PosRotScale { get; set; }
 
     /// <summary>
     /// 是否销毁

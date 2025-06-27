@@ -1,6 +1,9 @@
+using System;
+
 /// <summary>
 /// 障碍物坐标、旋转、缩放
 /// </summary>
+[Serializable]
 public struct ObstaclePosRotScale
 {
     /// <summary>

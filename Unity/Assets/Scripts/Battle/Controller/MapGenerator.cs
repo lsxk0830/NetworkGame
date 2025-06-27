@@ -81,10 +81,12 @@ public class MapGenerator : MonoBehaviour
                     obstacle.name = msg.PosRotScales[i].ObstacleID;
                     obstacle.transform.parent = parent;
                     ObstacleListener ol = obstacle.AddComponent<ObstacleListener>();
+                    ol.Init();
                     obstacles.Add(msg.PosRotScales[i].ObstacleID, ol);
                 }
             }
         });
+        EventManager.Instance.RemoveEvent(Events.MsgObstacleAll, OnAllObstacle);
     }
 
     /// <summary>

@@ -5,6 +5,7 @@
     /// </summary>
     public static void MsgObstacleOne(ClientState cs, MsgBase msgBase)
     {
+        Console.WriteLine($"MsgObstacleOne");
         MsgObstacleOne msg = (MsgObstacleOne)msgBase;
 
         User? user = cs.user;
