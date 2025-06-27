@@ -1,3 +1,5 @@
+using System.Collections;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -7,11 +9,6 @@ public class Bullet : MonoBehaviour
     private GameObject skin; // 炮弹模型
     private Rigidbody mRigidbody; // 物理
 
-    private void Start()
-    {
-        GloablMono.Instance.OnUpdate += OnUpdate;
-    }
-
     private void OnUpdate()
     {
         transform.position += transform.forward * speed * Time.deltaTime;
@@ -20,7 +17,7 @@ public class Bullet : MonoBehaviour
     public void Init()
     {
         ResManager.Instance.LoadAssetAsync<GameObject>("BulletPrefab", false,
-        onLoaded: handle =>
+        onLoaded: async handle =>
         {
             skin = Instantiate(handle, this.transform);
             skin.transform.localPosition = Vector3.zero;
@@ -29,11 +26,16 @@ public class Bullet : MonoBehaviour
             // 物理
             mRigidbody = gameObject.AddComponent<Rigidbody>();
             mRigidbody.useGravity = false;
+
+            await UniTask.Delay(5000); // 5000毫秒 = 5秒
+            if (gameObject != null) Destroy(gameObject);
         },
         error =>
         {
             Debug.LogError($"Bullet.Init初始化执行异常");
+            if (gameObject != null) Destroy(gameObject);
         }).Forget();
+        GloablMono.Instance.OnUpdate += OnUpdate;
     }
 
     private void OnCollisionEnter(Collision collisionInfo)
@@ -47,18 +49,18 @@ public class Bullet : MonoBehaviour
         if (hitTank != null) // 攻击其他坦克
             SendMsgHit(tank, hitTank);
 
-        // 显示爆炸效果
-        ResManager.Instance.LoadAssetAsync<GameObject>("Fire", false,
-        onLoaded: handle =>
-        {
-            Instantiate(handle, transform.position, transform.rotation);
-            // 摧毁自身
-            Destroy(gameObject);
-        },
-        error =>
-        {
-            Debug.LogError($"Bullet.OnCollisionEnter执行异常");
-        }).Forget();
+        Explosion();
+
+        MsgFire msg = new MsgFire();
+        msg.ID = GameMain.ID;
+        msg.x = transform.position.x;
+        msg.y = transform.position.y;
+        msg.z = transform.position.z;
+        msg.ex = 0;
+        msg.ey = 0;
+        msg.ez = 0;
+        msg.IsExplosion = true;
+        NetManager.Send(msg);
     }
 
     /// <summary>
@@ -83,5 +85,24 @@ public class Bullet : MonoBehaviour
     private void OnDestroy()
     {
         GloablMono.Instance.OnUpdate -= OnUpdate;
+        ResManager.Instance.ReleaseResource("BulletPrefab");
+    }
+
+    /// <summary>
+    /// 显示爆炸效果
+    /// </summary>
+    public void Explosion()
+    {
+        ResManager.Instance.LoadAssetAsync<GameObject>("Fire", false,
+        onLoaded: handle =>
+        {
+            Instantiate(handle, transform.position, transform.rotation);
+            // 摧毁自身
+            Destroy(gameObject);
+        },
+        error =>
+        {
+            Debug.LogError($"Bullet.OnCollisionEnter执行异常");
+        }).Forget();
     }
 }

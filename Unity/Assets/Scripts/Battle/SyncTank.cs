@@ -51,6 +51,9 @@ public class SyncTank : BaseTank
         Vector3 rot = new Vector3(msg.ex, msg.ey, msg.ez);
         bullet.transform.position = pos;
         bullet.transform.eulerAngles = rot;
+
+        if (msg.IsExplosion)
+            bullet.Explosion();
     }
 
     private void OnDestroy()

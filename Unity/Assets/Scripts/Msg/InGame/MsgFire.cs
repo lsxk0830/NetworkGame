@@ -22,4 +22,9 @@ public class MsgFire : MsgBase
     /// 哪个坦克开火的
     /// </summary>
     public long ID;
+
+    /// <summary>
+    /// 是否爆炸
+    /// </summary>
+    public bool IsExplosion = false;
 }
