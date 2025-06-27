@@ -20,7 +20,7 @@ public class Bullet : MonoBehaviour
     public void Init()
     {
         ResManager.Instance.LoadAssetAsync<GameObject>("BulletPrefab", false,
-            handle =>
+            onLoaded: handle =>
             {
                 skin = Instantiate(handle, this.transform);
                 skin.transform.localPosition = Vector3.zero;

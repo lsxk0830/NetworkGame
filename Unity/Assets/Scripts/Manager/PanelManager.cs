@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 public class PanelManager : Singleton<PanelManager>
 {
@@ -22,13 +21,14 @@ public class PanelManager : Singleton<PanelManager>
         layers.Add(Layer.Panel, panel);
         layers.Add(Layer.Tip, tip);
 
-        Addressables.LoadAssetsAsync<GameObject>("UIPanel", panel =>
+        ResManager.Instance.LoadAssetsAsync<GameObject>("UIPanel", true,
+        onLoaded: panel =>
         {
             panelCache.Add(panel.name, panel);
             //Debug.Log($"加载面板：{panel.name}");
             if (panel.name == typeof(LoginPanelView).FullName)
                 EventManager.Instance.InvokeEvent(Events.PanelLoadSuccess); // 触发面板加载成功事件
-        }).Completed += operation => { Addressables.Release(operation); };
+        }).Forget();
     }
 
     /// <summary>

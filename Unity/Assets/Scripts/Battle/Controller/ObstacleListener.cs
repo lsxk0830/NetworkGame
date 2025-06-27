@@ -31,7 +31,7 @@ public class ObstacleListener : MonoBehaviour
 
     void OnMoved()
     {
-        Debug.Log($"物体 {gameObject.name} 移动了（距离超过阈值）");
+        //Debug.Log($"物体 {gameObject.name} 移动了（距离超过阈值）");
         // 发送消息（例如调用 MessageCenter）
         msgOne.PosRotScale = new ObstaclePosRotScale()
         {

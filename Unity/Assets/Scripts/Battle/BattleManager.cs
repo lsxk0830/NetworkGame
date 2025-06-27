@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 /// <summary>
 /// 战斗管理器。
@@ -10,13 +8,13 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 public class BattleManager : MonoBehaviour
 {
     public CinemachineFreeLook cinemachineFreeLook;
-    private List<AsyncOperationHandle> handles;
 
     /// <summary>
     /// 战场中的坦克。添加坦克、删除坦克、获取坦克、获取玩家控制的坦克
     /// </summary>
     public static Dictionary<long, BaseTank> tanks;
     private Transform tankParent;
+    private List<string> handles;
 
     void Awake()
     {
@@ -26,7 +24,8 @@ public class BattleManager : MonoBehaviour
         EventManager.Instance.RegisterEvent(Events.MsgSyncTank, OnMsgSyncTank);
         EventManager.Instance.RegisterEvent(Events.MsgFire, OnMsgFire);
         EventManager.Instance.RegisterEvent(Events.MsgHit, OnMsgHit);
-        handles = new List<AsyncOperationHandle>();
+
+        handles = new List<string>();
         tanks = new Dictionary<long, BaseTank>();
         tankParent = new GameObject("Tanks").transform;
         tankParent.position = Vector3.zero;
@@ -43,7 +42,10 @@ public class BattleManager : MonoBehaviour
         EventManager.Instance.RemoveEvent(Events.MsgHit, OnMsgHit);
 
         tanks.Clear(); tanks = null;
-        foreach (var handle in handles) Addressables.Release(handle);
+        foreach (var handle in handles)
+        {
+            ResManager.Instance.ReleaseResource(handle);
+        }
         handles.Clear(); handles = null;
     }
 
@@ -164,30 +166,26 @@ public class BattleManager : MonoBehaviour
 
     private void Init(Player tankInfo)
     {
-        AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>($"Tank_{tankInfo.skin}");
-        handle.Completed += handle =>
+        ResManager.Instance.LoadAssetAsync<GameObject>($"Tank_{tankInfo.skin}", false, handle =>
         {
-            if (handle.Status == AsyncOperationStatus.Succeeded)
+            handles.Add($"Tank_{tankInfo.skin}");
+            GameObject tank = Instantiate(handle);
+            tank.transform.parent = tankParent.transform;
+            BaseTank baseTank;
+            if (tankInfo.ID == GameMain.ID)
             {
-                GameObject tank = Instantiate(handle.Result);
-                tank.transform.parent = tankParent.transform;
-                BaseTank baseTank;
-                if (tankInfo.ID == GameMain.ID)
-                {
-                    baseTank = tank.AddComponent<CtrlTank>();
-                    tank.AddComponent<TankController>();
-                    cinemachineFreeLook.Follow = tank.transform.Find("Follow");
-                    cinemachineFreeLook.LookAt = tank.transform.Find("LookAt");
-                    CameraController cc = gameObject.AddComponent<CameraController>();
-                    cc.turret = tank.transform.Find("Tank/Turret");
-                    cc.fire = tank.transform.Find("Tank/Turret/FirePoint");
-                }
-                else
-                    baseTank = tank.AddComponent<SyncTank>();
-                tanks.Add(tankInfo.ID, baseTank);
-                baseTank.Init(tankInfo);
+                baseTank = tank.AddComponent<CtrlTank>();
+                tank.AddComponent<TankController>();
+                cinemachineFreeLook.Follow = tank.transform.Find("Follow");
+                cinemachineFreeLook.LookAt = tank.transform.Find("LookAt");
+                CameraController cc = gameObject.AddComponent<CameraController>();
+                cc.turret = tank.transform.Find("Tank/Turret");
+                cc.fire = tank.transform.Find("Tank/Turret/FirePoint");
             }
-        };
-        handles.Add(handle);
+            else
+                baseTank = tank.AddComponent<SyncTank>();
+            tanks.Add(tankInfo.ID, baseTank);
+            baseTank.Init(tankInfo);
+        }).Forget();
     }
 }

@@ -7,7 +7,9 @@ public class GameMain : MonoBehaviour
 
     private void Awake()
     {
-        new GameObject("MonoUpdate").AddComponent<GloablMono>();
+        GameObject MonoTool = new GameObject("MonoTool");
+        MonoTool.AddComponent<GloablMono>();
+        MonoTool.AddComponent<ResManager>();
 
         EventManager.Instance.RegisterEvent(Events.SocketOnConnectSuccess, OnConnectSuccess);
         EventManager.Instance.RegisterEvent(Events.SocketOnConnectFail, OnConnectFail);

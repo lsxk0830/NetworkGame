@@ -1,92 +1,244 @@
 using System;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Cysharp.Threading.Tasks;
 
 public class ResManager : MonoSingleton<ResManager>
 {
-    // 使用字典存储资源句柄，Key=资源路径(sourceName)，Value=加载句柄
-    private Dictionary<string, AsyncOperationHandle> handleDic = new Dictionary<string, AsyncOperationHandle>();
+    // 资源句柄字典
+    private readonly Dictionary<string, AsyncOperationHandle> resHandles = new Dictionary<string, AsyncOperationHandle>();
+
+    // 引用计数
+    private readonly Dictionary<string, int> refCounts = new Dictionary<string, int>();
+
+    #region 单个资源加载 (LoadAssetAsync)
 
     /// <summary>
-    /// 异步加载Addressable资源
+    /// 加载单个资源
     /// </summary>
-    /// <typeparam name="T">资源类型（如GameObject、Texture等）</typeparam>
-    /// <param name="sourceName">资源在Addressables中的路径</param>
-    /// <param name="isRelease">立即释放资源</param>
-    /// <param name="onComplete">加载成功回调（返回资源对象）</param>
-    /// <param name="onFailed">加载失败回调（返回错误信息）</param>
-    public async UniTaskVoid LoadAssetAsync<T>(string sourceName, bool isRelease = false,
-        Action<T> onComplete = null,
+    public async UniTaskVoid LoadAssetAsync<T>(string key, bool autoRelease = false,
+        Action<T> onLoaded = null,
         Action<string> onFailed = null)
     {
-        if (handleDic.ContainsKey(sourceName)) // 检查是否已加载过该资源
+        // 检查缓存
+        if (TryGetCachedResource<T>(key, out T cachedAsset, out AsyncOperationHandle cachedHandle))
         {
-            var resultHandle = handleDic[sourceName];
-            if (resultHandle.IsDone && resultHandle.Status == AsyncOperationStatus.Succeeded)
-            {
-                onComplete?.Invoke((T)resultHandle.Result);
-                return;
-            }
+            onLoaded?.Invoke(cachedAsset);
+            if (!autoRelease) IncrementReference(key);
+            return;
         }
+
         try
         {
-            AsyncOperationHandle<T> handle = Addressables.LoadAssetAsync<T>(sourceName);
-            if (!isRelease) handleDic[sourceName] = handle; // 记录句柄到字典
+            AsyncOperationHandle<T> handle = Addressables.LoadAssetAsync<T>(key);
+            if (!autoRelease)
+            {
+                resHandles[key] = handle;
+                IncrementReference(key);
+            }
 
-            await handle.Task; // 等待加载完成
+            await handle.Task;
 
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
-                onComplete?.Invoke(handle.Result);
-                if (isRelease) Addressables.Release(handle);
+                onLoaded?.Invoke(handle.Result);
+                if (autoRelease) Addressables.Release(handle);
             }
             else
             {
-                onFailed?.Invoke($"Failed to load asset: {sourceName}. Error: {handle.OperationException}");
-                Addressables.Release(handle);
+                onFailed?.Invoke($"AA加载资源失败: {key}. 错误: {handle.OperationException}");
+                CleanupHandle(key, handle, autoRelease);
             }
         }
         catch (Exception e)
         {
-            onFailed?.Invoke($"Exception when loading {sourceName}: {e.Message}");
-            ReleaseHandle(sourceName);
+            onFailed?.Invoke($"加载{key}异常 : {e.Message}");
+            ReleaseResource(key);
         }
     }
 
+    #endregion
+
+    #region 多个资源加载 (LoadAssetsAsync)
+
     /// <summary>
-    /// 释放单个资源
+    /// 加载多个资源
     /// </summary>
-    public void ReleaseHandle(string sourceName)
+    public async UniTaskVoid LoadAssetsAsync<T>(string key, bool autoRelease = false,
+        Action<T> onLoaded = null,
+        Action<IList<T>> onAllLoaded = null,
+        Action<string> onFailed = null)
     {
-        if (handleDic.TryGetValue(sourceName, out var handle))
+
+        // 检查缓存
+        if (TryGetCachedResource<IList<T>>(key, out var cachedAssets, out var cachedHandle))
         {
-            if (handle.IsValid())
+            if (onLoaded != null)
+            {
+                foreach (var asset in cachedAssets)
+                {
+                    onLoaded.Invoke(asset);
+                }
+            }
+            onAllLoaded?.Invoke(cachedAssets);
+            if (!autoRelease) IncrementReference(key);
+            return;
+        }
+
+        try
+        {
+            var handle = Addressables.LoadAssetsAsync<T>(key, loadedAsset =>
+            {
+                onLoaded?.Invoke(loadedAsset);
+            });
+
+            if (!autoRelease)
+            {
+                resHandles[key] = handle;
+                IncrementReference(key);
+            }
+
+            await handle.Task;
+
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                onAllLoaded?.Invoke(handle.Result);
+                if (autoRelease) Addressables.Release(handle);
+            }
+            else
+            {
+                onFailed?.Invoke($"加载 {key} 错误: {handle.OperationException}");
+                CleanupHandle(key, handle, autoRelease);
+            }
+        }
+        catch (Exception e)
+        {
+            onFailed?.Invoke($"加载 {key} 时发生异常 : {e.Message}");
+            ReleaseResource(key);
+        }
+    }
+
+    #endregion
+
+    #region 资源缓存检查
+
+    /// <summary>
+    /// 尝试从缓存获取资源
+    /// </summary>
+    private bool TryGetCachedResource<T>(string key, out T resource, out AsyncOperationHandle handle)
+    {
+        if (resHandles.TryGetValue(key, out handle))
+        {
+            if (handle.IsDone && handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                try
+                {
+                    resource = (T)handle.Result;
+                    return true;
+                }
+                catch (InvalidCastException)
+                {
+                    Debug.LogWarning($"缓存资源的类型不匹配: {key}");
+                }
+            }
+
+            // 移除无效的缓存
+            resHandles.Remove(key);
+            refCounts.Remove(key);
+            Addressables.Release(handle);
+        }
+
+        resource = default;
+        return false;
+    }
+
+    #endregion
+
+    #region 资源释放管理
+
+    /// <summary>
+    /// 释放资源
+    /// </summary>
+    public void ReleaseResource(string key)
+    {
+        if (!resHandles.ContainsKey(key)) return;
+
+        DecrementReference(key);
+
+        if (refCounts.TryGetValue(key, out var count) && count <= 0)
+        {
+            if (resHandles.TryGetValue(key, out var handle))
             {
                 Addressables.Release(handle);
+                resHandles.Remove(key);
+                refCounts.Remove(key);
             }
-            handleDic.Remove(sourceName);
         }
     }
 
     /// <summary>
-    /// 释放所有已加载资源
+    /// 清理句柄
+    /// </summary>
+    private void CleanupHandle(string key, AsyncOperationHandle handle, bool autoRelease)
+    {
+        if (!autoRelease)
+        {
+            resHandles.Remove(key);
+            refCounts.Remove(key);
+        }
+        Addressables.Release(handle);
+    }
+
+    /// <summary>
+    /// 释放所有资源
     /// </summary>
     public void ReleaseAll()
     {
-        foreach (var kvp in handleDic)
+        foreach (var handle in resHandles.Values)
         {
-            if (kvp.Value.IsValid())
+            Addressables.Release(handle);
+        }
+
+        resHandles.Clear();
+        refCounts.Clear();
+    }
+
+    #endregion
+
+    #region 引用计数管理
+
+    /// <summary>
+    /// 增加引用计数
+    /// </summary>
+    private void IncrementReference(string key)
+    {
+        refCounts[key] = refCounts.TryGetValue(key, out var count) ? count + 1 : 1;
+    }
+
+    /// <summary>
+    /// 减少引用计数
+    /// </summary>
+    private void DecrementReference(string key)
+    {
+        if (refCounts.TryGetValue(key, out var count))
+        {
+            if (count <= 1)
             {
-                Addressables.Release(kvp.Value);
+                refCounts.Remove(key);
+            }
+            else
+            {
+                refCounts[key] = count - 1;
             }
         }
-        handleDic.Clear();
     }
+
+    #endregion
 
     private void OnDestroy()
     {
-        ReleaseAll(); // 自动清理
+        ReleaseAll();
     }
 }
