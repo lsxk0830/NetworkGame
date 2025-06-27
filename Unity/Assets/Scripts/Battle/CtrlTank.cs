@@ -44,6 +44,7 @@ public class CtrlTank : BaseTank
         Bullet bullet = Fire();
         // 发送同步协议
         MsgFire msg = new MsgFire();
+        msg.ID = GameMain.ID;
         msg.x = bullet.transform.position.x;
         msg.y = bullet.transform.position.y;
         msg.z = bullet.transform.position.z;

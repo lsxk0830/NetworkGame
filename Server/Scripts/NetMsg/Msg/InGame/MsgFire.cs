@@ -23,5 +23,5 @@ public class MsgFire : MsgBase
     /// <summary>
     /// 哪个坦克开火的
     /// </summary>
-    public long id { get; set; }
+    public long ID { get; set; }
 }
