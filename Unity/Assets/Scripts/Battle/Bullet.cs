@@ -19,7 +19,6 @@ public class Bullet : MonoBehaviour
 
     public void Init()
     {
-        bulletID = Guid.NewGuid();
         ResManager.Instance.LoadAssetAsync<GameObject>("BulletPrefab", false,
         onLoaded: async handle =>
         {

@@ -34,6 +34,4 @@ public class MsgFire : MsgBase
     /// 子弹ID,用于区别哪个子弹发生了爆炸
     /// </summary>
     public Guid bulletID { get; set; }
-
-    o
 }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class CtrlTank : BaseTank
@@ -44,6 +45,7 @@ public class CtrlTank : BaseTank
             if (spaceKeyHandled || Time.time - lastFireTime < fired) return; // CD时间判断
 
             Bullet bullet = Fire();
+            bullet.bulletID = Guid.NewGuid();
             Debug.Log($"点击开火按钮");
             // 发送同步协议
             MsgFire msg = new MsgFire();
