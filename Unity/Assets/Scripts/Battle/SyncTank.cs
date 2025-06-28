@@ -53,7 +53,7 @@ public class SyncTank : BaseTank
             });
             return;
         }
-        Bullet bullet = Fire();
+        Bullet bullet = Fire(msg.bulletID);
         bullet.bulletID = msg.bulletID;
         // 更新坐标
         Vector3 pos = new Vector3(msg.x, msg.y, msg.z);

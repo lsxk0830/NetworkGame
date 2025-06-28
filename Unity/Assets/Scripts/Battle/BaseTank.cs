@@ -37,15 +37,15 @@ public class BaseTank : MonoBehaviour
     /// <summary>
     /// 开火
     /// </summary>
-    public Bullet Fire()
+    public Bullet Fire(Guid guid)
     {
         if (isDie()) return null;
         Debug.Log($"开火");
         // 产生炮弹
         GameObject bulletObj = new GameObject("bullet");
         Bullet bullet = bulletObj.AddComponent<Bullet>();
-        bullet.Init();
-        BulletDic.Add(bullet.bulletID,bullet);
+        bullet.Init(guid);
+        BulletDic.Add(guid,bullet);
         bullet.tank = this;
 
         // 位置

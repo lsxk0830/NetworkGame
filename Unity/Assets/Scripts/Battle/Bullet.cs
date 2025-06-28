@@ -17,8 +17,9 @@ public class Bullet : MonoBehaviour
         transform.position += transform.forward * speed * Time.deltaTime;
     }
 
-    public void Init()
+    public void Init(Guid guid)
     {
+        bulletID = guid;
         ResManager.Instance.LoadAssetAsync<GameObject>("BulletPrefab", false,
         onLoaded: async handle =>
         {
