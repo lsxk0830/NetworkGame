@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -13,9 +14,9 @@ public static class NetManager
     private static ByteArray readBuff;// 接收缓冲区
     private static Queue<ByteArray> writeQueue; // 写入队列
 
-    private static List<MsgBase> msgList = new List<MsgBase>(); // 消息列表
-    private static int msgCount = 0; // 消息列表长度
-    readonly static int MAX_MESSAGE_FIRE = 10; // 每一次Update处理消息量
+    private static ConcurrentQueue<MsgBase> msgQueue = new ConcurrentQueue<MsgBase>(); // 消息列表
+    private static int MAX_MESSAGE_FIRE = 50; // 每一次Update处理消息量
+    private static readonly List<MsgBase> batchList = new(90); // 批量处理消息
 
     private static bool isConnecting = false; // 是否正在连接
     private static bool isClosing = false; // 是否正在关闭
@@ -240,26 +241,29 @@ public static class NetManager
     /// </summary>
     private static void MsgUpdate()
     {
-        // 初步判断，提升效率
-        if (msgCount == 0) return;
-        // 重复处理消息
-        for (int i = 0; i < MAX_MESSAGE_FIRE; i++)
+        if (msgQueue.IsEmpty) return;
+
+        float startTime = Time.realtimeSinceStartup;
+        int processed = 0;
+        while (processed < MAX_MESSAGE_FIRE && msgQueue.TryDequeue(out MsgBase msg))
         {
-            MsgBase msgBase = null;
-            lock (msgList)
-            {
-                if (msgList.Count > 0)
-                {
-                    msgBase = msgList[0];
-                    msgList.RemoveAt(0);
-                    msgCount--;
-                }
-            }
-            if (msgBase != null) // 分发消息
-                EventManager.Instance.InvokeEvent(msgBase.protoName, msgBase);
-            else // 没消息了
+            batchList.Add(msg);
+
+            // 时间片检查
+            if (Time.realtimeSinceStartup - startTime >= 0.002f)
                 break;
+            processed++;
         }
+
+        // 触发批量事件
+        foreach (var msg in batchList)
+        {
+            EventManager.Instance.InvokeEvent(msg.protoName, msg);
+        }
+        batchList.Clear();
+
+        // 动态调整下帧处理量
+        MAX_MESSAGE_FIRE = (1f / Time.deltaTime) > 30 ? 90 : 50;
     }
 
     /// <summary>
@@ -307,8 +311,7 @@ public static class NetManager
         writeQueue = new Queue<ByteArray>(); // 写入队列
         isConnecting = false; // 是否正在连接
         isClosing = false; // 是否正在关闭
-        msgList = new List<MsgBase>(); // 消息列表
-        msgCount = 0; // 消息列表长度
+        msgQueue = new ConcurrentQueue<MsgBase>(); // 消息列表
         lastPingTime = Time.time; // 上一次发送PING时间
         lastPongTime = Time.time; // 上一次收到PONG时间
         if (!EventManager.Instance.ContainerMsgBase.ContainsKey("MsgPong")) // 监听PONG协议
@@ -344,11 +347,7 @@ public static class NetManager
         readBuff.readIdx += bodyCount;
         readBuff.CheckAndMoveBytes();
         // 添加到消息队列
-        lock (msgList)
-        {
-            msgList.Add(msgBase);
-            msgCount++;
-        }
+        msgQueue.Enqueue(msgBase);
         // 继续读取消息
         if (readBuff.length > 2)
             OnReceiveData();
