@@ -44,7 +44,7 @@ public class BaseTank : MonoBehaviour
         // 产生炮弹
         GameObject bulletObj = new GameObject("bullet");
         Bullet bullet = bulletObj.AddComponent<Bullet>();
-        bullet.Init(guid);
+        bullet.Init(guid,BulletDic);
         BulletDic.Add(guid,bullet);
         bullet.tank = this;
 

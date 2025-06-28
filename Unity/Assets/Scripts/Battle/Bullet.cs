@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -17,7 +18,7 @@ public class Bullet : MonoBehaviour
         transform.position += transform.forward * speed * Time.deltaTime;
     }
 
-    public void Init(Guid guid)
+    public void Init(Guid guid,Dictionary<Guid, Bullet> BulletDic)
     {
         bulletID = guid;
         ResManager.Instance.LoadAssetAsync<GameObject>("BulletPrefab", false,
@@ -41,12 +42,13 @@ public class Bullet : MonoBehaviour
                 if (!cts.Token.IsCancellationRequested)
                 {
                     Debug.Log($"5秒超时销毁子弹");
+                    BulletDic.Remove(bulletID);
                     Destroy(gameObject); // 使用安全销毁方法
                 }
             }
             catch (OperationCanceledException)
             {
-                Debug.Log($"5秒等待被取消:{gameObject.GetInstanceID()}");
+                this.Log($"5秒等待被取消");
             }
         },
         error =>
