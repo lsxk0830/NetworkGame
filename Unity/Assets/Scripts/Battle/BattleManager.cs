@@ -1,22 +1,20 @@
 using System.Collections.Generic;
-using Cinemachine;
 using UnityEngine;
 
 /// <summary>
 /// 战斗管理器。
 /// </summary>
-public class BattleManager : MonoBehaviour
+public class BattleManager : MonoSingleton<BattleManager>
 {
-    public CinemachineFreeLook cinemachineFreeLook;
-
     /// <summary>
     /// 战场中的坦克。添加坦克、删除坦克、获取坦克、获取玩家控制的坦克
     /// </summary>
     public static Dictionary<long, BaseTank> tanks;
     private Transform tankParent;
     private List<string> handles;
+    private int friend;
 
-    void Awake()
+    protected override void OnAwake()
     {
         EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
         EventManager.Instance.RegisterEvent(Events.MsgBattleResult, OnMsgBattleResult);
@@ -29,7 +27,6 @@ public class BattleManager : MonoBehaviour
         tanks = new Dictionary<long, BaseTank>();
         tankParent = new GameObject("Tanks").transform;
         tankParent.position = Vector3.zero;
-        cinemachineFreeLook = GetComponent<CinemachineFreeLook>();
     }
 
     void OnDestroy()
@@ -172,15 +169,12 @@ public class BattleManager : MonoBehaviour
             if (tankInfo.ID == GameMain.ID)
             {
                 baseTank = tank.AddComponent<CtrlTank>();
-                tank.AddComponent<TankController>();
-                cinemachineFreeLook.Follow = tank.transform.Find("Follow");
-                cinemachineFreeLook.LookAt = tank.transform.Find("LookAt");
-                CameraController cc = gameObject.AddComponent<CameraController>();
-                cc.turret = tank.transform.Find("Tank/Turret");
-                cc.fire = tank.transform.Find("Tank/Turret/FirePoint");
+                friend = tankInfo.camp;
             }
             else
                 baseTank = tank.AddComponent<SyncTank>();
+            baseTank.camp = tankInfo.camp;
+            baseTank.tag = $"Camp{tankInfo.camp}";
             tanks.Add(tankInfo.ID, baseTank);
             baseTank.Init(tankInfo);
         }).Forget();

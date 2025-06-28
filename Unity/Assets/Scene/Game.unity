@@ -685,7 +685,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 348e7d19ccc67e34f9b327b8f2845e2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cinemachineFreeLook: {fileID: 0}
 --- !u!1 &867266292
 GameObject:
   m_ObjectHideFlags: 0
@@ -1105,9 +1104,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapSize: 50
-  obstacleCount: 30
-  minObstacleHeight: 1
-  maxObstacleHeight: 3
   destructiblePrefab: {fileID: 7866805810118194705, guid: cdc273a8f1a2ee54db8049a79e1c234a, type: 3}
   Ground: {fileID: 5119902503462295397, guid: 6078779463482b3449933d2ef0acc32f, type: 3}
 --- !u!4 &2005646777
