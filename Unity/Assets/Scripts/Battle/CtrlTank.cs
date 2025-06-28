@@ -15,6 +15,8 @@ public class CtrlTank : BaseTank
     /// </summary>
     public static float syncInterval = 0.1f;
 
+    private bool spaceKeyHandled; // 添加状态标志位
+
     public override void Init(Player tankInfo)
     {
         base.Init(tankInfo);
@@ -37,21 +39,30 @@ public class CtrlTank : BaseTank
     {
         if (isDie()) return; // 是否死亡
 
-        if (!Input.GetKeyDown(KeyCode.Space)) return; // 按键判断
+        if (Input.GetKeyDown(KeyCode.Space))  // 按键判断
+        {
+            if (spaceKeyHandled || Time.time - lastFireTime < fired) return; // CD时间判断
 
-        if (Time.time - lastFireTime < fired) return; // CD时间判断
+            Bullet bullet = Fire();
+            Debug.Log($"点击开火按钮");
+            // 发送同步协议
+            MsgFire msg = new MsgFire();
+            msg.ID = GameMain.ID;
+            msg.bulletID = bullet.bulletID;
+            msg.x = bullet.transform.position.x;
+            msg.y = bullet.transform.position.y;
+            msg.z = bullet.transform.position.z;
+            msg.ex = bullet.transform.eulerAngles.x;
+            msg.ey = bullet.transform.eulerAngles.y;
+            msg.ez = bullet.transform.eulerAngles.z;
+            NetManager.Send(msg);
+            spaceKeyHandled = true;
+        }
+        else
+        {
+            spaceKeyHandled = false;
+        }
 
-        Bullet bullet = Fire();
-        // 发送同步协议
-        MsgFire msg = new MsgFire();
-        msg.ID = GameMain.ID;
-        msg.x = bullet.transform.position.x;
-        msg.y = bullet.transform.position.y;
-        msg.z = bullet.transform.position.z;
-        msg.ex = bullet.transform.eulerAngles.x;
-        msg.ey = bullet.transform.eulerAngles.y;
-        msg.ez = bullet.transform.eulerAngles.z;
-        NetManager.Send(msg);
     }
 
     private void SyncUpdate()

@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class BaseTank : MonoBehaviour
 {
@@ -13,9 +16,11 @@ public class BaseTank : MonoBehaviour
     public long ID; // 哪一玩家
     public int camp = 0; // 阵营
     protected Rigidbody mRigidbody;
+    protected Dictionary<Guid, Bullet> BulletDic;
 
     public virtual void Init(Player tankInfo)
     {
+        BulletDic = new Dictionary<Guid, Bullet>();
         camp = tankInfo.camp;
         ID = tankInfo.ID;
         hp = tankInfo.hp;
@@ -36,11 +41,12 @@ public class BaseTank : MonoBehaviour
     public Bullet Fire()
     {
         if (isDie()) return null;
-
+        Debug.Log($"开火");
         // 产生炮弹
         GameObject bulletObj = new GameObject("bullet");
         Bullet bullet = bulletObj.AddComponent<Bullet>();
         bullet.Init();
+        BulletDic.Add(bullet.bulletID,bullet);
         bullet.tank = this;
 
         // 位置

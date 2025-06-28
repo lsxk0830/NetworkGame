@@ -1,13 +1,16 @@
-using System.Collections;
+using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    public Guid bulletID;
     public float speed = 120f; // 移动速度
     public BaseTank tank; // 发射者
     private GameObject skin; // 炮弹模型
     private Rigidbody mRigidbody; // 物理
+    private CancellationTokenSource cts;
 
     private void OnUpdate()
     {
@@ -16,10 +19,11 @@ public class Bullet : MonoBehaviour
 
     public void Init()
     {
-        var self = this;
+        bulletID = Guid.NewGuid();
         ResManager.Instance.LoadAssetAsync<GameObject>("BulletPrefab", false,
         onLoaded: async handle =>
         {
+            cts = new CancellationTokenSource();
             skin = Instantiate(handle, this.transform);
             skin.transform.localPosition = Vector3.zero;
             skin.transform.localEulerAngles = Vector3.zero;
@@ -28,9 +32,22 @@ public class Bullet : MonoBehaviour
             mRigidbody = gameObject.AddComponent<Rigidbody>();
             mRigidbody.useGravity = false;
 
-            await UniTask.Delay(5000); // 5000毫秒 = 5秒
-            if (self != null && gameObject != null)
-                Destroy(gameObject);
+            try
+            {
+                // 等待5秒或直到取消
+                await UniTask.Delay(5000, cancellationToken: cts.Token);
+
+                // 再次检查状态
+                if (!cts.Token.IsCancellationRequested)
+                {
+                    Debug.Log($"5秒超时销毁子弹");
+                    Destroy(gameObject); // 使用安全销毁方法
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log($"5秒等待被取消:{gameObject.GetInstanceID()}");
+            }
         },
         error =>
         {
@@ -86,6 +103,8 @@ public class Bullet : MonoBehaviour
 
     private void OnDestroy()
     {
+        Debug.Log($"销毁物体的ID:{gameObject.GetInstanceID()}");
+
         GloablMono.Instance.OnUpdate -= OnUpdate;
         ResManager.Instance.ReleaseResource("BulletPrefab");
     }
@@ -95,6 +114,9 @@ public class Bullet : MonoBehaviour
     /// </summary>
     public void Explosion()
     {
+        cts?.Cancel();
+        cts?.Dispose();
+        cts = null;
         ResManager.Instance.LoadAssetAsync<GameObject>("Fire", false,
         onLoaded: handle =>
         {
@@ -104,7 +126,7 @@ public class Bullet : MonoBehaviour
         },
         error =>
         {
-            Debug.LogError($"Bullet.OnCollisionEnter执行异常");
+            Debug.LogError($"Bullet.OnCollisionEnter执行异常:{error}");
         }).Forget();
     }
 }

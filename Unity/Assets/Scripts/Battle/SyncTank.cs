@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 /// <summary>
@@ -17,7 +16,7 @@ public class SyncTank : BaseTank
 
     private void OnUpdate()
     {
-        
+
     }
 
     /// <summary>
@@ -45,15 +44,21 @@ public class SyncTank : BaseTank
     /// </summary>
     public void SyncFire(MsgFire msg)
     {
+        if (msg.IsExplosion)
+        {
+            GloablMono.Instance.TriggerFromOtherThread(() =>
+            {
+                BulletDic[msg.bulletID].Explosion();
+                BulletDic.Remove(msg.bulletID);
+            });
+            return;
+        }
         Bullet bullet = Fire();
         // 更新坐标
         Vector3 pos = new Vector3(msg.x, msg.y, msg.z);
         Vector3 rot = new Vector3(msg.ex, msg.ey, msg.ez);
         bullet.transform.position = pos;
         bullet.transform.eulerAngles = rot;
-
-        if (msg.IsExplosion)
-            bullet.Explosion();
     }
 
     private void OnDestroy()

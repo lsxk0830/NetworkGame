@@ -5,6 +5,7 @@ public partial class MsgHandler
     /// </summary>
     public static void MsgFire(ClientState cs, MsgBase msgBase)
     {
+        Console.WriteLine("MsgFire协议");
         MsgFire msg = (MsgFire)msgBase;
         User? user = cs.user;
         if (user == null) return;

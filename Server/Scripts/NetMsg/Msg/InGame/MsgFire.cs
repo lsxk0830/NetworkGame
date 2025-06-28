@@ -29,4 +29,11 @@ public class MsgFire : MsgBase
     /// 是否爆炸
     /// </summary>
     public bool IsExplosion { get; set; } = false;
+
+    /// <summary>
+    /// 子弹ID,用于区别哪个子弹发生了爆炸
+    /// </summary>
+    public Guid bulletID { get; set; }
+
+    o
 }
