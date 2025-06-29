@@ -1,4 +1,4 @@
 public interface IPoolObjReset
 {
-    void Reset();
+    void PoolReset();
 }

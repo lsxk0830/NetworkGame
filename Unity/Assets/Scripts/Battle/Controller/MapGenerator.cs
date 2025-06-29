@@ -8,7 +8,7 @@ public class MapGenerator : MonoBehaviour
 {
     [Header("地图设置")]
     [LabelText("地图边长")] public int mapSize = 50;
-    [LabelText("可破坏预制件")] public GameObject destructiblePrefab;
+    [LabelText("障碍物方块")] public GameObject destructiblePrefab;
     [LabelText("地面")] public GameObject Ground;
     private Dictionary<string, ObstacleListener> obstacles;
     private Transform parent;

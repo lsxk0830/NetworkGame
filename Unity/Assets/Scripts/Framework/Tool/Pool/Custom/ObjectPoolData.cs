@@ -18,7 +18,7 @@ public class ObjectPoolData<T> : IPoolData
     public void PushObj(T obj)
     {
         PoolStack.Push(obj);
-        (obj as IPoolObjReset)?.Reset(); // 支持状态重置
+        (obj as IPoolObjReset)?.PoolReset(); // 支持状态重置
         Debug.Log($"数量:{PoolStack.Count}");
     }
 
@@ -29,7 +29,7 @@ public class ObjectPoolData<T> : IPoolData
     public T GetObj()
     {
         T obj = PoolStack.Pop();
-        (obj as IPoolObjInit)?.Init(); // 支持状态重置
+        (obj as IPoolObjInit)?.PoolInit(); // 支持状态重置
         return obj;
     }
 

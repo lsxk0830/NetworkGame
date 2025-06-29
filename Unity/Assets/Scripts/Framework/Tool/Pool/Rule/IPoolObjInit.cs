@@ -1,4 +1,4 @@
 public interface IPoolObjInit
 {
-    void Init();
+    void PoolInit();
 }

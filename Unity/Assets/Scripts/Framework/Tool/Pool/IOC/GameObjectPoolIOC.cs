@@ -36,7 +36,7 @@ public class GameObjectPoolIOC
             return;
         }
 
-        go.GetComponent<IPool>()?.Reset();
+        go.GetComponent<IPool>()?.PoolReset();
         go.transform.parent = RootTransform.transform;
         go.SetActive(false);
         if (GoID.ContainsKey(go))
@@ -72,7 +72,7 @@ public class GameObjectPoolIOC
         if (parent == null)
             SceneManager.MoveGameObjectToScene(go, SceneManager.GetActiveScene());
         MarkAsOut(go, id);
-        go.GetComponent<IPool>()?.Init();
+        go.GetComponent<IPool>()?.PoolInit();
         return go;
     }
 
