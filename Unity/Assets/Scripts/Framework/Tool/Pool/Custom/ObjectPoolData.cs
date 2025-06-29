@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
+using UnityEngine;
 
 /// <summary>
 /// 普通类 对象 对象池数据
@@ -9,7 +9,7 @@ public class ObjectPoolData<T> : IPoolData
     /// <summary>
     /// 对象容器
     /// </summary>
-    public HashSet<T> PoolQueue = new HashSet<T>();
+    public Stack<T> PoolStack = new Stack<T>();
 
     /// <summary>
     /// 将对象放进对象池
@@ -17,7 +17,9 @@ public class ObjectPoolData<T> : IPoolData
     /// <param name="obj">具体某个类型的实例</param>
     public void PushObj(T obj)
     {
-        PoolQueue.Add(obj);
+        PoolStack.Push(obj);
+        (obj as IPoolObjReset)?.Reset(); // 支持状态重置
+        Debug.Log($"数量:{PoolStack.Count}");
     }
 
     /// <summary>
@@ -26,17 +28,17 @@ public class ObjectPoolData<T> : IPoolData
     /// <returns></returns>
     public T GetObj()
     {
-        T t = PoolQueue.ElementAt(0);
-        PoolQueue.Remove(t);
-        return t;
+        T obj = PoolStack.Pop();
+        (obj as IPoolObjInit)?.Init(); // 支持状态重置
+        return obj;
     }
 
     /// <summary>
     /// 清空此对象的对象池数据
     /// </summary>
-    void IPoolData.Clear()
+    public void Clear()
     {
-        PoolQueue.Clear();
+        PoolStack.Clear();
         this.PushPool(this);
     }
 }

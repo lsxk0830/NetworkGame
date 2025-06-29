@@ -36,9 +36,9 @@ public class GameObjectPoolIOC
             return;
         }
 
+        go.GetComponent<IPool>()?.Reset();
         go.transform.parent = RootTransform.transform;
         go.SetActive(false);
-
         if (GoID.ContainsKey(go))
         {
             int id = GoID[go];
@@ -72,6 +72,7 @@ public class GameObjectPoolIOC
         if (parent == null)
             SceneManager.MoveGameObjectToScene(go, SceneManager.GetActiveScene());
         MarkAsOut(go, id);
+        go.GetComponent<IPool>()?.Init();
         return go;
     }
 
@@ -130,6 +131,7 @@ public class GameObjectPoolIOC
         else
             Debug.Log("删除标记错误,GameObject尚未标记");
     }
+
     #endregion
 
 }
