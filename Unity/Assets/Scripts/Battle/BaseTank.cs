@@ -17,14 +17,17 @@ public class BaseTank : MonoBehaviour
     protected Rigidbody mRigidbody;
     protected Dictionary<Guid, Bullet> BulletDic;
 
+    private Vector3 pos = new Vector3();
+    private Vector3 rot = new Vector3();
+
     public virtual void Init(Player tankInfo)
     {
         BulletDic = new Dictionary<Guid, Bullet>();
         camp = tankInfo.camp;
         ID = tankInfo.ID;
         hp = tankInfo.hp;
-        Vector3 pos = new Vector3(tankInfo.x, tankInfo.y, tankInfo.z);
-        Vector3 rot = new Vector3(tankInfo.ex, tankInfo.ey, tankInfo.ez);
+        pos.x = tankInfo.x; pos.y = tankInfo.y; pos.z = tankInfo.z;
+        rot.x = tankInfo.ex; rot.y = tankInfo.ey; rot.z = tankInfo.ez;
         transform.position = pos;
         transform.eulerAngles = rot;
 
@@ -41,12 +44,10 @@ public class BaseTank : MonoBehaviour
     {
         if (isDie()) return null;
         Debug.Log($"开火");
-        // 产生炮弹
-        GameObject bulletObj = new GameObject("bullet");
-        Bullet bullet = bulletObj.AddComponent<Bullet>();
-        bullet.Init(guid,BulletDic);
-        BulletDic.Add(guid,bullet);
-        bullet.tank = this;
+        Bullet bullet = (Bullet)this.GetGameObject(BattleManager.Instance.BulletPrefab).GetComponent<IPool>();
+        bullet.bulletID = guid;
+        BulletDic.Add(guid, bullet);
+        bullet.ID = ID; // 设置发射者ID
 
         // 位置
         bullet.transform.position = firePoint.position;

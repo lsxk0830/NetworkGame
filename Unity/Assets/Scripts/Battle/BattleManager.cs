@@ -14,6 +14,10 @@ public class BattleManager : MonoSingleton<BattleManager>
     private List<string> handles;
     private int friend;
 
+    public GameObject BulletPrefab;
+    public GameObject ExplosionPrefab;
+    public GameObject Fire;
+
     protected override void OnAwake()
     {
         EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
@@ -27,6 +31,22 @@ public class BattleManager : MonoSingleton<BattleManager>
         tanks = new Dictionary<long, BaseTank>();
         tankParent = new GameObject("Tanks").transform;
         tankParent.position = Vector3.zero;
+
+        ResManager.Instance.LoadAssetAsync<GameObject>("BulletPrefab", true,
+        handle =>
+        {
+            BulletPrefab = handle.gameObject;
+            BulletPrefab.AddComponent<Bullet>();
+        },
+        error => Debug.LogError($"Bullet Addressable加载失败")).Forget();
+
+        ResManager.Instance.LoadAssetAsync<GameObject>("Explosion", true,
+        handle => ExplosionPrefab = handle.gameObject,
+        error => Debug.LogError($"Explosion Addressable加载失败")).Forget();
+
+        ResManager.Instance.LoadAssetAsync<GameObject>("Fire", true,
+        handle => Fire = handle.gameObject,
+        error => Debug.LogError($"Fire Addressable加载失败")).Forget();
     }
 
     void OnDestroy()
