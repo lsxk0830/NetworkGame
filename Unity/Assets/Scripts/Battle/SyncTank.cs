@@ -11,12 +11,6 @@ public class SyncTank : BaseTank
         // 不受物理运动影响
         mRigidbody.constraints = RigidbodyConstraints.FreezeAll;
         mRigidbody.useGravity = false;
-        GloablMono.Instance.OnUpdate += OnUpdate;
-    }
-
-    private void OnUpdate()
-    {
-
     }
 
     /// <summary>
@@ -48,7 +42,9 @@ public class SyncTank : BaseTank
         {
             if (msg.IsExplosion)
             {
-                BulletDic[msg.bulletID].Explosion();
+                this.GetGameObject(BattleManager.Instance.HitPrefab)
+                    .GetComponent<Hit>()
+                    .PoolInit(BulletDic[msg.bulletID].transform);
                 BulletDic.Remove(msg.bulletID);
                 return;
             }
@@ -60,10 +56,5 @@ public class SyncTank : BaseTank
             bullet.transform.position = pos;
             bullet.transform.eulerAngles = rot;
         });
-    }
-
-    private void OnDestroy()
-    {
-        //GloablMono.Instance.OnUpdate -= OnUpdate;
     }
 }

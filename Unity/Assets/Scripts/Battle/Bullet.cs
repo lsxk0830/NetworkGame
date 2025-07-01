@@ -22,18 +22,7 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collisionInfo)
     {
-        // 打到的坦克
-        GameObject collObj = collisionInfo.gameObject;
-        BaseTank hitTank = collObj.GetComponent<BaseTank>();
-
-        if (hitTank.ID == ID) return;// 不能打自己
-
-        if (hitTank != null) // 攻击其他坦克
-            SendMsgHit(ID, hitTank.ID);
-
-        Explosion();
-
-        MsgFire msg = new MsgFire();
+        MsgFire msg = this.GetObjInstance<MsgFire>();
         msg.ID = ID; // 发射者ID
         msg.bulletID = bulletID; // 子弹ID
         msg.x = transform.position.x;
@@ -44,8 +33,19 @@ public class Bullet : MonoBehaviour
         msg.ez = 0;
         msg.IsExplosion = true;
         NetManager.Send(msg);
-
+        this.PushPool(msg); // 将消息对象归还对象池
         this.PushGameObject(this.gameObject); // 将子弹归还对象池
+        this.GetGameObject(BattleManager.Instance.HitPrefab)
+            .GetComponent<Hit>()
+            .PoolInit(this.transform);
+
+        // 打到的坦克
+        GameObject collObj = collisionInfo.gameObject;
+        if (collObj.TryGetComponent<BaseTank>(out BaseTank hitTank))
+        {
+            if (hitTank.ID == ID) return;// 不能打自己
+            SendMsgHit(ID, hitTank.ID);
+        }
     }
 
     /// <summary>
@@ -65,14 +65,6 @@ public class Bullet : MonoBehaviour
         msg.z = transform.position.z;
         NetManager.Send(msg);
         this.PushPool(msg);
-    }
-
-    /// <summary>
-    /// 显示爆炸效果
-    /// </summary>
-    public void Explosion()
-    {
-        this.GetGameObject(BattleManager.Instance.HitPrefab).GetComponent<Hit>().PoolInit(this.transform);
     }
 
     /// <summary>
