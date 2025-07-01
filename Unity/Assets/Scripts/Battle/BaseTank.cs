@@ -40,19 +40,13 @@ public class BaseTank : MonoBehaviour
     /// <summary>
     /// 开火
     /// </summary>
-    public Bullet Fire(Guid guid)
+    public Bullet Fire(Guid bulletGuid)
     {
         if (isDie()) return null;
         Debug.Log($"开火");
-        Bullet bullet = (Bullet)this.GetGameObject(BattleManager.Instance.BulletPrefab).GetComponent<IPool>();
-        bullet.bulletID = guid;
-        BulletDic.Add(guid, bullet);
-        bullet.ID = ID; // 设置发射者ID
-
-        // 位置
-        bullet.transform.position = firePoint.position;
-        bullet.transform.rotation = firePoint.rotation;
-
+        Bullet bullet = this.GetGameObject(BattleManager.Instance.BulletPrefab).GetComponent<Bullet>();
+        BulletDic.Add(bulletGuid, bullet);
+        bullet.PoolInit(ID, bulletGuid, firePoint.position, firePoint.rotation);
         // 更新时间
         lastFireTime = Time.time;
         return bullet;
@@ -76,23 +70,15 @@ public class BaseTank : MonoBehaviour
         hp -= att;
         if (isDie())
         {
-            ResManager.Instance.LoadAssetAsync<GameObject>("Explosion", false,
-            handle =>
+            GameObject explosion = this.GetGameObject(BattleManager.Instance.DiePrefab);
+            explosion.transform.position = transform.position;
+            explosion.transform.rotation = transform.rotation;
+            BaseTank winTank = BattleManager.GetTank(winID);
+            MsgEndBattle msg = new MsgEndBattle()
             {
-                GameObject explosion = Instantiate(handle.gameObject, transform.position, transform.rotation);
-                explosion.transform.SetParent(transform);
-                BaseTank winTank = BattleManager.GetTank(winID);
-                MsgEndBattle msg = new MsgEndBattle()
-                {
-                    winCamp = winTank.camp
-                };
-                NetManager.Send(msg);
-            },
-            error =>
-            {
-                Debug.LogError($"BaseTank.Attacked被攻击执行异常");
-            }).Forget();
-
+                winCamp = winTank.camp
+            };
+            NetManager.Send(msg);
         }
     }
 }

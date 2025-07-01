@@ -17,16 +17,16 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 7b341ad66e134db4a87223472ee202ec
   m_SerializeEntries:
-  - m_GUID: aa3671a783ddd5e4a9459f0ee1258f07
-    m_Address: Fire
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   - m_GUID: be913b5426171e5448b0d58be2c87e7d
-    m_Address: Explosion
+    m_Address: Die
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: f56df958f7aefbf4398b07d88dd293da
     m_Address: BulletPrefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: b12cbbfc0b30e7b40abf2b51378df1d8
+    m_Address: Hit
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

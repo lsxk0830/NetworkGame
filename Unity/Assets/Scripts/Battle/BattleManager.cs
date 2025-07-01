@@ -15,8 +15,8 @@ public class BattleManager : MonoSingleton<BattleManager>
     private int friend;
 
     public GameObject BulletPrefab;
-    public GameObject ExplosionPrefab;
-    public GameObject Fire;
+    public GameObject DiePrefab;
+    public GameObject HitPrefab;
 
     protected override void OnAwake()
     {
@@ -33,20 +33,16 @@ public class BattleManager : MonoSingleton<BattleManager>
         tankParent.position = Vector3.zero;
 
         ResManager.Instance.LoadAssetAsync<GameObject>("BulletPrefab", true,
-        handle =>
-        {
-            BulletPrefab = handle.gameObject;
-            BulletPrefab.AddComponent<Bullet>();
-        },
+        handle =>BulletPrefab = handle.gameObject,
         error => Debug.LogError($"Bullet Addressable加载失败")).Forget();
 
-        ResManager.Instance.LoadAssetAsync<GameObject>("Explosion", true,
-        handle => ExplosionPrefab = handle.gameObject,
-        error => Debug.LogError($"Explosion Addressable加载失败")).Forget();
+        ResManager.Instance.LoadAssetAsync<GameObject>("Die", true,
+        handle => DiePrefab = handle.gameObject,
+        error => Debug.LogError($"Die Addressable加载失败")).Forget();
 
-        ResManager.Instance.LoadAssetAsync<GameObject>("Fire", true,
-        handle => Fire = handle.gameObject,
-        error => Debug.LogError($"Fire Addressable加载失败")).Forget();
+        ResManager.Instance.LoadAssetAsync<GameObject>("Hit", true,
+        handle => HitPrefab = handle.gameObject,
+        error => Debug.LogError($"Hit Addressable加载失败")).Forget();
     }
 
     void OnDestroy()
