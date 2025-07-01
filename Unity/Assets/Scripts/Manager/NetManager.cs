@@ -1,32 +1,31 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public static class NetManager
+public class NetManager : Singleton<NetManager>
 {
-    private static Socket socket; // 定义套接字
-    private static ByteArray readBuff;// 接收缓冲区
-    private static Queue<ByteArray> writeQueue; // 写入队列
+    private Socket socket; // 定义套接字
+    private ByteArray readBuff;// 接收缓冲区
+    private ConcurrentQueue<ByteArray> writeQueue; // 写入队列
+    private ConcurrentQueue<MsgBase> msgQueue; // 消息列表
+    private int MAX_MESSAGE_FIRE = 50; // 每一次Update处理消息量
+    private readonly List<MsgBase> batchList = new(90); // 批量处理消息
 
-    private static ConcurrentQueue<MsgBase> msgQueue = new ConcurrentQueue<MsgBase>(); // 消息列表
-    private static int MAX_MESSAGE_FIRE = 50; // 每一次Update处理消息量
-    private static readonly List<MsgBase> batchList = new(90); // 批量处理消息
+    private bool isConnecting = false; // 是否正在连接
+    private bool isClosing = false; // 是否正在关闭
 
-    private static bool isConnecting = false; // 是否正在连接
-    private static bool isClosing = false; // 是否正在关闭
+    public const int PingInterval = 4; // 心跳间隔时间30秒
+    private float lastPingTime = 0; // 上一次发送Ping的时间
+    private float lastPongTime = 0; // 上一次收到Pong的时间
 
-    public const int pingInterval = 4; // 心跳间隔时间30秒
-    private static float lastPingTime = 0; // 上一次发送Ping的时间
-    private static float lastPongTime = 0; // 上一次收到Pong的时间
-
-    private static readonly object _lock = new object();
-    private static CancellationTokenSource cts;
+    private readonly object _lock = new object();
+    private CancellationTokenSource cts;
+    private MsgPing msgPing = new MsgPing();
 
     #region 连接、关闭、Send、更新
 
@@ -35,7 +34,7 @@ public static class NetManager
     /// </summary>
     /// <param name="ip"></param>
     /// <param name="port"></param>
-    public static async void ConnectAsync()
+    public async void ConnectAsync()
     {
         lock (_lock)
         {
@@ -73,7 +72,7 @@ public static class NetManager
     /// <summary>
     /// 关闭连接
     /// </summary>
-    public static void Close()
+    public void Close()
     {
         if (socket == null || !socket.Connected || isConnecting) return; // 状态判断
         if (writeQueue.Count > 0) // 还有数据在发送
@@ -89,7 +88,7 @@ public static class NetManager
     /// 发送数据
     /// </summary>
     /// <param name="msg"></param>
-    public static void Send(MsgBase msg)
+    public void Send(MsgBase msg)
     {
         if (socket == null || !socket.Connected || isConnecting || isClosing) return; // 状态判断
         // 数据编码
@@ -102,23 +101,23 @@ public static class NetManager
         sendBytes[1] = (byte)(len / 256);
         Array.Copy(nameBytes, 0, sendBytes, 2, nameBytes.Length); //组装名字
         Array.Copy(bodyBytes, 0, sendBytes, 2 + nameBytes.Length, bodyBytes.Length); // 组装消息体
-        // 写入队列
-        ByteArray ba = new ByteArray(sendBytes);
-        int count = 0;	//writeQueue的长度
-        lock (writeQueue)
-        {
-            writeQueue.Enqueue(ba);
-            count = writeQueue.Count;
-        }
+                                                                                     // 写入队列
+        ByteArray ba = this.GetObjInstance<ByteArray>();
+        ba.bytes = sendBytes;
+        ba.capacity = sendBytes.Length;
+        ba.initSize = sendBytes.Length;
+        ba.readIdx = 0;
+        ba.writeIdx = sendBytes.Length;
+        writeQueue.Enqueue(ba);
         // Send
-        if (count == 1)
+        if (writeQueue.Count == 1)
             socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, SendCallback, socket);
     }
 
     /// <summary>
     /// 更新
     /// </summary>
-    public static void Update()
+    public void Update()
     {
         MsgUpdate();
         PingUpdate();
@@ -128,7 +127,7 @@ public static class NetManager
 
     #region Socket回调
 
-    private static void ConnectCallback(IAsyncResult ar)
+    private void ConnectCallback(IAsyncResult ar)
     {
         try
         {
@@ -165,7 +164,7 @@ public static class NetManager
         }
     }
 
-    private static void ReceiveCallback(IAsyncResult ar)
+    private void ReceiveCallback(IAsyncResult ar)
     {
         try
         {
@@ -201,31 +200,16 @@ public static class NetManager
         }
     }
 
-    private static void SendCallback(IAsyncResult ar)
+    private void SendCallback(IAsyncResult ar)
     {
         // 获取state、EndSend
         Socket socket = (Socket)ar.AsyncState;
         if (socket == null || !socket.Connected) return; // 状态判断
         int count = socket.EndSend(ar); //EndSend
         // 获取写入队列第一条数据
-        ByteArray ba;
-        lock (writeQueue)
+        if (writeQueue.TryDequeue(out ByteArray ba))
         {
-            ba = writeQueue.First();
-        }
-        // 完整发送
-        ba.readIdx += count;
-        if (ba.length == 0)
-        {
-            lock (writeQueue)
-            {
-                writeQueue.Dequeue();
-                ba = writeQueue.FirstOrDefault();
-            }
-        }
-        // 继续发送
-        if (ba != null)
-        {
+            ba.readIdx += count;
             socket.BeginSend(ba.bytes, ba.readIdx, ba.length, 0, SendCallback, socket);
         }
         else if (isClosing)
@@ -239,7 +223,7 @@ public static class NetManager
     /// <summary>
     /// 更新消息
     /// </summary>
-    private static void MsgUpdate()
+    private void MsgUpdate()
     {
         if (msgQueue.IsEmpty) return;
 
@@ -269,18 +253,17 @@ public static class NetManager
     /// <summary>
     /// 更新PING,发送PING协议
     /// </summary>
-    public static void PingUpdate()
+    public void PingUpdate()
     {
         // 发送PING
-        if (Time.time - lastPingTime > pingInterval)
+        if (Time.time - lastPingTime > PingInterval)
         {
-            MsgPing msgPing = new MsgPing();
             Send(msgPing);
             lastPingTime = Time.time;
             Debug.Log($"发送Ping协议");
         }
         // 检测PONG时间
-        if (Time.time - lastPongTime > pingInterval * 4)
+        if (Time.time - lastPongTime > PingInterval * 4)
             Close();
     }
 
@@ -291,7 +274,7 @@ public static class NetManager
     /// <summary>
     /// 监听PONG协议
     /// </summary>
-    private static void OnMsgPong(MsgBase msgBase)
+    private void OnMsgPong(MsgBase msgBase)
     {
         lastPongTime = Time.time;
         Debug.Log($"接收Pong协议");
@@ -304,11 +287,16 @@ public static class NetManager
     /// <summary>
     /// 初始化成员
     /// </summary>
-    private static void InitState()
+    private void InitState()
     {
         socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp); // socket
-        readBuff = new ByteArray(); // 接收缓冲区
-        writeQueue = new Queue<ByteArray>(); // 写入队列
+        readBuff = this.GetObjInstance<ByteArray>();
+        readBuff.bytes = new byte[1024]; // 初始化接收缓冲区
+        readBuff.capacity = 1024; // 接收缓冲区大小
+        readBuff.initSize = 1024; // 初始化大小
+        readBuff.readIdx = 0; // 读取索引
+        readBuff.writeIdx = 0; // 写入索引
+        writeQueue = new ConcurrentQueue<ByteArray>(); // 写入队列
         isConnecting = false; // 是否正在连接
         isClosing = false; // 是否正在关闭
         msgQueue = new ConcurrentQueue<MsgBase>(); // 消息列表
@@ -323,7 +311,7 @@ public static class NetManager
     /// 如果没有收到完整的协议，则退出等待下一波消息
     /// 2、解析协议
     /// </summary>
-    private static void OnReceiveData()
+    private void OnReceiveData()
     {
         if (readBuff.length <= 2) return; // 消息长度
         // 获取消息体长度

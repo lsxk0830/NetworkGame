@@ -17,14 +17,14 @@ public class GameMain : MonoBehaviour
         EventManager.Instance.RegisterEvent(Events.MsgKick, OnMsgKick);
         EventManager.Instance.RegisterEvent(Events.MsgPing, OnPong);
         PanelManager.Instance.Init();
-        NetManager.ConnectAsync(); // 循环连接服务器
+        NetManager.Instance.ConnectAsync(); // 循环连接服务器
 
         DontDestroyOnLoad(gameObject);
     }
 
     private void OnUpdate()
     {
-        NetManager.Update();
+        NetManager.Instance.Update();
     }
 
     private void OnConnectSuccess(string msg)
@@ -41,7 +41,7 @@ public class GameMain : MonoBehaviour
         GloablMono.Instance.TriggerFromOtherThread(() =>
         {
             PanelManager.Instance.Open<TipPanel>(err);
-            NetManager.ConnectAsync(); // 在主线程中循环连接连接服务器
+            NetManager.Instance.ConnectAsync(); // 在主线程中循环连接连接服务器
         });
     }
 
@@ -67,6 +67,6 @@ public class GameMain : MonoBehaviour
         EventManager.Instance.RemoveEvent(Events.SocketOnConnectSuccess, OnConnectSuccess);
         EventManager.Instance.RemoveEvent(Events.SocketOnConnectFail, OnConnectFail);
         EventManager.Instance.RemoveEvent(Events.MsgKick, OnMsgKick);
-        NetManager.Close();
+        NetManager.Instance.Close();
     }
 }

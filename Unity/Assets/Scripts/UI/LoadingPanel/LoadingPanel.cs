@@ -51,11 +51,8 @@ public class LoadingPanel : BasePanel
             await UniTask.Delay(200);
             SceneManagerAsync.Instance.Success(success);
             await UniTask.Yield();
-            GloablMono.Instance.TriggerFromOtherThread(() =>
-            {
-                EventManager.Instance.InvokeEvent(Events.MsgEnterBattle, msg);
-                OnClose();
-            });
+            EventManager.Instance.InvokeEvent(Events.MsgEnterBattle, msg);
+            OnClose();
         }
         else
             PanelManager.Instance.Open<TipPanel>("进入游戏失败");
@@ -75,8 +72,10 @@ public class LoadingPanel : BasePanel
             if (i == 100) i = 99;
             if (i == 98)
             {
-                MsgLoadingCompletedBattle msg = new MsgLoadingCompletedBattle() { roomID = room.RoomID };
-                NetManager.Send(msg);
+                MsgLoadingCompletedBattle msg = this.GetObjInstance<MsgLoadingCompletedBattle>();
+                msg.roomID = room.RoomID;
+                NetManager.Instance.Send(msg);
+                this.PushPool(msg);
             }
         }
     }

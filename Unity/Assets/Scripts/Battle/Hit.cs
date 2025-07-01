@@ -9,10 +9,10 @@ public class Hit : MonoBehaviour
     public ParticleSystem Ring;
     public ParticleSystem Decal;
 
-    public void PoolInit(Transform trans)
+    public void PoolInit(Vector3 pos, Quaternion rot)
     {
-        transform.position = trans.position;
-        transform.rotation = trans.rotation;
+        transform.position = pos;
+        transform.rotation = rot;
         Exposion.Play();
         Ring.Play();
         Decal.Play();

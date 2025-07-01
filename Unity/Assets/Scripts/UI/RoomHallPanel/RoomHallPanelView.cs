@@ -42,7 +42,7 @@ public class RoomHallPanelView : BasePanel
         refreshButton.onClick.AddListener(OnRefreshClick);
         Controller.Addlistener();
 
-        NetManager.Send(new MsgGetRooms());
+        NetManager.Instance.Send(new MsgGetRooms());
     }
 
     public override void OnClose()

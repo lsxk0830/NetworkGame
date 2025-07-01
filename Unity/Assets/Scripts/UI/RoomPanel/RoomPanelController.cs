@@ -104,7 +104,7 @@ public class RoomPanelController
                 mapSize = 50,
                 obstacleCount = 30
             };
-            NetManager.Send(msg);
+            NetManager.Instance.Send(msg);
         }
         else
             PanelManager.Instance.Open<TipPanel>("人数不足，等待玩家加入");
@@ -117,7 +117,7 @@ public class RoomPanelController
     {
         Debug.Log($"发送退出房间协议");
         MsgLeaveRoom msg = new MsgLeaveRoom() { roomID = model.room.RoomID };
-        NetManager.Send(msg);
+        NetManager.Instance.Send(msg);
     }
 
     #endregion

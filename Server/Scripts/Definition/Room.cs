@@ -124,19 +124,19 @@ public class Room
         }
         if (playerIds.ContainsKey(newPlayer.ID))
         {
-            newPlayer.Send(msg);
+            NetManager.Send(newPlayer.state, msg); // 发送消息给玩家
             Console.WriteLine("房间添加玩家失败，玩家已在房间中");
             return;
         }
         if (playerIds.Count >= maxPlayer)
         {
-            newPlayer.Send(msg);
+            NetManager.Send(newPlayer.state, msg);
             Console.WriteLine("房间添加玩家失败，房间人数已满");
             return;
         }
         if ((Room.Status)status != Status.PREPARE)
         {
-            newPlayer.Send(msg);
+            NetManager.Send(newPlayer.state, msg);
             Console.WriteLine("房间添加玩家失败，房间已在战斗中");
             return;
         }
@@ -252,7 +252,7 @@ public class Room
     {
         foreach (Player player in playerIds.Values)
         {
-            player.Send(msg);
+            NetManager.Send(player.state, msg); // 发送消息给每个玩家
         }
     }
 
@@ -263,8 +263,8 @@ public class Room
     {
         foreach (var item in playerIds)
         {
-            if (item.Key == id) continue; // 排除发送者
-            item.Value.Send(msg);
+            if (item.Key != id) // 排除发送者
+                NetManager.Send(item.Value.state, msg); // 发送消息给每个玩家
         }
     }
 

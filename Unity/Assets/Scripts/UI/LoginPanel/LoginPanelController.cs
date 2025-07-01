@@ -108,11 +108,9 @@ public class LoginPanelController
         if (accept.code == 200)
         {
             UserManager.Instance.Init(accept.data);
-            GloablMono.Instance.TriggerFromOtherThread(() =>
-            {
-                PanelManager.Instance.Close<LoginPanelView>();
-                PanelManager.Instance.Open<HomePanelView>();
-            });
+            PanelManager.Instance.Close<LoginPanelView>();
+            PanelManager.Instance.Open<HomePanelView>();
+
             bool state = view.GetRememberPwToggleState();
             model.RememberPwToggleState = state;
             if (state)
@@ -120,11 +118,10 @@ public class LoginPanelController
                 PlayerPrefs.SetString(view.GetName(), view.GetPW());
                 model.LastLoginUser = $"{view.GetName()},{view.GetPW()}";
             }
-            MsgBindUser msg = new MsgBindUser()
-            {
-                ID = accept.data.ID
-            };
-            NetManager.Send(msg);
+            MsgBindUser msg = this.GetObjInstance<MsgBindUser>();
+            msg.ID = accept.data.ID;
+            NetManager.Instance.Send(msg);
+            this.PushPool(msg);
         }
     }
 

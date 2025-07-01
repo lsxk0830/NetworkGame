@@ -42,6 +42,10 @@ public class ByteArray
     /// </summary>
     public int length { get { return writeIdx - readIdx; } }
 
+    public ByteArray()
+    {
+    }
+
     public ByteArray(byte[] defaultBytes)
     {
         bytes = defaultBytes;

@@ -17,7 +17,7 @@ public class MapGenerator : MonoBehaviour
     {
         parent = this.transform;
         GenerateMap();
-        NetManager.Send(new MsgObstacleAll());
+        NetManager.Instance.Send(new MsgObstacleAll());
         EventManager.Instance.RegisterEvent(Events.MsgObstacleAll, OnAllObstacle);
         EventManager.Instance.RegisterEvent(Events.MsgObstacleOne, OnOneObstacle);
     }
@@ -65,27 +65,25 @@ public class MapGenerator : MonoBehaviour
     private void OnAllObstacle(MsgBase msgBse)
     {
         MsgObstacleAll msg = (MsgObstacleAll)msgBse;
-        GloablMono.Instance.TriggerFromOtherThread(() =>
-        {
-            if (obstacles == null)
-            {
-                //Debug.LogError($"收到障碍协议");
-                obstacles = new Dictionary<string, ObstacleListener>(msg.PosRotScales.Count);
 
-                for (int i = 0; i < msg.PosRotScales.Count; i++)
-                {
-                    Vector3 pos = new Vector3(msg.PosRotScales[i].PosX, msg.PosRotScales[i].PosY, msg.PosRotScales[i].PosZ);
-                    Vector3 rot = new Vector3(msg.PosRotScales[i].RotX, msg.PosRotScales[i].RotY, msg.PosRotScales[i].RotZ);
-                    GameObject obstacle = Instantiate(destructiblePrefab, pos, Quaternion.Euler(rot));
-                    obstacle.transform.localScale = new Vector3(msg.PosRotScales[i].ScaleX, msg.PosRotScales[i].ScaleY, msg.PosRotScales[i].ScaleZ);
-                    obstacle.name = msg.PosRotScales[i].ObstacleID;
-                    obstacle.transform.parent = parent;
-                    ObstacleListener ol = obstacle.AddComponent<ObstacleListener>();
-                    ol.Init();
-                    obstacles.Add(msg.PosRotScales[i].ObstacleID, ol);
-                }
+        if (obstacles == null)
+        {
+            //Debug.LogError($"收到障碍协议");
+            obstacles = new Dictionary<string, ObstacleListener>(msg.PosRotScales.Count);
+
+            for (int i = 0; i < msg.PosRotScales.Count; i++)
+            {
+                Vector3 pos = new Vector3(msg.PosRotScales[i].PosX, msg.PosRotScales[i].PosY, msg.PosRotScales[i].PosZ);
+                Vector3 rot = new Vector3(msg.PosRotScales[i].RotX, msg.PosRotScales[i].RotY, msg.PosRotScales[i].RotZ);
+                GameObject obstacle = Instantiate(destructiblePrefab, pos, Quaternion.Euler(rot));
+                obstacle.transform.localScale = new Vector3(msg.PosRotScales[i].ScaleX, msg.PosRotScales[i].ScaleY, msg.PosRotScales[i].ScaleZ);
+                obstacle.name = msg.PosRotScales[i].ObstacleID;
+                obstacle.transform.parent = parent;
+                ObstacleListener ol = obstacle.AddComponent<ObstacleListener>();
+                ol.Init();
+                obstacles.Add(msg.PosRotScales[i].ObstacleID, ol);
             }
-        });
+        }
         EventManager.Instance.RemoveEvent(Events.MsgObstacleAll, OnAllObstacle);
     }
 
@@ -95,20 +93,18 @@ public class MapGenerator : MonoBehaviour
     private void OnOneObstacle(MsgBase msgBse)
     {
         MsgObstacleOne msg = (MsgObstacleOne)msgBse;
-        GloablMono.Instance.TriggerFromOtherThread(() =>
+
+        if (obstacles.TryGetValue(msg.PosRotScale.ObstacleID, out ObstacleListener ol))
         {
-            if (obstacles.TryGetValue(msg.PosRotScale.ObstacleID, out ObstacleListener ol))
+            if (msg.IsDestory)
             {
-                if (msg.IsDestory)
-                {
-                    Destroy(ol.gameObject);
-                    obstacles.Remove(msg.PosRotScale.ObstacleID);
-                }
-                else
-                {
-                    ol.UpdateInfo(msg.PosRotScale);
-                }
+                Destroy(ol.gameObject);
+                obstacles.Remove(msg.PosRotScale.ObstacleID);
             }
-        });
+            else
+            {
+                ol.UpdateInfo(msg.PosRotScale);
+            }
+        }
     }
 }

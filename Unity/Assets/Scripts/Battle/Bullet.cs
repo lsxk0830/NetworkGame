@@ -1,43 +1,36 @@
 using System;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public class Bullet : MonoBehaviour
 {
     public Guid bulletID;
     public long ID; // 发射者ID
-    public float speed = 120f; // 移动速度
-    private float lifeTime = 5f; // 子弹生命周期
 
-    private void OnUpdate()
-    {
-        transform.position += transform.forward * speed * Time.deltaTime;
-
-        // 检测生命周期
-        lifeTime -= Time.deltaTime;
-        if (lifeTime <= 0)
-        {
-            PoolReset();
-        }
-    }
+    private Vector3 startPos; // 初始位置
+    public Vector3 targetPos; // 目标位置
+    private bool isMoving = true;
 
     private void OnCollisionEnter(Collision collisionInfo)
     {
+        isMoving = false; // 停止移动
         MsgFire msg = this.GetObjInstance<MsgFire>();
         msg.ID = ID; // 发射者ID
         msg.bulletID = bulletID; // 子弹ID
-        msg.x = transform.position.x;
-        msg.y = transform.position.y;
-        msg.z = transform.position.z;
-        msg.ex = 0;
-        msg.ey = 0;
-        msg.ez = 0;
+        msg.tx = transform.position.x;
+        msg.ty = transform.position.y;
+        msg.tz = transform.position.z;
+        msg.x = 0;
+        msg.y = 0;
+        msg.z = 0;
         msg.IsExplosion = true;
-        NetManager.Send(msg);
+        NetManager.Instance.Send(msg);
         this.PushPool(msg); // 将消息对象归还对象池
         this.PushGameObject(this.gameObject); // 将子弹归还对象池
-        this.GetGameObject(BattleManager.Instance.HitPrefab)
+        BulletManager.RemoveBullet(bulletID); // 从字典中移除子弹
+        this.GetGameObject(EffectManager.HitPrefab)
             .GetComponent<Hit>()
-            .PoolInit(this.transform);
+            .PoolInit(this.transform.position, this.transform.rotation);
 
         // 打到的坦克
         GameObject collObj = collisionInfo.gameObject;
@@ -63,7 +56,7 @@ public class Bullet : MonoBehaviour
         msg.x = transform.position.x;
         msg.y = transform.position.y;
         msg.z = transform.position.z;
-        NetManager.Send(msg);
+        NetManager.Instance.Send(msg);
         this.PushPool(msg);
     }
 
@@ -72,21 +65,37 @@ public class Bullet : MonoBehaviour
     /// </summary>
     /// <param name="id">发射者ID</param>
     /// <param name="bulletGuid">子弹ID</param>
-    /// <param name="position">初始位置</param>
-    /// <param name="rotation">初始旋转</param>
-    public void PoolInit(long id, Guid bulletGuid, Vector3 position, Quaternion rotation)
+    /// <param name="startPos">初始位置</param>
+    /// <param name="targetPos">初始旋转</param>
+    public void PoolInit(long id, Guid bulletGuid, Vector3 startPos, Vector3 targetPos)
     {
         ID = id;
         bulletID = bulletGuid;
-        transform.position = position;
-        transform.rotation = rotation;
-        lifeTime = 5f; // 重置生命周期
-        GloablMono.Instance.OnUpdate += OnUpdate;
+        transform.position = startPos;
+        this.startPos = startPos; // 保存初始位置
+        this.targetPos = targetPos;
+        isMoving = true; // 设置为正在移动状态
+
+        MoveBulletAsync().Forget();
     }
 
-    public void PoolReset()
+    private async UniTaskVoid MoveBulletAsync()
     {
-        this.PushGameObject(this.gameObject); // 将子弹归还对象池
-        GloablMono.Instance.OnUpdate -= OnUpdate;
+        float elapsedTime = 0f;
+        while (elapsedTime < 1f && isMoving)
+        {
+            transform.position = Vector3.Lerp(
+                startPos,
+                targetPos,
+                elapsedTime / 1f
+            );
+            elapsedTime += Time.deltaTime;
+            await UniTask.Yield();
+        }
+        if (isMoving)
+        {
+            this.PushGameObject(this.gameObject); // 将子弹归还对象池
+            BulletManager.RemoveBullet(bulletID); // 从字典中移除子弹
+        }
     }
 }

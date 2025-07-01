@@ -109,7 +109,8 @@ public class RoomHallPanelController
     /// </summary>
     public void HandleCreateRoom()
     {
-        NetManager.Send(new MsgCreateRoom());
+        Debug.Log($"发送创建房间协议");
+        NetManager.Instance.Send(new MsgCreateRoom());
     }
 
     /// <summary>
@@ -117,7 +118,7 @@ public class RoomHallPanelController
     /// </summary>
     public void HandleRefreshRooms()
     {
-        NetManager.Send(new MsgGetRooms());
+        NetManager.Instance.Send(new MsgGetRooms());
     }
 
     /// <summary>
@@ -125,7 +126,7 @@ public class RoomHallPanelController
     /// </summary>
     public void HandleJoinRoom(string roomId)
     {
-        NetManager.Send(new MsgEnterRoom { roomID = roomId });
+        NetManager.Instance.Send(new MsgEnterRoom { roomID = roomId });
     }
 
     #endregion

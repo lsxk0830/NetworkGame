@@ -1,5 +1,7 @@
 public partial class MsgHandler
 {
+    private static MsgPong msgPong = new MsgPong(); // Pong协议实例
+
     /// <summary>
     /// Ping协议处理
     /// </summary>
@@ -7,7 +9,6 @@ public partial class MsgHandler
     {
         //Console.WriteLine("接收:MsgPing协议");
         c.lastPingTime = NetManager.GetTimeStamp();
-        MsgPong msgPong = new MsgPong();
         NetManager.Send(c, msgPong);
     }
 }

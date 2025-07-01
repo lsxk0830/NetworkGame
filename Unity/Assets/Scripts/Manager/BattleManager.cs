@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 战斗管理器。
+/// 战斗管理器
 /// </summary>
 public class BattleManager : MonoSingleton<BattleManager>
 {
@@ -12,11 +12,6 @@ public class BattleManager : MonoSingleton<BattleManager>
     public static Dictionary<long, BaseTank> tanks;
     private Transform tankParent;
     private List<string> handles;
-    private int friend;
-
-    public GameObject BulletPrefab;
-    public GameObject DiePrefab;
-    public GameObject HitPrefab;
 
     protected override void OnAwake()
     {
@@ -33,15 +28,15 @@ public class BattleManager : MonoSingleton<BattleManager>
         tankParent.position = Vector3.zero;
 
         ResManager.Instance.LoadAssetAsync<GameObject>("BulletPrefab", true,
-        handle =>BulletPrefab = handle.gameObject,
+        handle => EffectManager.BulletPrefab = handle.gameObject,
         error => Debug.LogError($"Bullet Addressable加载失败")).Forget();
 
         ResManager.Instance.LoadAssetAsync<GameObject>("Die", true,
-        handle => DiePrefab = handle.gameObject,
+        handle => EffectManager.DiePrefab = handle.gameObject,
         error => Debug.LogError($"Die Addressable加载失败")).Forget();
 
         ResManager.Instance.LoadAssetAsync<GameObject>("Hit", true,
-        handle => HitPrefab = handle.gameObject,
+        handle => EffectManager.HitPrefab = handle.gameObject,
         error => Debug.LogError($"Hit Addressable加载失败")).Forget();
     }
 
@@ -53,13 +48,9 @@ public class BattleManager : MonoSingleton<BattleManager>
         EventManager.Instance.RemoveEvent(Events.MsgSyncTank, OnMsgSyncTank);
         EventManager.Instance.RemoveEvent(Events.MsgFire, OnMsgFire);
         EventManager.Instance.RemoveEvent(Events.MsgHit, OnMsgHit);
+        EffectManager.Destroy();
 
         tanks.Clear(); tanks = null;
-        foreach (var handle in handles)
-        {
-            ResManager.Instance.ReleaseResource(handle);
-        }
-        handles.Clear(); handles = null;
     }
 
     /// <summary>
@@ -181,14 +172,7 @@ public class BattleManager : MonoSingleton<BattleManager>
             handles.Add($"Tank_{tankInfo.skin}");
             GameObject tank = Instantiate(handle);
             tank.transform.parent = tankParent.transform;
-            BaseTank baseTank;
-            if (tankInfo.ID == GameMain.ID)
-            {
-                baseTank = tank.AddComponent<CtrlTank>();
-                friend = tankInfo.camp;
-            }
-            else
-                baseTank = tank.AddComponent<SyncTank>();
+            BaseTank baseTank = tankInfo.ID == GameMain.ID ? tank.AddComponent<CtrlTank>() : tank.AddComponent<SyncTank>();
             baseTank.camp = tankInfo.camp;
             baseTank.tag = $"Camp{tankInfo.camp}";
             tanks.Add(tankInfo.ID, baseTank);

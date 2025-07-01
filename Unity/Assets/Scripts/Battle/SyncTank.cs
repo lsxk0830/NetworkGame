@@ -21,10 +21,8 @@ public class SyncTank : BaseTank
         if (turret == null) return;
 
         // 预测位置
-        Vector3 pos = new Vector3(msg.x, msg.y, msg.z);
-        Vector3 rot = new Vector3(msg.ex, msg.ey, msg.ez);
-        transform.position = pos;
-        transform.eulerAngles = rot;
+        transform.position = new Vector3(msg.x, msg.y, msg.z);
+        transform.eulerAngles = new Vector3(msg.ex, msg.ey, msg.ez);
         //forecastTime = Time.time;
         // 炮塔
         Vector3 le = turret.localEulerAngles;
@@ -38,23 +36,19 @@ public class SyncTank : BaseTank
     /// </summary>
     public void SyncFire(MsgFire msg)
     {
-        GloablMono.Instance.TriggerFromOtherThread(() =>
+        Vector3 pos = new Vector3(msg.x, msg.y, msg.z);
+        Vector3 rot = new Vector3(msg.tx, msg.ty, msg.tz);
+        if (msg.IsExplosion)
         {
-            if (msg.IsExplosion)
-            {
-                this.GetGameObject(BattleManager.Instance.HitPrefab)
-                    .GetComponent<Hit>()
-                    .PoolInit(BulletDic[msg.bulletID].transform);
-                BulletDic.Remove(msg.bulletID);
-                return;
-            }
-            Bullet bullet = Fire(msg.bulletID);
-            bullet.bulletID = msg.bulletID;
-            // 更新坐标
-            Vector3 pos = new Vector3(msg.x, msg.y, msg.z);
-            Vector3 rot = new Vector3(msg.ex, msg.ey, msg.ez);
-            bullet.transform.position = pos;
-            bullet.transform.eulerAngles = rot;
-        });
+            this.GetGameObject(EffectManager.HitPrefab)
+                .GetComponent<Hit>()
+                .PoolInit(pos, Quaternion.Euler(rot));
+            BulletManager.RemoveBullet(msg.bulletID);
+            return;
+        }
+        Bullet bullet = Fire(msg.bulletID);
+        // 更新坐标
+        bullet.transform.position = pos;
+        bullet.transform.eulerAngles = rot;
     }
 }

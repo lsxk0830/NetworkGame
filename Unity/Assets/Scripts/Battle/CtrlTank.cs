@@ -86,7 +86,7 @@ public class CtrlTank : BaseTank
         // 键盘输入获取
         float moveInput = Input.GetAxis("Vertical");    // W/S 控制前进后退
         float rotateInput = Input.GetAxis("Horizontal"); // A/D 控制左右旋转
-        Debug.Log($"moveInput:{moveInput},rotateInput:{rotateInput}");
+        //Debug.Log($"moveInput:{moveInput},rotateInput:{rotateInput}");
         // 物理移动（基于坦克自身坐标系）
         Vector3 moveDirection = transform.forward * moveInput * MoveSpeed * Time.fixedDeltaTime;
         mRigidbody.MovePosition(mRigidbody.position + moveDirection);
@@ -122,16 +122,17 @@ public class CtrlTank : BaseTank
             Bullet bullet = Fire(Guid.NewGuid());
             Debug.Log($"点击开火按钮");
             // 发送同步协议
-            MsgFire msg = new MsgFire();
+            MsgFire msg = this.GetObjInstance<MsgFire>();
             msg.ID = GameMain.ID;
             msg.bulletID = bullet.bulletID;
-            msg.x = bullet.transform.position.x;
-            msg.y = bullet.transform.position.y;
-            msg.z = bullet.transform.position.z;
-            msg.ex = bullet.transform.eulerAngles.x;
-            msg.ey = bullet.transform.eulerAngles.y;
-            msg.ez = bullet.transform.eulerAngles.z;
-            NetManager.Send(msg);
+            msg.x = firePoint.position.x;
+            msg.y = firePoint.position.y;
+            msg.z = firePoint.position.z;
+            msg.tx = bullet.targetPos.x;
+            msg.ty = bullet.targetPos.y;
+            msg.tz = bullet.targetPos.z;
+            NetManager.Instance.Send(msg);
+            this.PushPool(msg); // 将消息对象归还对象池
             spaceKeyHandled = true;
         }
         else
@@ -146,7 +147,7 @@ public class CtrlTank : BaseTank
         if (Time.time - lastSendSyncTime < syncInterval) return;
         lastSendSyncTime = Time.time;
         // 发送同步协议
-        MsgSyncTank msg = new MsgSyncTank();
+        MsgSyncTank msg = this.GetObjInstance<MsgSyncTank>();
         msg.x = transform.position.x;
         msg.y = transform.position.y;
         msg.z = transform.position.z;
@@ -154,7 +155,8 @@ public class CtrlTank : BaseTank
         msg.ey = transform.eulerAngles.y;
         msg.ez = transform.eulerAngles.z;
         msg.turretY = turret.localEulerAngles.y;
-        NetManager.Send(msg);
+        this.PushPool(msg); // 将消息对象归还对象池
+        NetManager.Instance.Send(msg);
     }
 
     private void OnDestroy()

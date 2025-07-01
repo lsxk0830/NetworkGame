@@ -54,13 +54,4 @@ public class Player
     {
         this.state = state;
     }
-
-    /// <summary>
-    /// 发送数据
-    /// </summary>
-    /// <param name="msgBase">协议</param>
-    public void Send(MsgBase msgBase)
-    {
-        NetManager.Send(state, msgBase);
-    }
 }
