@@ -123,6 +123,7 @@ public static class PoolExtension
     #region GameObject
 
     #region 放入对象
+
     /// <summary>
     /// 对象放入对象池
     /// </summary>
@@ -159,6 +160,5 @@ public static class PoolExtension
     }
 
     #endregion
-
     #endregion
 }

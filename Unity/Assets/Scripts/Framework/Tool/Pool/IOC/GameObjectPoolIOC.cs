@@ -35,8 +35,6 @@ public class GameObjectPoolIOC
             Debug.LogError($"要回收的的物体：{go.name} 为空");
             return;
         }
-
-        go.GetComponent<IPool>()?.PoolReset();
         go.transform.parent = RootTransform.transform;
         go.SetActive(false);
         if (GoID.ContainsKey(go))
@@ -68,11 +66,11 @@ public class GameObjectPoolIOC
             go = GameObject.Instantiate<GameObject>(prefab);
             go.name = prefab.name + Time.time;
         }
+        go.SetActive(true);
         go.transform.parent = parent;
         if (parent == null)
             SceneManager.MoveGameObjectToScene(go, SceneManager.GetActiveScene());
         MarkAsOut(go, id);
-        go.GetComponent<IPool>()?.PoolInit();
         return go;
     }
 
@@ -104,7 +102,6 @@ public class GameObjectPoolIOC
         if (Pool.ContainsKey(id) && Pool[id].Count > 0)
         {
             GameObject go = Pool[id].Dequeue();
-            go.SetActive(true);
             return go;
         }
         return null;
@@ -131,7 +128,6 @@ public class GameObjectPoolIOC
         else
             Debug.Log("删除标记错误,GameObject尚未标记");
     }
-
     #endregion
 
 }
