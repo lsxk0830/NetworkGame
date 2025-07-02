@@ -13,15 +13,15 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collisionInfo)
     {
+        Debug.Log($"子弹到爆炸：坐标 = {transform.position}");
+
         isMoving = false; // 停止移动
         MsgFire msg = this.GetObjInstance<MsgFire>();
         msg.ID = ID; // 发射者ID
         msg.bulletID = bulletID; // 子弹ID
         msg.tx = transform.position.x;
-        msg.ty = transform.position.y;
         msg.tz = transform.position.z;
         msg.x = 0;
-        msg.y = 0;
         msg.z = 0;
         msg.IsExplosion = true;
         NetManager.Instance.Send(msg);
@@ -75,7 +75,7 @@ public class Bullet : MonoBehaviour
         this.startPos = startPos; // 保存初始位置
         this.targetPos = targetPos;
         isMoving = true; // 设置为正在移动状态
-
+        Debug.Log($"子弹初始化：坐标 ={startPos}, 目标 ={targetPos}");
         MoveBulletAsync().Forget();
     }
 
@@ -94,6 +94,7 @@ public class Bullet : MonoBehaviour
         }
         if (isMoving)
         {
+            Debug.Log($"子弹到达目标位置：坐标 ={transform.position}, 目标 ={targetPos}");
             this.PushGameObject(this.gameObject); // 将子弹归还对象池
             BulletManager.RemoveBullet(bulletID); // 从字典中移除子弹
         }
