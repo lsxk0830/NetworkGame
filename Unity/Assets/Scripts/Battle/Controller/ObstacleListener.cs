@@ -31,21 +31,22 @@ public class ObstacleListener : MonoBehaviour
         //Debug.Log($"物体 {gameObject.name} 移动了（距离超过阈值）");
         // 发送消息（例如调用 MessageCenter）
         MsgObstacleOne msg = this.GetObjInstance<MsgObstacleOne>();
-        msg.PosRotScale = this.GetObjInstance<ObstaclePosRotScale>();
-        msg.PosRotScale.ObstacleID = gameObject.name;
-        msg.PosRotScale.PosX = transform.position.x;
-        msg.PosRotScale.PosY = transform.position.y;
-        msg.PosRotScale.PosZ = transform.position.z;
-        msg.PosRotScale.RotX = transform.rotation.eulerAngles.x;
-        msg.PosRotScale.RotY = transform.rotation.eulerAngles.y;
-        msg.PosRotScale.RotZ = transform.rotation.eulerAngles.z;
-        msg.PosRotScale.ScaleX = transform.localScale.x;
-        msg.PosRotScale.ScaleY = transform.localScale.y;
-        msg.PosRotScale.ScaleZ = transform.localScale.z;
+        msg.ObstacleID = long.Parse(gameObject.name); // 假设障碍物ID是游戏对象的名称
+        msg.PosRotScale = new ObstaclePosRotScale()
+        {
+            PosX = transform.position.x,
+            PosY = transform.position.y,
+            PosZ = transform.position.z,
+            RotX = transform.rotation.eulerAngles.x,
+            RotY = transform.rotation.eulerAngles.y,
+            RotZ = transform.rotation.eulerAngles.z,
+            ScaleX = transform.localScale.x,
+            ScaleY = transform.localScale.y,
+            ScaleZ = transform.localScale.z
+        };
         msg.IsDestory = false; // 不是销毁
         NetManager.Instance.Send(msg);
         this.PushPool(msg);
-        this.PushPool(msg.PosRotScale);
     }
 
     internal void UpdateInfo(ObstaclePosRotScale item)
@@ -59,10 +60,9 @@ public class ObstacleListener : MonoBehaviour
     void OnDestroy()
     {
         MsgObstacleOne msg = this.GetObjInstance<MsgObstacleOne>();
-        msg.PosRotScale = this.GetObjInstance<ObstaclePosRotScale>();
+        msg.ObstacleID = long.Parse(gameObject.name);
         msg.IsDestory = true; //销毁
         NetManager.Instance.Send(msg);
         this.PushPool(msg);
-        this.PushPool(msg.PosRotScale);
     }
 }

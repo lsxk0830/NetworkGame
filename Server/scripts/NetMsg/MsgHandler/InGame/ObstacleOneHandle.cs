@@ -13,7 +13,7 @@
         Room room = RoomManager.GetRoom(user.RoomID);
         if (room == null) return;
 
-        room.SetObstaclePosRotScale(msg.PosRotScale.ObstacleID, msg.PosRotScale);
+        room.SetObstaclePosRotScale(msg.ObstacleID, msg.PosRotScale);
         room.BroadcastExceptCS(user.ID, msg);
     }
 }

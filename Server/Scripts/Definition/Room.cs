@@ -33,7 +33,7 @@ public class Room
     public int loadSuccess = 0; // 加载成功的玩家数
     private int delaySeconds = 3; // 最长等待时间，单位秒
 
-    private Dictionary<string, ObstaclePosRotScale> obs;// 障碍物列表
+    private Dictionary<long, ObstaclePosRotScale> obs;// 障碍物列表
 
     /// <summary>
     /// 状态
@@ -56,7 +56,7 @@ public class Room
     /// <summary>
     /// 更新障碍物信息
     /// </summary>
-    public void SetObstaclePosRotScale(string obID, ObstaclePosRotScale ObstaclePosRotScale)
+    public void SetObstaclePosRotScale(long obID, ObstaclePosRotScale ObstaclePosRotScale)
     {
         if (obs.TryGetValue(obID, out ObstaclePosRotScale value))
         {
@@ -295,12 +295,12 @@ public class Room
     {
         if (obs == null || obs.Count == 0) return null; // 没有障碍物
         if (msg.PosRotScales == null)
-            msg.PosRotScales = new List<ObstaclePosRotScale>();
+            msg.PosRotScales = new List<MsgObstacleOne>();
         else
             msg.PosRotScales.Clear(); // 清空之前的障碍物数据
-        foreach (var value in obs.Values)
+        foreach (var item in obs)
         {
-            msg.PosRotScales.Add(value);
+            msg.PosRotScales.Add(new MsgObstacleOne() { ObstacleID = item.Key, PosRotScale = item.Value });
         }
         return msg;
     }
@@ -317,12 +317,11 @@ public class Room
         // 创建随机障碍物逻辑
         Console.WriteLine("创建随机障碍物");
         Random random = new Random();
-        obs = new Dictionary<string, ObstaclePosRotScale>(obstacleCount);
+        obs = new Dictionary<long, ObstaclePosRotScale>(obstacleCount);
         for (int i = 0; i < obstacleCount; i++)
         {
             ObstaclePosRotScale posRotScale = new ObstaclePosRotScale()
             {
-                ObstacleID = i.ToString(),
                 PosX = random.Next(2, mapSize - 4),
                 ScaleY = random.Next(1, 3),
                 PosZ = random.Next(2, mapSize - 4),
@@ -333,7 +332,7 @@ public class Room
                 ScaleZ = random.Next(1, 3)
             };
             posRotScale.PosY = posRotScale.ScaleY / 2;
-            obs.Add(posRotScale.ObstacleID, posRotScale);
+            obs.Add(NetManager.GetTimeStamp(), posRotScale);
         }
     }
 

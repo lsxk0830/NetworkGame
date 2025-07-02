@@ -10,5 +10,5 @@ public class MsgObstacleAll : MsgBase
         protoName = "MsgObstacleAll";
     }
 
-    public List<ObstaclePosRotScale> PosRotScales;
+    public List<MsgObstacleOne> PosRotScales;
 }

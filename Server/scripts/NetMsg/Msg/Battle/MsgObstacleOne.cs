@@ -8,6 +8,11 @@ public class MsgObstacleOne : MsgBase
         protoName = "MsgObstacleOne";
     }
 
+    /// <summary>
+    /// 障碍物ID
+    /// </summary>
+    public long ObstacleID { get; set; }
+
     public ObstaclePosRotScale PosRotScale { get; set; }
 
     /// <summary>

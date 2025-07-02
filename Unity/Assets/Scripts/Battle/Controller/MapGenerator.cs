@@ -10,7 +10,7 @@ public class MapGenerator : MonoBehaviour
     [LabelText("地图边长")] public int mapSize = 50;
     [LabelText("障碍物方块")] public GameObject destructiblePrefab;
     [LabelText("地面")] public GameObject Ground;
-    private Dictionary<string, ObstacleListener> obstacles;
+    private Dictionary<long, ObstacleListener> obstacles;
     private Transform parent;
 
     void Start()
@@ -69,15 +69,15 @@ public class MapGenerator : MonoBehaviour
         if (obstacles == null)
         {
             //Debug.LogError($"收到障碍协议");
-            obstacles = new Dictionary<string, ObstacleListener>(msg.PosRotScales.Count);
+            obstacles = new Dictionary<long, ObstacleListener>(msg.PosRotScales.Count);
 
             for (int i = 0; i < msg.PosRotScales.Count; i++)
             {
-                Vector3 pos = new Vector3(msg.PosRotScales[i].PosX, msg.PosRotScales[i].PosY, msg.PosRotScales[i].PosZ);
-                Vector3 rot = new Vector3(msg.PosRotScales[i].RotX, msg.PosRotScales[i].RotY, msg.PosRotScales[i].RotZ);
+                Vector3 pos = new Vector3(msg.PosRotScales[i].PosRotScale.PosX, msg.PosRotScales[i].PosRotScale.PosY, msg.PosRotScales[i].PosRotScale.PosZ);
+                Vector3 rot = new Vector3(msg.PosRotScales[i].PosRotScale.RotX, msg.PosRotScales[i].PosRotScale.RotY, msg.PosRotScales[i].PosRotScale.RotZ);
                 GameObject obstacle = Instantiate(destructiblePrefab, pos, Quaternion.Euler(rot));
-                obstacle.transform.localScale = new Vector3(msg.PosRotScales[i].ScaleX, msg.PosRotScales[i].ScaleY, msg.PosRotScales[i].ScaleZ);
-                obstacle.name = msg.PosRotScales[i].ObstacleID;
+                obstacle.transform.localScale = new Vector3(msg.PosRotScales[i].PosRotScale.ScaleX, msg.PosRotScales[i].PosRotScale.ScaleY, msg.PosRotScales[i].PosRotScale.ScaleZ);
+                obstacle.name = msg.PosRotScales[i].ObstacleID.ToString();
                 obstacle.transform.parent = parent;
                 ObstacleListener ol = obstacle.AddComponent<ObstacleListener>();
                 ol.Init();
@@ -94,12 +94,12 @@ public class MapGenerator : MonoBehaviour
     {
         MsgObstacleOne msg = (MsgObstacleOne)msgBse;
 
-        if (obstacles.TryGetValue(msg.PosRotScale.ObstacleID, out ObstacleListener ol))
+        if (obstacles.TryGetValue(msg.ObstacleID, out ObstacleListener ol))
         {
             if (msg.IsDestory)
             {
                 Destroy(ol.gameObject);
-                obstacles.Remove(msg.PosRotScale.ObstacleID);
+                obstacles.Remove(msg.ObstacleID);
             }
             else
             {
