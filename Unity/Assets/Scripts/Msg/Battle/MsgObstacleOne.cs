@@ -13,7 +13,7 @@ public class MsgObstacleOne : MsgBase
     /// <summary>
     /// 障碍物ID
     /// </summary>
-    public Guid ObstacleID;
+    public int ObstacleID;
 
     public ObstaclePosRotScale PosRotScale;
 

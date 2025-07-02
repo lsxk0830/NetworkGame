@@ -13,7 +13,11 @@
         Room room = RoomManager.GetRoom(user.RoomID);
         if (room == null) return;
 
-        room.SetObstaclePosRotScale(msg.ObstacleID, msg.PosRotScale);
+        if (room.GetAllObstacleCount < room.playerIds.Count)
+        {
+            Console.WriteLine($"更新位置");
+            room.SetObstaclePosRotScale(msg.ObstacleID, msg.PosRotScale);
+        }
         room.BroadcastExceptCS(user.ID, msg);
     }
 }

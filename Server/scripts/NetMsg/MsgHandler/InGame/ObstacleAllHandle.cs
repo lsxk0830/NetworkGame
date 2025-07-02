@@ -11,7 +11,7 @@
         if (user == null) return;
         Room room = RoomManager.GetRoom(user.RoomID);
         if (room == null) return;
-
+        room.GetAllObstacleCount++;
         NetManager.Send(cs, room.GetAllObstacle(msg));
     }
 }
