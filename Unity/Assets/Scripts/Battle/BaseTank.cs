@@ -28,9 +28,6 @@ public class BaseTank : MonoBehaviour
         turret = transform.Find("Tank/Turret");
         gun = turret.transform.Find("Gun");
         firePoint = turret.transform.Find("FirePoint");
-        Vector3 v3 = firePoint.transform.position;
-        v3.y = 1;
-        firePoint.transform.position = v3;
     }
 
     /// <summary>
@@ -40,10 +37,11 @@ public class BaseTank : MonoBehaviour
     {
         if (isDie()) return null;
         Debug.Log($"开火");
-        Bullet bullet = this.GetGameObject(EffectManager.BulletPrefab)
-            .GetComponent<Bullet>();
-        Vector3 targetPos = firePoint.transform.position + bullet.transform.forward * 50f;
-        bullet.PoolInit(ID, bulletGuid, firePoint.position, targetPos);
+        Bullet bullet = this.GetGameObject(EffectManager.BulletPrefab).GetComponent<Bullet>();
+        var startPos = firePoint.transform.position;
+        Vector3 targetPos = firePoint.transform.position + firePoint.transform.forward * 50f;
+        startPos.y = 1f; targetPos.y = 1f;
+        bullet.PoolInit(ID, bulletGuid, startPos, targetPos);
         BulletManager.AddBullet(bullet);
         // 更新时间
         lastFireTime = Time.time;

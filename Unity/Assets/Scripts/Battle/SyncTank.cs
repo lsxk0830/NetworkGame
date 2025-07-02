@@ -18,8 +18,6 @@ public class SyncTank : BaseTank
     /// </summary>
     public void SyncPos(MsgSyncTank msg)
     {
-        if (turret == null) return;
-
         // 预测位置
         transform.position = new Vector3(msg.x, msg.y, msg.z);
         transform.eulerAngles = new Vector3(msg.ex, msg.ey, msg.ez);
@@ -36,8 +34,8 @@ public class SyncTank : BaseTank
     /// </summary>
     public void SyncFire(MsgFire msg)
     {
-        Vector3 pos = new Vector3(msg.x, msg.y, msg.z);
-        Vector3 rot = new Vector3(msg.tx, msg.ty, msg.tz);
+        Vector3 pos = new Vector3(msg.x, 1, msg.z);
+        Vector3 rot = new Vector3(msg.tx, 1, msg.tz);
         if (msg.IsExplosion)
         {
             this.GetGameObject(EffectManager.HitPrefab)

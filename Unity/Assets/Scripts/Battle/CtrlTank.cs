@@ -24,7 +24,7 @@ public class CtrlTank : BaseTank
     public float maxRayLength = 100f; // 最大射线长度
     public float MouseRotationSpeed = 0.5f; // 鼠标滑动灵敏度系数
     private bool spaceKeyHandled; // 开火标志位
-    private string Enemy;
+    private string Enemy; // 敌人标签
 
     public override void Init(Player tankInfo)
     {
@@ -33,7 +33,6 @@ public class CtrlTank : BaseTank
         base.Init(tankInfo);
 
         Enemy = tankInfo.camp == 1 ? "Camp2" : "Camp1";
-
         freeLookCam.Follow = transform.Find("Follow");
         freeLookCam.LookAt = transform.Find("LookAt");
 
@@ -126,12 +125,13 @@ public class CtrlTank : BaseTank
             msg.ID = GameMain.ID;
             msg.bulletID = bullet.bulletID;
             msg.x = firePoint.position.x;
-            msg.y = firePoint.position.y;
+            //msg.y = 1f;
             msg.z = firePoint.position.z;
             msg.tx = bullet.targetPos.x;
-            msg.ty = bullet.targetPos.y;
+            //msg.ty = 1;
             msg.tz = bullet.targetPos.z;
             NetManager.Instance.Send(msg);
+            //Debug.Log($"发送开火协议：坐标 ={firePoint.position}, 目标 ={bullet.targetPos}");
             this.PushPool(msg); // 将消息对象归还对象池
             spaceKeyHandled = true;
         }
