@@ -35,18 +35,18 @@ public class SyncTank : BaseTank
     public void SyncFire(MsgFire msg)
     {
         Vector3 pos = new Vector3(msg.x, 1, msg.z);
-        Vector3 rot = new Vector3(msg.tx, 1, msg.tz);
+        Vector3 tPos = new Vector3(msg.tx, 1, msg.tz);
         if (msg.IsExplosion)
         {
             this.GetGameObject(EffectManager.HitPrefab)
                 .GetComponent<Hit>()
-                .PoolInit(pos, Quaternion.Euler(rot));
+                .PoolInit(tPos);
             BulletManager.RemoveBullet(msg.bulletID);
+            Debug.Log($"爆炸位置:{tPos}");
             return;
         }
         Bullet bullet = Fire(msg.bulletID);
         // 更新坐标
         bullet.transform.position = pos;
-        bullet.transform.eulerAngles = rot;
     }
 }

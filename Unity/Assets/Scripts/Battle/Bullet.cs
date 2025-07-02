@@ -30,7 +30,7 @@ public class Bullet : MonoBehaviour
         BulletManager.RemoveBullet(bulletID); // 从字典中移除子弹
         this.GetGameObject(EffectManager.HitPrefab)
             .GetComponent<Hit>()
-            .PoolInit(this.transform.position, this.transform.rotation);
+            .PoolInit(this.transform.position);
 
         // 打到的坦克
         GameObject collObj = collisionInfo.gameObject;
