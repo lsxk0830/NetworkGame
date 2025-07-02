@@ -5,16 +5,18 @@ using UnityEngine;
 /// </summary>
 public class Hit : MonoBehaviour
 {
-    public ParticleSystem Exposion;
-    public ParticleSystem Ring;
-    public ParticleSystem Decal;
+    // public ParticleSystem Exposion;
+    // public ParticleSystem Ring;
+    // public ParticleSystem Decal;
+    public ParticleSystem Effect;
 
     public void PoolInit(Vector3 pos)
     {
         transform.position = pos;
-        Exposion.Play();
-        Ring.Play();
-        Decal.Play();
+        Effect.Play();
+        // Exposion.Play();
+        // Ring.Play();
+        // Decal.Play();
 
     }
 

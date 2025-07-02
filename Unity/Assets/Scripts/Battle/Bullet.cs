@@ -25,20 +25,25 @@ public class Bullet : MonoBehaviour
         msg.z = 0;
         msg.IsExplosion = true;
         NetManager.Instance.Send(msg);
+        GameObject collObj = collisionInfo.gameObject;
+        if (collObj.tag == "Obstacle") // 碰撞到障碍物
+        {
+            Destroy(collObj);
+        }
+        else if (collObj.tag != $"Camp{BattleManager.Instance.GetCtrlTank().camp}") // 碰撞到坦克
+        {
+            if (collObj.TryGetComponent<BaseTank>(out BaseTank hitTank))
+            {
+                SendMsgHit(ID, hitTank.ID);
+            }
+        }
+
         this.PushPool(msg); // 将消息对象归还对象池
         this.PushGameObject(this.gameObject); // 将子弹归还对象池
         BulletManager.RemoveBullet(bulletID); // 从字典中移除子弹
         this.GetGameObject(EffectManager.HitPrefab)
             .GetComponent<Hit>()
             .PoolInit(this.transform.position);
-
-        // 打到的坦克
-        GameObject collObj = collisionInfo.gameObject;
-        if (collObj.TryGetComponent<BaseTank>(out BaseTank hitTank))
-        {
-            if (hitTank.ID == ID) return;// 不能打自己
-            SendMsgHit(ID, hitTank.ID);
-        }
     }
 
     /// <summary>

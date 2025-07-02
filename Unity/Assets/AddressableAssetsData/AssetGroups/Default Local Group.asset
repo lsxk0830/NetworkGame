@@ -25,7 +25,7 @@ MonoBehaviour:
     m_Address: BulletPrefab
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: b12cbbfc0b30e7b40abf2b51378df1d8
+  - m_GUID: f63e0c0bec828fa40b475679ada43749
     m_Address: Hit
     m_ReadOnly: 0
     m_SerializedLabels: []
