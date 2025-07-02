@@ -5,7 +5,7 @@ public partial class EventHandler
     /// </summary>
     public static void OnDisconnect(ClientState cs)
     {
-        Console.WriteLine($"关闭Socket:{cs.socket.RemoteEndPoint}");
+        Console.WriteLine($"关闭Socket:{cs.socket?.RemoteEndPoint}");
         UserManager.RemoveUser(cs);
         if (cs != null && cs.user != null && cs.user.RoomID != "")
         {

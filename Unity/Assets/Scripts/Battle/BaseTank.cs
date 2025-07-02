@@ -36,7 +36,6 @@ public class BaseTank : MonoBehaviour
     public Bullet Fire(Guid bulletGuid)
     {
         if (isDie()) return null;
-        Debug.Log($"开火");
         Bullet bullet = this.GetGameObject(EffectManager.BulletPrefab).GetComponent<Bullet>();
         var startPos = firePoint.transform.position;
         Vector3 targetPos = firePoint.transform.position + firePoint.transform.forward * 50f;

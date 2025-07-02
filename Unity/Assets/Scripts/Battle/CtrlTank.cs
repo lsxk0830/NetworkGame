@@ -119,7 +119,7 @@ public class CtrlTank : BaseTank
             if (spaceKeyHandled || Time.time - lastFireTime < fired) return; // CD时间判断
 
             Bullet bullet = Fire(Guid.NewGuid());
-            Debug.Log($"点击开火按钮");
+            //Debug.Log($"点击开火按钮");
             // 发送同步协议
             MsgFire msg = this.GetObjInstance<MsgFire>();
             msg.ID = GameMain.ID;
@@ -174,7 +174,7 @@ public class CtrlTank : BaseTank
     private void Draw()
     {
         // 1. 计算射线方向（炮管正前方）
-        Vector3 rayStart = firePoint.position;
+        Vector3 rayStart = firePoint.position; rayStart.y = 0.8f;
         Vector3 rayDirection = firePoint.forward;
 
         // 2. 发射射线检测碰撞
@@ -183,7 +183,7 @@ public class CtrlTank : BaseTank
         //Debug.DrawRay(rayStart, rayDirection * 10, Color.green);
 
         // 3. 动态设置线段终点
-        Vector3 lineEnd = isHit ? hit.point : rayStart + rayDirection * maxRayLength;
+        Vector3 lineEnd = isHit ? hit.point : rayStart + rayDirection * maxRayLength;lineEnd.y = 0.8f; // 保持Y轴高度一致
         lineRenderer.SetPosition(0, rayStart); // 起点：炮管末端
         lineRenderer.SetPosition(1, lineEnd); // 终点：碰撞点或最大长度点
 

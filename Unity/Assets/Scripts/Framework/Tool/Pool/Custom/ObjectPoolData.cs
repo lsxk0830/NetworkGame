@@ -18,7 +18,7 @@ public class ObjectPoolData<T> : IPoolData
     public void PushObj(T obj)
     {
         PoolStack.Push(obj);
-        Debug.Log($"数量:{PoolStack.Count}");
+        //Debug.Log($"数量:{PoolStack.Count}");
     }
 
     /// <summary>
