@@ -130,6 +130,7 @@ public class CtrlTank : BaseTank
             msg.tx = bullet.targetPos.x;
             //msg.ty = 1;
             msg.tz = bullet.targetPos.z;
+            msg.IsExplosion = false; // 是否爆炸
             NetManager.Instance.Send(msg);
             //Debug.Log($"发送开火协议：坐标 ={firePoint.position}, 目标 ={bullet.targetPos}");
             this.PushPool(msg); // 将消息对象归还对象池
