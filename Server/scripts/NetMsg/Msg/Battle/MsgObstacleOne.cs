@@ -11,7 +11,7 @@ public class MsgObstacleOne : MsgBase
     /// <summary>
     /// 障碍物ID
     /// </summary>
-    public long ObstacleID { get; set; }
+    public Guid ObstacleID { get; set; }
 
     public ObstaclePosRotScale PosRotScale { get; set; }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ public class MapGenerator : MonoBehaviour
     [LabelText("地图边长")] public int mapSize = 50;
     [LabelText("障碍物方块")] public GameObject destructiblePrefab;
     [LabelText("地面")] public GameObject Ground;
-    private Dictionary<long, ObstacleListener> obstacles;
+    private Dictionary<Guid, ObstacleListener> obstacles;
     private Transform parent;
 
     void Start()
@@ -69,7 +70,7 @@ public class MapGenerator : MonoBehaviour
         if (obstacles == null)
         {
             //Debug.LogError($"收到障碍协议");
-            obstacles = new Dictionary<long, ObstacleListener>(msg.PosRotScales.Count);
+            obstacles = new Dictionary<Guid, ObstacleListener>(msg.PosRotScales.Count);
 
             for (int i = 0; i < msg.PosRotScales.Count; i++)
             {

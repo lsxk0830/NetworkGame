@@ -29,7 +29,7 @@ public class Bullet : MonoBehaviour
         if (collObj.tag == "Obstacle") // 碰撞到障碍物
         {
             MsgObstacleOne msgOne = this.GetObjInstance<MsgObstacleOne>();
-            msgOne.ObstacleID = long.Parse(collObj.name);
+            msgOne.ObstacleID = Guid.Parse(collObj.name);
             msgOne.IsDestory = true; //销毁
             NetManager.Instance.Send(msgOne);
             this.PushPool(msgOne);

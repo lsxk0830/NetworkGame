@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -31,7 +32,7 @@ public class ObstacleListener : MonoBehaviour
         //Debug.Log($"物体 {gameObject.name} 移动了（距离超过阈值）");
         // 发送消息（例如调用 MessageCenter）
         MsgObstacleOne msg = this.GetObjInstance<MsgObstacleOne>();
-        msg.ObstacleID = long.Parse(gameObject.name); // 假设障碍物ID是游戏对象的名称
+        msg.ObstacleID = Guid.Parse(gameObject.name); // 假设障碍物ID是游戏对象的名称
         msg.PosRotScale = new ObstaclePosRotScale()
         {
             PosX = transform.position.x,

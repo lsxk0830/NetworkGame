@@ -1,3 +1,5 @@
+using System;
+
 /// <summary>
 /// 场景中一个方块(障碍物)消息
 /// </summary>
@@ -11,7 +13,7 @@ public class MsgObstacleOne : MsgBase
     /// <summary>
     /// 障碍物ID
     /// </summary>
-    public long ObstacleID;
+    public Guid ObstacleID;
 
     public ObstaclePosRotScale PosRotScale;
 
