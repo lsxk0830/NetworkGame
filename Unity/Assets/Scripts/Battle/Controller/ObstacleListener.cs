@@ -56,13 +56,4 @@ public class ObstacleListener : MonoBehaviour
         transform.localScale = new Vector3(item.ScaleX, item.ScaleY, item.ScaleZ);
         lastPosition = transform.position;
     }
-
-    void OnDestroy()
-    {
-        MsgObstacleOne msg = this.GetObjInstance<MsgObstacleOne>();
-        msg.ObstacleID = long.Parse(gameObject.name);
-        msg.IsDestory = true; //销毁
-        NetManager.Instance.Send(msg);
-        this.PushPool(msg);
-    }
 }
