@@ -1,36 +1,20 @@
 public partial class EventHandler
 {
     /// <summary>
-    /// 定时事件
+    /// 定时事件,Ping检查
     /// </summary>
-    public static void OnTimer(double PingInterval)
-    {
-        CheckPing(PingInterval);
-    }
-
-    /// <summary>
-    /// Ping检查，最多断开一个客户端连接
-    /// </summary>
-    private static void CheckPing(double PingInterval)
+    public static void OnTimer()
     {
         long timeNow = NetManager.GetTimeStamp(); //现在的时间戳
-        List<ClientState> toRemove = new List<ClientState>();
 
-        lock (NetManager.clients)
+        foreach (ClientState client in NetManager.clients.Values)
         {
-            foreach (ClientState client in NetManager.clients.Values)
+            if (timeNow - client.lastPingTime > NetManager.pingInterval * 4)
             {
-                if (timeNow - client.lastPingTime > PingInterval * 4)
-                {
-                    toRemove.Add(client);
-                }
+                NetManager.Close(client);
+                client.Dispose(); // 释放资源
+                break; // 找到第一个超时的客户端，退出循环
             }
-        }
-
-        foreach (var client in toRemove)
-        {
-            Console.WriteLine($"客户端 {client.socket.RemoteEndPoint} 心跳超时");
-            NetManagerSin.CloseClient(client);
         }
     }
 }

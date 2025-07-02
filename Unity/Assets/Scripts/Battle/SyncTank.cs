@@ -41,7 +41,7 @@ public class SyncTank : BaseTank
             this.GetGameObject(EffectManager.HitPrefab)
                 .GetComponent<Hit>()
                 .PoolInit(tPos);
-            BulletManager.RemoveBullet(msg.bulletID);
+            BulletManager.GetBullet(msg.bulletID)?.PoolReset(); // 将子弹归还对象池
             Debug.Log($"爆炸位置:{tPos}");
             return;
         }

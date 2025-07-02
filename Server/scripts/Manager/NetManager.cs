@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -5,9 +6,9 @@ using System.Reflection;
 public class NetManager
 {
     public static Socket listenfd; // 监听Socket
-    public static Dictionary<Socket, ClientState> clients = new Dictionary<Socket, ClientState>(); // 客户端Socket及状态信息
+    public static ConcurrentDictionary<Socket, ClientState> clients = new ConcurrentDictionary<Socket, ClientState>(); // 客户端Socket及状态信息
     private static List<Socket> checkRead = new List<Socket>(); // Select的检查列表
-    public static long pingInterval = 30; // ping间隔
+    public const long pingInterval = 30; // ping间隔
 
     /// <summary>
     /// 开启服务端监听
@@ -15,19 +16,13 @@ public class NetManager
     /// <param name="listenPort">监听Socket的端口号</param>
     public static async Task StartLoop(int listenPort, CancellationToken token)
     {
-        // Socket
-        listenfd = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        // Bind
-        IPAddress ipAdr = IPAddress.Parse("0.0.0.0");
-        IPEndPoint ipEp = new IPEndPoint(ipAdr, listenPort);
-        listenfd.Bind(ipEp);
-        // Listen
-        listenfd.Listen(0); // 最多可容纳等待接受的连接数，0表示不限制
-        Console.WriteLine("服务器启动");
-
-        // 循环
         try
         {
+            listenfd = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp) { NoDelay = true };// 禁用Nagle算法，减少延迟
+            listenfd.Bind(new IPEndPoint(IPAddress.Any, listenPort));
+            listenfd.Listen(0); // 最多可容纳等待接受的连接数，0表示不限制
+            Console.WriteLine($"服务器已启动");
+
             while (!token.IsCancellationRequested)
             {
                 ResetCheckRead(); // 重置checkRead
@@ -40,12 +35,17 @@ public class NetManager
                     else
                         ReadClientfd(s);
                 }
-                //Timer();  // 定时
+                Timer();  // 定时
             }
         }
-        catch (OperationCanceledException)
+        catch (Exception ex)
         {
-            Console.WriteLine("网络服务正在关闭...");
+            Console.WriteLine($"服务器停止: {ex.Message}");
+        }
+        finally
+        {
+            Console.WriteLine($"清理资源");
+            Cleanup();
         }
     }
 
@@ -56,10 +56,7 @@ public class NetManager
     {
         checkRead.Clear();
         checkRead.Add(listenfd);
-        foreach (ClientState s in clients.Values)
-        {
-            checkRead.Add(s.socket);
-        }
+        checkRead.AddRange(clients.Keys);
     }
 
     /// <summary>
@@ -70,11 +67,16 @@ public class NetManager
         try
         {
             Socket clientfd = listenfd.Accept();
+            clientfd.NoDelay = true;
+            ClientState state = new ClientState()
+            {
+                socket = clientfd,
+                lastPingTime = GetTimeStamp(),
+            };
+
+            clients.TryAdd(clientfd, state);
+
             Console.WriteLine($"接收{clientfd.RemoteEndPoint}的远程连接");
-            ClientState state = new ClientState();
-            state.socket = clientfd;
-            state.lastPingTime = GetTimeStamp();
-            clients.Add(clientfd, state);
         }
         catch (SocketException ex)
         {
@@ -87,58 +89,77 @@ public class NetManager
     /// </summary>
     private static void ReadClientfd(Socket clientfd)
     {
-        ClientState state = clients[clientfd];
-        ByteArray readBuff = state.readBuff;
-        // 接收
+        ClientState? state;
+        if (!clients.TryGetValue(clientfd, out state)) return;
         int count = 0;
-        // 缓冲区不够，清除，若依旧不够，只能返回
-        // 缓冲区长度只有1024，单条协议超过缓冲区长度时会发生错误，根据需要调整长度
-        if (readBuff.remain <= 0)
-        {
-            OnReceiveData(state);
-            readBuff.MoveBytes();
-        }
-        if (readBuff.remain <= 0)
-        {
-            Console.WriteLine($"接收消息失败,maybe msg leng > buff capacity");
-            Close(state);
-            return;
-        }
-
         try
         {
-            count = clientfd.Receive(readBuff.bytes, readBuff.writeIdx, readBuff.remain, 0);
+            ByteArray readBuff = state.readBuff;
+            // 缓冲区不够，清除，若依旧不够，只能返回
+            // 缓冲区长度只有1024，单条协议超过缓冲区长度时会发生错误，根据需要调整长度
+            if (readBuff.remain <= 0)
+            {
+                OnReceiveData(state);
+                readBuff.MoveBytes();
+            }
+            if (readBuff.remain <= 0)
+            {
+                Console.WriteLine($"接收消息失败,maybe msg leng > buff capacity");
+                Close(state);
+                return;
+            }
+
+            try
+            {
+                count = clientfd.Receive(readBuff.bytes, readBuff.writeIdx, readBuff.remain, 0);
+            }
+            catch (SocketException ex)
+            {
+                Console.WriteLine($"接收Socekt异常: {ex.ToString()}");
+                Close(state);
+                return;
+            }
+            // 客户端关闭
+            if (count <= 0)
+            {
+                Console.WriteLine($"关闭Socket客户端 : {clientfd.RemoteEndPoint}");
+                Close(state);
+                return;
+            }
+            // 消息处理
+            readBuff.writeIdx += count;
+            // 处理二进制消息
+            OnReceiveData(state);
+            // 移动缓冲区
+            readBuff.CheckAndMoveBytes();
         }
         catch (SocketException ex)
         {
-            Console.WriteLine($"接收Socekt异常: {ex.ToString()}");
+            Console.WriteLine($"处理客户端数据时发生Socket错误: {ex.SocketErrorCode}");
             Close(state);
-            return;
         }
-        // 客户端关闭
-        if (count <= 0)
+        catch (Exception ex)
         {
-            //Console.WriteLine($"关闭Socket : {clientfd.RemoteEndPoint}");
+            Console.WriteLine($"处理客户端数据时发生异常: {ex.Message}");
             Close(state);
-            return;
         }
-        // 消息处理
-        readBuff.writeIdx += count;
-        // 处理二进制消息
-        OnReceiveData(state);
-        // 移动缓冲区
-        readBuff.CheckAndMoveBytes();
     }
 
     public static void Close(ClientState state)
     {
+        if (state == null) return;
+
         // 事件分发
         MethodInfo? mei = typeof(EventHandler).GetMethod("OnDisconnect");
         object[] ob = { state };
         mei?.Invoke(null, ob);
         // 关闭
+        state.socket.Shutdown(SocketShutdown.Both);
         state.socket.Close();
-        clients.Remove(state.socket);
+
+        clients[state.socket] = null; // 清理引用，帮助垃圾回收
+        clients.TryRemove(state.socket, out ClientState cs);
+        state.socket = null; // 清理引用，帮助垃圾回收
     }
 
     /// <summary>
@@ -210,14 +231,35 @@ public class NetManager
     }
 
     /// <summary>
+    /// 清理资源
+    /// </summary>
+    private static void Cleanup()
+    {
+        try
+        {
+            // 关闭所有客户端连接
+            List<ClientState> clientStates;
+            clientStates = new List<ClientState>(clients.Values);
+            clients.Clear();
+
+            foreach (var state in clientStates) Close(state);
+
+            listenfd?.Close(); // 关闭监听Socket
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"清理资源时发生异常: {ex.Message}");
+        }
+    }
+
+    /// <summary>
     /// 定时器
     /// </summary>
     private static void Timer()
     {
         //消息分发
         MethodInfo? mei = typeof(EventHandler).GetMethod(name: "OnTimer");
-        object[] ob = { };
-        mei?.Invoke(null, ob);
+        mei?.Invoke(null, null);
     }
 
     /// <summary>
