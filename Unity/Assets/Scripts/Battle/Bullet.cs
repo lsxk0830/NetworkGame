@@ -14,7 +14,7 @@ public class Bullet : MonoBehaviour
     private void OnCollisionEnter(Collision collisionInfo)
     {
         Debug.Log($"子弹到爆炸：坐标 = {transform.position}");
-
+        if (ID != GameMain.ID) return; // 不是自己发出的炮弹
         isMoving = false; // 停止移动
         MsgFire msg = this.GetObjInstance<MsgFire>();
         msg.ID = ID; // 发射者ID
