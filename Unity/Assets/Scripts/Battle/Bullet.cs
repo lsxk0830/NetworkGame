@@ -19,8 +19,8 @@ public class Bullet : MonoBehaviour
         MsgFire msg = this.GetObjInstance<MsgFire>();
         msg.ID = ID; // 发射者ID
         msg.bulletID = bulletID; // 子弹ID
-        msg.tx = transform.position.x;
-        msg.tz = transform.position.z;
+        msg.tx = transform.position.x.RoundTo(4);
+        msg.tz = transform.position.z.RoundTo(4);
         msg.x = 0;
         msg.z = 0;
         msg.IsExplosion = true;

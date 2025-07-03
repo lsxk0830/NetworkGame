@@ -91,6 +91,7 @@ public class NetManager : Singleton<NetManager>
     public void Send(MsgBase msg)
     {
         if (socket == null || !socket.Connected || isConnecting || isClosing) return; // 状态判断
+        //Debug.Log($"发送协议:{msg.protoName},消息体:{JsonConvert.SerializeObject(msg)}");
         // 数据编码
         byte[] nameBytes = MsgBase.EncodeName(msg);
         byte[] bodyBytes = MsgBase.Encode(msg);
@@ -109,7 +110,13 @@ public class NetManager : Singleton<NetManager>
         ba.readIdx = 0;
         ba.writeIdx = sendBytes.Length;
         writeQueue.Enqueue(ba);
-        // Send
+
+        // int totalLen = BitConverter.ToInt16(sendBytes, 0); // 解析总长度 (小端)
+        // int nameLen = BitConverter.ToInt16(sendBytes, 2);  // 解析消息名长度 (小端)
+        // string protoName = Encoding.ASCII.GetString(sendBytes, 4, nameLen);// 解析消息名 (ASCII)
+        // string jsonBody = Encoding.UTF8.GetString(sendBytes, 4 + nameLen, totalLen - 4 - nameLen);// 解析JSON消息体 (UTF-8)
+        // Debug.Log($"协议头: 总长度={totalLen}, 消息名={protoName}, 消息体: {jsonBody}"); // Send
+
         if (writeQueue.Count == 1)
             socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, SendCallback, socket);
     }
@@ -260,7 +267,7 @@ public class NetManager : Singleton<NetManager>
         {
             Send(msgPing);
             lastPingTime = Time.time;
-            Debug.Log($"发送Ping协议");
+            //Debug.Log($"发送Ping协议");
         }
         // 检测PONG时间
         if (Time.time - lastPongTime > PingInterval * 4)

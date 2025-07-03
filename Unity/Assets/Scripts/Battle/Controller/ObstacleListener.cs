@@ -35,12 +35,12 @@ public class ObstacleListener : MonoBehaviour
         msg.ObstacleID = int.Parse(gameObject.name); // 假设障碍物ID是游戏对象的名称
         msg.PosRotScale = new ObstaclePosRotScale()
         {
-            PosX = transform.position.x,
-            PosY = transform.position.y,
-            PosZ = transform.position.z,
-            RotX = transform.rotation.eulerAngles.x,
-            RotY = transform.rotation.eulerAngles.y,
-            RotZ = transform.rotation.eulerAngles.z,
+            PosX = transform.position.x.RoundTo(4),
+            PosY = transform.position.y.RoundTo(4),
+            PosZ = transform.position.z.RoundTo(4),
+            RotX = transform.rotation.eulerAngles.x.RoundTo(4),
+            RotY = transform.rotation.eulerAngles.y.RoundTo(4),
+            RotZ = transform.rotation.eulerAngles.z.RoundTo(4),
             ScaleX = transform.localScale.x,
             ScaleY = transform.localScale.y,
             ScaleZ = transform.localScale.z

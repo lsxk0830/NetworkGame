@@ -126,10 +126,10 @@ public class CtrlTank : BaseTank
             // 发送同步协议
             MsgFire msg = this.GetObjInstance<MsgFire>();
             msg.ID = GameMain.ID;
-            msg.x = startPos.x;
-            msg.z = startPos.z;
-            msg.tx = targetPos.x;
-            msg.tz = targetPos.z;
+            msg.x = startPos.x.RoundTo(4);
+            msg.z = startPos.z.RoundTo(4);
+            msg.tx = targetPos.x.RoundTo(4);
+            msg.tz = targetPos.z.RoundTo(4);
             msg.IsExplosion = false; // 是否爆炸
             NetManager.Instance.Send(msg);
             //Debug.Log($"发送开火协议：坐标 ={firePoint.position}, 目标 ={bullet.targetPos}");
@@ -149,13 +149,13 @@ public class CtrlTank : BaseTank
         lastSendSyncTime = Time.time;
         // 发送同步协议
         MsgSyncTank msg = this.GetObjInstance<MsgSyncTank>();
-        msg.x = transform.position.x;
-        msg.y = transform.position.y;
-        msg.z = transform.position.z;
-        msg.ex = transform.eulerAngles.x;
-        msg.ey = transform.eulerAngles.y;
-        msg.ez = transform.eulerAngles.z;
-        msg.turretY = turret.localEulerAngles.y;
+        msg.x = transform.position.x.RoundTo(4);
+        msg.y = transform.position.y.RoundTo(4);
+        msg.z = transform.position.z.RoundTo(4);
+        msg.ex = transform.eulerAngles.x.RoundTo(4);
+        msg.ey = transform.eulerAngles.y.RoundTo(4);
+        msg.ez = transform.eulerAngles.z.RoundTo(4);
+        msg.turretY = turret.localEulerAngles.y.RoundTo(4);
         this.PushPool(msg); // 将消息对象归还对象池
         NetManager.Instance.Send(msg);
     }

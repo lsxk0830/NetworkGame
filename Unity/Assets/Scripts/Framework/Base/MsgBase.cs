@@ -22,7 +22,7 @@ public class MsgBase
     /// </summary>
     public static byte[] Encode(MsgBase msgBase)
     {
-        string s = JsonUtility.ToJson(msgBase);
+        string s = JsonConvert.SerializeObject(msgBase);
         return Encoding.UTF8.GetBytes(s);
     }
 
