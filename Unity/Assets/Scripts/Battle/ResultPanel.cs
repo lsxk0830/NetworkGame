@@ -1,3 +1,4 @@
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ResultPanel : BasePanel
@@ -18,15 +19,16 @@ public class ResultPanel : BasePanel
     public override void OnInit()
     {
         layer = PanelManager.Layer.Tip;
-    }
-
-    public override void OnShow(params object[] args)
-    {
         // 寻找组件
         winImage = transform.Find("WinImage").GetComponent<Image>();
         lostImage = transform.Find("LostImage").GetComponent<Image>();
         okBtn = transform.Find("OkBtn").GetComponent<Button>();
+    }
+
+    public override void OnShow(params object[] args)
+    {
         // 监听
+        gameObject.SetActive(true);
         okBtn.onClick.AddListener(OnOkClick);
         // 显示哪个照片
         if (args.Length == 1)
@@ -45,11 +47,21 @@ public class ResultPanel : BasePanel
         }
     }
 
-    public override void OnClose() { }
+    public override void OnClose()
+    {
+        gameObject.SetActive(false);
+        okBtn.onClick.RemoveListener(OnOkClick);
+
+    }
 
     private void OnOkClick()
     {
-        PanelManager.Instance.Open<RoomPanelView>();
-        Close();
+        SceneManager.LoadSceneAsync("Tank", LoadSceneMode.Single).completed += (op) =>
+        {
+            // 卸载战斗场景
+            SceneManager.UnloadSceneAsync("Game");
+            PanelManager.Instance.Open<HomePanelView>();
+            OnClose();
+        };
     }
 }
