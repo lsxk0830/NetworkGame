@@ -78,6 +78,7 @@ public class BaseTank : MonoBehaviour
             explosion.transform.rotation = transform.rotation;
             BaseTank winTank = BattleManager.GetTank(winID);
             MsgEndBattle msg = this.GetObjInstance<MsgEndBattle>();
+            msg.roomID = BattleManager.Instance.roomID;
             msg.winCamp = winTank.camp;
             NetManager.Instance.Send(msg);
             this.PushPool(msg);

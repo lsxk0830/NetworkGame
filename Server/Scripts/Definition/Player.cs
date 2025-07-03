@@ -11,11 +11,6 @@ public class Player
     /// </summary>
     public long ID;
 
-    /// <summary>
-    /// 房间ID
-    /// </summary>
-    public string roomId = "";
-
     // 坐标和旋转
     public float x;
 

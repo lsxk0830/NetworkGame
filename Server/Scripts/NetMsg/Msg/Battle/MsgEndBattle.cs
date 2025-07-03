@@ -8,6 +8,8 @@ public class MsgEndBattle : MsgBase
         protoName = "MsgBattleResult";
     }
 
+    public string roomID { get; set; }
+
     /// <summary>
     /// 获胜的阵营
     /// </summary>

@@ -13,7 +13,6 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collisionInfo)
     {
-        Debug.Log($"子弹到爆炸：坐标 = {transform.position},collisionInfo = {collisionInfo.gameObject.name}");
         if (ID != GameMain.ID) return; // 不是自己发出的炮弹
         isMoving = false; // 停止移动
         MsgFire msg = this.GetObjInstance<MsgFire>();
@@ -37,7 +36,7 @@ public class Bullet : MonoBehaviour
         }
         else if (collObj.tag != $"Camp{BattleManager.Instance.GetCtrlTank().camp}") // 碰撞到坦克
         {
-            if (collObj.TryGetComponent<BaseTank>(out BaseTank hitTank))
+            if (collObj.TryGetComponent<SyncTank>(out SyncTank hitTank))
             {
                 SendMsgHit(ID, hitTank.ID);
             }

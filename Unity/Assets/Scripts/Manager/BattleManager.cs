@@ -12,6 +12,7 @@ public class BattleManager : MonoSingleton<BattleManager>
     public static Dictionary<long, BaseTank> tanks;
     private Transform tankParent;
     private List<string> handles;
+    public string roomID; // 房间ID
 
     protected override void OnAwake()
     {
@@ -86,10 +87,21 @@ public class BattleManager : MonoSingleton<BattleManager>
     {
         Debug.Log($"收到进入战斗协议");
         MsgEnterBattle msg = (MsgEnterBattle)msgBse;
+        if (msg.result != 0)
+        {
+            PanelManager.Instance.Open<TipPanel>("进入战斗失败");
+            return;
+        }
+        if (msg.tanks == null || msg.tanks.Length < 2) // 没有坦克信息
+        {
+            PanelManager.Instance.Open<TipPanel>("没有坦克信息");
+            return;
+        }
         foreach (var tankInfo in msg.tanks) // 生成坦克
         {
             Init(tankInfo);
         }
+        roomID = msg.roomID; // 保存房间ID
     }
 
     /// <summary>

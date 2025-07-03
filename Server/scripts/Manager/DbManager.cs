@@ -1,4 +1,5 @@
 using MySql.Data.MySqlClient;
+using System.Data;
 using System.Text.RegularExpressions;
 
 public class DbManager
@@ -220,6 +221,55 @@ public class DbManager
         catch (Exception ex)
         {
             Console.WriteLine($"更新失败: {ex.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 批处理
+    /// </summary>
+    public static bool BatchUpdateUsers(List<User> users)
+    {
+        const string sql = @"
+        UPDATE Account
+        SET Coin = @coin,
+            Diamond = @diamond,
+            Win = @win,
+            Lost = @lost,
+            AvatarPath = @avatar,
+            LastLogin = CURRENT_TIMESTAMP
+        WHERE ID = @ID;";
+
+        using var transaction = connection.BeginTransaction(); // 开启事务
+        try
+        {
+            using var cmd = new MySqlCommand(sql, connection, transaction);
+            // 预定义参数（避免重复创建）
+            cmd.Parameters.Add("@ID", MySqlDbType.Int32);
+            cmd.Parameters.Add("@coin", MySqlDbType.Int32);
+            cmd.Parameters.Add("@diamond", MySqlDbType.Int32);
+            cmd.Parameters.Add("@win", MySqlDbType.Int32);
+            cmd.Parameters.Add("@lost", MySqlDbType.Int32);
+            cmd.Parameters.Add("@avatar", MySqlDbType.VarChar);
+
+            foreach (var user in users)
+            {
+                cmd.Parameters["@ID"].Value = user.ID;
+                cmd.Parameters["@coin"].Value = user.Coin;
+                cmd.Parameters["@diamond"].Value = user.Diamond;
+                cmd.Parameters["@win"].Value = user.Win;
+                cmd.Parameters["@lost"].Value = user.Lost;
+                cmd.Parameters["@avatar"].Value = user.AvatarPath;
+                cmd.ExecuteNonQuery();
+            }
+            transaction.Commit(); // 提交事务
+            Console.WriteLine($"批量更新成功, 更新了 {users.Count} 个用户");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            transaction?.Rollback(); // 回滚
+            Console.WriteLine($"批量更新失败: {ex.Message}");
             return false;
         }
     }

@@ -12,11 +12,6 @@ public class Player
     public long ID;
 
     /// <summary>
-    /// 房间ID
-    /// </summary>
-    public string roomId = "";
-
-    /// <summary>
     /// 是否是房主 1-房主 0-普通成员
     /// </summary>
     public int isOwner = 0;

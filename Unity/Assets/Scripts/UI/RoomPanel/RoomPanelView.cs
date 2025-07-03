@@ -96,15 +96,14 @@ public class RoomPanelView : BasePanel
     /// <summary>
     /// 创建房间时更新UI
     /// </summary>
-    private void UpdateUICreateRoom(MsgCreateRoom response)
+    private void UpdateUICreateRoom(MsgCreateRoom msg)
     {
         Player player = new Player()
         {
             ID = GameMain.ID,
-            roomId = response.room.RoomID
         };
         Debug.Log($"创建房间");
-        controller.UpdateModel(response.room);
+        controller.UpdateModel(msg.room);
         GeneratePlayerInfo(player);
     }
 

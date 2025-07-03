@@ -9,6 +9,11 @@ public class MsgEndBattle : MsgBase
     }
 
     /// <summary>
+    /// 房间ID
+    /// </summary>
+    public string roomID;
+
+    /// <summary>
     /// 获胜的阵营
     /// </summary>
     public int winCamp = 0;

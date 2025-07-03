@@ -18,6 +18,7 @@ public class CtrlTank : BaseTank
 
     private float offsetY;
     private CinemachineFreeLook freeLookCam;
+    private CinemachineImpulseSource impulseSource;
     private float accumulatedX; // 累计水平旋转角度
     private LineRenderer lineRenderer; // 划线
     public Material mMaterial; // 射线材质
@@ -29,6 +30,7 @@ public class CtrlTank : BaseTank
     public override void Init(Player tankInfo)
     {
         freeLookCam = BattleManager.Instance.GetComponent<CinemachineFreeLook>();
+        impulseSource = BattleManager.Instance.GetComponent<CinemachineImpulseSource>();
 
         base.Init(tankInfo);
 
@@ -121,6 +123,8 @@ public class CtrlTank : BaseTank
             var startPos = firePoint.transform.position;
             Vector3 targetPos = firePoint.transform.position + firePoint.transform.forward * 50f;
             startPos.y = 1f; targetPos.y = 1f;
+
+            impulseSource.GenerateImpulse(); // 生成震动
 
             //Debug.Log($"点击开火按钮");
             // 发送同步协议

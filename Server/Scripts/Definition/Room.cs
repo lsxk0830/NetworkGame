@@ -108,7 +108,6 @@ public class Room
 
         // 设置玩家数据
         newPlayer.camp = SwitchCamp();
-        newPlayer.roomId = this.RoomID;
         ownerId = newPlayer.ID; // 设置房主
         return true;
     }
@@ -146,7 +145,6 @@ public class Room
 
         // 设置玩家数据
         newPlayer.camp = SwitchCamp();
-        newPlayer.roomId = this.RoomID;
 
         msg.roomID = this.RoomID;
         msg.result = 0;
@@ -277,6 +275,7 @@ public class Room
     {
         MsgEnterBattle msg = new MsgEnterBattle()
         {
+            result = 0,
             tanks = new Player[playerIds.Count]
         };
         ResetPlayers(); // 重置属性
@@ -416,7 +415,6 @@ public class Room
                 SetBirthPos(player, count2);
                 count2++;
             }
-            player.hp = 100;
         }
     }
 
