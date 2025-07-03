@@ -118,18 +118,18 @@ public class CtrlTank : BaseTank
         {
             if (spaceKeyHandled || Time.time - lastFireTime < fired) return; // CD时间判断
 
-            Bullet bullet = Fire(Guid.NewGuid());
+            var startPos = firePoint.transform.position;
+            Vector3 targetPos = firePoint.transform.position + firePoint.transform.forward * 50f;
+            startPos.y = 1f; targetPos.y = 1f;
+
             //Debug.Log($"点击开火按钮");
             // 发送同步协议
             MsgFire msg = this.GetObjInstance<MsgFire>();
             msg.ID = GameMain.ID;
-            msg.bulletID = bullet.bulletID;
-            msg.x = firePoint.position.x;
-            //msg.y = 1f;
-            msg.z = firePoint.position.z;
-            msg.tx = bullet.targetPos.x;
-            //msg.ty = 1;
-            msg.tz = bullet.targetPos.z;
+            msg.x = startPos.x;
+            msg.z = startPos.z;
+            msg.tx = targetPos.x;
+            msg.tz = targetPos.z;
             msg.IsExplosion = false; // 是否爆炸
             NetManager.Instance.Send(msg);
             //Debug.Log($"发送开火协议：坐标 ={firePoint.position}, 目标 ={bullet.targetPos}");
@@ -183,7 +183,7 @@ public class CtrlTank : BaseTank
         //Debug.DrawRay(rayStart, rayDirection * 10, Color.green);
 
         // 3. 动态设置线段终点
-        Vector3 lineEnd = isHit ? hit.point : rayStart + rayDirection * maxRayLength;lineEnd.y = 0.8f; // 保持Y轴高度一致
+        Vector3 lineEnd = isHit ? hit.point : rayStart + rayDirection * maxRayLength; lineEnd.y = 0.8f; // 保持Y轴高度一致
         lineRenderer.SetPosition(0, rayStart); // 起点：炮管末端
         lineRenderer.SetPosition(1, lineEnd); // 终点：碰撞点或最大长度点
 

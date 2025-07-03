@@ -17,7 +17,6 @@ public class BattleManager : MonoSingleton<BattleManager>
     {
         EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
         EventManager.Instance.RegisterEvent(Events.MsgBattleResult, OnMsgBattleResult);
-        EventManager.Instance.RegisterEvent(Events.MsgLeaveBattle, OnMsgLeaveBattle);
         EventManager.Instance.RegisterEvent(Events.MsgSyncTank, OnMsgSyncTank);
         EventManager.Instance.RegisterEvent(Events.MsgFire, OnMsgFire);
         EventManager.Instance.RegisterEvent(Events.MsgHit, OnMsgHit);
@@ -44,7 +43,6 @@ public class BattleManager : MonoSingleton<BattleManager>
     {
         EventManager.Instance.RemoveEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
         EventManager.Instance.RemoveEvent(Events.MsgBattleResult, OnMsgBattleResult);
-        EventManager.Instance.RemoveEvent(Events.MsgLeaveBattle, OnMsgLeaveBattle);
         EventManager.Instance.RemoveEvent(Events.MsgSyncTank, OnMsgSyncTank);
         EventManager.Instance.RemoveEvent(Events.MsgFire, OnMsgFire);
         EventManager.Instance.RemoveEvent(Events.MsgHit, OnMsgHit);
@@ -109,21 +107,6 @@ public class BattleManager : MonoSingleton<BattleManager>
     }
 
     /// <summary>
-    /// 收到玩家退出协议
-    /// </summary>
-    private void OnMsgLeaveBattle(MsgBase msgBse)
-    {
-        MsgLeaveBattle msg = (MsgLeaveBattle)msgBse;
-        // 查找坦克
-        BaseTank tank = GetTank(msg.ID);
-        if (tank == null)
-            return;
-        // 删除坦克
-        RemoveTank(msg.ID);
-        GameObject.Destroy(tank.gameObject);
-    }
-
-    /// <summary>
     /// 收到同步协议
     /// </summary>
     private void OnMsgSyncTank(MsgBase msgBse)
@@ -143,11 +126,8 @@ public class BattleManager : MonoSingleton<BattleManager>
     private void OnMsgFire(MsgBase msgBse)
     {
         MsgFire msg = (MsgFire)msgBse;
-        if (msg.ID == GameMain.ID) return;// 不能同步自己
-        // 查找坦克
-        SyncTank tank = (SyncTank)GetTank(msg.ID);
-        if (tank == null) return;
-        tank.SyncFire(msg); // 开火
+        BaseTank tank = msg.ID == GameMain.ID ? GetCtrlTank() : GetTank(msg.ID);
+        tank.SyncFire(msg);
     }
 
     /// <summary>

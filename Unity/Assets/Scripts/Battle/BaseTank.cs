@@ -33,19 +33,27 @@ public class BaseTank : MonoBehaviour
     /// <summary>
     /// 开火
     /// </summary>
-    public Bullet Fire(Guid bulletGuid)
+    public void SyncFire(MsgFire msg)
     {
-        if (isDie()) return null;
-        Bullet bullet = this.GetGameObject(EffectManager.BulletPrefab).GetComponent<Bullet>();
-        var startPos = firePoint.transform.position;
-        Vector3 targetPos = firePoint.transform.position + firePoint.transform.forward * 50f;
-        startPos.y = 1f; targetPos.y = 1f;
-        bullet.PoolInit(ID, bulletGuid, startPos, targetPos);
-        BulletManager.AddBullet(bullet);
-        // 更新时间
-        lastFireTime = Time.time;
-        return bullet;
+        Vector3 pos = new Vector3(msg.x, 1, msg.z);
+        Vector3 tPos = new Vector3(msg.tx, 1, msg.tz);
+        if (msg.IsExplosion)
+        {
+            this.GetGameObject(EffectManager.HitPrefab)
+                .GetComponent<Hit>()
+                .PoolInit(tPos);
+            BulletManager.GetBullet(msg.bulletID)?.PoolReset(); // 将子弹归还对象池
+            BulletManager.RemoveBullet(msg.bulletID); // 从字典中移除子弹
+        }
+        else
+        {
+            Bullet bullet = this.GetGameObject(EffectManager.BulletPrefab).GetComponent<Bullet>();
+            bullet.PoolInit(ID, msg.bulletID, pos, tPos);
+            BulletManager.AddBullet(bullet);
+            lastFireTime = Time.time;
+        }
     }
+
 
     /// <summary>
     /// 是否死亡

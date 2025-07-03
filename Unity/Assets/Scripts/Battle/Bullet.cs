@@ -92,7 +92,6 @@ public class Bullet : MonoBehaviour
     {
         isMoving = false; // 停止移动
         this.PushGameObject(this.gameObject); // 将子弹归还对象池
-        BulletManager.RemoveBullet(bulletID); // 从字典中移除子弹
     }
 
     private async UniTaskVoid MoveBulletAsync()
