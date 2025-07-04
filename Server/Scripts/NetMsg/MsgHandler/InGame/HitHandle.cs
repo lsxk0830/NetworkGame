@@ -32,6 +32,7 @@ public partial class MsgHandler
             if (winCamp != 0)
             {
                 // 游戏结束
+                Console.WriteLine($"发送游戏结束协议");
                 room.Broadcast(new MsgEndBattle()
                 {
                     winCamp = winCamp

@@ -123,8 +123,8 @@ public class BattleManager : MonoSingleton<BattleManager>
         EventManager.Instance.RemoveEvent(Events.MsgSyncTank, OnMsgSyncTank);
         EventManager.Instance.RemoveEvent(Events.MsgFire, OnMsgFire);
         EventManager.Instance.RemoveEvent(Events.MsgHit, OnMsgHit);
-        this.gameObject.ClearGameobjectPool(); // 清空对象池
-        this.ClearAll(); // 清空所有
+        // this.gameObject.ClearGameobjectPool(); // 清空对象池
+        // this.ClearAll(); // 清空所有
     }
 
     /// <summary>

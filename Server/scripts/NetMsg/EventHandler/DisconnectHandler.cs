@@ -9,8 +9,8 @@ public partial class EventHandler
         UserManager.RemoveUser(cs);
         if (cs != null && cs.user != null && cs.user.RoomID != "")
         {
-            Room room = RoomManager.GetRoom(cs.user.RoomID);
-            room.RemovePlayer(cs.user.ID);
+            Room? room = RoomManager.GetRoom(cs.user.RoomID);
+            room?.RemovePlayer(cs.user.ID);
         }
     }
 }
