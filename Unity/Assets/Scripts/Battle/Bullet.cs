@@ -15,34 +15,38 @@ public class Bullet : MonoBehaviour
     {
         if (ID != GameMain.ID) return; // 不是自己发出的炮弹
         isMoving = false; // 停止移动
-        MsgFire msg = this.GetObjInstance<MsgFire>();
-        msg.ID = ID; // 发射者ID
-        msg.bulletID = bulletID; // 子弹ID
-        msg.tx = transform.position.x.RoundTo(4);
-        msg.tz = transform.position.z.RoundTo(4);
-        msg.x = 0;
-        msg.z = 0;
-        msg.IsExplosion = true;
-        NetManager.Instance.Send(msg);
-        GameObject collObj = collisionInfo.gameObject;
-        if (collObj.tag == "Obstacle") // 碰撞到障碍物
+
         {
-            MsgObstacleOne msgOne = this.GetObjInstance<MsgObstacleOne>();
-            msgOne.ObstacleID = int.Parse(collObj.name);
-            msgOne.IsDestory = true; //销毁
-            NetManager.Instance.Send(msgOne);
-            this.PushPool(msgOne);
-            Destroy(collObj);
+            MsgFire msg = this.GetObjInstance<MsgFire>();
+            msg.ID = ID; // 发射者ID
+            msg.bulletID = bulletID; // 子弹ID
+            msg.tx = transform.position.x.RoundTo(4);
+            msg.tz = transform.position.z.RoundTo(4);
+            msg.x = 0;
+            msg.z = 0;
+            msg.IsExplosion = true;
+            NetManager.Instance.Send(msg);
+            this.PushPool(msg); // 将消息对象归还对象池
         }
-        else if (collObj.tag != $"Camp{BattleManager.Instance.GetCtrlTank().camp}") // 碰撞到坦克
         {
-            if (collObj.TryGetComponent<SyncTank>(out SyncTank hitTank))
+            GameObject collObj = collisionInfo.gameObject;
+            if (collObj.tag == "Obstacle") // 碰撞到障碍物
             {
-                SendMsgHit(ID, hitTank.ID);
+                MsgObstacleOne msgOne = this.GetObjInstance<MsgObstacleOne>();
+                msgOne.ObstacleID = int.Parse(collObj.name);
+                msgOne.IsDestory = true; //销毁
+                NetManager.Instance.Send(msgOne);
+                this.PushPool(msgOne);
+                Destroy(collObj);
+            }
+            else if (collObj.tag != $"Camp{BattleManager.Instance.GetCtrlTank().camp}") // 碰撞到坦克
+            {
+                if (collObj.TryGetComponent<SyncTank>(out SyncTank hitTank))
+                {
+                    SendMsgHit(ID, hitTank.ID);
+                }
             }
         }
-
-        this.PushPool(msg); // 将消息对象归还对象池
         this.PushGameObject(this.gameObject); // 将子弹归还对象池
         BulletManager.RemoveBullet(bulletID); // 从字典中移除子弹
         this.GetGameObject(EffectManager.HitPrefab)

@@ -21,7 +21,7 @@ public static class Events
     public static string MsgObstacleAll = "MsgObstacleAll"; //随机生成场景中所有方块(障碍物)消息
     public static string MsgObstacleOne = "MsgObstacleOne"; //随机生成场景中一个方块(障碍物)消息
     public static string MsgEnterBattle = "MsgEnterBattle"; //战斗协议
-    public static string MsgBattleResult = "MsgBattleResult"; //战斗结束协议
+    public static string MsgEndBattle = "MsgEndBattle"; //战斗结束协议
     public static string MsgLeaveBattle = "MsgLeaveBattle"; //玩家退出协议
 
     public static string MsgSyncTank = "MsgSyncTank"; //同步协议

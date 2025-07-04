@@ -17,7 +17,7 @@ public class BattleManager : MonoSingleton<BattleManager>
     protected override void OnAwake()
     {
         EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
-        EventManager.Instance.RegisterEvent(Events.MsgBattleResult, OnMsgBattleResult);
+        EventManager.Instance.RegisterEvent(Events.MsgEndBattle, OnMsgEndBattle);
         EventManager.Instance.RegisterEvent(Events.MsgSyncTank, OnMsgSyncTank);
         EventManager.Instance.RegisterEvent(Events.MsgFire, OnMsgFire);
         EventManager.Instance.RegisterEvent(Events.MsgHit, OnMsgHit);
@@ -43,7 +43,7 @@ public class BattleManager : MonoSingleton<BattleManager>
     void OnDestroy()
     {
         EventManager.Instance.RemoveEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
-        EventManager.Instance.RemoveEvent(Events.MsgBattleResult, OnMsgBattleResult);
+        EventManager.Instance.RemoveEvent(Events.MsgEndBattle, OnMsgEndBattle);
         EventManager.Instance.RemoveEvent(Events.MsgSyncTank, OnMsgSyncTank);
         EventManager.Instance.RemoveEvent(Events.MsgFire, OnMsgFire);
         EventManager.Instance.RemoveEvent(Events.MsgHit, OnMsgHit);
@@ -107,7 +107,7 @@ public class BattleManager : MonoSingleton<BattleManager>
     /// <summary>
     /// 收到战斗结束协议
     /// </summary>
-    private void OnMsgBattleResult(MsgBase msgBse)
+    private void OnMsgEndBattle(MsgBase msgBse)
     {
         Debug.Log($"收到战斗结束协议");
         MsgEndBattle msg = (MsgEndBattle)msgBse;
@@ -117,6 +117,12 @@ public class BattleManager : MonoSingleton<BattleManager>
         if (tank != null && tank.camp == msg.winCamp)
             isWin = true;
         PanelManager.Instance.Open<ResultPanel>(isWin);
+
+        EventManager.Instance.RemoveEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
+        EventManager.Instance.RemoveEvent(Events.MsgEndBattle, OnMsgEndBattle);
+        EventManager.Instance.RemoveEvent(Events.MsgSyncTank, OnMsgSyncTank);
+        EventManager.Instance.RemoveEvent(Events.MsgFire, OnMsgFire);
+        EventManager.Instance.RemoveEvent(Events.MsgHit, OnMsgHit);
     }
 
     /// <summary>
