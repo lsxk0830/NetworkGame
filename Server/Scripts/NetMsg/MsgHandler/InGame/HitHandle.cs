@@ -24,7 +24,32 @@ public partial class MsgHandler
         hitPlayer.hp -= damagePerHit;
         msg.hp = hitPlayer.hp;
         msg.damage = damagePerHit;
-
+        if (hitPlayer.hp <= 0)
+        {
+            int winCamp = room.Judgment(hitPlayer.camp, hitPlayer.ID);
+            if (winCamp != 0)
+            {
+                // 游戏结束
+                room.Broadcast(new MsgEndBattle()
+                {
+                    winCamp = winCamp
+                });
+                // 更新数据库
+                List<User> users = new List<User>(room.playerIds.Count);
+                foreach (var player in room.playerIds)
+                {
+                    User? playerUser = UserManager.GetUser(player.Key);
+                    if (playerUser == null) continue;
+                    if (player.Value.camp == winCamp)
+                        playerUser.Win++;
+                    else
+                        playerUser.Lost++;
+                    users.Add(playerUser);
+                }
+                DbManager.BatchUpdateUsers(users); 
+                return;
+            }
+        }
         room.Broadcast(msg);// 广播
     }
 }

@@ -69,6 +69,7 @@ public class CtrlTank : BaseTank
 
     private void OnUpdate()
     {
+        if (hp <= 0) return; // 是否死亡
         // 开炮
         FireUpdate();
         // 发送同步信息
@@ -76,6 +77,7 @@ public class CtrlTank : BaseTank
     }
     private void OnFixUpdate()
     {
+        if (hp <= 0) return; // 是否死亡
         // 移动控制
         MoveUpdate();
         // 炮塔控制
@@ -114,8 +116,6 @@ public class CtrlTank : BaseTank
 
     private void FireUpdate()
     {
-        if (isDie()) return; // 是否死亡
-
         if (Input.GetKeyDown(KeyCode.Space))  // 按键判断
         {
             if (spaceKeyHandled || Time.time - lastFireTime < fired) return; // CD时间判断

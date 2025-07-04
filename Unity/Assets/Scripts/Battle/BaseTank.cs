@@ -54,34 +54,23 @@ public class BaseTank : MonoBehaviour
         }
     }
 
-
-    /// <summary>
-    /// 是否死亡
-    /// </summary>
-    public bool isDie()
-    {
-        return hp <= 0;
-    }
-
     /// <summary>
     /// 被攻击
     /// </summary>
-    public void Attacked(long winID, float att)
+    /// <param name="attackID">攻击者ID</param>
+    /// <param name="hp">剩余血量</param>
+    /// <param name="att">攻击力</param>
+    public void Attacked(long attackID,int hp, float att)
     {
-        if (isDie()) return;
+        if (hp <= 0) return;
+        Debug.LogError($"坦克{ID}被{attackID}攻击，剩余血量：{hp},攻击力：{att}");
 
-        hp -= att;
-        if (isDie())
+        if (hp <= 0)
         {
             GameObject explosion = this.GetGameObject(EffectManager.DiePrefab);
             explosion.transform.position = transform.position;
             explosion.transform.rotation = transform.rotation;
-            BaseTank winTank = BattleManager.GetTank(winID);
-            MsgEndBattle msg = this.GetObjInstance<MsgEndBattle>();
-            msg.roomID = BattleManager.Instance.roomID;
-            msg.winCamp = winTank.camp;
-            NetManager.Instance.Send(msg);
-            this.PushPool(msg);
+            mRigidbody.constraints = RigidbodyConstraints.FreezeAll; // 冻结刚体
         }
     }
 }

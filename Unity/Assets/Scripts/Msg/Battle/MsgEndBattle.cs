@@ -1,5 +1,5 @@
 /// <summary>
-/// 战斗结果（客户端推送）
+/// 战斗结果（服务器推送）
 /// </summary>
 public class MsgEndBattle : MsgBase
 {
@@ -7,11 +7,6 @@ public class MsgEndBattle : MsgBase
     {
         protoName = "MsgEndBattle";
     }
-
-    /// <summary>
-    /// 房间ID
-    /// </summary>
-    public string roomID;
 
     /// <summary>
     /// 获胜的阵营

@@ -109,6 +109,7 @@ public class BattleManager : MonoSingleton<BattleManager>
     /// </summary>
     private void OnMsgBattleResult(MsgBase msgBse)
     {
+        Debug.Log($"收到战斗结束协议");
         MsgEndBattle msg = (MsgEndBattle)msgBse;
         // 判断显示胜利还是失败
         bool isWin = false;
@@ -150,9 +151,8 @@ public class BattleManager : MonoSingleton<BattleManager>
         MsgHit msg = (MsgHit)msgBse;
         // 查找坦克
         BaseTank tank = GetTank(msg.targetID);
-        if (tank == null)
-            return;
-        tank.Attacked(msg.ID, msg.damage); // 被击中
+        if (tank == null) return;
+        tank.Attacked(msg.ID, msg.hp, msg.damage); // 被击中
     }
 
     #endregion

@@ -22,6 +22,8 @@ public class Room
     /// 玩家列表
     /// </summary>
     public Dictionary<long, Player> playerIds = new();
+    public List<long> camp1List = new(); // 玩家列表，方便遍历
+    public List<long> camp2List = new(); // 玩家列表，方便遍历
 
     /// <summary>
     /// 房主id
@@ -402,6 +404,8 @@ public class Room
         // 位置和旋转
         int count1 = 0;
         int count2 = 0;
+        camp1List.Clear();
+        camp2List.Clear();
         foreach (Player player in playerIds.Values)
         {
             player.hp = 100;
@@ -409,80 +413,32 @@ public class Room
             {
                 SetBirthPos(player, count1);
                 count1++;
+                camp1List.Add(player.ID); // 添加到阵营1列表
             }
             else
             {
                 SetBirthPos(player, count2);
                 count2++;
+                camp2List.Add(player.ID); // 添加到阵营2列表
             }
         }
-    }
-
-    /// <summary>
-    /// 是否死亡
-    /// </summary>
-    public bool IsDie(Player player)
-    {
-        return player.hp <= 0;
     }
 
     /// <summary>
     /// 胜负判断，0-未分出胜负，1-阵营1胜利，2-阵营2胜利
     /// </summary>
-    public int Judgment()
+    public int Judgment(int camp, long id)
     {
-        // 存活人数
-        int count1 = 0;
-        int count2 = 0;
-        foreach (Player player in playerIds.Values)
-        {
-            if (!IsDie(player))
-            {
-                if (player.camp == 1) count1++;
-                if (player.camp == 2) count2++;
-            }
-        }
-        // 判断
-        if (count1 <= 0)
+        if (camp == 1)
+            camp1List.Remove(id); // 从阵营1列表中移除玩家
+        else if (camp == 2)
+            camp2List.Remove(id); // 从阵营2列表中移除玩家
+
+        if (camp1List.Count <= 0)
             return 2;
-        else if (count2 <= 0)
+        else if (camp2List.Count <= 0)
             return 1;
-        return 0;
-    }
-
-    /// <summary>
-    /// 上一次判断结果的时间
-    /// </summary>
-
-    private long lastJudgeTime = 0;
-
-    /// <summary>
-    /// 定时更新,10s更新一次
-    /// </summary>
-    public void Update()
-    {
-        if ((Room.Status)status != Status.FIGHT) // 状态判断
-            return;
-        if (NetManager.GetTimeStamp() - lastJudgeTime > 10f) // 时间判断
-            return;
-        lastJudgeTime = NetManager.GetTimeStamp();
-        int winCamp = Judgment(); // 胜负判断
-        if (winCamp == 0)
-            return;
-        status = (int)Status.PREPARE; // 某一方胜利，结束战斗
-        foreach (Player player in playerIds.Values)  // 统计信息
-        {
-            if (player == null) continue;
-            User? user = UserManager.GetUser(player.ID);
-            if (user == null) continue;
-            if (player.camp == winCamp)
-                user.Win++;
-            else
-                user.Lost++;
-        }
-        // 发送Result
-        MsgEndBattle msg = new MsgEndBattle();
-        msg.winCamp = winCamp;
-        Broadcast(msg);
+        else
+            return 0;
     }
 }

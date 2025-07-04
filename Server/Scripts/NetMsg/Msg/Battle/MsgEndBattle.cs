@@ -1,14 +1,12 @@
 /// <summary>
-/// 战斗结果（客户端推送）
+/// 战斗结果（服务器推送）
 /// </summary>
 public class MsgEndBattle : MsgBase
 {
     public MsgEndBattle()
     {
-        protoName = "MsgBattleResult";
+        protoName = "MsgEndBattle";
     }
-
-    public string roomID { get; set; }
 
     /// <summary>
     /// 获胜的阵营
