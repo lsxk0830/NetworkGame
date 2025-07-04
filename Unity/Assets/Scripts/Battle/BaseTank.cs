@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class BaseTank : MonoBehaviour
@@ -14,6 +13,7 @@ public class BaseTank : MonoBehaviour
     public long ID; // 哪一玩家
     public int camp = 0; // 阵营
     protected Rigidbody mRigidbody;
+    private GameObject explosion;
 
     public virtual void Init(Player tankInfo)
     {
@@ -60,17 +60,22 @@ public class BaseTank : MonoBehaviour
     /// <param name="attackID">攻击者ID</param>
     /// <param name="hp">剩余血量</param>
     /// <param name="att">攻击力</param>
-    public void Attacked(long attackID,int hp, float att)
+    public void Die()
     {
-        if (hp <= 0) return;
-        Debug.LogError($"坦克{ID}被{attackID}攻击，剩余血量：{hp},攻击力：{att}");
+        if (explosion != null) return; // 如果已经爆炸了，就不再处理
 
-        if (hp <= 0)
-        {
-            GameObject explosion = this.GetGameObject(EffectManager.DiePrefab);
-            explosion.transform.position = transform.position;
-            explosion.transform.rotation = transform.rotation;
-            mRigidbody.constraints = RigidbodyConstraints.FreezeAll; // 冻结刚体
-        }
+        explosion = this.GetGameObject(EffectManager.DiePrefab);
+        explosion.transform.position = transform.position;
+        explosion.transform.rotation = transform.rotation;
+        mRigidbody.constraints = RigidbodyConstraints.FreezeAll; // 冻结刚体
+    }
+
+    protected virtual void Destroy()
+    {
+        explosion = null; // 清除爆炸特效引用
+        mRigidbody = null;
+        turret = null;
+        gun = null;
+        firePoint = null;
     }
 }

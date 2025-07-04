@@ -41,9 +41,17 @@ public class Bullet : MonoBehaviour
             }
             else if (collObj.tag != $"Camp{BattleManager.Instance.GetCtrlTank().camp}") // 碰撞到坦克
             {
-                if (collObj.TryGetComponent<SyncTank>(out SyncTank hitTank))
+                if (collObj.TryGetComponent(out SyncTank hitTank))
                 {
-                    SendMsgHit(ID, hitTank.ID);
+                    MsgHit msgHit = this.GetObjInstance<MsgHit>();
+                    msgHit.targetID = hitTank.ID; // 被击中坦克ID
+                    msgHit.ID = ID; // 发射者ID
+                    msgHit.x = transform.position.x.RoundTo(4);
+                    msgHit.y = transform.position.y.RoundTo(4);
+                    msgHit.z = transform.position.z.RoundTo(4);
+                    NetManager.Instance.Send(msgHit);
+                    this.PushPool(msgHit);
+                    Debug.Log($"发送击中受伤协议)");
                 }
             }
         }
@@ -52,25 +60,6 @@ public class Bullet : MonoBehaviour
         this.GetGameObject(EffectManager.HitPrefab)
             .GetComponent<Hit>()
             .PoolInit(this.transform.position);
-    }
-
-    /// <summary>
-    /// 发送伤害协议。attackTankID-发射者 hitTankID-被攻击坦克
-    /// </summary>
-    private void SendMsgHit(long attackTankID, long hitTankID)
-    {
-        if (hitTankID == 0 || hitTankID == 0)
-            return;
-
-        if (attackTankID != GameMain.ID) return;// 不是自己发出的炮弹
-        MsgHit msg = this.GetObjInstance<MsgHit>();
-        msg.targetID = hitTankID;
-        msg.ID = attackTankID;
-        msg.x = transform.position.x;
-        msg.y = transform.position.y;
-        msg.z = transform.position.z;
-        NetManager.Instance.Send(msg);
-        this.PushPool(msg);
     }
 
     /// <summary>

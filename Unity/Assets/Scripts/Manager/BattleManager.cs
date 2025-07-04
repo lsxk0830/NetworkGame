@@ -47,8 +47,8 @@ public class BattleManager : MonoSingleton<BattleManager>
         EventManager.Instance.RemoveEvent(Events.MsgSyncTank, OnMsgSyncTank);
         EventManager.Instance.RemoveEvent(Events.MsgFire, OnMsgFire);
         EventManager.Instance.RemoveEvent(Events.MsgHit, OnMsgHit);
+        BulletManager.Clear(); // 清空子弹管理器
         EffectManager.Destroy();
-
         tanks.Clear(); tanks = null;
     }
 
@@ -116,8 +116,10 @@ public class BattleManager : MonoSingleton<BattleManager>
         BaseTank tank = GetCtrlTank();
         if (tank != null && tank.camp == msg.winCamp)
             isWin = true;
+        tank.hp = 0; // 设置坦克血量为0
         PanelManager.Instance.Open<ResultPanel>(isWin);
-
+        BulletManager.Clear(); // 清空子弹管理器
+        EffectManager.Destroy();
         EventManager.Instance.RemoveEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
         EventManager.Instance.RemoveEvent(Events.MsgEndBattle, OnMsgEndBattle);
         EventManager.Instance.RemoveEvent(Events.MsgSyncTank, OnMsgSyncTank);
@@ -158,7 +160,9 @@ public class BattleManager : MonoSingleton<BattleManager>
         // 查找坦克
         BaseTank tank = GetTank(msg.targetID);
         if (tank == null) return;
-        tank.Attacked(msg.ID, msg.hp, msg.damage); // 被击中
+        tank.hp = msg.hp; // 设置坦克血量
+        if (tank.hp <= 0) tank.Die(); // 如果血量小于等于0，坦克死亡
+
     }
 
     #endregion

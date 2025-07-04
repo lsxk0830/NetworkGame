@@ -28,4 +28,9 @@ public class SyncTank : BaseTank
         turret.localEulerAngles = le;
         //Debug.Log($"同步位置协议:{JsonConvert.SerializeObject(msg)}");
     }
+
+    private void OnDestroy()
+    {
+        base.Destroy();
+    }
 }

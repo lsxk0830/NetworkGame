@@ -24,4 +24,9 @@ public class BulletManager
         bulletDic.TryGetValue(bulletID, out Bullet bullet);
         return bullet;
     }
+
+    public static void Clear()
+    {
+        bulletDic.Clear();
+    }
 }

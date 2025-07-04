@@ -24,6 +24,8 @@ public partial class MsgHandler
         hitPlayer.hp -= damagePerHit;
         msg.hp = hitPlayer.hp;
         msg.damage = damagePerHit;
+        room.Broadcast(msg);// 广播
+
         if (hitPlayer.hp <= 0)
         {
             int winCamp = room.Judgment(hitPlayer.camp, hitPlayer.ID);
@@ -47,9 +49,7 @@ public partial class MsgHandler
                     users.Add(playerUser);
                 }
                 DbManager.BatchUpdateUsers(users); 
-                return;
             }
         }
-        room.Broadcast(msg);// 广播
     }
 }

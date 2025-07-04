@@ -164,13 +164,7 @@ public class CtrlTank : BaseTank
         NetManager.Instance.Send(msg);
     }
 
-    private void OnDestroy()
-    {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        GloablMono.Instance.OnUpdate -= OnUpdate;
-        GloablMono.Instance.OnFixedUpdate -= OnFixUpdate;
-    }
+
 
     /// <summary>
     /// 绘制射线
@@ -211,5 +205,24 @@ public class CtrlTank : BaseTank
             }
         }
 
+    }
+
+    private void OnDestroy()
+    {
+        Destroy();
+    }
+
+    protected override void Destroy()
+    {
+        base.Destroy();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        GloablMono.Instance.OnUpdate -= OnUpdate;
+        GloablMono.Instance.OnFixedUpdate -= OnFixUpdate;
+        freeLookCam = null;
+        impulseSource = null;
+        mMaterial = null;
+        Destroy(lineRenderer);
+        lineRenderer = null;
     }
 }
