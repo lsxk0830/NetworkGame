@@ -38,7 +38,6 @@ public partial class MsgHandler
                 {
                     winCamp = winCamp
                 });
-                RoomManager.RemoveRoom(user.RoomID);
                 // 更新数据库
                 List<User> users = new List<User>(room.playerIds.Count);
                 foreach (var player in room.playerIds)
@@ -52,6 +51,7 @@ public partial class MsgHandler
                     users.Add(playerUser);
                 }
                 DbManager.BatchUpdateUsers(users); 
+                RoomManager.RemoveRoom(user.RoomID);
             }
         }
     }
