@@ -14,11 +14,6 @@ public class MsgEnterBattle : MsgBase
     public int result = 0;
 
     /// <summary>
-    /// 房间ID
-    /// </summary>
-    public string roomID { get; set; }
-
-    /// <summary>
     /// 服务器返回的坦克列表信息
     /// </summary>
     public Player[] tanks { get; set; }

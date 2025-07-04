@@ -18,10 +18,6 @@ public class HomePanelView : BasePanel
     [SerializeField][LabelText("退出游戏")] private Button quitBtn;
     [SerializeField][LabelText("开始游戏")] private Button playBtn;
 
-    [Header("场景对象")]
-    [SerializeField] private GameObject tankModel;
-    [SerializeField] private Camera mainCamera;
-
     #region 生命周期
     public override void OnInit()
     {
@@ -36,20 +32,18 @@ public class HomePanelView : BasePanel
         faceBtn = transform.Find("Top/FaceBtn").GetComponent<Button>();
         playBtn = transform.Find("Down/PlayBtn").GetComponent<Button>();
 
-        GameObject[] rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
-        tankModel = Array.Find(rootObjects, obj => obj.name == "Tank");
-        mainCamera = Camera.main;
         Controller = new HomePanelController(this);
         Controller.UpdateUI().Forget();
+        DontDestroyOnLoad(GameMain.tankModel);
     }
 
     public override void OnShow(params object[] args)
     {
         gameObject.SetActive(true);
-        tankModel.SetActive(true);
-        mainCamera.transform.SetPositionAndRotation(
-            new Vector3(-1, 10, -14),
-            Quaternion.Euler(15, 0, 0));
+        GameMain.tankModel.SetActive(true);
+        Camera.main.transform.SetPositionAndRotation(
+           new Vector3(-1, 10, -14),
+           Quaternion.Euler(15, 0, 0));
 
         quitBtn.onClick.AddListener(OnQuitClick);
         faceBtn.onClick.AddListener(OnFaceClick);
@@ -60,7 +54,7 @@ public class HomePanelView : BasePanel
     public override void OnClose()
     {
         gameObject.SetActive(false);
-        tankModel.SetActive(false);
+        GameMain.tankModel.SetActive(false);
         quitBtn.onClick.RemoveListener(OnQuitClick);
         faceBtn.onClick.RemoveListener(OnFaceClick);
         playBtn.onClick.RemoveListener(OnPlayClick);
@@ -86,8 +80,8 @@ public class HomePanelView : BasePanel
     {
         if (Input.GetMouseButtonDown(0))
         {
-            var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out var hit) && hit.collider.gameObject == tankModel)
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out var hit) && hit.collider.gameObject == GameMain.tankModel)
             {
                 Controller.StartTankRotation(Input.mousePosition);
             }
@@ -123,7 +117,7 @@ public class HomePanelView : BasePanel
     #region 外部控制
     public void RotateTank(float delta)
     {
-        tankModel.transform.Rotate(Vector3.up, delta);
+        GameMain.tankModel.transform.Rotate(Vector3.up, delta);
     }
 
     #endregion

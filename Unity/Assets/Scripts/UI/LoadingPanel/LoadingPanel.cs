@@ -21,6 +21,7 @@ public class LoadingPanel : BasePanel
 
     public override void OnShow(params object[] args)
     {
+        GameMain.tankModel.SetActive(true); // 显示坦克模型
         gameObject.SetActive(true);
         EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, EnterGame);
         Loading().Forget();
@@ -31,6 +32,7 @@ public class LoadingPanel : BasePanel
 
     public override void OnClose()
     {
+        GameMain.tankModel.SetActive(false); // 隐藏坦克模型
         gameObject.SetActive(false);
         EventManager.Instance.RemoveEvent(Events.MsgEnterBattle, EnterGame);
     }

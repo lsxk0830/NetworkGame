@@ -58,8 +58,6 @@ public class ResultPanel : BasePanel
     {
         SceneManager.LoadSceneAsync("Tank", LoadSceneMode.Single).completed += (op) =>
         {
-            // 卸载战斗场景
-            SceneManager.UnloadSceneAsync("Game");
             PanelManager.Instance.Open<HomePanelView>();
             OnClose();
         };

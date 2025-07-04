@@ -1,11 +1,12 @@
 using UnityEngine;
 
-public class GameMain : MonoBehaviour
+public class GameMain : MonoSingleton<GameMain>
 {
     public static long ID; // 用户ID
     public static bool NetConnect = false;
+    public static GameObject tankModel; // 坦克模型
 
-    private void Awake()
+    protected override void OnAwake()
     {
         GameObject MonoTool = new GameObject("MonoTool");
         MonoTool.AddComponent<GloablMono>();
@@ -18,8 +19,12 @@ public class GameMain : MonoBehaviour
         EventManager.Instance.RegisterEvent(Events.MsgPing, OnPong);
         PanelManager.Instance.Init();
         NetManager.Instance.ConnectAsync(); // 循环连接服务器
-
-        DontDestroyOnLoad(gameObject);
+        ResManager.Instance.LoadAssetsAsync<GameObject>("TankModel", true, handle =>
+        {
+            tankModel = Instantiate(handle);
+            tankModel.name = "TankModel";
+            DontDestroyOnLoad(tankModel);
+        }).Forget();
     }
 
     private void OnUpdate()
@@ -62,11 +67,12 @@ public class GameMain : MonoBehaviour
         Debug.Log(msgBse.protoName);
     }
 
-    private void OnDestroy()
+    private void OnApplicationQuit()
     {
         EventManager.Instance.RemoveEvent(Events.SocketOnConnectSuccess, OnConnectSuccess);
         EventManager.Instance.RemoveEvent(Events.SocketOnConnectFail, OnConnectFail);
         EventManager.Instance.RemoveEvent(Events.MsgKick, OnMsgKick);
         NetManager.Instance.Close();
+        Debug.LogError("应用程序退出，断开连接");
     }
 }

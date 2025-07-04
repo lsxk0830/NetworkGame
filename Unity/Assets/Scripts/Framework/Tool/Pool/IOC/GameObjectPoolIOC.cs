@@ -85,7 +85,6 @@ public class GameObjectPoolIOC
     {
         Pool.Clear();
         GoID.Clear();
-        GameObject.Destroy(RootTransform.gameObject);
     }
 
     #endregion

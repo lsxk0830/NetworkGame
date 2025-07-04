@@ -12,7 +12,6 @@ public class BattleManager : MonoSingleton<BattleManager>
     public static Dictionary<long, BaseTank> tanks;
     private Transform tankParent;
     private List<string> handles;
-    public string roomID; // 房间ID
 
     protected override void OnAwake()
     {
@@ -101,7 +100,6 @@ public class BattleManager : MonoSingleton<BattleManager>
         {
             Init(tankInfo);
         }
-        roomID = msg.roomID; // 保存房间ID
     }
 
     /// <summary>
@@ -125,6 +123,8 @@ public class BattleManager : MonoSingleton<BattleManager>
         EventManager.Instance.RemoveEvent(Events.MsgSyncTank, OnMsgSyncTank);
         EventManager.Instance.RemoveEvent(Events.MsgFire, OnMsgFire);
         EventManager.Instance.RemoveEvent(Events.MsgHit, OnMsgHit);
+        this.gameObject.ClearGameobjectPool(); // 清空对象池
+        this.ClearAll(); // 清空所有
     }
 
     /// <summary>
