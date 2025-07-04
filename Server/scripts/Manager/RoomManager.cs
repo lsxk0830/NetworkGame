@@ -58,11 +58,19 @@ public class RoomManager
                 emptyRooms.Add(pair.Key);
         }
 
+        if (rooms.TryGetValue(roomID, out Room room))
+        {
+            rooms.Remove(roomID);
+            room.Dispose();
+            room = null;
+            Console.WriteLine($"移除房间: {roomID}");
+        }
         foreach (var roomId in emptyRooms)
         {
-            rooms[roomId] = null;
             rooms.Remove(roomId);
-            Console.WriteLine($"房间已移除: {roomId}");
+            rooms[roomId].Dispose();
+            rooms[roomId] = null;
+            Console.WriteLine($"移除空房间: {roomId}");
         }
     }
 

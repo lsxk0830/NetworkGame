@@ -7,7 +7,6 @@ public partial class MsgHandler
     /// </summary>
     public static void MsgHit(ClientState cs, MsgBase msgBase)
     {
-        Console.WriteLine($"击中协议");
         MsgHit msg = (MsgHit)msgBase;
 
         User? user = cs.user;
@@ -21,10 +20,12 @@ public partial class MsgHandler
         if ((Room.Status)room.status != Room.Status.FIGHT) return;
 
         // 状态
+        Console.WriteLine($"击中协议");
         hitPlayer.hp -= damagePerHit;
         msg.hp = hitPlayer.hp;
         msg.damage = damagePerHit;
         room.Broadcast(msg);// 广播
+        Console.WriteLine($"击中协议:{msg.hp}");
 
         if (hitPlayer.hp <= 0)
         {
@@ -32,11 +33,12 @@ public partial class MsgHandler
             if (winCamp != 0)
             {
                 // 游戏结束
-                Console.WriteLine($"发送游戏结束协议");
+                Console.WriteLine($"发送游戏结束协议,删除房间:{user.RoomID}");
                 room.Broadcast(new MsgEndBattle()
                 {
                     winCamp = winCamp
                 });
+                RoomManager.RemoveRoom(user.RoomID);
                 // 更新数据库
                 List<User> users = new List<User>(room.playerIds.Count);
                 foreach (var player in room.playerIds)

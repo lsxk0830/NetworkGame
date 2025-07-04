@@ -13,6 +13,7 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collisionInfo)
     {
+        Debug.Log($"子弹命中:{collisionInfo.gameObject.name}, ID:{ID}, bulletID:{bulletID}");
         if (ID != GameMain.ID) return; // 不是自己发出的炮弹
         isMoving = false; // 停止移动
 

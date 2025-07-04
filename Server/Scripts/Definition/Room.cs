@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// 添加玩家、删除玩家、生成MsgGetRoomInfo协议
 /// </summary>
-public class Room
+public class Room : IDisposable
 {
     /// <summary>
     /// 房间ID
@@ -440,5 +440,18 @@ public class Room
             return 1;
         else
             return 0;
+    }
+
+    public void Dispose()
+    {
+        RoomID = "";
+        playerIds.Clear();
+        playerIds = null;
+        camp2List.Clear();
+        camp1List.Clear();
+        camp1List = null;
+        camp2List = null;
+        obs.Clear();
+        obs = null;
     }
 }
