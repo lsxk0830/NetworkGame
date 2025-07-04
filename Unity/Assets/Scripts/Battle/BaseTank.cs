@@ -68,6 +68,16 @@ public class BaseTank : MonoBehaviour
         explosion.transform.position = transform.position;
         explosion.transform.rotation = transform.rotation;
         mRigidbody.constraints = RigidbodyConstraints.FreezeAll; // 冻结刚体
+
+        MaterialPropertyBlock mpb = new MaterialPropertyBlock();
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        Color32 color = new Color32(94, 94, 94, 255); // 灰色
+        foreach (Renderer rend in renderers)
+        {
+            rend.GetPropertyBlock(mpb);  // 保留原有属性
+            mpb.SetColor("_Color", color);
+            rend.SetPropertyBlock(mpb);  // 仅影响当前Renderer
+        }
     }
 
     protected virtual void Destroy()
