@@ -114,6 +114,7 @@ public class BattleManager : MonoBehaviour
     /// </summary>
     private void OnMsgEndBattle(MsgBase msgBse)
     {
+        Cursor.lockState = CursorLockMode.None;
         Debug.Log($"收到战斗结束协议");
         MsgEndBattle msg = (MsgEndBattle)msgBse;
         // 判断显示胜利还是失败
