@@ -29,8 +29,8 @@ public class CtrlTank : BaseTank
 
     public override void Init(Player tankInfo)
     {
-        freeLookCam = BattleManager.Instance.GetComponent<CinemachineFreeLook>();
-        impulseSource = BattleManager.Instance.GetComponent<CinemachineImpulseSource>();
+        freeLookCam = BattleManager.freeLookCam;
+        impulseSource = BattleManager.impulseSource;
 
         base.Init(tankInfo);
 
@@ -63,8 +63,6 @@ public class CtrlTank : BaseTank
         GloablMono.Instance.OnFixedUpdate += OnFixUpdate;
 
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;// 隐藏鼠标并锁定到屏幕中心
-        Cursor.lockState = CursorLockMode.Confined;//鼠标限制在Game视图
     }
 
     private void OnUpdate()
@@ -84,11 +82,17 @@ public class CtrlTank : BaseTank
         TurretUpdate();
     }
 
+    // private void Update()
+    // {
+    //     MoveUpdate();
+    // }
+
     private void MoveUpdate()
     {
         // 键盘输入获取
         float moveInput = Input.GetAxis("Vertical");    // W/S 控制前进后退
         float rotateInput = Input.GetAxis("Horizontal"); // A/D 控制左右旋转
+
         //Debug.Log($"moveInput:{moveInput},rotateInput:{rotateInput}");
         // 物理移动（基于坦克自身坐标系）
         Vector3 moveDirection = transform.forward * moveInput * MoveSpeed * Time.fixedDeltaTime;
@@ -98,6 +102,8 @@ public class CtrlTank : BaseTank
         float rotation = rotateInput * rotateSpeed * Time.fixedDeltaTime;
         Quaternion deltaRotation = Quaternion.Euler(0, rotation, 0);
         mRigidbody.MoveRotation(mRigidbody.rotation * deltaRotation);
+
+        //transform.Translate(transform.forward * Time.fixedDeltaTime * MoveSpeed * moveInput);
     }
 
     private void TurretUpdate()
@@ -216,7 +222,6 @@ public class CtrlTank : BaseTank
     {
         base.Destroy();
         Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
         GloablMono.Instance.OnUpdate -= OnUpdate;
         GloablMono.Instance.OnFixedUpdate -= OnFixUpdate;
         freeLookCam = null;

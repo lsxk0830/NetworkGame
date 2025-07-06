@@ -11,9 +11,10 @@ public class Bullet : MonoBehaviour
     public Vector3 targetPos; // 目标位置
     private bool isMoving = true;
 
-    private void OnCollisionEnter(Collision collisionInfo)
+    private void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"子弹命中:{collisionInfo.gameObject.name}, ID:{ID}, bulletID:{bulletID}");
+        if (other.gameObject.CompareTag("Player")) return;
+        Debug.Log($"子弹命中:{other.gameObject.name}, ID:{ID}, bulletID:{bulletID}");
         if (ID != GameMain.ID) return; // 不是自己发出的炮弹
         isMoving = false; // 停止移动
 
@@ -30,7 +31,7 @@ public class Bullet : MonoBehaviour
             this.PushPool(msg); // 将消息对象归还对象池
         }
         {
-            GameObject collObj = collisionInfo.gameObject;
+            GameObject collObj = other.gameObject;
             if (collObj.tag == "Obstacle") // 碰撞到障碍物
             {
                 MsgObstacleOne msgOne = this.GetObjInstance<MsgObstacleOne>();
@@ -40,7 +41,7 @@ public class Bullet : MonoBehaviour
                 this.PushPool(msgOne);
                 Destroy(collObj);
             }
-            else if (collObj.tag != $"Camp{BattleManager.Instance.GetCtrlTank().camp}") // 碰撞到坦克
+            else if (collObj.tag != $"Camp{BattleManager.GetCtrlTank().camp}") // 碰撞到坦克
             {
                 if (collObj.TryGetComponent(out SyncTank hitTank))
                 {

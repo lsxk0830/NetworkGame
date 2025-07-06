@@ -42,6 +42,8 @@ public class RoomPanelView : BasePanel
     public override void OnClose()
     {
         gameObject.SetActive(false);
+        startBtn.onClick.RemoveListener(OnStartClick);
+        closeBtn.onClick.RemoveListener(OnCloseClick);
         controller.RemoveListener();
     }
 

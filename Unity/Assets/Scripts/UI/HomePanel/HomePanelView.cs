@@ -1,8 +1,6 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using System;
-using UnityEngine.SceneManagement;
 
 public class HomePanelView : BasePanel
 {
@@ -34,7 +32,6 @@ public class HomePanelView : BasePanel
 
         Controller = new HomePanelController(this);
         Controller.UpdateUI().Forget();
-        DontDestroyOnLoad(GameMain.tankModel);
     }
 
     public override void OnShow(params object[] args)

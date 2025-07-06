@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 
 /// <summary>
 /// 战斗管理器
 /// </summary>
-public class BattleManager : MonoSingleton<BattleManager>
+public class BattleManager : MonoBehaviour
 {
     /// <summary>
     /// 战场中的坦克。添加坦克、删除坦克、获取坦克、获取玩家控制的坦克
@@ -13,8 +14,14 @@ public class BattleManager : MonoSingleton<BattleManager>
     private Transform tankParent;
     private List<string> handles;
 
-    protected override void OnAwake()
+    public static CinemachineFreeLook freeLookCam;
+    public static CinemachineImpulseSource impulseSource;
+
+    void Awake()
     {
+        freeLookCam = GetComponent<CinemachineFreeLook>();
+        impulseSource = GetComponent<CinemachineImpulseSource>();
+
         EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
         EventManager.Instance.RegisterEvent(Events.MsgEndBattle, OnMsgEndBattle);
         EventManager.Instance.RegisterEvent(Events.MsgSyncTank, OnMsgSyncTank);
@@ -72,7 +79,7 @@ public class BattleManager : MonoSingleton<BattleManager>
     /// <summary>
     /// 获取玩家控制的坦克
     /// </summary>
-    public BaseTank GetCtrlTank()
+    public static BaseTank GetCtrlTank()
     {
         return GetTank(GameMain.ID);
     }
@@ -175,8 +182,6 @@ public class BattleManager : MonoSingleton<BattleManager>
             GameObject tank = Instantiate(handle);
             tank.transform.parent = tankParent.transform;
             BaseTank baseTank = tankInfo.ID == GameMain.ID ? tank.AddComponent<CtrlTank>() : tank.AddComponent<SyncTank>();
-            baseTank.camp = tankInfo.camp;
-            baseTank.tag = $"Camp{tankInfo.camp}";
             tanks.Add(tankInfo.ID, baseTank);
             baseTank.Init(tankInfo);
         }).Forget();

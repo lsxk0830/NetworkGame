@@ -20,6 +20,7 @@ public class BaseTank : MonoBehaviour
         camp = tankInfo.camp;
         ID = tankInfo.ID;
         hp = tankInfo.hp;
+        tag = tankInfo.ID == GameMain.ID ? "Player" : $"Camp{tankInfo.camp}";
 
         transform.position = new Vector3(tankInfo.x, tankInfo.y, tankInfo.z);
         transform.eulerAngles = new Vector3(tankInfo.ex, tankInfo.ey, tankInfo.ez);

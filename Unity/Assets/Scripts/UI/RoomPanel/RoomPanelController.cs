@@ -95,7 +95,6 @@ public class RoomPanelController
         if (model.room.playerIds.Count >= 2)
         {
             Debug.Log($"发送开始战斗协议");
-            PanelManager.Instance.Open<LoadingPanel>(model.room);
             view.OnClose();
             PanelManager.Instance.Close<HomePanelView>();
             MsgStartBattle msg = new()
@@ -105,6 +104,7 @@ public class RoomPanelController
                 obstacleCount = 30
             };
             NetManager.Instance.Send(msg);
+            PanelManager.Instance.Open<LoadingPanel>(model.room);
         }
         else
             PanelManager.Instance.Open<TipPanel>("人数不足，等待玩家加入");

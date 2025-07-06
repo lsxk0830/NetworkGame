@@ -22,10 +22,12 @@ public class LoadingPanel : BasePanel
     public override void OnShow(params object[] args)
     {
         GameMain.tankModel.SetActive(true); // 显示坦克模型
+        success = false;
         gameObject.SetActive(true);
         EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, EnterGame);
         Loading().Forget();
         room = (Room)args[0];
+        //Debug.Log($"打开加载界面：{JsonConvert.SerializeObject(room)}");
         string sceneName = SwitchScene(room.mapId);
         SceneManagerAsync.Instance.LoadSceneAsync(sceneName).Forget(); // 加载场景
     }
@@ -53,6 +55,7 @@ public class LoadingPanel : BasePanel
             await UniTask.Delay(200);
             SceneManagerAsync.Instance.Success(success);
             await UniTask.Yield();
+            //Debug.Log($"进入游戏:{success}");
             EventManager.Instance.InvokeEvent(Events.MsgEnterBattle, msg);
             OnClose();
         }
