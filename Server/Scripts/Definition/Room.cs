@@ -275,6 +275,7 @@ public class Room : IDisposable
     /// </summary>
     private void BroadcastEnterBattle()
     {
+        Console.WriteLine("广播进入战斗消息");
         MsgEnterBattle msg = new MsgEnterBattle()
         {
             result = 0,
@@ -353,12 +354,14 @@ public class Room : IDisposable
             {
                 Console.WriteLine($"当前时间：{DateTime.Now}");
                 if (loadSuccess >= playerIds.Count) return; // 如果加载成功的玩家数已经达到要求，则不再发送消息
+                Console.WriteLine($"达到最大延时时间");
                 BroadcastEnterBattle(); // 否则广播进入战斗消息
                 return;
             });
         }
         if (loadSuccess >= playerIds.Count)
         {
+            Console.WriteLine($"所有玩家都加载成功");
             BroadcastEnterBattle(); // 如果所有玩家都加载成功，广播进入战斗消息
         }// 已经加载成功
     }
@@ -445,13 +448,13 @@ public class Room : IDisposable
     public void Dispose()
     {
         RoomID = "";
-        playerIds.Clear();
+        playerIds?.Clear();
         playerIds = null;
         camp2List.Clear();
         camp1List.Clear();
         camp1List = null;
         camp2List = null;
-        obs.Clear();
+        obs?.Clear();
         obs = null;
     }
 }
