@@ -52,12 +52,6 @@ public class RoomManager
     {
         var emptyRooms = new List<string>();
 
-        foreach (var pair in rooms)
-        {
-            if (pair.Value.playerIds.Count == 0)
-                emptyRooms.Add(pair.Key);
-        }
-
         if (rooms.TryGetValue(roomID, out Room room))
         {
             rooms.Remove(roomID);
@@ -65,6 +59,13 @@ public class RoomManager
             room = null;
             Console.WriteLine($"移除房间: {roomID}");
         }
+
+        foreach (var pair in rooms)
+        {
+            if (pair.Value.playerIds.Count == 0)
+                emptyRooms.Add(pair.Key);
+        }
+
         foreach (var roomId in emptyRooms)
         {
             rooms.Remove(roomId);
