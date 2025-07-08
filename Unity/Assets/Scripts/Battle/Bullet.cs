@@ -10,6 +10,7 @@ public class Bullet : MonoBehaviour
     private Vector3 startPos; // 初始位置
     public Vector3 targetPos; // 目标位置
     private bool isMoving = true;
+    public AudioSource audioSource;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -80,6 +81,7 @@ public class Bullet : MonoBehaviour
         this.targetPos = targetPos;
         isMoving = true; // 设置为正在移动状态
         MoveBulletAsync().Forget();
+        audioSource.Play();// 子弹开火音效
     }
 
     public void PoolReset()
