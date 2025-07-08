@@ -40,8 +40,8 @@ public class HomePanelView : BasePanel
         bool activeSound = PlayerPrefs.GetInt("Toggle_Sound") == 1 ? true : false;
         float m = PlayerPrefs.GetFloat("Slider_Music");
         float s = PlayerPrefs.GetFloat("Slider_Sound");
-        MusicManager.Instance.ChangeOpen(activeMusic);
-        MusicManager.Instance.ChangeValue(m);
+        BGMusicManager.Instance.ChangeOpen(activeMusic);
+        BGMusicManager.Instance.ChangeValue(m);
 
         gameObject.SetActive(true);
         GameMain.tankModel.SetActive(true);

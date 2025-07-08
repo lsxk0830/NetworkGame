@@ -1,9 +1,9 @@
 using UnityEngine;
 
 /// <summary>
-/// 音乐管理器
+/// 背景音乐管理器
 /// </summary>
-public class MusicManager : MonoSingleton<MusicManager>
+public class BGMusicManager : MonoSingleton<BGMusicManager>
 {
     private AudioSource audioSource;
 

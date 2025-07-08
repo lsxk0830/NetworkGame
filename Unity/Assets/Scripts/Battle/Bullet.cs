@@ -81,7 +81,12 @@ public class Bullet : MonoBehaviour
         this.targetPos = targetPos;
         isMoving = true; // 设置为正在移动状态
         MoveBulletAsync().Forget();
-        audioSource.Play();// 子弹开火音效
+
+        if (BattleManager.SoundActive)
+        {
+            audioSource.volume = BattleManager.SoundValue;
+            audioSource.Play();// 子弹开火音效
+        }
     }
 
     public void PoolReset()

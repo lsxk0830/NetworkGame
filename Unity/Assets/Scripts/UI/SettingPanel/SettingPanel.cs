@@ -8,6 +8,7 @@ public class SettingPanel : BasePanel
     private Toggle Toggle_Sound;
     private Slider Slider_Music;
     private Slider Slider_Sound;
+    public Button BtnClose;
 
     public override void OnInit()
     {
@@ -17,6 +18,7 @@ public class SettingPanel : BasePanel
         Toggle_Sound = transform.Find("Toggle_Sound").GetComponent<Toggle>();
         Slider_Music = transform.Find("Slider_Music").GetComponent<Slider>();
         Slider_Sound = transform.Find("Slider_Sound").GetComponent<Slider>();
+        BtnClose = transform.Find("BtnClose").GetComponent<Button>();
     }
 
     public override void OnShow(params object[] para)
@@ -32,6 +34,7 @@ public class SettingPanel : BasePanel
         Toggle_Sound.onValueChanged.AddListener(ToggleSound);
         Slider_Music.onValueChanged.AddListener(SliderMusic);
         Slider_Sound.onValueChanged.AddListener(SliderSound);
+        BtnClose.onClick.AddListener(OnClose);
     }
 
     public override void OnClose()
@@ -41,13 +44,14 @@ public class SettingPanel : BasePanel
         Toggle_Sound.onValueChanged.RemoveListener(ToggleSound);
         Slider_Music.onValueChanged.RemoveListener(SliderMusic);
         Slider_Sound.onValueChanged.RemoveListener(SliderSound);
+        BtnClose.onClick.RemoveListener(OnClose);
     }
 
     #region UI事件
 
     private void ToggleMusic(bool arg)
     {
-        MusicManager.Instance.ChangeOpen(arg);
+        BGMusicManager.Instance.ChangeOpen(arg);
         PlayerPrefs.SetInt("Toggle_Music", arg ? 1 : 0);
     }
     private void ToggleSound(bool arg)
@@ -57,13 +61,12 @@ public class SettingPanel : BasePanel
 
     private void SliderMusic(float f)
     {
-        MusicManager.Instance.ChangeValue(f);
+        BGMusicManager.Instance.ChangeValue(f);
         PlayerPrefs.SetFloat("Slider_Music", f);
     }
 
     private void SliderSound(float f)
     {
-        print($"音效大小:{f}");
         PlayerPrefs.SetFloat("Slider_Sound", f);
     }
 

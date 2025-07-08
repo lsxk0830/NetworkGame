@@ -18,9 +18,15 @@ public class BattleManager : MonoBehaviour
     public static CinemachineImpulseSource impulseSource;
     public Camera mapCamera;
 
+    public static bool SoundActive = false;
+    public static float SoundValue = 0;
+
     void Awake()
     {
-        MusicManager.Instance.ChangeOpen(false);
+        BGMusicManager.Instance.ChangeOpen(false);
+        SoundActive = PlayerPrefs.GetInt("Toggle_Sound") == 1 ? true : false;
+        SoundValue = PlayerPrefs.GetFloat("Slider_Sound");
+
         PanelManager.Instance.Open<GamePanel>();
         freeLookCam = GetComponent<CinemachineFreeLook>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
