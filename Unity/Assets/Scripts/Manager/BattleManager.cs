@@ -16,9 +16,12 @@ public class BattleManager : MonoBehaviour
 
     public static CinemachineFreeLook freeLookCam;
     public static CinemachineImpulseSource impulseSource;
+    public Camera mapCamera;
 
     void Awake()
     {
+        MusicManager.Instance.ChangeOpen(false);
+        PanelManager.Instance.Open<GamePanel>();
         freeLookCam = GetComponent<CinemachineFreeLook>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
 
@@ -182,9 +185,19 @@ public class BattleManager : MonoBehaviour
             handles.Add($"Tank_{tankInfo.skin}");
             GameObject tank = Instantiate(handle);
             tank.transform.parent = tankParent.transform;
-            BaseTank baseTank = tankInfo.ID == GameMain.ID ? tank.AddComponent<CtrlTank>() : tank.AddComponent<SyncTank>();
+            BaseTank baseTank;
+            if (tankInfo.ID == GameMain.ID)
+            {
+                baseTank = tank.AddComponent<CtrlTank>();
+                mapCamera.GetComponent<CameraMove>().targetPlayer = tank.transform;
+            }
+            else
+            {
+                baseTank = tank.AddComponent<SyncTank>();
+            }
             tanks.Add(tankInfo.ID, baseTank);
             baseTank.Init(tankInfo);
+
         }).Forget();
     }
 }

@@ -36,6 +36,13 @@ public class HomePanelView : BasePanel
 
     public override void OnShow(params object[] args)
     {
+        bool activeMusic = PlayerPrefs.GetInt("Toggle_Music") == 1 ? true : false;
+        bool activeSound = PlayerPrefs.GetInt("Toggle_Sound") == 1 ? true : false;
+        float m = PlayerPrefs.GetFloat("Slider_Music");
+        float s = PlayerPrefs.GetFloat("Slider_Sound");
+        MusicManager.Instance.ChangeOpen(activeMusic);
+        MusicManager.Instance.ChangeValue(m);
+
         gameObject.SetActive(true);
         GameMain.tankModel.SetActive(true);
         Camera.main.transform.SetPositionAndRotation(

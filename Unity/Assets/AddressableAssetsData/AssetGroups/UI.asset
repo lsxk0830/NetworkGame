@@ -67,6 +67,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - UIPanel
+  - m_GUID: 026d02f58a0b06c439772e0b0c4286a8
+    m_Address: GamePanel
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 0c62968f62d51d848b11533011becdd3, type: 2}
   m_SchemaSet:
