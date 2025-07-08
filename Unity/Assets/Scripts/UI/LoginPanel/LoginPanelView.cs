@@ -5,6 +5,8 @@ using UnityEngine.UI;
 public class LoginPanelView : BasePanel
 {
     private LoginPanelController controller;
+    public Button QuitBtn;
+    public Button SetBtn;
     public TMP_InputField idInput; // 账号输入框
     public TMP_InputField pwInput; // 密码输入框
     public Button loginBtn; // 登录按钮
@@ -20,6 +22,8 @@ public class LoginPanelView : BasePanel
         controller = new LoginPanelController(this);
 
         // 寻找组件
+        QuitBtn = transform.Find("QuitBtn").GetComponent<Button>();
+        SetBtn = transform.Find("SetBtn").GetComponent<Button>();
         idInput = transform.Find("IDInput").GetComponent<TMP_InputField>();
         pwInput = transform.Find("PWInput").GetComponent<TMP_InputField>();
         loginBtn = transform.Find("LoginBtn").GetComponent<Button>();
@@ -37,6 +41,8 @@ public class LoginPanelView : BasePanel
     public override void OnShow(params object[] para) // 显示
     {
         // 添加监听
+        QuitBtn.onClick.AddListener(OnQuitClick);
+        SetBtn.onClick.AddListener(OnSetClick);
         loginBtn.onClick.AddListener(OnLoginClick);
         registerBtn.onClick.AddListener(OnRegisterClick);
         isShowPwToggle.onValueChanged.AddListener(OnPwShowChangeClick);
@@ -69,6 +75,21 @@ public class LoginPanelView : BasePanel
     }
 
     #region UI事件
+
+    private void OnQuitClick()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
+    private void OnSetClick()
+    {
+        PanelManager.Instance.Open<SettingPanel>();
+        print("设置面板打开");
+    }
 
     private void OnLoginClick()
     {

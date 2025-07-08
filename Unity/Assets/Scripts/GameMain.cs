@@ -11,6 +11,7 @@ public class GameMain : MonoSingleton<GameMain>
         GameObject MonoTool = new GameObject("MonoTool");
         MonoTool.AddComponent<GloablMono>();
         MonoTool.AddComponent<ResManager>();
+        transform.Find("MusicManager").gameObject.AddComponent<MusicManager>();
 
         EventManager.Instance.RegisterEvent(Events.SocketOnConnectSuccess, OnConnectSuccess);
         EventManager.Instance.RegisterEvent(Events.SocketOnConnectFail, OnConnectFail);
@@ -25,6 +26,20 @@ public class GameMain : MonoSingleton<GameMain>
             tankModel.name = "TankModel";
             DontDestroyOnLoad(tankModel);
         }).Forget();
+
+        Init();
+    }
+
+    private void Init()
+    {
+        bool activeMusic = PlayerPrefs.GetInt("Toggle_Music") == 1 ? true : false;
+        bool activeSound = PlayerPrefs.GetInt("Toggle_Sound") == 1 ? true : false;
+
+        float m = PlayerPrefs.GetFloat("Slider_Music");
+        PlayerPrefs.GetFloat("Slider_Sound");
+
+        MusicManager.Instance.ChangeOpen(activeMusic);
+        MusicManager.Instance.ChangeValue(m);
     }
 
     private void OnUpdate()
