@@ -41,6 +41,11 @@ public class Player
     public int skin;
 
     /// <summary>
+    /// 玩家头像路径
+    /// </summary>
+    public string AvatarPath;
+
+    /// <summary>
     /// 客户端状态ClientState
     /// </summary>
     [JsonIgnore] public ClientState state;

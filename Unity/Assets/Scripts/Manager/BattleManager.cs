@@ -27,7 +27,7 @@ public class BattleManager : MonoBehaviour
         SoundActive = PlayerPrefs.GetInt("Toggle_Sound") == 1 ? true : false;
         SoundValue = PlayerPrefs.GetFloat("Slider_Sound");
 
-        PanelManager.Instance.Open<GamePanel>();
+        //PanelManager.Instance.Open<GamePanel>();
         freeLookCam = GetComponent<CinemachineFreeLook>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
 

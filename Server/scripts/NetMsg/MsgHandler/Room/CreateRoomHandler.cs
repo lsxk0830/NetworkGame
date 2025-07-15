@@ -15,6 +15,7 @@
         Player player = new Player(cs)
         {
             ID = user.ID,
+            AvatarPath = user.AvatarPath,
         };
         bool result = room.AddPlayer(player);
         msg.result = result ? 0 : -1;
