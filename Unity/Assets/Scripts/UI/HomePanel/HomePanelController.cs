@@ -23,7 +23,7 @@ public class HomePanelController
         view.UpdateUserInfo(user);
         if (user.AvatarPath != "defaultAvatar")
         {
-            string path = Path.Combine($"{Application.persistentDataPath}/Avatar/{user.AvatarPath}.png");
+            string path = Path.Combine($"{Application.persistentDataPath}/Avatar/{user.AvatarPath}");
             Debug.Log($"加载图片的路径:{path}");
             if (File.Exists(path))
             {

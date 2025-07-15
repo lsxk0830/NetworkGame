@@ -162,7 +162,7 @@ public class RoomPanelView : BasePanel
     {
         if (AvatarPath != "defaultAvatar")
         {
-            string path = Path.Combine($"{Application.persistentDataPath}/Avatar/{AvatarPath}.png");
+            string path = Path.Combine($"{Application.persistentDataPath}/Avatar/{AvatarPath}");
             Debug.Log($"加载图片的路径:{path}");
             if (File.Exists(path))
             {
