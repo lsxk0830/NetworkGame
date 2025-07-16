@@ -11,6 +11,8 @@ public class Player
     /// </summary>
     public long ID;
 
+    public string Name;
+
     /// <summary>
     /// 是否是房主 1-房主 0-普通成员
     /// </summary>

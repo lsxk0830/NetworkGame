@@ -15,6 +15,7 @@
         Player player = new Player(cs)
         {
             ID = user.ID,
+            Name = user.Name,
             AvatarPath = user.AvatarPath,
         };
         bool result = room.AddPlayer(player);

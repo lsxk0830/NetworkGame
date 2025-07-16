@@ -66,7 +66,7 @@ public class RoomPanelView : BasePanel
         TMP_Text campText = trans.Find("CampText").GetComponent<TMP_Text>();
         TMP_Text scoreText = trans.Find("ScoreText").GetComponent<TMP_Text>();
         // 填充信息
-        idText.text = playerInfo.ID.ToString();
+        idText.text = playerInfo.Name.ToString();
         campText.text = playerInfo.camp == 1 ? "红" : "蓝";
         if (playerInfo.isOwner == 1)
             campText.text = campText.text + "!";

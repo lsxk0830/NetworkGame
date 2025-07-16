@@ -11,6 +11,8 @@ public class Player
     /// </summary>
     public long ID;
 
+    public string Name;
+
     // 坐标和旋转
     public float x;
 

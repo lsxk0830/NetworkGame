@@ -28,6 +28,8 @@
             Player player = new Player(c)
             {
                 ID = c.user.ID,
+                Name = c.user.Name,
+                AvatarPath=c.user.AvatarPath,
             };
             c.user.RoomID = room.RoomID;
             room.EnterRoomAddPlayer(player);
