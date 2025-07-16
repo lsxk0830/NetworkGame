@@ -199,7 +199,7 @@ public class HTTPManager : Singleton<HTTPManager>
     /// </summary>
     private async UniTask<Texture2D> GetAvatarByDB(string avatarPath)
     {
-        string url = $"{API.GetAvatar}?path={UnityWebRequest.EscapeURL($"{avatarPath}")}"; // http://127.0.0.1:5000/api/getavatar?path=user/123/avatar.png
+        string url = $"{API.GetAvatar}?path={UnityWebRequest.EscapeURL($"{avatarPath}.png")}"; // http://127.0.0.1:5000/api/getavatar?path=user/123/avatar.png
         Texture2D texture = await GetImage(url);
         if (texture != null)
             SaveTexToPersistentPath(texture, avatarPath).Forget();

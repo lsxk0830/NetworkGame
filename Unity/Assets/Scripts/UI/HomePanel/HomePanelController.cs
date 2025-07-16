@@ -23,9 +23,15 @@ public class HomePanelController
         view.UpdateUserInfo(user);
         if (user.AvatarPath != "defaultAvatar")
         {
-            string path = Path.Combine($"{Application.persistentDataPath}/Avatar/{user.AvatarPath}");
+            string directory = Path.Combine(Application.persistentDataPath, "Avatar");
+            string path = Path.Combine(directory, user.AvatarPath + ".png");
             Debug.Log($"加载图片的路径:{path}");
-            if (File.Exists(path))
+            if (!Directory.Exists(directory) || !File.Exists(path))
+            {
+                Debug.Log($"加载网络图片");
+                HTTPManager.Instance.GetSetAvatarByDB(user.AvatarPath, view.GetAvatarImage()).Forget();
+            }
+            else
             {
                 Debug.Log($"加载本地图片");
                 Texture2D texture = await HTTPManager.Instance.GetImage(path);
@@ -35,11 +41,6 @@ public class HomePanelController
                     new Rect(0, 0, texture.width, texture.height),
                     new Vector2(0.5f, 0.5f)
                 );
-            }
-            else
-            {
-                Debug.Log($"加载网络图片");
-                HTTPManager.Instance.GetSetAvatarByDB(user.AvatarPath, view.GetAvatarImage()).Forget();
             }
         }
         //NetManager.Send(new MsgGetRoomList());
