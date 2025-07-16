@@ -63,7 +63,12 @@ public class GameMain : MonoSingleton<GameMain>
 
     private void OnMsgKick(MsgBase msgBse)
     {
-        PanelManager.Instance.Open<TipPanel>("被踢下线");
+        PanelManager.Instance.Open<TipPanel>("被踢下线", (System.Action)OpenLoginPanel);
+    }
+
+    private void OpenLoginPanel()
+    {
+        PanelManager.Instance.CloseAllExceptOther<LoginPanelView>();
     }
 
     private void OnPanelLoadSuccess()

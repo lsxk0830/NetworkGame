@@ -78,4 +78,23 @@ public class PanelManager : Singleton<PanelManager>
         BasePanel panel = panels[panelName];
         panel.OnClose();
     }
+
+    /// <summary>
+    /// 关闭面板除了指定的所有面板
+    /// </summary>
+    public void CloseAllExceptOther<T>()
+    {
+        string panelName = typeof(T).FullName;
+        foreach (var panel in panels)
+        {
+            if (panel.Key == panelName)
+            {
+                panel.Value.OnShow(); // 保持指定面板打开
+            }
+            else
+            {
+                panel.Value.OnClose();
+            }
+        }
+    }
 }

@@ -40,6 +40,7 @@ public class LoginPanelView : BasePanel
 
     public override void OnShow(params object[] para) // 显示
     {
+        gameObject.SetActive(true);
         // 添加监听
         QuitBtn.onClick.AddListener(OnQuitClick);
         SetBtn.onClick.AddListener(OnSetClick);
