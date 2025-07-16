@@ -1,3 +1,0 @@
-message TestProto{
-	optional int32 x = 1;
-}
