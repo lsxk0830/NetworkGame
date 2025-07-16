@@ -31,6 +31,7 @@ public static partial class AuthController
             MsgKick msg = new MsgKick();
             UserManager.Send(user.ID, msg);
             UserManager.RemoveUser(user.ID);
+            UserManager.AddUser(user.ID, user);
         }
         await SendResponse(context, 200, user);
     }

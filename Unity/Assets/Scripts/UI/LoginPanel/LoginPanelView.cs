@@ -51,17 +51,49 @@ public class LoginPanelView : BasePanel
         idInput.onEndEdit.AddListener(IdInputEnd); // 用户名输入名结束
 
 #if DEV
-        foreach (Button btn in transform.Find("DEV").GetComponentsInChildren<Button>())
-        {
-            btn.onClick.AddListener(() =>
-            {
-                idInput.text = btn.gameObject.name;
-                pwInput.text = "QQqq123456";
-                OnLoginClick();
-            });
-        }
+        Button[] buttons = transform.Find("DEV").GetComponentsInChildren<Button>();
+        test = buttons[0];
+        test1 = buttons[1];
+        test2 = buttons[2];
+        test3 = buttons[3];
+        test.onClick.AddListener(DevLogin);
+        test1.onClick.AddListener(DevLogin1);
+        test2.onClick.AddListener(DevLogin2);
+        test3.onClick.AddListener(DevLogin3);
 #endif
     }
+
+#if DEV
+    private Button test;
+    private Button test1;
+    private Button test2;
+    private Button test3;
+
+    private void DevLogin()
+    {
+        idInput.text = "Test";
+        pwInput.text = "QQqq123456";
+        OnLoginClick();
+    }
+    private void DevLogin1()
+    {
+        idInput.text = "Test1";
+        pwInput.text = "QQqq123456";
+        OnLoginClick();
+    }
+    private void DevLogin2()
+    {
+        idInput.text = "Test2";
+        pwInput.text = "QQqq123456";
+        OnLoginClick();
+    }
+    private void DevLogin3()
+    {
+        idInput.text = "Test3";
+        pwInput.text = "QQqq123456";
+        OnLoginClick();
+    }
+#endif
 
     public override void OnClose() // 关闭
     {
@@ -73,6 +105,12 @@ public class LoginPanelView : BasePanel
         idInput.onEndEdit.RemoveListener(IdInputEnd);
         // 关闭面板
         gameObject.SetActive(false);
+#if DEV
+        test.onClick.RemoveListener(DevLogin);
+        test1.onClick.RemoveListener(DevLogin1);
+        test2.onClick.RemoveListener(DevLogin2);
+        test3.onClick.RemoveListener(DevLogin3);
+#endif
     }
 
     #region UI事件

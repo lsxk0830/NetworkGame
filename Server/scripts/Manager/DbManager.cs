@@ -1,10 +1,9 @@
 using MySql.Data.MySqlClient;
-using System.Data;
 using System.Text.RegularExpressions;
 
 public class DbManager
 {
-    private static MySqlConnection? connection;
+    private static string? connectionString;
     private const string DefaultAvatar = "defaultAvatar"; // 默认头像路径
     private const int DefaultCoin = 100; // 默认金币数
     private const int DefaultDiamond = 100; // 默认钻石数
@@ -27,11 +26,10 @@ public class DbManager
             MinimumPoolSize = 5,
             MaximumPoolSize = 100
         };
-
-        connection = new MySqlConnection(builder.ToString());
-
+        connectionString = builder.ToString();
         try
         {
+            using var connection = new MySqlConnection(connectionString);
             connection.Open();
             InitializeDatabase();
             Console.WriteLine($"数据库连接成功! 线程: {Environment.CurrentManagedThreadId}");
@@ -91,6 +89,8 @@ public class DbManager
 
         try
         {
+            using var connection = new MySqlConnection(connectionString);
+            connection.Open(); // 确保连接已打开
             using var cmd = new MySqlCommand(sql, connection);
             cmd.Parameters.AddWithValue("@name", name);
             cmd.Parameters.AddWithValue("@password", password);
@@ -129,6 +129,8 @@ public class DbManager
 
         try
         {
+            using var connection = new MySqlConnection(connectionString);
+            connection.Open(); // 确保连接已打开
             User user = null;
             using (var cmd = new MySqlCommand(sql, connection))// 分离读取和更新操作
             {
@@ -177,12 +179,16 @@ public class DbManager
 
         try
         {
-            using var cmd = new MySqlCommand(sql, connection);
-            cmd.Parameters.AddWithValue("@ID", user.ID);
-            cmd.Parameters.AddWithValue("@LastLogin", DateTime.Now);
+            using var connection = new MySqlConnection(connectionString);
+            connection.Open(); // 确保连接已打开
+            using (var cmd = new MySqlCommand(sql, connection))
+            {
+                cmd.Parameters.AddWithValue("@ID", user.ID);
+                cmd.Parameters.AddWithValue("@LastLogin", DateTime.Now);
 
-            if (cmd.ExecuteNonQuery() > 0)
-                Console.WriteLine($"更新上次登录时间成功");
+                if (cmd.ExecuteNonQuery() > 0)
+                    Console.WriteLine($"更新上次登录时间成功");
+            }
         }
         catch (Exception ex)
         {
@@ -208,6 +214,8 @@ public class DbManager
 
         try
         {
+            using var connection = new MySqlConnection(connectionString);
+            connection.Open(); // 确保连接已打开
             using var cmd = new MySqlCommand(sql, connection);
             cmd.Parameters.AddWithValue("@ID", user.ID);
             cmd.Parameters.AddWithValue("@coin", user.Coin);
@@ -240,6 +248,8 @@ public class DbManager
             LastLogin = CURRENT_TIMESTAMP
         WHERE ID = @ID;";
 
+        using var connection = new MySqlConnection(connectionString);
+        connection.Open(); // 确保连接已打开
         using var transaction = connection.BeginTransaction(); // 开启事务
         try
         {
@@ -298,6 +308,8 @@ public class DbManager
     {
         try
         {
+            using var connection = new MySqlConnection(connectionString);
+            connection.Open(); // 确保连接已打开
             using var cmd = new MySqlCommand(sql, connection);
             cmd.ExecuteNonQuery();
         }
