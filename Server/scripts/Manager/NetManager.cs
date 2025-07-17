@@ -175,6 +175,7 @@ public class NetManager
         if (readBuff.length < bodyLength) return;
         //解析协议名
         string protoName = MsgBase.DecodeName(readBuff.bytes, readBuff.readIdx, out int nameCount);
+        Console.WriteLine($"打印数据:{readBuff.Debug()}");
         if (protoName == "")
         {
             Console.WriteLine("接收数据 MsgBase.DecodeName 失败");
@@ -214,8 +215,8 @@ public class NetManager
         int len = nameBytes.Length + bodyBytes.Length;
         byte[] sendBytes = new byte[2 + len];
         //组装长度
-        sendBytes[0] = (byte)(len % 256);
-        sendBytes[1] = (byte)(len / 256);
+        sendBytes[0] = (byte)((len >> 8) & 0xFF);  // 高字节len / 256
+        sendBytes[1] = (byte)(len & 0xFF);         // 低字节len % 256
         Array.Copy(nameBytes, 0, sendBytes, 2, nameBytes.Length);//组装名字
         Array.Copy(bodyBytes, 0, sendBytes, 2 + nameBytes.Length, bodyBytes.Length);//组装消息体
         try

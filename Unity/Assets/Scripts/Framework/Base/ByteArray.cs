@@ -137,7 +137,7 @@ public class ByteArray
     public Int16 ReadInt16()
     {
         if (length < 2) return 0;
-        Int16 ret = (Int16)(bytes[readIdx + 1] << 8 | bytes[readIdx]);
+        Int16 ret = (Int16)(bytes[readIdx] << 8 | bytes[readIdx + 1]);
         readIdx += 2;
         CheckAndMoveBytes();
         return ret;
@@ -149,10 +149,10 @@ public class ByteArray
     public Int32 ReadInt32()
     {
         if (length < 4) return 0;
-        Int32 ret = (Int32)(bytes[readIdx + 3] << 24 |
-                            bytes[readIdx + 2] << 16 |
-                            bytes[readIdx + 1] << 8 |
-                            bytes[readIdx + 0]);
+        Int32 ret = (Int32)(bytes[readIdx + 0] << 24 |
+                            bytes[readIdx + 1] << 16 |
+                            bytes[readIdx + 2] << 8 |
+                            bytes[readIdx + 3]);
         readIdx += 4;
         CheckAndMoveBytes();
         return ret;
