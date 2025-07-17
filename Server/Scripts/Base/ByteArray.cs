@@ -59,18 +59,18 @@ public class ByteArray
     }
 
     /// <summary>
-    /// 重设尺寸
+    /// 动态扩展缓冲区
     /// </summary>
-    /// <param name="size">想新设置的尺寸长度</param>
+    /// <param name="size">需要的最小容量</param>
     public void ReSize(int size)
     {
         if (size < length) return; // 新的尺寸要比数据长度大
         if (size < initSize) return; // 新的尺寸要比原来的大
-        int n = 1;
+        int n = capacity;
         while (n < size) n *= 2;
         capacity = n;
         byte[] newBytes = new byte[capacity];
-        Array.Copy(bytes, readIdx, newBytes, 0, writeIdx - readIdx);
+        Array.Copy(bytes, readIdx, newBytes, 0, length);
         bytes = newBytes;
         writeIdx = length;
         readIdx = 0;
@@ -119,7 +119,6 @@ public class ByteArray
     {
         count = Math.Min(count, length);
         Array.Copy(bytes, readIdx, bs, offset, count);
-        //Array.Copy(bytes, 0, bs, offset, count);
         readIdx += count;
         CheckAndMoveBytes();
         return count;
