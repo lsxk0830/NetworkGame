@@ -1,3 +1,5 @@
+using System.Text;
+
 public class ByteArray
 {
     /// <summary>
@@ -130,7 +132,6 @@ public class ByteArray
     public Int16 ReadInt16()
     {
         if (length < 2) return 0;
-        //Int16 ret =BitConverter.ToInt16(bytes, readIdx);
         Int16 ret = (Int16)(bytes[readIdx + 1] << 8 | bytes[readIdx]);
         readIdx += 2;
         CheckAndMoveBytes();
@@ -143,13 +144,10 @@ public class ByteArray
     public Int32 ReadInt32()
     {
         if (length < 4) return 0;
-        Int32 ret =BitConverter.ToInt32(bytes, readIdx);
-        /*
         Int32 ret = (Int32)(bytes[readIdx + 3] << 24 |
                             bytes[readIdx + 2] << 16 |
                             bytes[readIdx + 1] << 8 |
                             bytes[readIdx + 0]);
-        */
         readIdx += 4;
         CheckAndMoveBytes();
         return ret;
@@ -161,13 +159,13 @@ public class ByteArray
 
     public override string ToString()
     {
-        return BitConverter.ToString(bytes, readIdx, length);
+        return Encoding.UTF8.GetString(bytes, readIdx, length);
     }
 
     public string Debug()
     {
         return string.Format("readIdx({0}) writeIdx({1}) bytes({2})",
-                            readIdx, writeIdx, BitConverter.ToString(bytes, 0, bytes.Length));
+                            readIdx, writeIdx, Encoding.UTF8.GetString(bytes, 0, bytes.Length));
     }
     #endregion
 }

@@ -48,8 +48,8 @@ public class MsgBase
         byte[] nameBytes = Encoding.UTF8.GetBytes(msgBase.protoName);
         Int16 len = (Int16)nameBytes.Length;
         byte[] bytes = new byte[2 + len]; // 申请bytes数组
-        bytes[0] = ((byte)(len % 256)); // 组装2字节的长度信息
-        bytes[1] = ((byte)(len / 256));
+        bytes[0] = ((byte)(len >> 8)); // len / 256
+        bytes[1] = (byte)(len & 0xFF); //len % 256
         Array.Copy(nameBytes, 0, bytes, 2, len); // 组装名字bytes
         return bytes;
     }
@@ -63,8 +63,7 @@ public class MsgBase
         // 必须大于2字节
         if (readIndex + 2 > bytes.Length) return "";
         // 读取长度
-        Int16 len = BitConverter.ToInt16(bytes, readIndex);
-        //Int16 len2 = (Int16)((bytes[readIndex + 1] << 8) | bytes[readIndex]);
+        Int16 len = (Int16)(bytes[readIndex] << 8 | bytes[readIndex + 1]);
         // 长度必须足够
         if (readIndex + 2 + len > bytes.Length) return "";
         // 解析

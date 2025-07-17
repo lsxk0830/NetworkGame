@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -111,11 +112,11 @@ public class NetManager : Singleton<NetManager>
         ba.writeIdx = sendBytes.Length;
         writeQueue.Enqueue(ba);
 
-        // int totalLen = BitConverter.ToInt16(sendBytes, 0); // 解析总长度 (小端)
-        // int nameLen = BitConverter.ToInt16(sendBytes, 2);  // 解析消息名长度 (小端)
-        // string protoName = Encoding.ASCII.GetString(sendBytes, 4, nameLen);// 解析消息名 (ASCII)
-        // string jsonBody = Encoding.UTF8.GetString(sendBytes, 4 + nameLen, totalLen - 4 - nameLen);// 解析JSON消息体 (UTF-8)
-        // Debug.Log($"协议头: 总长度={totalLen}, 消息名={protoName}, 消息体: {jsonBody}"); // Send
+        Int16 totalLen = (Int16)((sendBytes[0] << 8) | sendBytes[1]);// 解析总长度 (大端)
+        Int16 nameLen = (Int16)((sendBytes[2] << 8) | sendBytes[3]);
+        string protoName = Encoding.UTF8.GetString(sendBytes, 4, nameLen);// 解析消息名 (UTF-8)
+        string jsonBody = Encoding.UTF8.GetString(sendBytes, 4 + nameLen, totalLen - 4 - nameLen);// 解析JSON消息体 (UTF-8)
+        Debug.Log($"协议头: 总长度={totalLen}, 消息名={protoName}, 消息体: {jsonBody}"); // Send
 
         if (writeQueue.Count == 1)
             socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, SendCallback, socket);
@@ -322,10 +323,10 @@ public class NetManager : Singleton<NetManager>
     {
         if (readBuff.length <= 2) return; // 消息长度
         // 获取消息体长度
-        Int16 bodyLength = readBuff.ReadInt16();
-        //Int16 bodyLength = (Int16)(bytes[readIdx + 1] << 8 | bytes[readIdx]);
-        //Int16 bodyLength = BitConverter.ToInt16(bytes, readIdx);
-        if (readBuff.length < bodyLength) return;
+        byte[] bytes = readBuff.bytes;
+        Int16 bodyLength = (Int16)(bytes[readBuff.readIdx] << 8 | bytes[readBuff.readIdx + 1]);
+        if (readBuff.length < bodyLength + 2) return;
+        readBuff.readIdx += 2;
         // 解析协议名
         string protoName = MsgBase.DecodeName(readBuff.bytes, readBuff.readIdx, out int nameCount);
         if (protoName == "")
