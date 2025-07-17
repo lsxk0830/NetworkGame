@@ -322,11 +322,10 @@ public class NetManager : Singleton<NetManager>
     {
         if (readBuff.length <= 2) return; // 消息长度
         // 获取消息体长度
-        int readIdx = readBuff.readIdx;
-        byte[] bytes = readBuff.bytes;
-        Int16 bodyLength = BitConverter.ToInt16(bytes, readIdx);
-        if (readBuff.length < bodyLength + 2) return;
-        readBuff.readIdx += 2;
+        Int16 bodyLength = readBuff.ReadInt16();
+        //Int16 bodyLength = (Int16)(bytes[readIdx + 1] << 8 | bytes[readIdx]);
+        //Int16 bodyLength = BitConverter.ToInt16(bytes, readIdx);
+        if (readBuff.length < bodyLength) return;
         // 解析协议名
         string protoName = MsgBase.DecodeName(readBuff.bytes, readBuff.readIdx, out int nameCount);
         if (protoName == "")

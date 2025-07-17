@@ -130,8 +130,8 @@ public class ByteArray
     public Int16 ReadInt16()
     {
         if (length < 2) return 0;
-        Int16 ret =BitConverter.ToInt16(bytes, readIdx);
-        //Int16 ret = (Int16)(bytes[readIdx + 1] << 8 | bytes[readIdx]);
+        //Int16 ret =BitConverter.ToInt16(bytes, readIdx);
+        Int16 ret = (Int16)(bytes[readIdx + 1] << 8 | bytes[readIdx]);
         readIdx += 2;
         CheckAndMoveBytes();
         return ret;
