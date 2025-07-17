@@ -137,7 +137,7 @@ public class ByteArray
     public Int16 ReadInt16()
     {
         if (length < 2) return 0;
-        Int16 ret = (Int16)(bytes[readIdx] << 8 | bytes[readIdx + 1]);
+        Int16 ret = (Int16)(bytes[readIdx + 1] << 8 | bytes[readIdx]);
         readIdx += 2;
         CheckAndMoveBytes();
         return ret;
@@ -149,10 +149,10 @@ public class ByteArray
     public Int32 ReadInt32()
     {
         if (length < 4) return 0;
-        Int32 ret = (Int32)(bytes[readIdx] << 24 |
-                            bytes[readIdx + 1] << 16 |
-                            bytes[readIdx + 2] << 8 |
-                            bytes[readIdx + 3]);
+        Int32 ret = (Int32)(bytes[readIdx + 3] << 24 |
+                            bytes[readIdx + 2] << 16 |
+                            bytes[readIdx + 1] << 8 |
+                            bytes[readIdx + 0]);
         readIdx += 4;
         CheckAndMoveBytes();
         return ret;
@@ -169,8 +169,8 @@ public class ByteArray
 
     public string Debug()
     {
-return string.Format("readIdx({0}) writeIdx({1}) bytes({2})",
-                    readIdx, writeIdx, Encoding.UTF8.GetString(bytes, 0, bytes.Length));
+        return string.Format("readIdx({0}) writeIdx({1}) bytes({2})",
+                            readIdx, writeIdx, Encoding.UTF8.GetString(bytes, 0, bytes.Length));
     }
     #endregion
 }

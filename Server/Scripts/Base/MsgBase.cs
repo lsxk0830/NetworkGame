@@ -48,7 +48,7 @@ public class MsgBase
         byte[] nameBytes = Encoding.UTF8.GetBytes(msgBase.protoName);
         Int16 len = (Int16)nameBytes.Length;
         byte[] bytes = new byte[2 + len]; // 申请bytes数组
-        bytes[0] = ((byte)(len >> 8)); // len / 256
+        bytes[0] = (byte)((len >> 8) & 0xFF); // len / 256
         bytes[1] = (byte)(len & 0xFF); //len % 256
         Array.Copy(nameBytes, 0, bytes, 2, len); // 组装名字bytes
         return bytes;

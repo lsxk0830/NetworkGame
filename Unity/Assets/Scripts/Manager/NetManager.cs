@@ -99,8 +99,8 @@ public class NetManager : Singleton<NetManager>
         int len = nameBytes.Length + bodyBytes.Length;
         byte[] sendBytes = new byte[2 + len];
         // 组装长度
-        sendBytes[0] = (byte)(len % 256);
-        sendBytes[1] = (byte)(len / 256);
+        sendBytes[0] = (byte)((len >> 8) & 0xFF);  // 高字节len / 256
+        sendBytes[1] = (byte)(len & 0xFF);         // 低字节len % 256
         Array.Copy(nameBytes, 0, sendBytes, 2, nameBytes.Length); //组装名字
         Array.Copy(bodyBytes, 0, sendBytes, 2 + nameBytes.Length, bodyBytes.Length); // 组装消息体
                                                                                      // 写入队列
@@ -112,8 +112,8 @@ public class NetManager : Singleton<NetManager>
         ba.writeIdx = sendBytes.Length;
         writeQueue.Enqueue(ba);
 
-        Int16 totalLen = (Int16)((sendBytes[0] << 8) | sendBytes[1]);// 解析总长度 (大端)
-        Int16 nameLen = (Int16)((sendBytes[2] << 8) | sendBytes[3]);
+        int totalLen = (sendBytes[0] << 8) | sendBytes[1];// 解析总长度 (大端)
+        int nameLen = (sendBytes[2] << 8) | sendBytes[3];
         string protoName = Encoding.UTF8.GetString(sendBytes, 4, nameLen);// 解析消息名 (UTF-8)
         string jsonBody = Encoding.UTF8.GetString(sendBytes, 4 + nameLen, totalLen - 4 - nameLen);// 解析JSON消息体 (UTF-8)
         Debug.Log($"协议头: 总长度={totalLen}, 消息名={protoName}, 消息体: {jsonBody}"); // Send
