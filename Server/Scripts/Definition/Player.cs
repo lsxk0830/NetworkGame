@@ -47,6 +47,9 @@ public class Player
     /// </summary>
     public string AvatarPath;
 
+    public int Win;
+    public int Lost;
+
     /// <summary>
     /// 客户端状态ClientState
     /// </summary>

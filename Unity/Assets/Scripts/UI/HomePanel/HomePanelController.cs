@@ -20,7 +20,6 @@ public class HomePanelController
     public async UniTaskVoid UpdateUI()
     {
         User user = model.GetUser();
-        view.UpdateUserInfo(user);
         if (user.AvatarPath != "defaultAvatar")
         {
             string directory = Path.Combine(Application.persistentDataPath, "Avatar");
@@ -44,6 +43,11 @@ public class HomePanelController
             }
         }
         //NetManager.Send(new MsgGetRoomList());
+    }
+
+    public void UpdateUserInfo()
+    {
+        view.UpdateUserInfo(model.GetUser());
     }
 
     #region 用户操作处理

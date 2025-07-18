@@ -62,15 +62,13 @@ public class RoomPanelView : BasePanel
         go.transform.localScale = Vector3.one;
         // 获取组件
         Transform trans = go.transform;
-        TMP_Text idText = trans.Find("IdText").GetComponent<TMP_Text>();
+        trans.Find("IdText").GetComponent<TMP_Text>().text = playerInfo.Name.ToString();
         TMP_Text campText = trans.Find("CampText").GetComponent<TMP_Text>();
-        TMP_Text scoreText = trans.Find("ScoreText").GetComponent<TMP_Text>();
+        trans.Find("ScoreText").GetComponent<TMP_Text>().text = playerInfo.Win + "胜" + playerInfo.Lost + "负";
         // 填充信息
-        idText.text = playerInfo.Name.ToString();
         campText.text = playerInfo.camp == 1 ? "红" : "蓝";
         if (playerInfo.isOwner == 1)
             campText.text = campText.text + "!";
-        //scoreText.text = playerInfo.win + "胜" + playerInfo.lost + "负";
         UpdateFace(trans.Find("BgImage").GetComponent<Image>(), playerInfo.AvatarPath).Forget();
     }
 

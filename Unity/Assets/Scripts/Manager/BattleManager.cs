@@ -130,7 +130,14 @@ public class BattleManager : MonoBehaviour
         bool isWin = false;
         BaseTank tank = GetCtrlTank();
         if (tank != null && tank.camp == msg.winCamp)
+        {
+            UserManager.Instance.GetUser(GameMain.ID).Win++; // 更新玩家信息
             isWin = true;
+        }
+        else
+        {
+            UserManager.Instance.GetUser(GameMain.ID).Lost++; // 更新玩家信息
+        }
         tank.hp = 0; // 设置坦克血量为0
         PanelManager.Instance.Open<ResultPanel>(isWin);
         BulletManager.Clear(); // 清空子弹管理器

@@ -45,4 +45,6 @@ public class Player
     /// 玩家头像路径
     /// </summary>
     public string AvatarPath;
+    public int Win;
+    public int Lost;
 }

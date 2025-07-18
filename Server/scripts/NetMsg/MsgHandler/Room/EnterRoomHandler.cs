@@ -30,6 +30,8 @@
                 ID = c.user.ID,
                 Name = c.user.Name,
                 AvatarPath=c.user.AvatarPath,
+                Win = c.user.Win,
+                Lost = c.user.Lost,
             };
             c.user.RoomID = room.RoomID;
             room.EnterRoomAddPlayer(player);

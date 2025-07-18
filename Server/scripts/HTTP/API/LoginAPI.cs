@@ -30,6 +30,11 @@ public static partial class AuthController
             Console.WriteLine($"用户已在线,旧用户踢下线");
             MsgKick msg = new MsgKick();
             UserManager.Send(user.ID, msg);
+            User? oldUser = UserManager.GetUser(user.ID);
+            if (oldUser != null)
+            {
+                RoomManager.GetRoom(oldUser.RoomID)?.RemovePlayer(oldUser.ID); // 从房间中移除旧用户
+            }
             UserManager.RemoveUser(user.ID);
             UserManager.AddUser(user.ID, user);
         }
