@@ -56,10 +56,14 @@ public class LoginPanelView : BasePanel
         test1 = buttons[1];
         test2 = buttons[2];
         test3 = buttons[3];
+        test4 = buttons[4];
+        test5 = buttons[5];
         test.onClick.AddListener(DevLogin);
         test1.onClick.AddListener(DevLogin1);
         test2.onClick.AddListener(DevLogin2);
         test3.onClick.AddListener(DevLogin3);
+        test4.onClick.AddListener(DevLogin4);
+        test5.onClick.AddListener(DevLogin5);
 #endif
     }
 
@@ -68,6 +72,8 @@ public class LoginPanelView : BasePanel
     private Button test1;
     private Button test2;
     private Button test3;
+    private Button test4;
+    private Button test5;
 
     private void DevLogin()
     {
@@ -93,6 +99,18 @@ public class LoginPanelView : BasePanel
         pwInput.text = "QQqq123456";
         OnLoginClick();
     }
+    private void DevLogin4()
+    {
+        idInput.text = "Test4";
+        pwInput.text = "QQqq123456";
+        OnLoginClick();
+    }
+    private void DevLogin5()
+    {
+        idInput.text = "Test5";
+        pwInput.text = "QQqq123456";
+        OnLoginClick();
+    }
 #endif
 
     public override void OnClose() // 关闭
@@ -110,6 +128,8 @@ public class LoginPanelView : BasePanel
         test1.onClick.RemoveListener(DevLogin1);
         test2.onClick.RemoveListener(DevLogin2);
         test3.onClick.RemoveListener(DevLogin3);
+        test4.onClick.RemoveListener(DevLogin4);
+        test5.onClick.RemoveListener(DevLogin5);
 #endif
     }
 
