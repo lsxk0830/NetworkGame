@@ -1,4 +1,4 @@
-# Unity3D+C#服务器+MySQL网络游戏开发
+# U3D+C#服务器+MySQL网络游戏开发
 
 **版本计划：**
 
@@ -7,6 +7,7 @@
 - [x] Version3：根据逻辑开发流程开发。对应分支V3.0
 - [x] Version4：战斗逻辑开发。对应分支V4.0
 - [x] Version5：多房间多用户战斗。完整版，对应分支V5.0
+- [ ] Version6：开发中
 #### 流程图
 ```mermaid
 graph TD
