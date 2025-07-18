@@ -92,20 +92,28 @@ public class NetManager
         ClientState? state;
         if (!clients.TryGetValue(clientfd, out state)) return;
         int count = 0;
+        ByteArray readBuff = state.readBuff;
         try
         {
-            ByteArray readBuff = state.readBuff;
             // 缓冲区不够，清除，若依旧不够，只能返回
-            // 缓冲区长度只有1024，单条协议超过缓冲区长度时会发生错误，根据需要调整长度
+            // 缓冲区长度只有2048，单条协议超过缓冲区长度时会发生错误，根据需要调整长度
             if (readBuff.remain <= 0)
             {
-                OnReceiveData(state);
-                readBuff.MoveBytes();
+#if DEBUG
+                Console.ForegroundColor = ConsoleColor.Yellow; // 设置为红色
+                Console.WriteLine($"准备重置。缓冲区不够，清除.Read:{readBuff.readIdx},Write:{readBuff.writeIdx},Capacity:{readBuff.capacity}");
+                Console.ResetColor();
+#endif
+                readBuff.ResetBytes(); // 重置
             }
             if (readBuff.remain <= 0)
             {
-                Console.WriteLine($"接收消息失败,maybe msg leng > buff capacity");
-                Close(state);
+#if DEBUG
+                Console.ForegroundColor = ConsoleColor.Yellow; // 设置为红色
+                Console.WriteLine($"接收消息失败,Read:{readBuff.readIdx},Write:{readBuff.writeIdx},Capacity:{readBuff.capacity}");
+                Console.ResetColor();
+#endif
+                readBuff.ResetBytes(); // 重置
                 return;
             }
 
@@ -115,14 +123,22 @@ public class NetManager
             }
             catch (SocketException ex)
             {
+#if DEBUG
+                Console.ForegroundColor = ConsoleColor.Red; // 设置为红色
                 Console.WriteLine($"接收Socekt异常: {ex.ToString()}");
-                Close(state);
+                Console.ResetColor();
+#endif
+                readBuff.ResetBytes(); // 重置  
                 return;
             }
             // 客户端关闭
             if (count <= 0)
             {
+#if DEBUG
+                Console.ForegroundColor = ConsoleColor.Red; // 设置为红色
                 Console.WriteLine($"关闭Socket客户端 : {clientfd.RemoteEndPoint}");
+                Console.ResetColor();
+#endif
                 Close(state);
                 return;
             }
@@ -130,18 +146,24 @@ public class NetManager
             readBuff.writeIdx += count;
             // 处理二进制消息
             OnReceiveData(state);
-            // 移动缓冲区
-            readBuff.CheckAndMoveBytes();
         }
         catch (SocketException ex)
         {
+#if DEBUG
+            Console.ForegroundColor = ConsoleColor.Red; // 设置为红色
             Console.WriteLine($"处理客户端数据时发生Socket错误: {ex.SocketErrorCode}");
-            Close(state);
+            Console.ResetColor();
+#endif
+            readBuff.ResetBytes(); // 重置
         }
         catch (Exception ex)
         {
+#if DEBUG
+            Console.ForegroundColor = ConsoleColor.Red; // 设置为红色
             Console.WriteLine($"处理客户端数据时发生异常: {ex.Message}");
-            Close(state);
+            Console.ResetColor();
+#endif
+            readBuff.ResetBytes(); // 重置
         }
     }
 
@@ -175,11 +197,17 @@ public class NetManager
         if (readBuff.length < bodyLength) return;
         //解析协议名
         string protoName = MsgBase.DecodeName(readBuff.bytes, readBuff.readIdx, out int nameCount);
-        Console.WriteLine($"打印数据:{readBuff.Debug()}");
+        //Console.WriteLine($"打印数据:readIdx-{readBuff.readIdx},writeIdx-{readBuff.writeIdx},内容-{readBuff.ToString()}");
         if (protoName == "")
         {
+#if DEBUG
+            Console.ForegroundColor = ConsoleColor.Red; // 设置为红色
             Console.WriteLine("接收数据 MsgBase.DecodeName 失败");
-            Close(state);
+            Console.ResetColor();
+#else
+            Console.WriteLine("接收数据 MsgBase.DecodeName 失败");
+#endif
+            readBuff.ResetBytes();
             return;
         }
         readBuff.readIdx += nameCount;
@@ -197,7 +225,7 @@ public class NetManager
         else
             Console.WriteLine($"接收数据失败: {protoName}");
         //继续读取消息
-        if (readBuff.length > 2)
+        if (readBuff.length > 4)
             OnReceiveData(state);
     }
 

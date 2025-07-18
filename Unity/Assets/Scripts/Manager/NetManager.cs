@@ -20,7 +20,7 @@ public class NetManager : Singleton<NetManager>
     private bool isConnecting = false; // 是否正在连接
     private bool isClosing = false; // 是否正在关闭
 
-    public const int PingInterval = 4; // 心跳间隔时间30秒
+    public const int PingInterval = 30; // 心跳间隔时间30秒
     private float lastPingTime = 0; // 上一次发送Ping的时间
     private float lastPongTime = 0; // 上一次收到Pong的时间
 

@@ -5,7 +5,7 @@ public class ByteArray
     /// <summary>
     /// 默认大小
     /// </summary>
-    private const int DEFAULF_SIZE = 1024;
+    private const int DEFAULF_SIZE = 2048;
 
     /// <summary>
     /// 缓冲区
@@ -83,8 +83,15 @@ public class ByteArray
     /// </summary>
     public void CheckAndMoveBytes()
     {
-        if (length < 8)
+        if ((writeIdx > capacity * 0.8 || length > capacity * 0.5) && readIdx > capacity * 0.3)
+        {
+#if DEBUG
+            Console.ForegroundColor = ConsoleColor.Red; // 设置为红色
+            Console.WriteLine($"移动前:{readIdx},Write:{writeIdx},Length:{length}.已解析数据占用过多时移动.");
+            Console.ResetColor();
+#endif
             MoveBytes();
+        }
     }
 
     /// <summary>
@@ -96,6 +103,14 @@ public class ByteArray
             Array.Copy(bytes, readIdx, bytes, 0, length);
         writeIdx = length;
         readIdx = 0;
+    }
+
+    public void ResetBytes()
+    {
+        bytes = new byte[initSize];
+        capacity = initSize;
+        readIdx = 0;
+        writeIdx = 0;
     }
 
     #region 读写
@@ -164,8 +179,7 @@ public class ByteArray
 
     public string Debug()
     {
-        return string.Format("readIdx({0}) writeIdx({1}) bytes({2})",
-                            readIdx, writeIdx, Encoding.UTF8.GetString(bytes, 0, bytes.Length));
+        return $"readIdx-{readIdx},writeIdx-{writeIdx},bytes-{Encoding.UTF8.GetString(bytes, 0, bytes.Length)}";
     }
     #endregion
 }
