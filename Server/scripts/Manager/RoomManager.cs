@@ -89,7 +89,7 @@ public class RoomManager
     /// <summary>
     /// 生成MsgGetRooms协议
     /// </summary>
-    public static MsgBase SendRoomsToMsg()
+    public static MsgBase GetRoomsToMsg()
     {
         MsgGetRooms msg = new MsgGetRooms();
         int count = rooms.Count;
@@ -98,11 +98,7 @@ public class RoomManager
         int i = 0;
         foreach (Room room in rooms.Values)
         {
-            msg.rooms[i] = new Room
-            {
-                RoomID = room.RoomID,
-                status = (int)room.status
-            };
+            msg.rooms[i] = room;
             i++;
         }
         return msg;

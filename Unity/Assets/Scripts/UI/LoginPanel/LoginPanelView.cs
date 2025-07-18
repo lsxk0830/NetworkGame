@@ -5,6 +5,8 @@ using UnityEngine.UI;
 public class LoginPanelView : BasePanel
 {
     private LoginPanelController controller;
+    public Button QuitBtn;
+    public Button SetBtn;
     public TMP_InputField idInput; // 账号输入框
     public TMP_InputField pwInput; // 密码输入框
     public Button loginBtn; // 登录按钮
@@ -20,6 +22,8 @@ public class LoginPanelView : BasePanel
         controller = new LoginPanelController(this);
 
         // 寻找组件
+        QuitBtn = transform.Find("QuitBtn").GetComponent<Button>();
+        SetBtn = transform.Find("SetBtn").GetComponent<Button>();
         idInput = transform.Find("IDInput").GetComponent<TMP_InputField>();
         pwInput = transform.Find("PWInput").GetComponent<TMP_InputField>();
         loginBtn = transform.Find("LoginBtn").GetComponent<Button>();
@@ -36,7 +40,10 @@ public class LoginPanelView : BasePanel
 
     public override void OnShow(params object[] para) // 显示
     {
+        gameObject.SetActive(true);
         // 添加监听
+        QuitBtn.onClick.AddListener(OnQuitClick);
+        SetBtn.onClick.AddListener(OnSetClick);
         loginBtn.onClick.AddListener(OnLoginClick);
         registerBtn.onClick.AddListener(OnRegisterClick);
         isShowPwToggle.onValueChanged.AddListener(OnPwShowChangeClick);
@@ -44,17 +51,67 @@ public class LoginPanelView : BasePanel
         idInput.onEndEdit.AddListener(IdInputEnd); // 用户名输入名结束
 
 #if DEV
-        foreach (Button btn in transform.Find("DEV").GetComponentsInChildren<Button>())
-        {
-            btn.onClick.AddListener(() =>
-            {
-                idInput.text = btn.gameObject.name;
-                pwInput.text = "QQqq123456";
-                OnLoginClick();
-            });
-        }
+        Button[] buttons = transform.Find("DEV").GetComponentsInChildren<Button>();
+        test = buttons[0];
+        test1 = buttons[1];
+        test2 = buttons[2];
+        test3 = buttons[3];
+        test4 = buttons[4];
+        test5 = buttons[5];
+        test.onClick.AddListener(DevLogin);
+        test1.onClick.AddListener(DevLogin1);
+        test2.onClick.AddListener(DevLogin2);
+        test3.onClick.AddListener(DevLogin3);
+        test4.onClick.AddListener(DevLogin4);
+        test5.onClick.AddListener(DevLogin5);
 #endif
     }
+
+#if DEV
+    private Button test;
+    private Button test1;
+    private Button test2;
+    private Button test3;
+    private Button test4;
+    private Button test5;
+
+    private void DevLogin()
+    {
+        idInput.text = "Test";
+        pwInput.text = "QQqq123456";
+        OnLoginClick();
+    }
+    private void DevLogin1()
+    {
+        idInput.text = "Test1";
+        pwInput.text = "QQqq123456";
+        OnLoginClick();
+    }
+    private void DevLogin2()
+    {
+        idInput.text = "Test2";
+        pwInput.text = "QQqq123456";
+        OnLoginClick();
+    }
+    private void DevLogin3()
+    {
+        idInput.text = "Test3";
+        pwInput.text = "QQqq123456";
+        OnLoginClick();
+    }
+    private void DevLogin4()
+    {
+        idInput.text = "Test4";
+        pwInput.text = "QQqq123456";
+        OnLoginClick();
+    }
+    private void DevLogin5()
+    {
+        idInput.text = "Test5";
+        pwInput.text = "QQqq123456";
+        OnLoginClick();
+    }
+#endif
 
     public override void OnClose() // 关闭
     {
@@ -66,9 +123,32 @@ public class LoginPanelView : BasePanel
         idInput.onEndEdit.RemoveListener(IdInputEnd);
         // 关闭面板
         gameObject.SetActive(false);
+#if DEV
+        test.onClick.RemoveListener(DevLogin);
+        test1.onClick.RemoveListener(DevLogin1);
+        test2.onClick.RemoveListener(DevLogin2);
+        test3.onClick.RemoveListener(DevLogin3);
+        test4.onClick.RemoveListener(DevLogin4);
+        test5.onClick.RemoveListener(DevLogin5);
+#endif
     }
 
     #region UI事件
+
+    private void OnQuitClick()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
+    private void OnSetClick()
+    {
+        PanelManager.Instance.Open<SettingPanel>();
+        print("设置面板打开");
+    }
 
     private void OnLoginClick()
     {

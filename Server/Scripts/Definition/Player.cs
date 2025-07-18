@@ -11,6 +11,8 @@ public class Player
     /// </summary>
     public long ID;
 
+    public string Name;
+
     // 坐标和旋转
     public float x;
 
@@ -39,6 +41,14 @@ public class Player
     /// 皮肤ID
     /// </summary>
     public int skin;
+
+    /// <summary>
+    /// 玩家头像路径
+    /// </summary>
+    public string AvatarPath;
+
+    public int Win;
+    public int Lost;
 
     /// <summary>
     /// 客户端状态ClientState

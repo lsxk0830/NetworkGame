@@ -9,6 +9,6 @@
 
         User? user = cs.user;
         if (user == null) return;
-        NetManager.Send(cs, RoomManager.SendRoomsToMsg());
+        NetManager.Send(cs, RoomManager.GetRoomsToMsg());
     }
 }

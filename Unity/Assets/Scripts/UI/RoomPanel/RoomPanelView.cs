@@ -1,3 +1,5 @@
+using System.IO;
+using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -60,15 +62,14 @@ public class RoomPanelView : BasePanel
         go.transform.localScale = Vector3.one;
         // 获取组件
         Transform trans = go.transform;
-        TMP_Text idText = trans.Find("IdText").GetComponent<TMP_Text>();
+        trans.Find("IdText").GetComponent<TMP_Text>().text = playerInfo.Name.ToString();
         TMP_Text campText = trans.Find("CampText").GetComponent<TMP_Text>();
-        TMP_Text scoreText = trans.Find("ScoreText").GetComponent<TMP_Text>();
+        trans.Find("ScoreText").GetComponent<TMP_Text>().text = playerInfo.Win + "胜" + playerInfo.Lost + "负";
         // 填充信息
-        idText.text = playerInfo.ID.ToString();
         campText.text = playerInfo.camp == 1 ? "红" : "蓝";
         if (playerInfo.isOwner == 1)
             campText.text = campText.text + "!";
-        //scoreText.text = playerInfo.win + "胜" + playerInfo.lost + "负";
+        UpdateFace(trans.Find("BgImage").GetComponent<Image>(), playerInfo.AvatarPath).Forget();
     }
 
     #endregion
@@ -100,13 +101,9 @@ public class RoomPanelView : BasePanel
     /// </summary>
     private void UpdateUICreateRoom(MsgCreateRoom msg)
     {
-        Player player = new Player()
-        {
-            ID = GameMain.ID,
-        };
         Debug.Log($"创建房间");
         controller.UpdateModel(msg.room);
-        GeneratePlayerInfo(player);
+        GeneratePlayerInfo(msg.room.playerIds[GameMain.ID]);
     }
 
     /// <summary>
@@ -154,6 +151,35 @@ public class RoomPanelView : BasePanel
         {
             Destroy(content.GetChild(i).gameObject);
         }
+    }
+
+    /// <summary>
+    /// 更新玩家头像
+    /// </summary>
+    public async UniTaskVoid UpdateFace(Image faceImage, string AvatarPath)
+    {
+        if (AvatarPath != "defaultAvatar")
+        {
+            string path = Path.Combine($"{Application.persistentDataPath}/Avatar/{AvatarPath}.png");
+            Debug.Log($"加载图片的路径:{path}");
+            if (File.Exists(path))
+            {
+                Debug.Log($"加载本地图片");
+                Texture2D texture = await HTTPManager.Instance.GetImage(path);
+                if (texture == null) return;
+                faceImage.sprite = Sprite.Create
+                (texture,
+                    new Rect(0, 0, texture.width, texture.height),
+                    new Vector2(0.5f, 0.5f)
+                );
+            }
+            else
+            {
+                Debug.Log($"加载网络图片");
+                HTTPManager.Instance.GetSetAvatarByDB(AvatarPath, faceImage).Forget();
+            }
+        }
+        //NetManager.Send(new MsgGetRoomList());
     }
 
     #endregion 跟新UI

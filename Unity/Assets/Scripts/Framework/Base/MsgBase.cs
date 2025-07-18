@@ -52,8 +52,8 @@ public class MsgBase
         Int16 len = (Int16)nameBytes.Length;
         byte[] bytes = new byte[2 + len]; // 申请bytes数值
         // 组装2字节的长度信息
-        bytes[0] = (byte)(len % 256);
-        bytes[1] = (byte)(len / 256);
+        bytes[0] = (byte)((len >> 8) & 0xFF);  // len / 256
+        bytes[1] = (byte)(len & 0xFF); //len % 256
         // 组装名字bytes
         Array.Copy(nameBytes, 0, bytes, 2, len);
         return bytes;
@@ -67,8 +67,7 @@ public class MsgBase
         count = 0;
         if (offset + 2 > bytes.Length) return "";  // 必须大于2字节
         // 读取长度
-        Int16 len = BitConverter.ToInt16(bytes, offset);
-        //Int16 len2 = (Int16)(bytes[offset + 1] << 8 | bytes[offset]);
+        Int16 len = (Int16)(bytes[offset] << 8 | bytes[offset + 1]);
         if (len <= 0) return "";
         // 长度必须足够
         if (offset + 2 + len > bytes.Length) return "";

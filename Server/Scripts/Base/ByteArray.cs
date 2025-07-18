@@ -1,9 +1,11 @@
+using System.Text;
+
 public class ByteArray
 {
     /// <summary>
     /// 默认大小
     /// </summary>
-    private const int DEFAULF_SIZE = 1024;
+    private const int DEFAULF_SIZE = 2048;
 
     /// <summary>
     /// 缓冲区
@@ -59,18 +61,18 @@ public class ByteArray
     }
 
     /// <summary>
-    /// 重设尺寸
+    /// 动态扩展缓冲区
     /// </summary>
-    /// <param name="size">想新设置的尺寸长度</param>
+    /// <param name="size">需要的最小容量</param>
     public void ReSize(int size)
     {
         if (size < length) return; // 新的尺寸要比数据长度大
         if (size < initSize) return; // 新的尺寸要比原来的大
-        int n = 1;
+        int n = capacity;
         while (n < size) n *= 2;
         capacity = n;
         byte[] newBytes = new byte[capacity];
-        Array.Copy(bytes, readIdx, newBytes, 0, writeIdx - readIdx);
+        Array.Copy(bytes, readIdx, newBytes, 0, length);
         bytes = newBytes;
         writeIdx = length;
         readIdx = 0;
@@ -81,8 +83,15 @@ public class ByteArray
     /// </summary>
     public void CheckAndMoveBytes()
     {
-        if (length < 8)
+        if ((writeIdx > capacity * 0.8 || length > capacity * 0.5) && readIdx > capacity * 0.3)
+        {
+//#if DEBUG
+//            Console.ForegroundColor = ConsoleColor.Red; // 设置为红色
+//            Console.WriteLine($"移动前:{readIdx},Write:{writeIdx},Length:{length}.已解析数据占用过多时移动.");
+//            Console.ResetColor();
+//#endif
             MoveBytes();
+        }
     }
 
     /// <summary>
@@ -94,6 +103,14 @@ public class ByteArray
             Array.Copy(bytes, readIdx, bytes, 0, length);
         writeIdx = length;
         readIdx = 0;
+    }
+
+    public void ResetBytes()
+    {
+        bytes = new byte[initSize];
+        capacity = initSize;
+        readIdx = 0;
+        writeIdx = 0;
     }
 
     #region 读写
@@ -119,7 +136,6 @@ public class ByteArray
     {
         count = Math.Min(count, length);
         Array.Copy(bytes, readIdx, bs, offset, count);
-        //Array.Copy(bytes, 0, bs, offset, count);
         readIdx += count;
         CheckAndMoveBytes();
         return count;
@@ -131,8 +147,7 @@ public class ByteArray
     public Int16 ReadInt16()
     {
         if (length < 2) return 0;
-        Int16 ret =BitConverter.ToInt16(bytes, readIdx);
-        //Int16 ret = (Int16)(bytes[readIdx + 1] << 8 | bytes[readIdx]);
+        Int16 ret = (Int16)(bytes[readIdx] << 8 | bytes[readIdx + 1]);
         readIdx += 2;
         CheckAndMoveBytes();
         return ret;
@@ -144,13 +159,10 @@ public class ByteArray
     public Int32 ReadInt32()
     {
         if (length < 4) return 0;
-        Int32 ret =BitConverter.ToInt32(bytes, readIdx);
-        /*
-        Int32 ret = (Int32)(bytes[readIdx + 3] << 24 |
-                            bytes[readIdx + 2] << 16 |
-                            bytes[readIdx + 1] << 8 |
-                            bytes[readIdx + 0]);
-        */
+        Int32 ret = (Int32)(bytes[readIdx + 0] << 24 |
+                            bytes[readIdx + 1] << 16 |
+                            bytes[readIdx + 2] << 8 |
+                            bytes[readIdx + 3]);
         readIdx += 4;
         CheckAndMoveBytes();
         return ret;
@@ -162,13 +174,12 @@ public class ByteArray
 
     public override string ToString()
     {
-        return BitConverter.ToString(bytes, readIdx, length);
+        return Encoding.UTF8.GetString(bytes, readIdx, length);
     }
 
     public string Debug()
     {
-        return string.Format("readIdx({0}) writeIdx({1}) bytes({2})",
-                            readIdx, writeIdx, BitConverter.ToString(bytes, 0, bytes.Length));
+        return $"readIdx-{readIdx},writeIdx-{writeIdx},bytes-{Encoding.UTF8.GetString(bytes, 0, bytes.Length)}";
     }
     #endregion
 }

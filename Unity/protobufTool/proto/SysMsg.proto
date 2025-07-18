@@ -1,7 +1,0 @@
-message MsgPing{
-
-}
-
-message MsgPong{
-
-}

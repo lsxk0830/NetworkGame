@@ -24,6 +24,14 @@ public static class API
     public static string GetAvatar = "http://111.229.57.137:5000/api/getavatar";
 #endif
 
+
+#if DEV
+    public static string UploadAvatar = "http://127.0.0.1:5000/api/UploadAvatar"; // 上传用户头像信息
+#else
+    public static string UploadAvatar = "http://111.229.57.137:5000/api/UploadAvatar";
+#endif
+
+
 #if DEV
     public static string GetUser = "http://127.0.0.1:5000/api/getuser"; // 获取用户信息Get
 #else

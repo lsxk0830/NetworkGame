@@ -11,6 +11,7 @@ public class GameMain : MonoSingleton<GameMain>
         GameObject MonoTool = new GameObject("MonoTool");
         MonoTool.AddComponent<GloablMono>();
         MonoTool.AddComponent<ResManager>();
+        transform.Find("BGMusicManager").gameObject.AddComponent<BGMusicManager>();
 
         EventManager.Instance.RegisterEvent(Events.SocketOnConnectSuccess, OnConnectSuccess);
         EventManager.Instance.RegisterEvent(Events.SocketOnConnectFail, OnConnectFail);
@@ -25,6 +26,16 @@ public class GameMain : MonoSingleton<GameMain>
             tankModel.name = "TankModel";
             DontDestroyOnLoad(tankModel);
         }).Forget();
+
+        Init();
+    }
+
+    private void Init()
+    {
+        bool activeMusic = PlayerPrefs.GetInt("Toggle_Music") == 1 ? true : false;
+        float m = PlayerPrefs.GetFloat("Slider_Music");
+        BGMusicManager.Instance.ChangeOpen(activeMusic);
+        BGMusicManager.Instance.ChangeValue(m);
     }
 
     private void OnUpdate()
@@ -52,7 +63,12 @@ public class GameMain : MonoSingleton<GameMain>
 
     private void OnMsgKick(MsgBase msgBse)
     {
-        PanelManager.Instance.Open<TipPanel>("被踢下线");
+        PanelManager.Instance.Open<TipPanel>("被踢下线", (System.Action)OpenLoginPanel);
+    }
+
+    private void OpenLoginPanel()
+    {
+        PanelManager.Instance.CloseAllExceptOther<LoginPanelView>();
     }
 
     private void OnPanelLoadSuccess()

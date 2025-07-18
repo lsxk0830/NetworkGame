@@ -15,6 +15,10 @@
         Player player = new Player(cs)
         {
             ID = user.ID,
+            Name = user.Name,
+            AvatarPath = user.AvatarPath,
+            Win = user.Win,
+            Lost = user.Lost,
         };
         bool result = room.AddPlayer(player);
         msg.result = result ? 0 : -1;

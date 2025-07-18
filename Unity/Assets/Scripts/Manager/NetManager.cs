@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -19,7 +20,7 @@ public class NetManager : Singleton<NetManager>
     private bool isConnecting = false; // 是否正在连接
     private bool isClosing = false; // 是否正在关闭
 
-    public const int PingInterval = 4; // 心跳间隔时间30秒
+    public const int PingInterval = 30; // 心跳间隔时间30秒
     private float lastPingTime = 0; // 上一次发送Ping的时间
     private float lastPongTime = 0; // 上一次收到Pong的时间
 
@@ -98,8 +99,8 @@ public class NetManager : Singleton<NetManager>
         int len = nameBytes.Length + bodyBytes.Length;
         byte[] sendBytes = new byte[2 + len];
         // 组装长度
-        sendBytes[0] = (byte)(len % 256);
-        sendBytes[1] = (byte)(len / 256);
+        sendBytes[0] = (byte)((len >> 8) & 0xFF);  // 高字节len / 256
+        sendBytes[1] = (byte)(len & 0xFF);         // 低字节len % 256
         Array.Copy(nameBytes, 0, sendBytes, 2, nameBytes.Length); //组装名字
         Array.Copy(bodyBytes, 0, sendBytes, 2 + nameBytes.Length, bodyBytes.Length); // 组装消息体
                                                                                      // 写入队列
@@ -111,11 +112,11 @@ public class NetManager : Singleton<NetManager>
         ba.writeIdx = sendBytes.Length;
         writeQueue.Enqueue(ba);
 
-        // int totalLen = BitConverter.ToInt16(sendBytes, 0); // 解析总长度 (小端)
-        // int nameLen = BitConverter.ToInt16(sendBytes, 2);  // 解析消息名长度 (小端)
-        // string protoName = Encoding.ASCII.GetString(sendBytes, 4, nameLen);// 解析消息名 (ASCII)
-        // string jsonBody = Encoding.UTF8.GetString(sendBytes, 4 + nameLen, totalLen - 4 - nameLen);// 解析JSON消息体 (UTF-8)
-        // Debug.Log($"协议头: 总长度={totalLen}, 消息名={protoName}, 消息体: {jsonBody}"); // Send
+        int totalLen = (sendBytes[0] << 8) | sendBytes[1];// 解析总长度 (大端)
+        int nameLen = (sendBytes[2] << 8) | sendBytes[3];
+        string protoName = Encoding.UTF8.GetString(sendBytes, 4, nameLen);// 解析消息名 (UTF-8)
+        string jsonBody = Encoding.UTF8.GetString(sendBytes, 4 + nameLen, totalLen - 4 - nameLen);// 解析JSON消息体 (UTF-8)
+        Debug.Log($"协议头: 总长度={totalLen}, 消息名={protoName}, 消息体: {jsonBody}"); // Send
 
         if (writeQueue.Count == 1)
             socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, SendCallback, socket);
@@ -322,9 +323,8 @@ public class NetManager : Singleton<NetManager>
     {
         if (readBuff.length <= 2) return; // 消息长度
         // 获取消息体长度
-        int readIdx = readBuff.readIdx;
         byte[] bytes = readBuff.bytes;
-        Int16 bodyLength = BitConverter.ToInt16(bytes, readIdx);
+        Int16 bodyLength = (Int16)(bytes[readBuff.readIdx] << 8 | bytes[readBuff.readIdx + 1]);
         if (readBuff.length < bodyLength + 2) return;
         readBuff.readIdx += 2;
         // 解析协议名

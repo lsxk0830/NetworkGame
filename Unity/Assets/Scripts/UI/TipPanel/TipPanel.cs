@@ -41,5 +41,7 @@ public class TipPanel : BasePanel
     private void Click()
     {
         clickCallback?.Invoke();
+        gameObject.SetActive(false);
+        okBtn.onClick.RemoveListener(Click);
     }
 }

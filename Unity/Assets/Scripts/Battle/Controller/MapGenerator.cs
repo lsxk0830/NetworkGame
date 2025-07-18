@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
@@ -18,6 +21,7 @@ public class MapGenerator : MonoBehaviour
         parent = this.transform;
         GenerateMap();
         NetManager.Instance.Send(new MsgObstacleAll());
+        cts = new CancellationTokenSource();
         EventManager.Instance.RegisterEvent(Events.MsgObstacleAll, OnAllObstacle);
         EventManager.Instance.RegisterEvent(Events.MsgObstacleOne, OnOneObstacle);
     }
@@ -26,6 +30,8 @@ public class MapGenerator : MonoBehaviour
         EventManager.Instance.RemoveEvent(Events.MsgObstacleAll, OnAllObstacle);
         EventManager.Instance.RemoveEvent(Events.MsgObstacleOne, OnOneObstacle);
         obstacles?.Clear();
+        cts.Dispose();
+        cts = null;
         obstacles = null;
     }
 
@@ -65,7 +71,7 @@ public class MapGenerator : MonoBehaviour
     private void OnAllObstacle(MsgBase msgBse)
     {
         MsgObstacleAll msg = (MsgObstacleAll)msgBse;
-
+        cts.Cancel(); // 取消等待单个障碍物体协议的任务
         if (obstacles == null)
         {
             //Debug.LogError($"收到障碍协议");
@@ -87,13 +93,33 @@ public class MapGenerator : MonoBehaviour
         EventManager.Instance.RemoveEvent(Events.MsgObstacleAll, OnAllObstacle);
     }
 
+    private CancellationTokenSource cts;
+
     /// <summary>
     /// 收到单个障碍物体协议
     /// </summary>
-    private void OnOneObstacle(MsgBase msgBse)
+    private async void OnOneObstacle(MsgBase msgBse)
     {
         MsgObstacleOne msg = (MsgObstacleOne)msgBse;
 
+        if (obstacles == null)
+        {
+            Debug.LogError($"收到单个障碍物体协议，但障碍物字典未初始化");
+            while (!cts.IsCancellationRequested)
+            {
+                NetManager.Instance.Send(new MsgObstacleAll());
+                Debug.Log($"等待障碍物字典初始化中...{DateTime.Now}");
+                try
+                {
+                    await UniTask.Delay(1000, cancellationToken: cts.Token);
+                }
+                catch (OperationCanceledException)
+                {
+                    Debug.Log("等待被取消");
+                    return;
+                }
+            }
+        }
         if (obstacles.TryGetValue(msg.ObstacleID, out ObstacleListener ol))
         {
             if (msg.IsDestory)

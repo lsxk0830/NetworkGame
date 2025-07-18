@@ -82,7 +82,22 @@ public class FacePanelController
 
     public void Save(Image avatart, Image targetAvatar)
     {
+        UploadAvatarData data = new UploadAvatarData()
+        {
+            ID = GameMain.ID, // 示例ID
+            avatarBytes = avatart.sprite.texture.EncodeToPNG()
+        };
         // ToDo 上传
+        HTTPManager.Instance.Post(API.UploadAvatar, data, onSuccess =>
+        {
+            Debug.Log($"头像上传成功: {onSuccess}");
+            PanelManager.Instance.Open<TipPanel>("头像上传成功");
+        },
+        (Onfail, StringSplitOptions) =>
+        {
+            Debug.Log($"头像上传失败: {Onfail}");
+            PanelManager.Instance.Open<TipPanel>("头像上传失败");
+        }).Forget();
         targetAvatar.sprite = avatart.sprite;
     }
 }

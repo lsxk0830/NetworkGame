@@ -11,6 +11,8 @@ public class Player
     /// </summary>
     public long ID;
 
+    public string Name;
+
     /// <summary>
     /// 是否是房主 1-房主 0-普通成员
     /// </summary>
@@ -38,4 +40,11 @@ public class Player
     /// 皮肤ID
     /// </summary>
     public int skin;
+
+    /// <summary>
+    /// 玩家头像路径
+    /// </summary>
+    public string AvatarPath;
+    public int Win;
+    public int Lost;
 }
