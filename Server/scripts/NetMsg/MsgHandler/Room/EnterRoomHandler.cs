@@ -33,6 +33,7 @@
             };
             c.user.RoomID = room.RoomID;
             room.EnterRoomAddPlayer(player);
+            UserManager.Send(RoomManager.GetRoomsToMsg());
         }
     }
 }

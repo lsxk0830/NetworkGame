@@ -77,10 +77,9 @@ public class RoomHallPanelView : BasePanel
     /// </summary>
     public void DeleteLastGo()
     {
-        foreach (Transform child in roomListContent)
+        for (int i = roomListContent.childCount - 1; i >= 0; i--)
         {
-            if (child.gameObject != roomPrefab)
-                Destroy(child.gameObject);
+            Destroy(roomListContent.GetChild(i).gameObject);
         }
     }
 
@@ -91,33 +90,22 @@ public class RoomHallPanelView : BasePanel
     {
         foreach (var room in rooms)
         {
-            var item = Instantiate(roomPrefab, roomListContent);
-            item.name = room.RoomID;
-            item.SetActive(true);
-
-            var texts = item.GetComponentsInChildren<TMP_Text>();
-            texts[0].text = room.RoomID;
-            texts[1].text = $"{room.playerIds.Count}/4";
-            texts[2].text = room.status == 0 ? "等待中" : "战斗中";
-
-            var button = item.GetComponentInChildren<Button>();
-            button.onClick.AddListener(() => OnRoomItemClick(room.RoomID));
+            if (room.status == 1) continue; // 跳过战斗中的房间
+            LoadOneRoom(room);
         }
     }
 
-    public void LoadOneRoom(string roomID)
+    public void LoadOneRoom(Room room)
     {
         var item = Instantiate(roomPrefab, roomListContent);
-        item.name = roomID;
+        item.name = room.RoomID;
         item.SetActive(true);
 
-        var texts = item.GetComponentsInChildren<TMP_Text>();
-        texts[0].text = roomID;
-        texts[1].text = $"1/4";
-        texts[2].text = "等待中";
+        item.transform.Find("IdText").GetComponent<TextMeshProUGUI>().text = room.RoomID;
+        item.transform.Find("CountText").GetComponent<TextMeshProUGUI>().text = $"{room.playerIds.Count}人";
 
         var button = item.GetComponentInChildren<Button>();
-        button.onClick.AddListener(() => OnRoomItemClick(roomID));
+        button.onClick.AddListener(() => OnRoomItemClick(room.RoomID));
     }
 
     #endregion

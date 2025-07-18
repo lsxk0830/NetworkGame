@@ -58,7 +58,7 @@ public class RoomHallPanelController
             }
             else
             {
-                view.LoadOneRoom(response.room.RoomID); // 别人创建房间
+                view.LoadOneRoom(response.room); // 别人创建房间
             }
         }
         else

@@ -23,6 +23,7 @@
             msg.OwnerID = room.ownerId;
             cs.user.RoomID = "";
             NetManager.Send(cs, msg);
+            UserManager.Send(RoomManager.GetRoomsToMsg());
         }
     }
 }

@@ -85,11 +85,11 @@ public class ByteArray
     {
         if ((writeIdx > capacity * 0.8 || length > capacity * 0.5) && readIdx > capacity * 0.3)
         {
-#if DEBUG
-            Console.ForegroundColor = ConsoleColor.Red; // 设置为红色
-            Console.WriteLine($"移动前:{readIdx},Write:{writeIdx},Length:{length}.已解析数据占用过多时移动.");
-            Console.ResetColor();
-#endif
+//#if DEBUG
+//            Console.ForegroundColor = ConsoleColor.Red; // 设置为红色
+//            Console.WriteLine($"移动前:{readIdx},Write:{writeIdx},Length:{length}.已解析数据占用过多时移动.");
+//            Console.ResetColor();
+//#endif
             MoveBytes();
         }
     }

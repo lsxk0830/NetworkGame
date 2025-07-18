@@ -1,4 +1,6 @@
-﻿/// <summary>
+﻿using Newtonsoft.Json;
+
+/// <summary>
 /// 添加玩家、删除玩家、生成MsgGetRoomInfo协议
 /// </summary>
 public class Room : IDisposable
@@ -22,8 +24,9 @@ public class Room : IDisposable
     /// 玩家列表
     /// </summary>
     public Dictionary<long, Player> playerIds = new();
-    public List<long> camp1List = new(); // 玩家列表，方便遍历
-    public List<long> camp2List = new(); // 玩家列表，方便遍历
+
+    private List<long> camp1List = new(); // 玩家列表，方便遍历
+    private List<long> camp2List = new(); // 玩家列表，方便遍历
 
     /// <summary>
     /// 房主id
@@ -32,12 +35,12 @@ public class Room : IDisposable
 
     public int status = (int)Status.PREPARE;
 
-    public int loadSuccess = 0; // 加载成功的玩家数
+    private int loadSuccess = 0; // 加载成功的玩家数
     private int delaySeconds = 3; // 最长等待时间，单位秒
 
     private Dictionary<int, ObstaclePosRotScale> obs;// 障碍物列表
 
-    public int GetAllObstacleCount = 0;// 获取所有障碍物的次数
+    [JsonIgnore] public int GetAllObstacleCount = 0;// 获取所有障碍物的次数
 
     /// <summary>
     /// 状态
