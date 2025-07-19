@@ -47,9 +47,9 @@ public class PanelManager : Singleton<PanelManager>
         GameObject go = GameObject.Instantiate(panelCache[panelName]);
         go.name = panelName;
         BasePanel panel = go.AddComponent<T>();
+        panel.OnInit();
         go.transform.SetParent(layers[panel.layer], false);
         panels.Add(panelName, panel);
-        panel.OnInit();
         panel.OnShow(para);
 
         panelCache.Remove(panelName); // 从缓存中移除

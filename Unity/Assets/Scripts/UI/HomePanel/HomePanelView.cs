@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System;
 
 public class HomePanelView : BasePanel
 {
@@ -8,7 +9,8 @@ public class HomePanelView : BasePanel
 
     [Header("Text")]
     [SerializeField][LabelText("姓名")] private TMP_Text nameText;
-    [SerializeField][LabelText("金币")] private TMP_Text scoreText;
+    [SerializeField][LabelText("胜负记录")] private TMP_Text RecordText;
+    [SerializeField][LabelText("金币")] private TMP_Text CoinCountText;
     [SerializeField][LabelText("钻石")] private TMP_Text diamondText;
 
     [Header("Button")]
@@ -23,7 +25,8 @@ public class HomePanelView : BasePanel
 
         // 寻找组件
         nameText = transform.Find("Top/UserNameText").GetComponent<TMP_Text>();
-        scoreText = transform.Find("Top/RecordText").GetComponent<TMP_Text>();
+        RecordText = transform.Find("Top/RecordText").GetComponent<TMP_Text>();
+        CoinCountText = transform.Find("Top/CoinCountText").GetComponent<TMP_Text>();
         diamondText = transform.Find("Top/DiamondCountText").GetComponent<TMP_Text>();
 
         quitBtn = transform.Find("Top/QuitBtn").GetComponent<Button>();
@@ -54,16 +57,25 @@ public class HomePanelView : BasePanel
         faceBtn.onClick.AddListener(OnFaceClick);
         playBtn.onClick.AddListener(OnPlayClick);
         GloablMono.Instance.OnUpdate += OnUpdate;
+
+        EventManager.Instance.RegisterEvent(Events.GoHome, OnGoHome);
+    }
+
+    private void OnGoHome()
+    {
+        playBtn.gameObject.SetActive(true);
     }
 
     public override void OnClose()
     {
+        playBtn.gameObject.SetActive(true);
         gameObject.SetActive(false);
         GameMain.tankModel.SetActive(false);
         quitBtn.onClick.RemoveListener(OnQuitClick);
         faceBtn.onClick.RemoveListener(OnFaceClick);
         playBtn.onClick.RemoveListener(OnPlayClick);
         GloablMono.Instance.OnUpdate -= OnUpdate;
+        EventManager.Instance.RemoveEvent(Events.GoHome, OnGoHome);
     }
 
     #endregion
@@ -73,7 +85,8 @@ public class HomePanelView : BasePanel
     public void UpdateUserInfo(User user)
     {
         nameText.text = user.Name;
-        scoreText.text = $"{user.Win}胜 >> {user.Lost}负";
+        RecordText.text = $"{user.Win}胜 >> {user.Lost}负";
+        CoinCountText.text = $"{user.Coin}";
         diamondText.text = user.Diamond.ToString();
     }
 
@@ -114,6 +127,8 @@ public class HomePanelView : BasePanel
     }
     private void OnPlayClick() // 头像按钮点击回调
     {
+        this.Log("开始游戏");
+        playBtn.gameObject.SetActive(false);
         Controller.HandlePlay();
     }
 

@@ -9,8 +9,8 @@ public class RoomPanelView : BasePanel
     private Button startBtn; // 开战按钮
     private Button closeBtn; // 退出按钮
     private Transform content; // 列表容器
-    private GameObject playerObj; // 玩家信息物体
     private RoomPanelController controller;
+    private TextMeshProUGUI TitleText;
 
     public override void OnInit()
     {
@@ -19,7 +19,7 @@ public class RoomPanelView : BasePanel
         startBtn = transform.Find("CtrlPanel/StartBtn").GetComponent<Button>();
         closeBtn = transform.Find("CtrlPanel/CloseBtn").GetComponent<Button>();
         content = transform.Find("ListPanel/ScrollView/Viewport/Content");
-        playerObj = transform.Find("Player").gameObject;
+        TitleText = transform.Find("ListPanel/TitleText").GetComponent<TextMeshProUGUI>();
         controller = new RoomPanelController(this);
     }
 
@@ -31,10 +31,13 @@ public class RoomPanelView : BasePanel
         if (para[0].GetType() == typeof(MsgCreateRoom)) //创建房间
             UpdateUICreateRoom((MsgCreateRoom)para[0]);
         else if (para[0].GetType() == typeof(MsgEnterRoom)) // 进入房间
-            UpdateUIEnterRoom((MsgEnterRoom)para[0]);
+        {
+            MsgEnterRoom msg = (MsgEnterRoom)para[0];
+            TitleText.text = $"欢迎来到房间:{msg.roomID}。尽情享受战斗吧";
+            UpdateUIEnterRoom(msg);
+        }
         else
             PanelManager.Instance.Open<TipPanel>("打开房间异常");
-
         //按钮事件
         startBtn.onClick.AddListener(OnStartClick);
         closeBtn.onClick.AddListener(OnCloseClick);
@@ -54,9 +57,8 @@ public class RoomPanelView : BasePanel
     /// <summary>
     /// 创建一个玩家信息单元
     /// </summary>
-    public void GeneratePlayerInfo(Player playerInfo)
+    public void GeneratePlayerInfo(Player playerInfo,GameObject go)
     {
-        GameObject go = Instantiate(playerObj, content);
         go.name = playerInfo.ID.ToString();
         go.SetActive(true);
         go.transform.localScale = Vector3.one;
@@ -102,8 +104,9 @@ public class RoomPanelView : BasePanel
     private void UpdateUICreateRoom(MsgCreateRoom msg)
     {
         Debug.Log($"创建房间");
+        TitleText.text = $"欢迎来到房间:{msg.room.RoomID}。尽情享受战斗吧";
         controller.UpdateModel(msg.room);
-        GeneratePlayerInfo(msg.room.playerIds[GameMain.ID]);
+        GeneratePlayerInfo(msg.room.playerIds[GameMain.ID], content.GetChild(0).gameObject);
     }
 
     /// <summary>
@@ -113,12 +116,14 @@ public class RoomPanelView : BasePanel
     {
         for (int i = content.childCount - 1; i >= 0; i--) // 删除之前的
         {
-            GameObject go = content.GetChild(i).gameObject;
-            Destroy(go);
+            content.GetChild(i).gameObject.SetActive(false);
         }
         if (response.room.playerIds == null) return;
-        foreach (var player in response.room.playerIds.Values)
-            GeneratePlayerInfo(player);
+        for(int i = 0; i < response.room.playerIds.Count; i++) // 遍历玩家列表
+        {
+            Player player = response.room.playerIds[i];
+            GeneratePlayerInfo(player, content.GetChild(i).gameObject);
+        }
         controller.UpdateModel(response.room);
         startBtn.interactable = response.room.ownerId == GameMain.ID ? true : false;
         Debug.Log($"进入房间");
@@ -143,13 +148,13 @@ public class RoomPanelView : BasePanel
     }
 
     /// <summary>
-    /// 删除之前的物体
+    /// 删除之前的物体(隐藏)
     /// </summary>
     public void DeleteLastGo()
     {
         for (int i = content.childCount - 1; i >= 0; i--) // 删除指定玩家
         {
-            Destroy(content.GetChild(i).gameObject);
+            content.GetChild(i).gameObject.SetActive(false);
         }
     }
 
