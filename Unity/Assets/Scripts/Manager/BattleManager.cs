@@ -42,17 +42,14 @@ public class BattleManager : MonoBehaviour
         tankParent = new GameObject("Tanks").transform;
         tankParent.position = Vector3.zero;
 
-        ResManager.Instance.LoadAssetAsync<GameObject>("BulletPrefab", true,
-        handle => EffectManager.BulletPrefab = handle.gameObject,
-        error => Debug.LogError($"Bullet Addressable加载失败")).Forget();
+        ResManager.Instance.LoadAssetAsync<GameObject>("BulletPrefab",
+        handle => EffectManager.BulletPrefab = handle.gameObject).Forget();
 
-        ResManager.Instance.LoadAssetAsync<GameObject>("Die", true,
-        handle => EffectManager.DiePrefab = handle.gameObject,
-        error => Debug.LogError($"Die Addressable加载失败")).Forget();
+        ResManager.Instance.LoadAssetAsync<GameObject>("Die",
+        handle => EffectManager.DiePrefab = handle.gameObject).Forget();
 
-        ResManager.Instance.LoadAssetAsync<GameObject>("Hit", true,
-        handle => EffectManager.HitPrefab = handle.gameObject,
-        error => Debug.LogError($"Hit Addressable加载失败")).Forget();
+        ResManager.Instance.LoadAssetAsync<GameObject>("Hit",
+        handle => EffectManager.HitPrefab = handle.gameObject).Forget();
     }
 
     void OnDestroy()
@@ -65,6 +62,15 @@ public class BattleManager : MonoBehaviour
         BulletManager.Clear(); // 清空子弹管理器
         EffectManager.Destroy();
         tanks.Clear(); tanks = null;
+        ResManager.Instance.Release("BulletPrefab");
+        ResManager.Instance.Release("Die");
+        ResManager.Instance.Release("Hit");
+        ResManager.Instance.Release("Tank_1");
+        ResManager.Instance.Release("Tank_2");
+        ResManager.Instance.Release("Tank_3");
+        ResManager.Instance.Release("Tank_4");
+        ResManager.Instance.Release("Tank_5");
+        ResManager.Instance.Release("Tank_6");
     }
 
     /// <summary>
@@ -193,7 +199,7 @@ public class BattleManager : MonoBehaviour
 
     private void Init(Player tankInfo)
     {
-        ResManager.Instance.LoadAssetAsync<GameObject>($"Tank_{tankInfo.skin}", false, handle =>
+        ResManager.Instance.LoadAssetAsync<GameObject>($"Tank_{tankInfo.skin}", handle =>
         {
             handles.Add($"Tank_{tankInfo.skin}");
             GameObject tank = Instantiate(handle);

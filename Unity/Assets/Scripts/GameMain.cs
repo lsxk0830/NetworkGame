@@ -10,7 +10,6 @@ public class GameMain : MonoSingleton<GameMain>
     {
         GameObject MonoTool = new GameObject("MonoTool");
         MonoTool.AddComponent<GloablMono>();
-        MonoTool.AddComponent<ResManager>();
         transform.Find("BGMusicManager").gameObject.AddComponent<BGMusicManager>();
 
         EventManager.Instance.RegisterEvent(Events.SocketOnConnectSuccess, OnConnectSuccess);
@@ -20,7 +19,7 @@ public class GameMain : MonoSingleton<GameMain>
         EventManager.Instance.RegisterEvent(Events.MsgPing, OnPong);
         PanelManager.Instance.Init();
         NetManager.Instance.ConnectAsync(); // 循环连接服务器
-        ResManager.Instance.LoadAssetsAsync<GameObject>("TankModel", true, handle =>
+        ResManager.Instance.LoadAssetsAsync<GameObject>("TankModel", handle =>
         {
             tankModel = Instantiate(handle);
             tankModel.name = "TankModel";

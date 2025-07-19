@@ -5,57 +5,47 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Cysharp.Threading.Tasks;
 
-public class ResManager : MonoSingleton<ResManager>
+public class ResManager : Singleton<ResManager>
 {
     // 资源句柄字典
     private readonly Dictionary<string, AsyncOperationHandle> resHandles = new Dictionary<string, AsyncOperationHandle>();
-
-    // 引用计数
-    private readonly Dictionary<string, int> refCounts = new Dictionary<string, int>();
 
     #region 单个资源加载 (LoadAssetAsync)
 
     /// <summary>
     /// 加载单个资源
     /// </summary>
-    public async UniTaskVoid LoadAssetAsync<T>(string key, bool autoRelease = false,
-        Action<T> onLoaded = null,
-        Action<string> onFailed = null)
+    public async UniTaskVoid LoadAssetAsync<T>(string key, Action<T> onLoaded = null)
     {
         // 检查缓存
         if (TryGetCachedResource<T>(key, out T cachedAsset, out AsyncOperationHandle cachedHandle))
         {
             onLoaded?.Invoke(cachedAsset);
-            if (!autoRelease) IncrementReference(key);
             return;
         }
-
         try
         {
             AsyncOperationHandle<T> handle = Addressables.LoadAssetAsync<T>(key);
-            if (!autoRelease)
-            {
-                resHandles[key] = handle;
-                IncrementReference(key);
-            }
-
+            resHandles[key] = handle;
             await handle.Task;
 
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
                 onLoaded?.Invoke(handle.Result);
-                if (autoRelease) Addressables.Release(handle);
             }
             else
             {
-                onFailed?.Invoke($"AA加载资源失败: {key}. 错误: {handle.OperationException}");
-                CleanupHandle(key, handle, autoRelease);
+                Addressables.Release(handle);
             }
         }
         catch (Exception e)
         {
-            onFailed?.Invoke($"加载{key}异常 : {e.Message}");
-            ReleaseResource(key);
+            if (resHandles.TryGetValue(key, out AsyncOperationHandle handle))
+            {
+                Addressables.Release(handle);
+                resHandles.Remove(key);
+            }
+            Debug.LogError($"加载资源 {key} 失败: {e.Message}");
         }
     }
 
@@ -66,24 +56,19 @@ public class ResManager : MonoSingleton<ResManager>
     /// <summary>
     /// 加载多个资源
     /// </summary>
-    public async UniTaskVoid LoadAssetsAsync<T>(string key, bool autoRelease = false,
-        Action<T> onLoaded = null,
-        Action<IList<T>> onAllLoaded = null,
-        Action<string> onFailed = null)
+    public async UniTaskVoid LoadAssetsAsync<T>(string key, Action<T> onLoaded = null, Action<IList<T>> onAllLoaded = null)
     {
-
         // 检查缓存
-        if (TryGetCachedResource<IList<T>>(key, out var cachedAssets, out var cachedHandle))
+        if (TryGetCachedResource<IList<T>>(key, out IList<T> cachedAssets, out var cachedHandle))
         {
             if (onLoaded != null)
             {
-                foreach (var asset in cachedAssets)
+                foreach (T asset in cachedAssets)
                 {
                     onLoaded.Invoke(asset);
                 }
             }
             onAllLoaded?.Invoke(cachedAssets);
-            if (!autoRelease) IncrementReference(key);
             return;
         }
 
@@ -94,29 +79,25 @@ public class ResManager : MonoSingleton<ResManager>
                 onLoaded?.Invoke(loadedAsset);
             });
 
-            if (!autoRelease)
-            {
-                resHandles[key] = handle;
-                IncrementReference(key);
-            }
+            resHandles[key] = handle;
 
             await handle.Task;
 
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
                 onAllLoaded?.Invoke(handle.Result);
-                if (autoRelease) Addressables.Release(handle);
             }
             else
             {
-                onFailed?.Invoke($"加载 {key} 错误: {handle.OperationException}");
-                CleanupHandle(key, handle, autoRelease);
+                Debug.LogError($"加载资源 {key} 失败: {handle.OperationException}");
+                resHandles.Remove(key);
+                Addressables.Release(handle);
             }
         }
         catch (Exception e)
         {
-            onFailed?.Invoke($"加载 {key} 时发生异常 : {e.Message}");
-            ReleaseResource(key);
+            resHandles.Remove(key);
+            Debug.LogError($"加载资源 {key} 失败: {e.Message}");
         }
     }
 
@@ -146,7 +127,6 @@ public class ResManager : MonoSingleton<ResManager>
 
             // 移除无效的缓存
             resHandles.Remove(key);
-            refCounts.Remove(key);
             Addressables.Release(handle);
         }
 
@@ -156,45 +136,22 @@ public class ResManager : MonoSingleton<ResManager>
 
     #endregion
 
-    #region 资源释放管理
-
     /// <summary>
-    /// 释放资源
+    /// 释放单个资源
     /// </summary>
-    public void ReleaseResource(string key)
+    public void Release(string key)
     {
-        if (!resHandles.ContainsKey(key)) return;
-
-        DecrementReference(key);
-
-        if (refCounts.TryGetValue(key, out var count) && count <= 0)
+        if (resHandles.TryGetValue(key, out AsyncOperationHandle handle))
         {
-            if (resHandles.TryGetValue(key, out var handle))
-            {
-                Addressables.Release(handle);
-                resHandles.Remove(key);
-                refCounts.Remove(key);
-            }
-        }
-    }
-
-    /// <summary>
-    /// 清理句柄
-    /// </summary>
-    private void CleanupHandle(string key, AsyncOperationHandle handle, bool autoRelease)
-    {
-        if (!autoRelease)
-        {
+            Addressables.Release(handle);
             resHandles.Remove(key);
-            refCounts.Remove(key);
         }
-        Addressables.Release(handle);
     }
 
     /// <summary>
     /// 释放所有资源
     /// </summary>
-    public void ReleaseAll()
+    private void OnDestroy()
     {
         foreach (var handle in resHandles.Values)
         {
@@ -202,43 +159,5 @@ public class ResManager : MonoSingleton<ResManager>
         }
 
         resHandles.Clear();
-        refCounts.Clear();
-    }
-
-    #endregion
-
-    #region 引用计数管理
-
-    /// <summary>
-    /// 增加引用计数
-    /// </summary>
-    private void IncrementReference(string key)
-    {
-        refCounts[key] = refCounts.TryGetValue(key, out var count) ? count + 1 : 1;
-    }
-
-    /// <summary>
-    /// 减少引用计数
-    /// </summary>
-    private void DecrementReference(string key)
-    {
-        if (refCounts.TryGetValue(key, out var count))
-        {
-            if (count <= 1)
-            {
-                refCounts.Remove(key);
-            }
-            else
-            {
-                refCounts[key] = count - 1;
-            }
-        }
-    }
-
-    #endregion
-
-    private void OnDestroy()
-    {
-        ReleaseAll();
     }
 }

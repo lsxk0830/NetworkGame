@@ -21,8 +21,7 @@ public class PanelManager : Singleton<PanelManager>
         layers.Add(Layer.Panel, panel);
         layers.Add(Layer.Tip, tip);
 
-        ResManager.Instance.LoadAssetsAsync<GameObject>("UIPanel", true,
-        onLoaded: panel =>
+        ResManager.Instance.LoadAssetsAsync<GameObject>("UIPanel", panel =>
         {
             panelCache.Add(panel.name, panel);
             //Debug.Log($"加载面板：{panel.name}");
