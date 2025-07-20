@@ -37,6 +37,7 @@ SpriteAtlas:
     - {fileID: 2800000, guid: bce8d8a2b3dff454098c725c102abf52, type: 3}
     - {fileID: 2800000, guid: 203a11463cf313d4f809bb76e3e90a91, type: 3}
     - {fileID: 2800000, guid: 6d525f23c4371ab4ea7eed18ba2b5e19, type: 3}
+    - {fileID: 2800000, guid: 17df8aee8acea4f4cb1619125a2dd44e, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -46,11 +47,13 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 6d525f23c4371ab4ea7eed18ba2b5e19, type: 3}
   - {fileID: 21300000, guid: 203a11463cf313d4f809bb76e3e90a91, type: 3}
   - {fileID: 21300000, guid: d43d798e5ee4a0c4b837f41d05b47e8c, type: 3}
+  - {fileID: 21300000, guid: 17df8aee8acea4f4cb1619125a2dd44e, type: 3}
   m_PackedSpriteNamesToIndex:
   - defaultAvatar
   - SetBtn
   - QuitBtn
   - bg2
+  - Logo
   m_RenderDataMap: {}
   m_Tag: General
   m_IsVariant: 0
