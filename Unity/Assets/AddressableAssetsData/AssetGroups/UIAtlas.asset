@@ -21,20 +21,8 @@ MonoBehaviour:
     m_Address: Battle
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: ef4666f69355d134ca620fa205f3eee7
-    m_Address: General
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   - m_GUID: fb9ad25359b3f8b40ad710eb2bc678d6
     m_Address: Home
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 685adb730b01f424fb62d0381882c0ce
-    m_Address: Login
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: aa0733dd8dfa12e449522953f255c3b3
-    m_Address: Room
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0
