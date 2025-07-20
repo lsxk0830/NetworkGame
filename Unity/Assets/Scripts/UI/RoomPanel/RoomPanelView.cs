@@ -119,10 +119,11 @@ public class RoomPanelView : BasePanel
             content.GetChild(i).gameObject.SetActive(false);
         }
         if (response.room.playerIds == null) return;
-        for(int i = 0; i < response.room.playerIds.Count; i++) // 遍历玩家列表
+        int goIndex = 0;
+        foreach (var player in response.room.playerIds.Values) // 创建玩家信息单元
         {
-            Player player = response.room.playerIds[i];
-            GeneratePlayerInfo(player, content.GetChild(i).gameObject);
+            GeneratePlayerInfo(player,  content.GetChild(goIndex).gameObject);
+            goIndex++;
         }
         controller.UpdateModel(response.room);
         startBtn.interactable = response.room.ownerId == GameMain.ID ? true : false;
