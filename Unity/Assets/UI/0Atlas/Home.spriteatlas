@@ -27,16 +27,38 @@ SpriteAtlas:
       padding: 4
       blockOffset: 1
       allowAlphaSplitting: 0
-      enableRotation: 1
-      enableTightPacking: 1
+      enableRotation: 0
+      enableTightPacking: 0
       enableAlphaDilation: 0
     secondaryTextureSettings: {}
     variantMultiplier: 1
     packables:
-    - {fileID: 102900000, guid: 21340b95f3e9bdb4eb9dd58c5ff1c0ba, type: 3}
-    - {fileID: 102900000, guid: 78af83f4e6d68474bae6b0a45c577f4b, type: 3}
-    - {fileID: 102900000, guid: 5f5ea8e3a4335734595430a4c6cac4ef, type: 3}
-    - {fileID: 102900000, guid: 98ddb1fe14f988a49be83fe38509452b, type: 3}
+    - {fileID: 2800000, guid: 7550a6d67b61b71428c42e188117b0a2, type: 3}
+    - {fileID: 2800000, guid: 523031f792ab33f4883bbe628ba90b37, type: 3}
+    - {fileID: 2800000, guid: 12b069d08202da645b0a7f55622094c6, type: 3}
+    - {fileID: 2800000, guid: bdcc0f80cb302f14fa44d6915e44215f, type: 3}
+    - {fileID: 2800000, guid: 56bd8e26148b8b74582395ce6fa94ae5, type: 3}
+    - {fileID: 2800000, guid: 966ba41f9988e3245949a37a5d6fad45, type: 3}
+    - {fileID: 2800000, guid: 790d65e9f353b31408fd88035476dd52, type: 3}
+    - {fileID: 2800000, guid: 74939e1c1b85e074ab3c5f224ac02885, type: 3}
+    - {fileID: 2800000, guid: 1cc452f944b361e438d88919195d11b6, type: 3}
+    - {fileID: 2800000, guid: 086eff3929395aa46a0d20f2dbc6dbaf, type: 3}
+    - {fileID: 2800000, guid: 40b1c778b1006564abd3122a126a676a, type: 3}
+    - {fileID: 2800000, guid: b61cdd2a7ec552348894510d2ed06cd2, type: 3}
+    - {fileID: 2800000, guid: 7e33dd1b872527944a9cd37436c20f23, type: 3}
+    - {fileID: 2800000, guid: 6d1e5a6f8d26ea24481ec1ec2fa487e6, type: 3}
+    - {fileID: 2800000, guid: 04a2fd6e5e1d21b409cf2a289a07e25f, type: 3}
+    - {fileID: 2800000, guid: c2bb46fe8901746419741a744063956f, type: 3}
+    - {fileID: 2800000, guid: fd29210402f128c41a887589eef7bb45, type: 3}
+    - {fileID: 2800000, guid: bce8d8a2b3dff454098c725c102abf52, type: 3}
+    - {fileID: 2800000, guid: 203a11463cf313d4f809bb76e3e90a91, type: 3}
+    - {fileID: 2800000, guid: 6d525f23c4371ab4ea7eed18ba2b5e19, type: 3}
+    - {fileID: 2800000, guid: af917136491631d4784e0cffe89cbfd1, type: 3}
+    - {fileID: 2800000, guid: d43d798e5ee4a0c4b837f41d05b47e8c, type: 3}
+    - {fileID: 2800000, guid: 1193c04d6142ef442a9fa0a022e651e2, type: 3}
+    - {fileID: 2800000, guid: 7bc179b679f157e4b96e2a28e47bb3ef, type: 3}
+    - {fileID: 2800000, guid: 17df8aee8acea4f4cb1619125a2dd44e, type: 3}
+    - {fileID: 2800000, guid: a9a485569bacdfe43a51dde2c4a90384, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -47,7 +69,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: bce8d8a2b3dff454098c725c102abf52, type: 3}
   - {fileID: 21300000, guid: 6d525f23c4371ab4ea7eed18ba2b5e19, type: 3}
   - {fileID: 21300000, guid: fd29210402f128c41a887589eef7bb45, type: 3}
-  - {fileID: 21300000, guid: b0dbccc5ed594b74b866f27539c48387, type: 3}
   - {fileID: 21300000, guid: 56bd8e26148b8b74582395ce6fa94ae5, type: 3}
   - {fileID: 21300000, guid: af917136491631d4784e0cffe89cbfd1, type: 3}
   - {fileID: 21300000, guid: 203a11463cf313d4f809bb76e3e90a91, type: 3}
@@ -62,10 +83,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: b61cdd2a7ec552348894510d2ed06cd2, type: 3}
   - {fileID: 21300000, guid: 7e33dd1b872527944a9cd37436c20f23, type: 3}
   - {fileID: 21300000, guid: 74939e1c1b85e074ab3c5f224ac02885, type: 3}
-  - {fileID: 21300000, guid: 93030b2d59c89c84a892af6ca1a3308d, type: 3}
   - {fileID: 21300000, guid: 1193c04d6142ef442a9fa0a022e651e2, type: 3}
   - {fileID: 21300000, guid: 04a2fd6e5e1d21b409cf2a289a07e25f, type: 3}
   - {fileID: 21300000, guid: d43d798e5ee4a0c4b837f41d05b47e8c, type: 3}
+  - {fileID: 21300000, guid: 17df8aee8acea4f4cb1619125a2dd44e, type: 3}
   - {fileID: 21300000, guid: c2bb46fe8901746419741a744063956f, type: 3}
   - {fileID: 21300000, guid: 966ba41f9988e3245949a37a5d6fad45, type: 3}
   - {fileID: 21300000, guid: 6d1e5a6f8d26ea24481ec1ec2fa487e6, type: 3}
@@ -75,7 +96,6 @@ SpriteAtlas:
   - defaultAvatar
   - SetBtn
   - vip
-  - Top
   - HP
   - bg1
   - QuitBtn
@@ -90,10 +110,10 @@ SpriteAtlas:
   - Chat
   - circular
   - Coin
-  - Logo
   - bg3
   - Gift
   - bg2
+  - Logo
   - Task
   - Rect
   - Friend

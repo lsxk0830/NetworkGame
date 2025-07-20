@@ -21,8 +21,7 @@ public class PanelManager : Singleton<PanelManager>
         layers.Add(Layer.Panel, panel);
         layers.Add(Layer.Tip, tip);
 
-        ResManager.Instance.LoadAssetsAsync<GameObject>("UIPanel", true,
-        onLoaded: panel =>
+        ResManager.Instance.LoadAssetsAsync<GameObject>("UIPanel", panel =>
         {
             panelCache.Add(panel.name, panel);
             //Debug.Log($"加载面板：{panel.name}");
@@ -48,9 +47,9 @@ public class PanelManager : Singleton<PanelManager>
         GameObject go = GameObject.Instantiate(panelCache[panelName]);
         go.name = panelName;
         BasePanel panel = go.AddComponent<T>();
+        panel.OnInit();
         go.transform.SetParent(layers[panel.layer], false);
         panels.Add(panelName, panel);
-        panel.OnInit();
         panel.OnShow(para);
 
         panelCache.Remove(panelName); // 从缓存中移除

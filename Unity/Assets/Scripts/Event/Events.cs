@@ -11,6 +11,7 @@ public static class Events
     public static string MsgPing = "MsgPing"; //心跳协议
     public static string MsgKick = "MsgKick"; //被踢下线
 
+    public static string GoHome = "GoHome"; //返回首页
     public static string MsgGetRooms = "MsgGetRooms"; //获取房间列表
     public static string MsgCreateRoom = "MsgCreateRoom"; //新建房间
     public static string MsgDeleteRoom = "MsgDeleteRoom"; //删除房间

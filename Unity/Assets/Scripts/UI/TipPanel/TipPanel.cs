@@ -19,6 +19,7 @@ public class TipPanel : BasePanel
 
     public override void OnShow(params object[] args)
     {
+        gameObject.SetActive(true);
         if (args.Length == 1)
         {
             text.text = (string)args[0];

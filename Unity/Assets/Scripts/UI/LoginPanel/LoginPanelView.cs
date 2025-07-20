@@ -33,7 +33,7 @@ public class LoginPanelView : BasePanel
         isShowPwToggle = transform.Find("IsShowPwToggle").GetComponent<Toggle>();
         RememberPwToggle = transform.Find("RememberPwToggle").GetComponent<Toggle>();
         controller.SetToggleState();
-#if DEV
+#if DEBUG
         transform.Find("DEV").gameObject.SetActive(true);
 #endif
     }
@@ -50,7 +50,7 @@ public class LoginPanelView : BasePanel
         readPwBtn.onClick.AddListener(OnReadPwClick);
         idInput.onEndEdit.AddListener(IdInputEnd); // 用户名输入名结束
 
-#if DEV
+#if DEBUG
         Button[] buttons = transform.Find("DEV").GetComponentsInChildren<Button>();
         test = buttons[0];
         test1 = buttons[1];
@@ -67,7 +67,7 @@ public class LoginPanelView : BasePanel
 #endif
     }
 
-#if DEV
+#if DEBUG
     private Button test;
     private Button test1;
     private Button test2;
@@ -123,7 +123,7 @@ public class LoginPanelView : BasePanel
         idInput.onEndEdit.RemoveListener(IdInputEnd);
         // 关闭面板
         gameObject.SetActive(false);
-#if DEV
+#if DEBUG
         test.onClick.RemoveListener(DevLogin);
         test1.onClick.RemoveListener(DevLogin1);
         test2.onClick.RemoveListener(DevLogin2);

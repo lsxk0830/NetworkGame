@@ -15,6 +15,7 @@ public class RoomHallPanelView : BasePanel
 
     [SerializeField] private Button createButton;
     [SerializeField] private Button refreshButton;
+    [SerializeField] private Button leaveButton;
     [SerializeField] private Transform roomListContent;
     [SerializeField] private GameObject roomPrefab;
 
@@ -27,6 +28,7 @@ public class RoomHallPanelView : BasePanel
         CtrlPanelGo = transform.Find("CtrlPanel").gameObject;
         createButton = transform.Find("CtrlPanel/CreateBtn").GetComponent<Button>();
         refreshButton = transform.Find("CtrlPanel/ReflashBtn").GetComponent<Button>();
+        leaveButton = transform.Find("CtrlPanel/LeaveBtn").GetComponent<Button>();
         roomListContent = transform.Find("ListPanel/ScrollView/Viewport/Content");
         roomPrefab = transform.Find("Room").gameObject;
         Controller = new RoomHallPanelController(this);
@@ -40,6 +42,7 @@ public class RoomHallPanelView : BasePanel
 
         createButton.onClick.AddListener(OnCreateRoomClick);
         refreshButton.onClick.AddListener(OnRefreshClick);
+        leaveButton.onClick.AddListener(OnLeaveClick);
         Controller.Addlistener();
 
         NetManager.Instance.Send(new MsgGetRooms());
@@ -50,6 +53,7 @@ public class RoomHallPanelView : BasePanel
         gameObject.SetActive(false);
         createButton.onClick.RemoveListener(OnCreateRoomClick);
         refreshButton.onClick.RemoveListener(OnRefreshClick);
+        leaveButton.onClick.RemoveListener(OnLeaveClick);
         Controller.Removelistener();
     }
 
@@ -134,6 +138,15 @@ public class RoomHallPanelView : BasePanel
     private void OnRoomItemClick(string roomId)
     {
         Controller.HandleJoinRoom(roomId);
+    }
+
+    /// <summary>
+    /// 加入房间
+    /// </summary>
+    private void OnLeaveClick()
+    {
+        OnClose();
+        EventManager.Instance.InvokeEvent(Events.GoHome);
     }
 
     #endregion
