@@ -24,10 +24,11 @@ public class BattleManager : MonoBehaviour
     void Awake()
     {
         BGMusicManager.Instance.ChangeOpen(false);
-        SoundActive = PlayerPrefs.GetInt("Toggle_Sound") == 1 ? true : false;
-        SoundValue = PlayerPrefs.GetFloat("Slider_Sound");
+        SoundActive = PlayerPrefs.GetInt("Toggle_Effect") == 1 ? true : false;
+        SoundValue = PlayerPrefs.GetFloat("Slider_Effect");
+        Debug.Log($"SoundActive:{SoundActive}, SoundValue:{SoundValue}");
 
-        //PanelManager.Instance.Open<GamePanel>();
+        PanelManager.Instance.Open<GamePanel>();
         freeLookCam = GetComponent<CinemachineFreeLook>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
 

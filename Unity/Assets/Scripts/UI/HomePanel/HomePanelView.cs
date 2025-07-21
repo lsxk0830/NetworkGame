@@ -46,10 +46,10 @@ public class HomePanelView : BasePanel
     public override void OnShow(params object[] args)
     {
         Controller.UpdateUserInfo();
-        bool activeMusic = PlayerPrefs.GetInt("Toggle_Music") == 1 ? true : false;
-        bool activeSound = PlayerPrefs.GetInt("Toggle_Sound") == 1 ? true : false;
-        float m = PlayerPrefs.GetFloat("Slider_Music");
-        float s = PlayerPrefs.GetFloat("Slider_Sound");
+        bool activeMusic = PlayerPrefs.GetInt("Toggle_BG") == 1 ? true : false;
+        bool activeSound = PlayerPrefs.GetInt("Toggle_Effect") == 1 ? true : false;
+        float m = PlayerPrefs.GetFloat("Slider_BG");
+        float s = PlayerPrefs.GetFloat("Slider_Effect");
         BGMusicManager.Instance.ChangeOpen(activeMusic);
         BGMusicManager.Instance.ChangeValue(m);
 

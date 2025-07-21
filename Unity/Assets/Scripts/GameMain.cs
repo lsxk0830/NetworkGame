@@ -31,8 +31,8 @@ public class GameMain : MonoSingleton<GameMain>
 
     private void Init()
     {
-        bool activeMusic = PlayerPrefs.GetInt("Toggle_Music") == 1 ? true : false;
-        float m = PlayerPrefs.GetFloat("Slider_Music");
+        bool activeMusic = PlayerPrefs.GetInt("Toggle_BG") == 1 ? true : false;
+        float m = PlayerPrefs.GetFloat("Slider_BG");
         BGMusicManager.Instance.ChangeOpen(activeMusic);
         BGMusicManager.Instance.ChangeValue(m);
     }
