@@ -96,4 +96,17 @@ public class PanelManager : Singleton<PanelManager>
             }
         }
     }
+
+    /// <summary>
+    /// 获取指定类型的面板
+    /// </summary>
+    public T GetPanel<T>() where T : BasePanel
+    {
+        string panelName = typeof(T).FullName;
+        if (panels.ContainsKey(panelName))
+        {
+            return (T)panels[panelName];
+        }
+        return null;
+    }
 }

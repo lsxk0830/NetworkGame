@@ -5,12 +5,17 @@ using UnityEngine;
 /// </summary>
 public class SyncTank : BaseTank
 {
+    private Vector3 lastPosition; // 上一帧位置
+    private float lastTime; // 上一次更新的时间
+
     public override void Init(Player tankInfo)
     {
         base.Init(tankInfo);
+        lastPosition = transform.position;
         // 不受物理运动影响
         mRigidbody.constraints = RigidbodyConstraints.FreezeAll;
         mRigidbody.useGravity = false;
+        GloablMono.Instance.OnUpdate += OnUpdate;
     }
 
     /// <summary>
@@ -29,8 +34,31 @@ public class SyncTank : BaseTank
         //Debug.Log($"同步位置协议:{JsonConvert.SerializeObject(msg)}");
     }
 
+    private void OnUpdate()
+    {
+        if (hp <= 0) return;
+        if (Time.time - lastTime > 0.5f)
+        {
+            lastTime = Time.time;
+
+            if (Vector3.SqrMagnitude(transform.position - lastPosition) > 0.25f)
+            {
+                if (audioSource.volume == 0)
+                    audioSource.volume = BattleManager.EffectValue; // 恢复音量
+            }
+            else
+            {
+                if (audioSource.volume != 0)
+                    audioSource.volume = 0; // 恢复音量
+            }
+
+            lastPosition = transform.position;
+        }
+    }
+
     private void OnDestroy()
     {
         base.Destroy();
+        GloablMono.Instance.OnUpdate -= OnUpdate;
     }
 }

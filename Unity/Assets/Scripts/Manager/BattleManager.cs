@@ -18,15 +18,17 @@ public class BattleManager : MonoBehaviour
     public static CinemachineImpulseSource impulseSource;
     public Camera mapCamera;
 
-    public static bool SoundActive = false;
-    public static float SoundValue = 0;
+    public static bool EffectActive = false;
+    public static float EffectValue = 0;
+
+    private GamePanel gamePanel;
 
     void Awake()
     {
         BGMusicManager.Instance.ChangeOpen(false);
-        SoundActive = PlayerPrefs.GetInt("Toggle_Effect") == 1 ? true : false;
-        SoundValue = PlayerPrefs.GetFloat("Slider_Effect");
-        Debug.Log($"SoundActive:{SoundActive}, SoundValue:{SoundValue}");
+        EffectActive = PlayerPrefs.GetInt("Toggle_Effect") == 1 ? true : false;
+        EffectValue = PlayerPrefs.GetFloat("Slider_Effect");
+        //Debug.Log($"音效是否打开:{EffectActive}, 音量:{EffectValue}");
 
         PanelManager.Instance.Open<GamePanel>();
         freeLookCam = GetComponent<CinemachineFreeLook>();
@@ -51,6 +53,8 @@ public class BattleManager : MonoBehaviour
 
         ResManager.Instance.LoadAssetAsync<GameObject>("Hit",
         handle => EffectManager.HitPrefab = handle.gameObject).Forget();
+
+        gamePanel = PanelManager.Instance.GetPanel<GamePanel>();
     }
 
     void OnDestroy()
@@ -147,6 +151,7 @@ public class BattleManager : MonoBehaviour
         }
         tank.hp = 0; // 设置坦克血量为0
         PanelManager.Instance.Open<ResultPanel>(isWin);
+        gamePanel.OnClose();
         BulletManager.Clear(); // 清空子弹管理器
         EffectManager.Destroy();
         EventManager.Instance.RemoveEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
@@ -188,6 +193,15 @@ public class BattleManager : MonoBehaviour
     private void OnMsgHit(MsgBase msgBse)
     {
         MsgHit msg = (MsgHit)msgBse;
+        if (msg.ID == GameMain.ID)
+        {
+            gamePanel.UpdateHit(msg.damage);
+        }
+        else if (msg.targetID == GameMain.ID)
+        {
+            gamePanel.UpdateHP(msg.hp);
+        }
+
         // 查找坦克
         BaseTank tank = GetTank(msg.targetID);
         if (tank == null) return;

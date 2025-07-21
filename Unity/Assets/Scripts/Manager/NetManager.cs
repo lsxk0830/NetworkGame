@@ -116,7 +116,7 @@ public class NetManager : Singleton<NetManager>
         int nameLen = (sendBytes[2] << 8) | sendBytes[3];
         string protoName = Encoding.UTF8.GetString(sendBytes, 4, nameLen);// 解析消息名 (UTF-8)
         string jsonBody = Encoding.UTF8.GetString(sendBytes, 4 + nameLen, totalLen - 4 - nameLen);// 解析JSON消息体 (UTF-8)
-        Debug.Log($"协议头: 总长度={totalLen}, 消息名={protoName}, 消息体: {jsonBody}"); // Send
+        //Debug.Log($"协议头: 总长度={totalLen}, 消息名={protoName}, 消息体: {jsonBody}"); // Send
 
         if (writeQueue.Count == 1)
             socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, SendCallback, socket);

@@ -14,6 +14,7 @@ public class BaseTank : MonoBehaviour
     public int camp = 0; // 阵营
     protected Rigidbody mRigidbody;
     private GameObject explosion;
+    public AudioSource audioSource; // 音频源
 
     public virtual void Init(Player tankInfo)
     {
@@ -29,6 +30,9 @@ public class BaseTank : MonoBehaviour
         turret = transform.Find("Tank/Turret");
         gun = turret.transform.Find("Gun");
         firePoint = turret.transform.Find("FirePoint");
+        audioSource = GetComponent<AudioSource>();
+        audioSource.Play();
+        audioSource.volume = BattleManager.EffectValue; // 设置音量
     }
 
     /// <summary>
