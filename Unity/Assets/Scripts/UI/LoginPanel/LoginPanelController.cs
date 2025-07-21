@@ -146,7 +146,7 @@ public class LoginPanelController
                 Debug.LogError("服务器开小差了，请联系开发人员");
                 break;
             default:
-                PanelManager.Instance.Open<TipPanel>($"连接失败: {error}");
+                PanelManager.Instance.Open<TipPanel>($"连接失败.错误码：{code},{error}");
                 Debug.LogError($"连接失败: {error}");
                 break;
         }

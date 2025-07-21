@@ -14,9 +14,12 @@ public class HomePanelView : BasePanel
     [SerializeField][LabelText("钻石")] private TMP_Text diamondText;
 
     [Header("Button")]
-    [LabelText("头像按钮")] public Button faceBtn;
-    [SerializeField][LabelText("退出游戏")] private Button quitBtn;
-    [SerializeField][LabelText("开始游戏")] private Button playBtn;
+    [SerializeField][LabelText("退出游戏")] private Button QuitBtn;
+    [SerializeField][LabelText("设置按钮")] public Button SetBtn;
+    [SerializeField][LabelText("头像按钮")] public Button FaceBtn;
+    [SerializeField][LabelText("显示按钮")] public Button InfoOpenBtn;
+    [SerializeField][LabelText("隐藏按钮")] public Button InfoCloseBtn;
+    [SerializeField][LabelText("开始游戏")] private Button PlayBtn;
 
     #region 生命周期
     public override void OnInit()
@@ -29,9 +32,12 @@ public class HomePanelView : BasePanel
         CoinCountText = transform.Find("Top/CoinCountText").GetComponent<TMP_Text>();
         diamondText = transform.Find("Top/DiamondCountText").GetComponent<TMP_Text>();
 
-        quitBtn = transform.Find("Top/QuitBtn").GetComponent<Button>();
-        faceBtn = transform.Find("Top/FaceBtn").GetComponent<Button>();
-        playBtn = transform.Find("Down/PlayBtn").GetComponent<Button>();
+        QuitBtn = transform.Find("Top/QuitBtn").GetComponent<Button>();
+        SetBtn = transform.Find("Top/SetBtn").GetComponent<Button>();
+        FaceBtn = transform.Find("Top/FaceBtn").GetComponent<Button>();
+        InfoOpenBtn = transform.Find("Top/InfoOpenBtn").GetComponent<Button>();
+        InfoCloseBtn = transform.Find("Top/InfoCloseBtn").GetComponent<Button>();
+        PlayBtn = transform.Find("Down/PlayBtn").GetComponent<Button>();
 
         Controller = new HomePanelController(this);
         Controller.UpdateUI().Forget();
@@ -53,9 +59,12 @@ public class HomePanelView : BasePanel
            new Vector3(-1, 10, -14),
            Quaternion.Euler(15, 0, 0));
 
-        quitBtn.onClick.AddListener(OnQuitClick);
-        faceBtn.onClick.AddListener(OnFaceClick);
-        playBtn.onClick.AddListener(OnPlayClick);
+        QuitBtn.onClick.AddListener(OnQuitClick);
+        SetBtn.onClick.AddListener(OnSetClick);
+        FaceBtn.onClick.AddListener(OnFaceClick);
+        InfoOpenBtn.onClick.AddListener(OnInfoOpenClick);
+        InfoCloseBtn.onClick.AddListener(OnInfoCloseClick);
+        PlayBtn.onClick.AddListener(OnPlayClick);
         GloablMono.Instance.OnUpdate += OnUpdate;
 
         EventManager.Instance.RegisterEvent(Events.GoHome, OnGoHome);
@@ -63,17 +72,20 @@ public class HomePanelView : BasePanel
 
     private void OnGoHome()
     {
-        playBtn.gameObject.SetActive(true);
+        PlayBtn.gameObject.SetActive(true);
     }
 
     public override void OnClose()
     {
-        playBtn.gameObject.SetActive(true);
+        PlayBtn.gameObject.SetActive(true);
         gameObject.SetActive(false);
         GameMain.tankModel.SetActive(false);
-        quitBtn.onClick.RemoveListener(OnQuitClick);
-        faceBtn.onClick.RemoveListener(OnFaceClick);
-        playBtn.onClick.RemoveListener(OnPlayClick);
+        QuitBtn.onClick.RemoveListener(OnQuitClick);
+        SetBtn.onClick.RemoveListener(OnSetClick);
+        FaceBtn.onClick.RemoveListener(OnFaceClick);
+        InfoOpenBtn.onClick.RemoveListener(OnInfoOpenClick);
+        InfoCloseBtn.onClick.RemoveListener(OnInfoCloseClick);
+        PlayBtn.onClick.RemoveListener(OnPlayClick);
         GloablMono.Instance.OnUpdate -= OnUpdate;
         EventManager.Instance.RemoveEvent(Events.GoHome, OnGoHome);
     }
@@ -85,7 +97,7 @@ public class HomePanelView : BasePanel
     public void UpdateUserInfo(User user)
     {
         nameText.text = user.Name;
-        RecordText.text = $"{user.Win}胜 >> {user.Lost}负";
+        RecordText.text = $"战绩：{user.Win}胜 >> {user.Lost}负";
         CoinCountText.text = $"{user.Coin}";
         diamondText.text = user.Diamond.ToString();
     }
@@ -116,19 +128,47 @@ public class HomePanelView : BasePanel
     #endregion
 
     #region UI事件回调
+
     private void OnQuitClick() // 退出按钮点击回调
     {
         this.Log("退出游戏");
-        Controller.HandleQuit();
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
+
+    private void OnSetClick() // 设置按钮点击回调
+    {
+        this.Log("打开设置");
+        PanelManager.Instance.Open<SettingPanel>();
+    }
+
     private void OnFaceClick() // 头像按钮点击回调
     {
         Controller.HandleFace();
     }
+
+    private void OnInfoOpenClick() // 显示按钮点击回调
+    {
+        this.Log("显示用户信息");
+        InfoCloseBtn.gameObject.SetActive(true);
+        InfoOpenBtn.gameObject.SetActive(false);
+        RecordText.text = "战绩：**********";
+    }
+    private void OnInfoCloseClick() // 隐藏按钮点击回调
+    {
+        this.Log("隐藏用户信息");
+        InfoCloseBtn.gameObject.SetActive(false);
+        InfoOpenBtn.gameObject.SetActive(true);
+        User user = UserManager.Instance.GetUser(GameMain.ID);
+        RecordText.text = $"战绩：{user.Win}胜 >> {user.Lost}负";
+    }
     private void OnPlayClick() // 头像按钮点击回调
     {
         this.Log("开始游戏");
-        playBtn.gameObject.SetActive(false);
+        PlayBtn.gameObject.SetActive(false);
         Controller.HandlePlay();
     }
 
@@ -146,7 +186,7 @@ public class HomePanelView : BasePanel
 
     public Image GetAvatarImage()
     {
-        return faceBtn.GetComponent<Image>();
+        return FaceBtn.GetComponent<Image>();
     }
 
     #endregion

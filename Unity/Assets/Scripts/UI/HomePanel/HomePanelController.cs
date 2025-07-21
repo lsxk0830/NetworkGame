@@ -53,18 +53,6 @@ public class HomePanelController
     #region 用户操作处理
 
     /// <summary>
-    /// 退出游戏
-    /// </summary>
-    public void HandleQuit()
-    {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
-    }
-
-    /// <summary>
     /// 设置头像面板
     /// </summary>
     public void HandleFace()
