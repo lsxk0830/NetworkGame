@@ -18,12 +18,12 @@ public class GamePanel : BasePanel
 
     public override void OnShow(params object[] args)
     {
-
+        gameObject.SetActive(true);
     }
 
     public override void OnClose()
     {
-
+        gameObject.SetActive(false);
     }
 
     /// <summary>
