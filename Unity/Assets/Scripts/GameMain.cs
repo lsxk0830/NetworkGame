@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameMain : MonoSingleton<GameMain>
 {
@@ -55,12 +56,11 @@ public class GameMain : MonoSingleton<GameMain>
 
     private void OnMsgKick(MsgBase msgBse)
     {
-        PanelManager.Instance.Open<TipPanel>("被踢下线", (System.Action)OpenLoginPanel);
-    }
-
-    private void OpenLoginPanel()
-    {
-        PanelManager.Instance.CloseAllExceptOther<LoginPanelView>();
+        SceneManager.LoadSceneAsync("Login", LoadSceneMode.Single).completed += (op) =>
+        {
+            PanelManager.Instance.CloseAllExceptOther<LoginPanelView>();
+            PanelManager.Instance.Open<TipPanel>("被踢下线");
+        };
     }
 
     private void OnPanelLoadSuccess()

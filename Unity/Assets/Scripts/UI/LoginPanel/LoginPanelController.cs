@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LoginPanelController
 {
@@ -108,9 +109,6 @@ public class LoginPanelController
         if (accept.code == 200)
         {
             UserManager.Instance.Init(accept.data);
-            PanelManager.Instance.Close<LoginPanelView>();
-            PanelManager.Instance.Open<HomePanelView>();
-
             bool state = view.GetRememberPwToggleState();
             model.RememberPwToggleState = state;
             if (state)
@@ -122,6 +120,12 @@ public class LoginPanelController
             msg.ID = accept.data.ID;
             NetManager.Instance.Send(msg);
             this.PushPool(msg);
+
+            SceneManager.LoadSceneAsync("Home", LoadSceneMode.Single).completed += (op) =>
+            {
+                PanelManager.Instance.Close<LoginPanelView>();
+                PanelManager.Instance.Open<HomePanelView>();
+            };
         }
     }
 
