@@ -29,10 +29,6 @@ MonoBehaviour:
     m_Address: Hit
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: 69af14f1f93849b4d9086322667d6318
-    m_Address: Map
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 0c62968f62d51d848b11533011becdd3, type: 2}
   m_SchemaSet:

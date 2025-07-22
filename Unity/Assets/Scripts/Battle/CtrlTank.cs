@@ -48,6 +48,7 @@ public class CtrlTank : BaseTank
 
         GloablMono.Instance.OnUpdate += OnUpdate;
         GloablMono.Instance.OnFixedUpdate += OnFixUpdate;
+        GloablMono.Instance.OnLateUpdate += OnLateUpdate;
 
         Cursor.lockState = CursorLockMode.Locked;
 
@@ -71,10 +72,12 @@ public class CtrlTank : BaseTank
         TurretUpdate();
     }
 
-    // private void Update()
-    // {
-    //     MoveUpdate();
-    // }
+    private void OnLateUpdate()
+    {
+        if (hp <= 0) return; // 是否死亡
+        // 更新Cinemachine轴值（立即生效）
+        freeLookCam.m_XAxis.Value = accumulatedX;
+    }
 
     private void MoveUpdate()
     {
@@ -110,8 +113,6 @@ public class CtrlTank : BaseTank
         float mouseX = Input.GetAxis("Mouse X");
         // 直接累加位移量到旋转角度
         accumulatedX += mouseX * MouseRotationSpeed;
-        // 更新Cinemachine轴值（立即生效）
-        freeLookCam.m_XAxis.Value = accumulatedX;
         // 同步炮塔Y轴旋转（仅水平方向）
         Vector3 turretEuler = turret.eulerAngles;
         turret.rotation = Quaternion.Euler(turretEuler.x, accumulatedX + offsetY, turretEuler.z);
@@ -212,6 +213,7 @@ public class CtrlTank : BaseTank
         Cursor.lockState = CursorLockMode.None;
         GloablMono.Instance.OnUpdate -= OnUpdate;
         GloablMono.Instance.OnFixedUpdate -= OnFixUpdate;
+        GloablMono.Instance.OnLateUpdate -= OnLateUpdate;
         freeLookCam = null;
         impulseSource = null;
     }

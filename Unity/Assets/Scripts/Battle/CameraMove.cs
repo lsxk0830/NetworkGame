@@ -1,9 +1,10 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CameraMove : MonoBehaviour
 {
     //摄像机 看向的目标
-    private bool CameraIsMove;// 相机更新移动
+    private bool CameraIsMove = true;// 相机更新移动
     public Transform targetPlayer;
     [SerializeField] private float H = 10;
 
@@ -15,6 +16,14 @@ public class CameraMove : MonoBehaviour
         GloablMono.Instance.OnUpdate += OnUpdate;
         GloablMono.Instance.OnLateUpdate += OnLateUpdate;
         gamePanel = PanelManager.Instance.GetPanel<GamePanel>();
+
+        // 动态创建 RT
+        RenderTexture rt = new RenderTexture(512, 512, 24, RenderTextureFormat.ARGB32);
+
+        // UI 面板与相机绑定同一 RT
+        GetComponent<Camera>().targetTexture = rt;
+        RawImage rawImage = gamePanel.GetComponentInChildren<RawImage>();
+        rawImage.texture = rt;
     }
 
     private void OnUpdate()

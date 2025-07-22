@@ -46,7 +46,7 @@ public class RoomManager
     }
 
     /// <summary>
-    /// 删除房间
+    /// 删除房间.(备注：删除房间时要不要将User的RoomID清空)
     /// </summary>
     public static void RemoveRoom(string roomID)
     {
