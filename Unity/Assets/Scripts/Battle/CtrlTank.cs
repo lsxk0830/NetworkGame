@@ -28,8 +28,8 @@ public class CtrlTank : BaseTank
 
     public override void Init(Player tankInfo)
     {
-        freeLookCam = BattleManager.freeLookCam;
-        impulseSource = BattleManager.impulseSource;
+        freeLookCam = GameObject.FindWithTag("CMFreeLook").GetComponent<CinemachineFreeLook>();
+        impulseSource = GameObject.FindWithTag("CMFreeLook").GetComponent<CinemachineImpulseSource>();
 
         base.Init(tankInfo);
 
@@ -115,6 +115,7 @@ public class CtrlTank : BaseTank
         // 同步炮塔Y轴旋转（仅水平方向）
         Vector3 turretEuler = turret.eulerAngles;
         turret.rotation = Quaternion.Euler(turretEuler.x, accumulatedX + offsetY, turretEuler.z);
+        Debug.Log($"炮塔旋转角度: {turretEuler}, 相机旋转角度: {turret.rotation},{turret.rotation.eulerAngles}");
         Draw();
     }
 

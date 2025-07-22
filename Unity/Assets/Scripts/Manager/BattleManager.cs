@@ -14,8 +14,6 @@ public class BattleManager : MonoBehaviour
     private Transform tankParent;
     private List<string> handles;
 
-    public static CinemachineFreeLook freeLookCam;
-    public static CinemachineImpulseSource impulseSource;
     public Camera mapCamera;
 
     public static bool EffectActive = false;
@@ -31,8 +29,6 @@ public class BattleManager : MonoBehaviour
         //Debug.Log($"音效是否打开:{EffectActive}, 音量:{EffectValue}");
 
         PanelManager.Instance.Open<GamePanel>();
-        freeLookCam = GetComponent<CinemachineFreeLook>();
-        impulseSource = GetComponent<CinemachineImpulseSource>();
 
         EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
         EventManager.Instance.RegisterEvent(Events.MsgEndBattle, OnMsgEndBattle);

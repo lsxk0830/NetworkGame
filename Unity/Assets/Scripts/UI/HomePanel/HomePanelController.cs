@@ -69,27 +69,4 @@ public class HomePanelController
     }
 
     #endregion
-
-    #region 坦克控制
-    public void StartTankRotation(Vector3 mousePosition)
-    {
-        model.isRotatingTank = true;
-        model.lastMousePosition = mousePosition;
-    }
-
-    public void UpdateTankRotation()
-    {
-        if (!model.isRotatingTank) return;
-
-        var currentPos = Input.mousePosition;
-        var deltaX = currentPos.x - model.lastMousePosition.x;
-        view.RotateTank(-deltaX * HomePanelModel.TankRotationSpeed * Time.deltaTime);
-        model.lastMousePosition = currentPos;
-    }
-
-    public void EndTankRotation()
-    {
-        model.isRotatingTank = false;
-    }
-    #endregion
 }

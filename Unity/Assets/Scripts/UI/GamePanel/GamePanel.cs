@@ -8,12 +8,15 @@ public class GamePanel : BasePanel
     [LabelText("血量")][SerializeField] private TextMeshProUGUI HPText;
     [LabelText("击中伤害")][SerializeField] private TextMeshProUGUI HitText;
     [LabelText("总共造成的伤害")][SerializeField] private int hitCount;
+    [LabelText("总共造成的伤害")][SerializeField] private RectTransform map;
+    public RectTransform Map => map;
 
     public override void OnInit()
     {
         FrontSight = transform.Find("FrontSight").GetComponent<Image>();
         HPText = transform.Find("HPText").GetComponent<TextMeshProUGUI>();
         HitText = transform.Find("HitText").GetComponent<TextMeshProUGUI>();
+        map = transform.Find("Map").GetComponent<RectTransform>();
     }
 
     public override void OnShow(params object[] args)

@@ -21,6 +21,21 @@ public class HomePanelView : BasePanel
     [SerializeField][LabelText("隐藏按钮")] public Button InfoCloseBtn;
     [SerializeField][LabelText("开始游戏")] private Button PlayBtn;
 
+    [Header("CMFreeLook")]
+    [SerializeField] private Cinemachine.CinemachineFreeLook cam;
+    [SerializeField]
+    private Cinemachine.CinemachineFreeLook Cam
+    {
+        get
+        {
+            if (cam == null)
+            {
+                cam = GameObject.FindWithTag("CMFreeLook").GetComponent<Cinemachine.CinemachineFreeLook>();
+            }
+            return cam;
+        }
+    }
+
     #region 生命周期
     public override void OnInit()
     {
@@ -54,10 +69,6 @@ public class HomePanelView : BasePanel
         BGMusicManager.Instance.ChangeValue(m);
 
         gameObject.SetActive(true);
-        GameMain.tankModel.SetActive(true);
-        Camera.main.transform.SetPositionAndRotation(
-           new Vector3(-1, 10, -14),
-           Quaternion.Euler(15, 0, 0));
 
         QuitBtn.onClick.AddListener(OnQuitClick);
         SetBtn.onClick.AddListener(OnSetClick);
@@ -79,7 +90,6 @@ public class HomePanelView : BasePanel
     {
         PlayBtn.gameObject.SetActive(true);
         gameObject.SetActive(false);
-        GameMain.tankModel.SetActive(false);
         QuitBtn.onClick.RemoveListener(OnQuitClick);
         SetBtn.onClick.RemoveListener(OnSetClick);
         FaceBtn.onClick.RemoveListener(OnFaceClick);
@@ -111,18 +121,16 @@ public class HomePanelView : BasePanel
         if (Input.GetMouseButtonDown(0))
         {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out var hit) && hit.collider.gameObject == GameMain.tankModel)
+            if (Physics.Raycast(ray, out var hit) && hit.collider.gameObject.name == "TankModel")
             {
-                Controller.StartTankRotation(Input.mousePosition);
+                Cam.enabled = true;
             }
         }
 
         if (Input.GetMouseButtonUp(0))
         {
-            Controller.EndTankRotation();
+            Cam.enabled = false;
         }
-
-        Controller.UpdateTankRotation();
     }
 
     #endregion
@@ -170,14 +178,6 @@ public class HomePanelView : BasePanel
         this.Log("开始游戏");
         PlayBtn.gameObject.SetActive(false);
         Controller.HandlePlay();
-    }
-
-    #endregion
-
-    #region 外部控制
-    public void RotateTank(float delta)
-    {
-        GameMain.tankModel.transform.Rotate(Vector3.up, delta);
     }
 
     #endregion

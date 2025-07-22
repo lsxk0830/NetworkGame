@@ -4,7 +4,6 @@ public class GameMain : MonoSingleton<GameMain>
 {
     public static long ID; // 用户ID
     public static bool NetConnect = false;
-    public static GameObject tankModel; // 坦克模型
 
     protected override void OnAwake()
     {
@@ -19,12 +18,6 @@ public class GameMain : MonoSingleton<GameMain>
         EventManager.Instance.RegisterEvent(Events.MsgPing, OnPong);
         PanelManager.Instance.Init();
         NetManager.Instance.ConnectAsync(); // 循环连接服务器
-        ResManager.Instance.LoadAssetsAsync<GameObject>("TankModel", handle =>
-        {
-            tankModel = Instantiate(handle);
-            tankModel.name = "TankModel";
-            DontDestroyOnLoad(tankModel);
-        }).Forget();
 
         Init();
     }
