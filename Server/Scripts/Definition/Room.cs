@@ -78,8 +78,8 @@ public class Room : IDisposable
     /// </summary>
     private static float[,,] birthConfig = new float[2, 3, 6]
     {
-        { { 4f,1f,5f,0f,0f,0f},  { 4f,1f,15f,0f,0f,0f}, { 4f,1f,40f,0f,0f,0f} },// 阵营1出生点
-        { { 45f,1f,40f,0f,0f,0f}, { 45f,1f,30f,0f,0f,0f},{ 45f,1f,20f,0f,0f,0f}} // 阵营2出生点
+        { { 200f,11.5f,150f,0f,0f,0f},  { 165f,11.5f,95f,0f,0f,0f}, { 200f,11.5f,115f,0f,0f,0f} },// 阵营1出生点
+        { { 175f,11.5f,150f,0f,0f,0f}, { 190f,11.5f,145f,0f,0f,0f},{ 176f,11.5f,164f,0f,0f,0f}} // 阵营2出生点
     };
 
     #region 添加玩家、删除玩家、获取玩家
