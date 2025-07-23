@@ -116,7 +116,7 @@ public class CtrlTank : BaseTank
         // 同步炮塔Y轴旋转（仅水平方向）
         Vector3 turretEuler = turret.eulerAngles;
         turret.rotation = Quaternion.Euler(turretEuler.x, accumulatedX + offsetY, turretEuler.z);
-        Debug.Log($"炮塔旋转角度: {turretEuler}, 相机旋转角度: {turret.rotation},{turret.rotation.eulerAngles}");
+        //Debug.Log($"炮塔旋转角度: {turretEuler}, 相机旋转角度: {turret.rotation},{turret.rotation.eulerAngles}");
         Draw();
     }
 

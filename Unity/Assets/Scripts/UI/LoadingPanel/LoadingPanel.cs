@@ -68,7 +68,7 @@ public class LoadingPanel : BasePanel
     {
         while (!success)
         {
-            await UniTask.Delay(50);
+            await UniTask.Delay(80);
             prograss.text = $"进度:{i}%";
             slider.value = i / 100f;
             i++;

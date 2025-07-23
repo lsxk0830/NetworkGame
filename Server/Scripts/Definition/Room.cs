@@ -380,9 +380,10 @@ public class Room : IDisposable
         if (loadSuccess == 1) // 以收到一个玩家的加载成功消息为准，开始计时
         {
             Console.WriteLine($"当前时间：{DateTime.Now}");
-            Task.Delay(delaySeconds * 3000).ContinueWith(_ =>
+            Task.Delay(delaySeconds * 8000).ContinueWith(_ =>
             {
                 Console.WriteLine($"当前时间：{DateTime.Now}");
+                if(playerIds==null) return; // 如果房间已经被销毁，则不再发送消息
                 if (loadSuccess >= playerIds.Count) return; // 如果加载成功的玩家数已经达到要求，则不再发送消息
                 Console.WriteLine($"达到最大延时时间");
                 BroadcastEnterBattle(); // 否则广播进入战斗消息

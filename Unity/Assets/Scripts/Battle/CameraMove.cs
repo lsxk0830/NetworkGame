@@ -6,12 +6,12 @@ public class CameraMove : MonoBehaviour
     //摄像机 看向的目标
     private bool CameraIsMove = true;// 相机更新移动
     public Transform targetPlayer;
-    [SerializeField] private float H = 10;
+    private float H = 38;
 
     private Vector3 pos;
     private GamePanel gamePanel;
 
-    void Awake()
+    void Start()
     {
         GloablMono.Instance.OnUpdate += OnUpdate;
         GloablMono.Instance.OnLateUpdate += OnLateUpdate;
@@ -30,17 +30,17 @@ public class CameraMove : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.M))
         {
-            if (H == 10)
+            if (H == 38)
             {
                 CameraIsMove = false;
-                H = 45;
-                transform.position = new Vector3(25, 45, 25);
+                H = 248;
+                transform.position = new Vector3(150, 248, 150);
                 gamePanel.Map.sizeDelta = new Vector2(800, 800);
             }
             else
             {
                 CameraIsMove = true;
-                H = 10;
+                H = 38;
                 gamePanel.Map.sizeDelta = new Vector2(300, 300);
             }
         }
