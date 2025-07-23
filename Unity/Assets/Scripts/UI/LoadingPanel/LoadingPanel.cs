@@ -92,8 +92,6 @@ public class LoadingPanel : BasePanel
         {
             case 1:
                 return "Game";
-            case 2:
-                return "SuntailGame";
             default:
                 return "Game";
         }
