@@ -39,14 +39,14 @@ public class RoomManager
         Room room = new Room()
         {
             RoomID = roomId,
-            mapId = 1,
+            mapId = 2,
         };
         rooms.Add(room.RoomID, room);
         return room;
     }
 
     /// <summary>
-    /// 删除房间
+    /// 删除房间.(备注：删除房间时要不要将User的RoomID清空)
     /// </summary>
     public static void RemoveRoom(string roomID)
     {

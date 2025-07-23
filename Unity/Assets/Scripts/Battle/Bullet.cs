@@ -82,9 +82,9 @@ public class Bullet : MonoBehaviour
         isMoving = true; // 设置为正在移动状态
         MoveBulletAsync().Forget();
 
-        if (BattleManager.SoundActive)
+        if (BattleManager.EffectActive)
         {
-            audioSource.volume = BattleManager.SoundValue;
+            audioSource.volume = BattleManager.EffectValue;
             audioSource.Play();// 子弹开火音效
         }
     }

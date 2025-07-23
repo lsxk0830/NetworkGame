@@ -6,10 +6,16 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scene/Tank.unity
+    path: Assets/Scene/Login.unity
+    guid: 680ee3da270242046b970fe533daac63
+  - enabled: 1
+    path: Assets/Scene/Home.unity
     guid: a7672638d4adbfa4aaca1674e23fb067
   - enabled: 1
     path: Assets/Scene/Game.unity
     guid: 029e1609b7049e94697e05c98a9d84ab
+  - enabled: 1
+    path: Assets/Scene/SuntailGame.unity
+    guid: c480a8574f5a7c64ea6a9fd198aa809b
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 72be221e2d16e1e40a264eefeb7ada00, type: 2}

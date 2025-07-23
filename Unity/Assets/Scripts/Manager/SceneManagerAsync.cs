@@ -19,7 +19,7 @@ public class SceneManagerAsync : Singleton<SceneManagerAsync>
             return;
         }
         currentOperation = SceneManager.LoadSceneAsync(sceneName, loadSceneMode);
-        currentOperation.allowSceneActivation = false;
+        currentOperation.allowSceneActivation = false; // 允许场景在准备就绪后立即激活。
         await currentOperation;
     }
 

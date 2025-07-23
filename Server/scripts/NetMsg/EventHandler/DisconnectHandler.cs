@@ -10,7 +10,16 @@ public partial class EventHandler
         if (cs != null && cs.user != null && cs.user.RoomID != "")
         {
             Room? room = RoomManager.GetRoom(cs.user.RoomID);
-            room?.RemovePlayer(cs.user.ID);
+            if (room != null)
+            {
+                room.RemovePlayer(cs.user.ID);
+                if (room.status == (int)Room.Status.FIGHT)
+                {
+                    cs.user.Lost++;
+                    DbManager.UpdateUser(cs.user);
+                }
+                Console.WriteLine($"用户:{cs.user.Name}离开房间:{cs.user.RoomID}");
+            }
         }
     }
 }

@@ -21,7 +21,6 @@ public class LoadingPanel : BasePanel
 
     public override void OnShow(params object[] args)
     {
-        GameMain.tankModel.SetActive(true); // 显示坦克模型
         success = false;
         gameObject.SetActive(true);
         EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, EnterGame);
@@ -34,7 +33,6 @@ public class LoadingPanel : BasePanel
 
     public override void OnClose()
     {
-        GameMain.tankModel.SetActive(false); // 隐藏坦克模型
         gameObject.SetActive(false);
         EventManager.Instance.RemoveEvent(Events.MsgEnterBattle, EnterGame);
     }
@@ -70,7 +68,7 @@ public class LoadingPanel : BasePanel
     {
         while (!success)
         {
-            await UniTask.Delay(50);
+            await UniTask.Delay(80);
             prograss.text = $"进度:{i}%";
             slider.value = i / 100f;
             i++;
@@ -94,6 +92,8 @@ public class LoadingPanel : BasePanel
         {
             case 1:
                 return "Game";
+            case 2:
+                return "SuntailGame";
             default:
                 return "Game";
         }

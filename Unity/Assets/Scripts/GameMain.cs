@@ -1,10 +1,10 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameMain : MonoSingleton<GameMain>
 {
     public static long ID; // 用户ID
     public static bool NetConnect = false;
-    public static GameObject tankModel; // 坦克模型
 
     protected override void OnAwake()
     {
@@ -19,20 +19,14 @@ public class GameMain : MonoSingleton<GameMain>
         EventManager.Instance.RegisterEvent(Events.MsgPing, OnPong);
         PanelManager.Instance.Init();
         NetManager.Instance.ConnectAsync(); // 循环连接服务器
-        ResManager.Instance.LoadAssetsAsync<GameObject>("TankModel", handle =>
-        {
-            tankModel = Instantiate(handle);
-            tankModel.name = "TankModel";
-            DontDestroyOnLoad(tankModel);
-        }).Forget();
 
         Init();
     }
 
     private void Init()
     {
-        bool activeMusic = PlayerPrefs.GetInt("Toggle_Music") == 1 ? true : false;
-        float m = PlayerPrefs.GetFloat("Slider_Music");
+        bool activeMusic = PlayerPrefs.GetInt("Toggle_BG") == 1 ? true : false;
+        float m = PlayerPrefs.GetFloat("Slider_BG");
         BGMusicManager.Instance.ChangeOpen(activeMusic);
         BGMusicManager.Instance.ChangeValue(m);
     }
@@ -62,12 +56,11 @@ public class GameMain : MonoSingleton<GameMain>
 
     private void OnMsgKick(MsgBase msgBse)
     {
-        PanelManager.Instance.Open<TipPanel>("被踢下线", (System.Action)OpenLoginPanel);
-    }
-
-    private void OpenLoginPanel()
-    {
-        PanelManager.Instance.CloseAllExceptOther<LoginPanelView>();
+        SceneManager.LoadSceneAsync("Login", LoadSceneMode.Single).completed += (op) =>
+        {
+            PanelManager.Instance.CloseAllExceptOther<LoginPanelView>();
+            PanelManager.Instance.Open<TipPanel>("被踢下线");
+        };
     }
 
     private void OnPanelLoadSuccess()

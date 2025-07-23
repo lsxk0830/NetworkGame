@@ -9,6 +9,7 @@ TagManager:
   - Obstacle
   - Camp1
   - Camp2
+  - CMFreeLook
   layers:
   - Default
   - TransparentFX

@@ -35,6 +35,8 @@ public class ResManager : Singleton<ResManager>
             }
             else
             {
+                Debug.LogError($"加载资源 {key} 失败: {handle.OperationException}");
+                resHandles.Remove(key);
                 Addressables.Release(handle);
             }
         }
@@ -128,6 +130,7 @@ public class ResManager : Singleton<ResManager>
             // 移除无效的缓存
             resHandles.Remove(key);
             Addressables.Release(handle);
+            Debug.LogError($"加载资源 {key} 失败: {handle.OperationException}");
         }
 
         resource = default;
@@ -145,6 +148,7 @@ public class ResManager : Singleton<ResManager>
         {
             Addressables.Release(handle);
             resHandles.Remove(key);
+            Debug.Log($"资源 {key} 已释放");
         }
     }
 
@@ -153,11 +157,11 @@ public class ResManager : Singleton<ResManager>
     /// </summary>
     private void OnDestroy()
     {
-        foreach (var handle in resHandles.Values)
+        foreach (AsyncOperationHandle handle in resHandles.Values)
         {
             Addressables.Release(handle);
+            Debug.Log($"资源 {handle.DebugName} 已释放");
         }
-
         resHandles.Clear();
     }
 }

@@ -14,9 +14,27 @@ public class HomePanelView : BasePanel
     [SerializeField][LabelText("钻石")] private TMP_Text diamondText;
 
     [Header("Button")]
-    [LabelText("头像按钮")] public Button faceBtn;
-    [SerializeField][LabelText("退出游戏")] private Button quitBtn;
-    [SerializeField][LabelText("开始游戏")] private Button playBtn;
+    [SerializeField][LabelText("退出游戏")] private Button QuitBtn;
+    [SerializeField][LabelText("设置按钮")] public Button SetBtn;
+    [SerializeField][LabelText("头像按钮")] public Button FaceBtn;
+    [SerializeField][LabelText("显示按钮")] public Button InfoOpenBtn;
+    [SerializeField][LabelText("隐藏按钮")] public Button InfoCloseBtn;
+    [SerializeField][LabelText("开始游戏")] private Button PlayBtn;
+
+    [Header("CMFreeLook")]
+    [SerializeField] private Cinemachine.CinemachineFreeLook cam;
+    [SerializeField]
+    private Cinemachine.CinemachineFreeLook Cam
+    {
+        get
+        {
+            if (cam == null)
+            {
+                cam = GameObject.FindWithTag("CMFreeLook").GetComponent<Cinemachine.CinemachineFreeLook>();
+            }
+            return cam;
+        }
+    }
 
     #region 生命周期
     public override void OnInit()
@@ -29,9 +47,12 @@ public class HomePanelView : BasePanel
         CoinCountText = transform.Find("Top/CoinCountText").GetComponent<TMP_Text>();
         diamondText = transform.Find("Top/DiamondCountText").GetComponent<TMP_Text>();
 
-        quitBtn = transform.Find("Top/QuitBtn").GetComponent<Button>();
-        faceBtn = transform.Find("Top/FaceBtn").GetComponent<Button>();
-        playBtn = transform.Find("Down/PlayBtn").GetComponent<Button>();
+        QuitBtn = transform.Find("Top/QuitBtn").GetComponent<Button>();
+        SetBtn = transform.Find("Top/SetBtn").GetComponent<Button>();
+        FaceBtn = transform.Find("Top/FaceBtn").GetComponent<Button>();
+        InfoOpenBtn = transform.Find("Top/InfoOpenBtn").GetComponent<Button>();
+        InfoCloseBtn = transform.Find("Top/InfoCloseBtn").GetComponent<Button>();
+        PlayBtn = transform.Find("Down/PlayBtn").GetComponent<Button>();
 
         Controller = new HomePanelController(this);
         Controller.UpdateUI().Forget();
@@ -40,22 +61,21 @@ public class HomePanelView : BasePanel
     public override void OnShow(params object[] args)
     {
         Controller.UpdateUserInfo();
-        bool activeMusic = PlayerPrefs.GetInt("Toggle_Music") == 1 ? true : false;
-        bool activeSound = PlayerPrefs.GetInt("Toggle_Sound") == 1 ? true : false;
-        float m = PlayerPrefs.GetFloat("Slider_Music");
-        float s = PlayerPrefs.GetFloat("Slider_Sound");
+        bool activeMusic = PlayerPrefs.GetInt("Toggle_BG") == 1 ? true : false;
+        bool activeSound = PlayerPrefs.GetInt("Toggle_Effect") == 1 ? true : false;
+        float m = PlayerPrefs.GetFloat("Slider_BG");
+        float s = PlayerPrefs.GetFloat("Slider_Effect");
         BGMusicManager.Instance.ChangeOpen(activeMusic);
         BGMusicManager.Instance.ChangeValue(m);
 
         gameObject.SetActive(true);
-        GameMain.tankModel.SetActive(true);
-        Camera.main.transform.SetPositionAndRotation(
-           new Vector3(-1, 10, -14),
-           Quaternion.Euler(15, 0, 0));
 
-        quitBtn.onClick.AddListener(OnQuitClick);
-        faceBtn.onClick.AddListener(OnFaceClick);
-        playBtn.onClick.AddListener(OnPlayClick);
+        QuitBtn.onClick.AddListener(OnQuitClick);
+        SetBtn.onClick.AddListener(OnSetClick);
+        FaceBtn.onClick.AddListener(OnFaceClick);
+        InfoOpenBtn.onClick.AddListener(OnInfoOpenClick);
+        InfoCloseBtn.onClick.AddListener(OnInfoCloseClick);
+        PlayBtn.onClick.AddListener(OnPlayClick);
         GloablMono.Instance.OnUpdate += OnUpdate;
 
         EventManager.Instance.RegisterEvent(Events.GoHome, OnGoHome);
@@ -63,17 +83,19 @@ public class HomePanelView : BasePanel
 
     private void OnGoHome()
     {
-        playBtn.gameObject.SetActive(true);
+        PlayBtn.gameObject.SetActive(true);
     }
 
     public override void OnClose()
     {
-        playBtn.gameObject.SetActive(true);
+        PlayBtn.gameObject.SetActive(true);
         gameObject.SetActive(false);
-        GameMain.tankModel.SetActive(false);
-        quitBtn.onClick.RemoveListener(OnQuitClick);
-        faceBtn.onClick.RemoveListener(OnFaceClick);
-        playBtn.onClick.RemoveListener(OnPlayClick);
+        QuitBtn.onClick.RemoveListener(OnQuitClick);
+        SetBtn.onClick.RemoveListener(OnSetClick);
+        FaceBtn.onClick.RemoveListener(OnFaceClick);
+        InfoOpenBtn.onClick.RemoveListener(OnInfoOpenClick);
+        InfoCloseBtn.onClick.RemoveListener(OnInfoCloseClick);
+        PlayBtn.onClick.RemoveListener(OnPlayClick);
         GloablMono.Instance.OnUpdate -= OnUpdate;
         EventManager.Instance.RemoveEvent(Events.GoHome, OnGoHome);
     }
@@ -85,7 +107,7 @@ public class HomePanelView : BasePanel
     public void UpdateUserInfo(User user)
     {
         nameText.text = user.Name;
-        RecordText.text = $"{user.Win}胜 >> {user.Lost}负";
+        RecordText.text = $"战绩：{user.Win}胜 >> {user.Lost}负";
         CoinCountText.text = $"{user.Coin}";
         diamondText.text = user.Diamond.ToString();
     }
@@ -99,45 +121,63 @@ public class HomePanelView : BasePanel
         if (Input.GetMouseButtonDown(0))
         {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out var hit) && hit.collider.gameObject == GameMain.tankModel)
+            if (Physics.Raycast(ray, out var hit) && hit.collider.gameObject.name == "TankModel")
             {
-                Controller.StartTankRotation(Input.mousePosition);
+                Cam.enabled = true;
             }
         }
 
         if (Input.GetMouseButtonUp(0))
         {
-            Controller.EndTankRotation();
+            Cam.enabled = false;
         }
-
-        Controller.UpdateTankRotation();
     }
 
     #endregion
 
     #region UI事件回调
+
     private void OnQuitClick() // 退出按钮点击回调
     {
         this.Log("退出游戏");
-        Controller.HandleQuit();
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
+
+    private void OnSetClick() // 设置按钮点击回调
+    {
+        this.Log("打开设置");
+        PanelManager.Instance.Open<SettingPanel>();
+    }
+
     private void OnFaceClick() // 头像按钮点击回调
     {
         Controller.HandleFace();
     }
+
+    private void OnInfoOpenClick() // 显示按钮点击回调
+    {
+        this.Log("显示用户信息");
+        InfoCloseBtn.gameObject.SetActive(true);
+        InfoOpenBtn.gameObject.SetActive(false);
+        RecordText.text = "战绩：**********";
+    }
+    private void OnInfoCloseClick() // 隐藏按钮点击回调
+    {
+        this.Log("隐藏用户信息");
+        InfoCloseBtn.gameObject.SetActive(false);
+        InfoOpenBtn.gameObject.SetActive(true);
+        User user = UserManager.Instance.GetUser(GameMain.ID);
+        RecordText.text = $"战绩：{user.Win}胜 >> {user.Lost}负";
+    }
     private void OnPlayClick() // 头像按钮点击回调
     {
         this.Log("开始游戏");
-        playBtn.gameObject.SetActive(false);
+        PlayBtn.gameObject.SetActive(false);
         Controller.HandlePlay();
-    }
-
-    #endregion
-
-    #region 外部控制
-    public void RotateTank(float delta)
-    {
-        GameMain.tankModel.transform.Rotate(Vector3.up, delta);
     }
 
     #endregion
@@ -146,7 +186,7 @@ public class HomePanelView : BasePanel
 
     public Image GetAvatarImage()
     {
-        return faceBtn.GetComponent<Image>();
+        return FaceBtn.GetComponent<Image>();
     }
 
     #endregion

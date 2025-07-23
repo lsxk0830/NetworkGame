@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LoginPanelController
 {
@@ -108,9 +109,6 @@ public class LoginPanelController
         if (accept.code == 200)
         {
             UserManager.Instance.Init(accept.data);
-            PanelManager.Instance.Close<LoginPanelView>();
-            PanelManager.Instance.Open<HomePanelView>();
-
             bool state = view.GetRememberPwToggleState();
             model.RememberPwToggleState = state;
             if (state)
@@ -122,6 +120,12 @@ public class LoginPanelController
             msg.ID = accept.data.ID;
             NetManager.Instance.Send(msg);
             this.PushPool(msg);
+
+            SceneManager.LoadSceneAsync("Home", LoadSceneMode.Single).completed += (op) =>
+            {
+                PanelManager.Instance.Close<LoginPanelView>();
+                PanelManager.Instance.Open<HomePanelView>();
+            };
         }
     }
 
@@ -146,7 +150,7 @@ public class LoginPanelController
                 Debug.LogError("服务器开小差了，请联系开发人员");
                 break;
             default:
-                PanelManager.Instance.Open<TipPanel>($"连接失败: {error}");
+                PanelManager.Instance.Open<TipPanel>($"连接失败.错误码：{code},{error}");
                 Debug.LogError($"连接失败: {error}");
                 break;
         }

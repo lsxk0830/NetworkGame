@@ -7,10 +7,7 @@
 - [x] Version3：根据逻辑开发流程开发。对应分支V3.0
 - [x] Version4：战斗逻辑开发。对应分支V4.0
 - [x] Version5：多房间多用户战斗。完整版，对应分支V5.0
-- [ ] Version6：将页面功能完善
-- [ ] Version7：中英文切换
-- [ ] Version8：签到系统
-- [ ] Version9：商城系统
+- [ ] Version6：开发中
 #### 流程图
 ```mermaid
 graph TD

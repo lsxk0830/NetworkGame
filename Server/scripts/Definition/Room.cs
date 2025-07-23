@@ -25,7 +25,7 @@ public class Room : IDisposable
     /// </summary>
     public Dictionary<long, Player> playerIds = new();
 
-    private List<long> camp1List = new(); // 玩家列表，方便遍历
+    private List<long> camp1List = new(); // 战斗双方的玩家列表，一方为0则游戏结束
     private List<long> camp2List = new(); // 玩家列表，方便遍历
 
     /// <summary>
@@ -78,8 +78,8 @@ public class Room : IDisposable
     /// </summary>
     private static float[,,] birthConfig = new float[2, 3, 6]
     {
-        { { 4f,1f,5f,0f,0f,0f},  { 4f,1f,15f,0f,0f,0f}, { 4f,1f,40f,0f,0f,0f} },// 阵营1出生点
-        { { 45f,1f,40f,0f,0f,0f}, { 45f,1f,30f,0f,0f,0f},{ 45f,1f,20f,0f,0f,0f}} // 阵营2出生点
+        { { 200f,11.5f,150f,0f,0f,0f},  { 165f,11.5f,95f,0f,0f,0f}, { 200f,11.5f,115f,0f,0f,0f} },// 阵营1出生点
+        { { 175f,11.5f,150f,0f,0f,0f}, { 190f,11.5f,145f,0f,0f,0f},{ 176f,11.5f,164f,0f,0f,0f}} // 阵营2出生点
     };
 
     #region 添加玩家、删除玩家、获取玩家
@@ -188,23 +188,50 @@ public class Room : IDisposable
         }
         if ((Room.Status)status == Status.FIGHT) // 战斗状态退出，战斗状态退出游戏视为输掉游戏
         {
-            User? user = UserManager.GetUser(id);
-            if (user == null) return false;
-            user.Lost++;
-            DbManager.UpdateUser(user);
-            MsgLeaveBattle msg = new MsgLeaveBattle()
+            Console.WriteLine($"玩家{player.ID}在战斗中退出游戏，视为输掉游戏");
+            if (camp1List.Contains(id))
+                camp1List.Remove(id); // 从阵营1列表中移除玩家
+            else if (camp2List.Contains(id))
+                camp2List.Remove(id); // 从阵营2列表中移除玩家
+
+            if (camp1List.Count == 0 || camp2List.Count == 0)
             {
-                id = player.ID
-            };
-            Broadcast(msg);
+                int win = camp1List.Count == 0 ? 2 : 1;
+                Broadcast(new MsgEndBattle() { winCamp = win });
+                // 更新数据库
+                List<User> users = new List<User>(playerIds.Count);
+                foreach (var p in playerIds)
+                {
+                    User? playerUser = UserManager.GetUser(p.Key);
+                    if (playerUser == null) continue;
+                    if (p.Value.camp == win)
+                        playerUser.Win++;
+                    else
+                        playerUser.Lost++;
+                    users.Add(playerUser);
+                }
+                DbManager.BatchUpdateUsers(users);
+                RoomManager.RemoveRoom(RoomID);
+            }
+            else
+            {
+                MsgLeaveBattle msg = new MsgLeaveBattle()
+                {
+                    id = player.ID
+                };
+                Broadcast(msg);
+            }
         }
-        // 广播
-        Broadcast(new MsgLeaveRoom()
+        else // 准备中删除玩家
         {
-            ID = id,
-            OwnerID = ownerId
-        });
-        player = null;
+            // 广播
+            Broadcast(new MsgLeaveRoom()
+            {
+                ID = id,
+                OwnerID = ownerId
+            });
+            player = null;
+        }
         return true;
     }
 
@@ -353,9 +380,10 @@ public class Room : IDisposable
         if (loadSuccess == 1) // 以收到一个玩家的加载成功消息为准，开始计时
         {
             Console.WriteLine($"当前时间：{DateTime.Now}");
-            Task.Delay(delaySeconds * 3000).ContinueWith(_ =>
+            Task.Delay(delaySeconds * 8000).ContinueWith(_ =>
             {
                 Console.WriteLine($"当前时间：{DateTime.Now}");
+                if(playerIds==null) return; // 如果房间已经被销毁，则不再发送消息
                 if (loadSuccess >= playerIds.Count) return; // 如果加载成功的玩家数已经达到要求，则不再发送消息
                 Console.WriteLine($"达到最大延时时间");
                 BroadcastEnterBattle(); // 否则广播进入战斗消息

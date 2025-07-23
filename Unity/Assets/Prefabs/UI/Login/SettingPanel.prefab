@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 5912342170763782873}
   - component: {fileID: 7686393598802541663}
   m_Layer: 5
-  m_Name: Slider_Music
+  m_Name: Slider_BG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -719,7 +719,7 @@ GameObject:
   - component: {fileID: 8798697659766613122}
   - component: {fileID: 1446319602785989757}
   m_Layer: 5
-  m_Name: Toggle_Music
+  m_Name: Toggle_BG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1521,7 +1521,7 @@ GameObject:
   - component: {fileID: 8397043671578494671}
   - component: {fileID: 1844398614315293842}
   m_Layer: 5
-  m_Name: Slider_Sound
+  m_Name: Slider_Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1688,7 +1688,7 @@ GameObject:
   - component: {fileID: 3486534257984628701}
   - component: {fileID: 8603506265533766954}
   m_Layer: 5
-  m_Name: Toggle_Sound
+  m_Name: Toggle_Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

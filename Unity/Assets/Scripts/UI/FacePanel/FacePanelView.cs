@@ -26,7 +26,7 @@ public class FacePanelView : BasePanel, IPointerClickHandler
         };
         control = new FacePanelController();
         HomePanelView view = (HomePanelView)PanelManager.Instance.panels[typeof(HomePanelView).FullName];
-        HomePanelViewAvatar = view.faceBtn.GetComponent<Image>();
+        HomePanelViewAvatar = view.FaceBtn.GetComponent<Image>();
         FaceImage.sprite = HomePanelViewAvatar.sprite;
     }
 

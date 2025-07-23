@@ -56,8 +56,9 @@ public class ResultPanel : BasePanel
 
     private void OnOkClick()
     {
-        SceneManager.LoadSceneAsync("Tank", LoadSceneMode.Single).completed += (op) =>
+        SceneManager.LoadSceneAsync("Home", LoadSceneMode.Single).completed += (op) =>
         {
+            UnityEngine.DynamicGI.UpdateEnvironment();
             PanelManager.Instance.Open<HomePanelView>();
             OnClose();
         };
