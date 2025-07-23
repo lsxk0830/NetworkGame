@@ -138,7 +138,7 @@ namespace Suntail
                 _currentSpeed = Mathf.SmoothStep(minSpeed, maxSpeed, _currentDistance / interactionDistance);
                 _currentSpeed *= Time.fixedDeltaTime;
                 Vector3 direction = pickupParent.position - _pickupRigidBody.position;
-                _pickupRigidBody.velocity = direction.normalized * _currentSpeed;
+                _pickupRigidBody.linearVelocity = direction.normalized * _currentSpeed;
             }
         }
 

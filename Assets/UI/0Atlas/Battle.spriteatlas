@@ -7,7 +7,6 @@ SpriteAtlas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Battle
-  serializedVersion: 2
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -38,6 +37,9 @@ SpriteAtlas:
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - bfda6cc016f0df645b1fd776f6b5b3e9: 21300000
+    - b78796f4707b8924a810f4d3f937453e: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: bfda6cc016f0df645b1fd776f6b5b3e9, type: 3}
@@ -48,4 +50,3 @@ SpriteAtlas:
   m_RenderDataMap: {}
   m_Tag: Battle
   m_IsVariant: 0
-  m_IsPlaceholder: 0

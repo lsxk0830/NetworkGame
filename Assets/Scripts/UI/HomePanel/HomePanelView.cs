@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using System;
+using Unity.Cinemachine;
 
 public class HomePanelView : BasePanel
 {
@@ -22,15 +22,15 @@ public class HomePanelView : BasePanel
     [SerializeField][LabelText("开始游戏")] private Button PlayBtn;
 
     [Header("CMFreeLook")]
-    [SerializeField] private Cinemachine.CinemachineFreeLook cam;
+    [SerializeField] private CinemachineFreeLook cam;
     [SerializeField]
-    private Cinemachine.CinemachineFreeLook Cam
+    private CinemachineFreeLook Cam
     {
         get
         {
             if (cam == null)
             {
-                cam = GameObject.FindWithTag("CMFreeLook").GetComponent<Cinemachine.CinemachineFreeLook>();
+                cam = GameObject.FindWithTag("CMFreeLook").GetComponent<CinemachineFreeLook>();
             }
             return cam;
         }
