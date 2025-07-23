@@ -1,0 +1,14 @@
+using System.Collections.Generic;
+
+/// <summary>
+/// 场景中所有方块(障碍物)消息
+/// </summary>
+public class MsgObstacleAll : MsgBase
+{
+    public MsgObstacleAll()
+    {
+        protoName = "MsgObstacleAll";
+    }
+
+    public List<MsgObstacleOne> PosRotScales;
+}
