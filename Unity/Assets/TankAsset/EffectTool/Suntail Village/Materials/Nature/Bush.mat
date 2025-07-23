@@ -67,6 +67,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Smoothness:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SmoothnessMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SmoothnessTexture:
         m_Texture: {fileID: 2800000, guid: 12ff8af2ed1536b49b4cf6f0dea277b3, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -83,10 +91,23 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _AlphaCutoff: 0.3
     - _Anchorthefoliagebase: 0
+    - _Bias1: 0
     - _BumpScale: 1
     - _Color2Enable: 1
     - _Color3Enable: 0
@@ -98,12 +119,14 @@ Material:
     - _DirectLightOffset2: 1
     - _DstBlend: 0
     - _EnableWind: 1
+    - _EnvironmentReflections: 1
     - _Float0: 2
     - _Float1: -0.22
     - _Float2: 1
     - _Float3: 1
     - _Float4: 0
     - _Float5: 1
+    - _Gloss: 0.3
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -112,13 +135,20 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Power1: 0
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _ReceiveShadows: 1
+    - _Scale1: 0
     - _SecondColorFade: -0.06
     - _SecondColorOffset: -0.59
     - _SecondColorOverlayType: 0
     - _Shininess: 0.15
+    - _Smoot: 0
     - _Smoothness: 0.2
     - _SmoothnessInt: 0
     - _SmoothnessTextureChannel: 0
+    - _Soothness: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Tiling: 1
@@ -142,6 +172,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Color0: {r: 0.07208968, g: 0.5660378, b: 0.079837896, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _MainColor: {r: 0.15057144, g: 0.496, b: 0.28785715, a: 0}
+    - _MainColor: {r: 0.104313724, g: 0.52156866, b: 0.27004683, a: 0}
     - _SecondColor: {r: 0.58515465, g: 0.66, b: 0.14628865, a: 0}
+    - _SpecularColor: {r: 0.39215687, g: 0.39215687, b: 0.39215687, a: 1}
   m_BuildTextureStacks: []
