@@ -10,7 +10,6 @@ public class GameMain : MonoSingleton<GameMain>
     {
         GameObject MonoTool = new GameObject("MonoTool");
         MonoTool.AddComponent<GloablMono>();
-        transform.Find("BGMusicManager").gameObject.AddComponent<BGMusicManager>();
 
         EventManager.Instance.RegisterEvent(Events.SocketOnConnectSuccess, OnConnectSuccess);
         EventManager.Instance.RegisterEvent(Events.SocketOnConnectFail, OnConnectFail);
