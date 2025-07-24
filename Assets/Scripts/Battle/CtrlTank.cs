@@ -16,38 +16,36 @@ public class CtrlTank : BaseTank
     public static float syncInterval = 0.1f;
 
     private float offsetY;
-    private CinemachineFreeLook freeLookCam;
+    private CinemachineCamera freeLookCam;
     private CinemachineImpulseSource impulseSource;
+    private CinemachineOrbitalFollow cinemachineOrbitalFollow;
     private float accumulatedX; // 累计水平旋转角度
     public float maxRayLength = 100f; // 最大射线长度
     public float MouseRotationSpeed = 0.5f; // 鼠标滑动灵敏度系数
     private bool spaceKeyHandled; // 开火标志位
     private string Enemy; // 敌人标签
     private GamePanel gamePanel;
+    private Quaternion parentInverseRot; // 炮塔父物体的逆旋转
 
     public override void Init(Player tankInfo)
     {
-        freeLookCam = GameObject.FindWithTag("CMFreeLook").GetComponent<CinemachineFreeLook>();
+        freeLookCam = GameObject.FindWithTag("CMFreeLook").GetComponent<CinemachineCamera>();
         impulseSource = GameObject.FindWithTag("CMFreeLook").GetComponent<CinemachineImpulseSource>();
+        cinemachineOrbitalFollow = GameObject.FindWithTag("CMFreeLook").GetComponent<CinemachineOrbitalFollow>();
 
         base.Init(tankInfo);
 
+        parentInverseRot = Quaternion.Inverse(turret.parent.rotation);
         Enemy = tankInfo.camp == 1 ? "Camp2" : "Camp1";
-        freeLookCam.Follow = transform.Find("Follow");
-        freeLookCam.LookAt = transform.Find("LookAt");
-
-        // 禁用Cinemachine默认输入
-        freeLookCam.m_XAxis.m_InputAxisName = "";
-        freeLookCam.m_XAxis.m_AccelTime = 0;
+        freeLookCam.Follow = transform;
 
         // 初始化累计角度
-        accumulatedX = freeLookCam.m_XAxis.Value;
+        //accumulatedX = freeLookCam.m_XAxis.Value;
         // 计算炮塔与相机的初始Y轴偏移
         offsetY = turret.eulerAngles.y - freeLookCam.transform.eulerAngles.y;
 
         GloablMono.Instance.OnUpdate += OnUpdate;
         GloablMono.Instance.OnFixedUpdate += OnFixUpdate;
-        GloablMono.Instance.OnLateUpdate += OnLateUpdate;
 
         Cursor.lockState = CursorLockMode.Locked;
 
@@ -59,6 +57,8 @@ public class CtrlTank : BaseTank
         if (hp <= 0) return; // 是否死亡
         // 开炮
         FireUpdate();
+        // 炮塔控制
+        TurretUpdate();
         // 发送同步信息
         SyncUpdate();
     }
@@ -67,15 +67,6 @@ public class CtrlTank : BaseTank
         if (hp <= 0) return; // 是否死亡
         // 移动控制
         MoveUpdate();
-        // 炮塔控制
-        TurretUpdate();
-    }
-
-    private void OnLateUpdate()
-    {
-        if (hp <= 0) return; // 是否死亡
-        // 更新Cinemachine轴值（立即生效）
-        freeLookCam.m_XAxis.Value = accumulatedX;
     }
 
     private void MoveUpdate()
@@ -108,13 +99,8 @@ public class CtrlTank : BaseTank
 
     private void TurretUpdate()
     {
-        // 获取鼠标位移（已锁定模式，值在[-1,1]区间）
-        float mouseX = Input.GetAxis("Mouse X");
-        // 直接累加位移量到旋转角度
-        accumulatedX += mouseX * MouseRotationSpeed;
-        // 同步炮塔Y轴旋转（仅水平方向）
-        Vector3 turretEuler = turret.eulerAngles;
-        turret.rotation = Quaternion.Euler(turretEuler.x, accumulatedX + offsetY, turretEuler.z);
+        Quaternion rotation = Quaternion.Euler(0, cinemachineOrbitalFollow.HorizontalAxis.Value, 0);
+        turret.rotation = rotation * parentInverseRot;
         //Debug.Log($"炮塔旋转角度: {turretEuler}, 相机旋转角度: {turret.rotation},{turret.rotation.eulerAngles}");
         Draw();
     }
@@ -212,7 +198,6 @@ public class CtrlTank : BaseTank
         Cursor.lockState = CursorLockMode.None;
         GloablMono.Instance.OnUpdate -= OnUpdate;
         GloablMono.Instance.OnFixedUpdate -= OnFixUpdate;
-        GloablMono.Instance.OnLateUpdate -= OnLateUpdate;
         freeLookCam = null;
         impulseSource = null;
     }

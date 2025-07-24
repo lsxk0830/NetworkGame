@@ -22,17 +22,17 @@ public class HomePanelView : BasePanel
     [SerializeField][LabelText("开始游戏")] private Button PlayBtn;
 
     [Header("CMFreeLook")]
-    [SerializeField] private CinemachineFreeLook cam;
+    [SerializeField] private CinemachineInputAxisController input;
     [SerializeField]
-    private CinemachineFreeLook Cam
+    private CinemachineInputAxisController Input
     {
         get
         {
-            if (cam == null)
+            if (input == null)
             {
-                cam = GameObject.FindWithTag("CMFreeLook").GetComponent<CinemachineFreeLook>();
+                input = GameObject.FindWithTag("CMFreeLook").GetComponent<CinemachineInputAxisController>();
             }
-            return cam;
+            return input;
         }
     }
 
@@ -118,18 +118,18 @@ public class HomePanelView : BasePanel
 
     private void OnUpdate()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (UnityEngine.Input.GetMouseButtonDown(0))
         {
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            var ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
             if (Physics.Raycast(ray, out var hit) && hit.collider.gameObject.name == "TankModel")
             {
-                Cam.enabled = true;
+                Input.enabled = true;
             }
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (UnityEngine.Input.GetMouseButtonUp(0))
         {
-            Cam.enabled = false;
+            Input.enabled = false;
         }
     }
 
