@@ -3,12 +3,15 @@ using UnityEngine;
 public class RoomPanelController
 {
     private RoomPanelView view;
-    private RoomPanelModel model;
+
+    /// <summary>
+    /// 房间的房间信息
+    /// </summary>
+    private Room room;
 
     public RoomPanelController(RoomPanelView view)
     {
         this.view = view;
-        model = new RoomPanelModel();
     }
 
     public void AddListener()
@@ -58,7 +61,7 @@ public class RoomPanelController
             else
             {
                 view.DeletePlayerGoByID(msg.ID, msg.OwnerID == GameMain.ID);
-                model.room.ownerId = msg.OwnerID;
+                room.ownerId = msg.OwnerID;
                 Debug.Log($"其他玩家退出房间");
             }
         }
@@ -77,7 +80,7 @@ public class RoomPanelController
         {
             view.OnClose();
             PanelManager.Instance.Close<HomePanelView>();
-            PanelManager.Instance.Open<LoadingPanel>(model.room);
+            PanelManager.Instance.Open<LoadingPanel>(room);
         }
         else // 开战失败
             PanelManager.Instance.Open<TipPanel>("开战失败!两队至少都需要一名玩家，只有队长可以开始战斗！");
@@ -92,19 +95,19 @@ public class RoomPanelController
     /// </summary>
     public void OnStartClick()
     {
-        if (model.room.playerIds.Count >= 2)
+        if (room.playerIds.Count >= 2)
         {
             Debug.Log($"发送开始战斗协议");
             view.OnClose();
             PanelManager.Instance.Close<HomePanelView>();
             MsgStartBattle msg = new()
             {
-                roomID = model.room.RoomID,
+                roomID = room.RoomID,
                 mapSize = 50,
                 obstacleCount = 30
             };
             NetManager.Instance.Send(msg);
-            PanelManager.Instance.Open<LoadingPanel>(model.room);
+            PanelManager.Instance.Open<LoadingPanel>(room);
         }
         else
             PanelManager.Instance.Open<TipPanel>("人数不足，等待玩家加入");
@@ -116,7 +119,7 @@ public class RoomPanelController
     public void OnCloseClick()
     {
         Debug.Log($"发送退出房间协议");
-        MsgLeaveRoom msg = new MsgLeaveRoom() { roomID = model.room.RoomID };
+        MsgLeaveRoom msg = new MsgLeaveRoom() { roomID = room.RoomID };
         NetManager.Instance.Send(msg);
     }
 
@@ -126,7 +129,7 @@ public class RoomPanelController
 
     public void UpdateModel(Room room)
     {
-        model.room = room;
+        this.room = room;
     }
 
     #endregion
