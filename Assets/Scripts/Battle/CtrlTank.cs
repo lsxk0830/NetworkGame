@@ -103,10 +103,8 @@ public class CtrlTank : BaseTank
         if (Input.GetKeyDown(KeyCode.Space))  // 按键判断
         {
             if (spaceKeyHandled || Time.time - lastFireTime < fired) return; // CD时间判断
-
-            var startPos = firePoint.transform.position;
+            spaceKeyHandled = true;
             Vector3 targetPos = firePoint.transform.position + firePoint.transform.forward * 50f;
-            startPos.y = 1f; targetPos.y = 1f;
 
             impulseSource.GenerateImpulse(); // 生成震动
 
@@ -114,19 +112,20 @@ public class CtrlTank : BaseTank
             // 发送同步协议
             MsgFire msg = this.GetObjInstance<MsgFire>();
             msg.ID = GameMain.ID;
-            msg.x = startPos.x.RoundTo(4);
-            msg.z = startPos.z.RoundTo(4);
+            msg.x = firePoint.transform.position.x.RoundTo(4);
+            msg.y = firePoint.transform.position.y.RoundTo(4);
+            msg.z = firePoint.transform.position.z.RoundTo(4);
             msg.tx = targetPos.x.RoundTo(4);
+            msg.ty = targetPos.y.RoundTo(4);
             msg.tz = targetPos.z.RoundTo(4);
             msg.IsExplosion = false; // 是否爆炸
             NetManager.Instance.Send(msg);
-            //Debug.Log($"发送开火协议：坐标 ={firePoint.position}, 目标 ={bullet.targetPos}");
+            //Debug.LogError($"发送开火协议：坐标 ={firePoint.transform.position}, 目标 ={targetPos}");
             this.PushPool(msg); // 将消息对象归还对象池
-            spaceKeyHandled = true;
         }
-        else
+        if(Input.GetKeyUp(KeyCode.Space))
         {
-            spaceKeyHandled = false;
+            spaceKeyHandled = false; // 释放按键
         }
     }
 
