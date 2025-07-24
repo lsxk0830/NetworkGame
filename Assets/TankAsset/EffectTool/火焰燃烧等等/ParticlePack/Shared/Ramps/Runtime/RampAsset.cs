@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 
-[CreateAssetMenu]
+    [CreateAssetMenu]
     public class RampAsset : ScriptableObject
     {
         public Gradient gradient = new Gradient();
