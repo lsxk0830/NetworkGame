@@ -19,13 +19,11 @@ public class CtrlTank : BaseTank
     private CinemachineCamera freeLookCam;
     private CinemachineImpulseSource impulseSource;
     private CinemachineOrbitalFollow cinemachineOrbitalFollow;
-    private float accumulatedX; // 累计水平旋转角度
-    public float maxRayLength = 100f; // 最大射线长度
-    public float MouseRotationSpeed = 0.5f; // 鼠标滑动灵敏度系数
+    private float maxRayLength = 300f; // 最大射线长度
+    private float MouseRotationSpeed = 0.5f; // 鼠标滑动灵敏度系数
     private bool spaceKeyHandled; // 开火标志位
     private string Enemy; // 敌人标签
     private GamePanel gamePanel;
-    private Quaternion parentInverseRot; // 炮塔父物体的逆旋转
 
     public override void Init(Player tankInfo)
     {
@@ -35,15 +33,10 @@ public class CtrlTank : BaseTank
 
         base.Init(tankInfo);
 
-        parentInverseRot = Quaternion.Inverse(turret.parent.rotation);
         Enemy = tankInfo.camp == 1 ? "Camp2" : "Camp1";
         freeLookCam.Follow = transform;
 
-        // 初始化累计角度
-        //accumulatedX = freeLookCam.m_XAxis.Value;
-        // 计算炮塔与相机的初始Y轴偏移
-        offsetY = turret.eulerAngles.y - freeLookCam.transform.eulerAngles.y;
-
+        offsetY = turret.parent.localEulerAngles.y; // 模型制作的问题，导致特殊对待
         GloablMono.Instance.OnUpdate += OnUpdate;
         GloablMono.Instance.OnFixedUpdate += OnFixUpdate;
 
@@ -99,8 +92,8 @@ public class CtrlTank : BaseTank
 
     private void TurretUpdate()
     {
-        Quaternion rotation = Quaternion.Euler(0, cinemachineOrbitalFollow.HorizontalAxis.Value, 0);
-        turret.rotation = rotation * parentInverseRot;
+        Quaternion rotation = Quaternion.Euler(0, cinemachineOrbitalFollow.HorizontalAxis.Value + offsetY, 0);
+        turret.rotation = rotation;
         //Debug.Log($"炮塔旋转角度: {turretEuler}, 相机旋转角度: {turret.rotation},{turret.rotation.eulerAngles}");
         Draw();
     }
