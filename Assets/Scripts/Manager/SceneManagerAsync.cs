@@ -12,7 +12,7 @@ public class SceneManagerAsync : Singleton<SceneManagerAsync>
     /// </summary>
     /// <param name="sceneName">场景名称</param>
     /// <param name="loadSceneMode">加载模式</param>
-    public async UniTaskVoid LoadSceneAsync(string sceneName, Action<float> onProgress = null, LoadSceneMode loadSceneMode = LoadSceneMode.Single)
+    public async UniTaskVoid LoadSceneAsync(string sceneName, LoadSceneMode loadSceneMode = LoadSceneMode.Single)
     {
         if (string.IsNullOrEmpty(sceneName))
         {
@@ -22,12 +22,7 @@ public class SceneManagerAsync : Singleton<SceneManagerAsync>
         currentOperation = SceneManager.LoadSceneAsync(sceneName, loadSceneMode);
         currentOperation.allowSceneActivation = false; // 允许场景在准备就绪后立即激活。
 
-        while (!currentOperation.isDone)
-        {
-            onProgress?.Invoke(currentOperation.progress);
-            await UniTask.Yield(); // 等待下一帧
-        }
-        onProgress?.Invoke(1f); // 完成时调用进度回调
+        await currentOperation;
     }
 
     /// <summary>
@@ -49,8 +44,9 @@ public class SceneManagerAsync : Singleton<SceneManagerAsync>
     /// <summary>
     /// 当前场景加载完成，进入场景，场景打开
     /// </summary>
-    public void Success(bool isSuccess)
+    public void Success(Action<AsyncOperation> OnSuccess)
     {
-        currentOperation.allowSceneActivation = isSuccess;
+        currentOperation.allowSceneActivation = true; // 允许场景激活
+        currentOperation.completed += OnSuccess;
     }
 }

@@ -19,7 +19,7 @@ public class LoadingPanel : BasePanel
         prograss = transform.Find("LoadingBar/Fill Area/Fill/Program").GetComponent<TextMeshProUGUI>();
     }
 
-    public override void OnShow(params object[] args)
+    public async override void OnShow(params object[] args)
     {
         success = false;
         gameObject.SetActive(true);
@@ -27,7 +27,9 @@ public class LoadingPanel : BasePanel
         room = (Room)args[0];
         //Debug.Log($"打开加载界面：{JsonConvert.SerializeObject(room)}");
         string sceneName = SwitchScene(room.mapId);
-        SceneManagerAsync.Instance.LoadSceneAsync(sceneName, Loading).Forget(); // 加载场景
+        await UniTask.Yield(); // 等待一帧，确保UI更新
+        Loading().Forget();
+        SceneManagerAsync.Instance.LoadSceneAsync(sceneName).Forget(); // 加载场景
     }
 
     public override void OnClose()
@@ -39,22 +41,19 @@ public class LoadingPanel : BasePanel
     /// <summary>
     /// 收到进入游戏协议
     /// </summary>
-    private async void EnterGame(MsgBase msgBase)
+    private void EnterGame(MsgBase msgBase)
     {
         EventManager.Instance.RemoveEvent(Events.MsgEnterBattle, EnterGame);
         MsgEnterBattle msg = (MsgEnterBattle)msgBase;
-        Debug.Log($"进入游戏:MsgEnterBattle");
         if (msg.result == 0)
         {
             success = true;
-            slider.value = 1;
-            prograss.text = $"进度:{100}%";
-            await UniTask.Delay(200);
-            SceneManagerAsync.Instance.Success(success);
-            await UniTask.Yield();
-            //Debug.Log($"进入游戏:{success}");
-            EventManager.Instance.InvokeEvent(Events.MsgEnterBattle, msg);
-            OnClose();
+            SceneManagerAsync.Instance.Success(option =>
+            {
+                slider.value = 1;
+                prograss.text = $"进度:{100}%";
+                OnClose();
+            });
         }
         else
             PanelManager.Instance.Open<TipPanel>("进入游戏失败");
@@ -63,16 +62,26 @@ public class LoadingPanel : BasePanel
     /// <summary>
     /// 进度条
     /// </summary>
-    private void Loading(float i = 0)
+    private async UniTaskVoid Loading()
     {
-        prograss.text = $"进度:{i * 100}%";
-        slider.value = i;
-        if (i == 1)
+        int i = 1;
+        // 进度条平滑化处理
+        while (!success)
         {
-            MsgLoadingCompletedBattle msg = this.GetObjInstance<MsgLoadingCompletedBattle>();
-            msg.roomID = room.RoomID;
-            NetManager.Instance.Send(msg);
-            this.PushPool(msg);
+            Debug.Log($"加载进度: {i}%");
+            prograss.text = $"进度:{i}%";
+            slider.value = i / 100f;
+            await UniTask.Delay(80);
+            i++;
+            if (i >= 100)
+            {
+                Debug.Log($"加载进度: {i}%");
+                MsgLoadingCompletedBattle msg = this.GetObjInstance<MsgLoadingCompletedBattle>();
+                msg.roomID = room.RoomID;
+                NetManager.Instance.Send(msg);
+                this.PushPool(msg);
+                break;
+            }
         }
     }
 
