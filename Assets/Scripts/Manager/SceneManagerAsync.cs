@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Cysharp.Threading.Tasks;
+using System;
 
 public class SceneManagerAsync : Singleton<SceneManagerAsync>
 {
@@ -11,7 +12,7 @@ public class SceneManagerAsync : Singleton<SceneManagerAsync>
     /// </summary>
     /// <param name="sceneName">场景名称</param>
     /// <param name="loadSceneMode">加载模式</param>
-    public async UniTaskVoid LoadSceneAsync(string sceneName, LoadSceneMode loadSceneMode = LoadSceneMode.Single)
+    public async UniTaskVoid LoadSceneAsync(string sceneName, Action<float> onProgress = null, LoadSceneMode loadSceneMode = LoadSceneMode.Single)
     {
         if (string.IsNullOrEmpty(sceneName))
         {
@@ -20,7 +21,13 @@ public class SceneManagerAsync : Singleton<SceneManagerAsync>
         }
         currentOperation = SceneManager.LoadSceneAsync(sceneName, loadSceneMode);
         currentOperation.allowSceneActivation = false; // 允许场景在准备就绪后立即激活。
-        await currentOperation;
+
+        while (!currentOperation.isDone)
+        {
+            onProgress?.Invoke(currentOperation.progress);
+            await UniTask.Yield(); // 等待下一帧
+        }
+        onProgress?.Invoke(1f); // 完成时调用进度回调
     }
 
     /// <summary>

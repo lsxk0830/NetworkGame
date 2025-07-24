@@ -24,11 +24,10 @@ public class LoadingPanel : BasePanel
         success = false;
         gameObject.SetActive(true);
         EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, EnterGame);
-        Loading().Forget();
         room = (Room)args[0];
         //Debug.Log($"打开加载界面：{JsonConvert.SerializeObject(room)}");
         string sceneName = SwitchScene(room.mapId);
-        SceneManagerAsync.Instance.LoadSceneAsync(sceneName).Forget(); // 加载场景
+        SceneManagerAsync.Instance.LoadSceneAsync(sceneName, Loading).Forget(); // 加载场景
     }
 
     public override void OnClose()
@@ -62,24 +61,18 @@ public class LoadingPanel : BasePanel
     }
 
     /// <summary>
-    /// 假的进度条
+    /// 进度条
     /// </summary>
-    private async UniTaskVoid Loading(int i = 0)
+    private void Loading(float i = 0)
     {
-        while (!success)
+        prograss.text = $"进度:{i * 100}%";
+        slider.value = i;
+        if (i == 1)
         {
-            await UniTask.Delay(80);
-            prograss.text = $"进度:{i}%";
-            slider.value = i / 100f;
-            i++;
-            if (i == 100) i = 99;
-            if (i == 98)
-            {
-                MsgLoadingCompletedBattle msg = this.GetObjInstance<MsgLoadingCompletedBattle>();
-                msg.roomID = room.RoomID;
-                NetManager.Instance.Send(msg);
-                this.PushPool(msg);
-            }
+            MsgLoadingCompletedBattle msg = this.GetObjInstance<MsgLoadingCompletedBattle>();
+            msg.roomID = room.RoomID;
+            NetManager.Instance.Send(msg);
+            this.PushPool(msg);
         }
     }
 
