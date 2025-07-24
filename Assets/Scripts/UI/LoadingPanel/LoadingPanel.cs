@@ -53,6 +53,7 @@ public class LoadingPanel : BasePanel
                 slider.value = 1;
                 prograss.text = $"进度:{100}%";
                 OnClose();
+                EventManager.Instance.InvokeEvent(Events.MsgEnterBattle, msg);
             });
         }
         else
@@ -68,14 +69,12 @@ public class LoadingPanel : BasePanel
         // 进度条平滑化处理
         while (!success)
         {
-            Debug.Log($"加载进度: {i}%");
             prograss.text = $"进度:{i}%";
             slider.value = i / 100f;
             await UniTask.Delay(80);
             i++;
             if (i >= 100)
             {
-                Debug.Log($"加载进度: {i}%");
                 MsgLoadingCompletedBattle msg = this.GetObjInstance<MsgLoadingCompletedBattle>();
                 msg.roomID = room.RoomID;
                 NetManager.Instance.Send(msg);
