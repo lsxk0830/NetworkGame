@@ -40,8 +40,8 @@ public class BaseTank : MonoBehaviour
     /// </summary>
     public void SyncFire(MsgFire msg)
     {
-        Vector3 pos = new Vector3(msg.x, 1, msg.z);
-        Vector3 tPos = new Vector3(msg.tx, 1, msg.tz);
+        Vector3 pos = new Vector3(msg.x, msg.y, msg.z);
+        Vector3 tPos = new Vector3(msg.tx, msg.ty, msg.tz);
         if (msg.IsExplosion)
         {
             this.GetGameObject(EffectManager.HitPrefab)

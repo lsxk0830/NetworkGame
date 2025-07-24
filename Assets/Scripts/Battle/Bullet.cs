@@ -24,8 +24,10 @@ public class Bullet : MonoBehaviour
             msg.ID = ID; // 发射者ID
             msg.bulletID = bulletID; // 子弹ID
             msg.tx = transform.position.x.RoundTo(4);
+            msg.ty = transform.position.y.RoundTo(4);
             msg.tz = transform.position.z.RoundTo(4);
             msg.x = 0;
+            msg.y = 0;
             msg.z = 0;
             msg.IsExplosion = true;
             NetManager.Instance.Send(msg);
