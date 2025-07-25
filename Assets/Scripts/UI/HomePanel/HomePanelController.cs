@@ -7,19 +7,16 @@ using UnityEngine;
 
 public class HomePanelController
 {
-    private readonly HomePanelModel model;
     private readonly HomePanelView view;
 
     public HomePanelController(HomePanelView view)
     {
-        model = new HomePanelModel();
         this.view = view;
-        model.ID = GameMain.ID;
     }
 
     public async UniTaskVoid UpdateUI()
     {
-        User user = model.GetUser();
+        User user = UserManager.Instance.GetUser(GameMain.ID);
         if (user.AvatarPath != "defaultAvatar")
         {
             string directory = Path.Combine(Application.persistentDataPath, "Avatar");
@@ -47,7 +44,7 @@ public class HomePanelController
 
     public void UpdateUserInfo()
     {
-        view.UpdateUserInfo(model.GetUser());
+        view.UpdateUserInfo(UserManager.Instance.GetUser(GameMain.ID));
     }
 
     #region 用户操作处理
