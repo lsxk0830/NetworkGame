@@ -50,7 +50,7 @@ public class BaseTank : MonoBehaviour
         else
         {
             Bullet bullet = this.GetGameObject(EffectManager.BulletPrefab).GetComponent<Bullet>();
-            bullet.PoolInit(ID, msg.bulletID, pos);
+            bullet.PoolInit(ID, msg.bulletID, pos,firePoint.transform.rotation);
             BulletManager.AddBullet(bullet);
             lastFireTime = Time.time;
         }

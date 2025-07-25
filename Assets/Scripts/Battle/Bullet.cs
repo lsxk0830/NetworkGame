@@ -22,11 +22,12 @@ public class Bullet : MonoBehaviour
     /// <param name="id">发射者ID</param>
     /// <param name="bulletGuid">子弹ID</param>
     /// <param name="startPos">初始位置</param>
-    public void PoolInit(long id, Guid bulletGuid, Vector3 startPos)
+    public void PoolInit(long id, Guid bulletGuid, Vector3 startPos, Quaternion rot)
     {
         ID = id;
         bulletID = bulletGuid;
         transform.position = startPos;
+        transform.rotation = rot;
         this.startPos = startPos; // 保存初始位置
         lastPos = startPos;
         isMove = true;
