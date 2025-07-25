@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4093610413441778787}
   - component: {fileID: 6039986677182949821}
   - component: {fileID: 6039986677182949819}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: Stone_Wall_W
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27,14 +27,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2374447002258485439}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2514481586371529821}
   - {fileID: 7748380826303396785}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7778813388620200090
 MeshFilter:
@@ -55,10 +56,15 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -84,6 +90,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!64 &6039986677182949821
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -92,9 +99,17 @@ MeshCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2374447002258485439}
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 4
+  serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -8970522540389158113, guid: c17b200ca743e1c4f8235664c5cdb1b8, type: 3}
@@ -132,7 +147,7 @@ GameObject:
   - component: {fileID: 2514481586371529821}
   - component: {fileID: 6884744994601777172}
   - component: {fileID: 6010166570874712475}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: Stone_Wall_W_LOD0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146,12 +161,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5652890034608000307}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 5.9604643e-10, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1632804656798057132}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6884744994601777172
 MeshFilter:
@@ -172,10 +188,15 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -201,48 +222,46 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1001 &264192833483520797
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 1632804656798057132}
     m_Modifications:
-    - target: {fileID: 1543776989301821422, guid: b6fc78a5eb535124cbd7c85521af0774,
-        type: 3}
+    - target: {fileID: 1543776989301821422, guid: b6fc78a5eb535124cbd7c85521af0774, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 5584094411870440241, guid: b6fc78a5eb535124cbd7c85521af0774,
-        type: 3}
+    - target: {fileID: 5584094411870440241, guid: b6fc78a5eb535124cbd7c85521af0774, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 6806636049539347135, guid: b6fc78a5eb535124cbd7c85521af0774,
-        type: 3}
+    - target: {fileID: 6806636049539347135, guid: b6fc78a5eb535124cbd7c85521af0774, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 7506760282824229036, guid: b6fc78a5eb535124cbd7c85521af0774,
-        type: 3}
+    - target: {fileID: 7506760282824229036, guid: b6fc78a5eb535124cbd7c85521af0774, type: 3}
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7506760282824229036, guid: b6fc78a5eb535124cbd7c85521af0774,
-        type: 3}
+    - target: {fileID: 7506760282824229036, guid: b6fc78a5eb535124cbd7c85521af0774, type: 3}
       propertyPath: m_LocalPosition.y
       value: 1.631
       objectReference: {fileID: 0}
-    - target: {fileID: 7506760282824229036, guid: b6fc78a5eb535124cbd7c85521af0774,
-        type: 3}
+    - target: {fileID: 7506760282824229036, guid: b6fc78a5eb535124cbd7c85521af0774, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.004
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b6fc78a5eb535124cbd7c85521af0774, type: 3}
 --- !u!4 &7748380826303396785 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 7506760282824229036, guid: b6fc78a5eb535124cbd7c85521af0774,
-    type: 3}
+  m_CorrespondingSourceObject: {fileID: 7506760282824229036, guid: b6fc78a5eb535124cbd7c85521af0774, type: 3}
   m_PrefabInstance: {fileID: 264192833483520797}
   m_PrefabAsset: {fileID: 0}
