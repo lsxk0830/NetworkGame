@@ -5,7 +5,7 @@ public class Bullet : MonoBehaviour
 {
     public float speed = 50f; // 子弹移动速度
     public float maxDistance = 200f;
-    private float dis = 0.1f;// 只在移动距离足够时检测碰撞
+    private float dis = 0.2f;// 只在移动距离足够时检测碰撞
     public LayerMask hitLayers; // 可命中的层级（如 Enemy | Friend | Bullet | CanDestroy）
     public Guid bulletID;
     public long ID; // 发射者ID
@@ -31,6 +31,7 @@ public class Bullet : MonoBehaviour
         this.startPos = startPos; // 保存初始位置
         lastPos = startPos;
         isMove = true;
+        dis = Mathf.Max(0.05f, speed * Time.fixedDeltaTime * 0.5f);
 
         if (BattleManager.EffectActive)
         {
@@ -59,6 +60,13 @@ public class Bullet : MonoBehaviour
             // 检测两帧之间的命中
             if (Physics.Linecast(lastPos, transform.position, out RaycastHit hit, hitLayers))
             {
+                if (hit.collider.gameObject == this.gameObject)
+                {
+                    lastPos = transform.position;
+                    return;
+                }
+
+                Debug.LogError($"碰到了：{hit.collider.gameObject.name}");
                 isMove = false;// 标记子弹停止移动
                 if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy") &&
                     hit.collider.TryGetComponent(out SyncTank hitTank))
