@@ -15,11 +15,6 @@ public class MsgFire : MsgBase
     public float y = 0;
     public float z = 0;
 
-    //炮弹目标位置
-    public float tx = 0;
-    public float ty = 0;
-    public float tz = 0;
-
     /// <summary>
     /// 哪个坦克开火的
     /// </summary>

@@ -20,20 +20,28 @@ public class CtrlTank : BaseTank
     private CinemachineImpulseSource impulseSource;
     private CinemachineOrbitalFollow cinemachineOrbitalFollow;
     private float maxRayLength = 300f; // 最大射线长度
-    private float MouseRotationSpeed = 0.5f; // 鼠标滑动灵敏度系数
     private bool spaceKeyHandled; // 开火标志位
-    private string Enemy; // 敌人标签
     private GamePanel gamePanel;
+
+    [LabelText("敌人层")][SerializeField] private int enemyLayerBit;
+    [LabelText("友军层")][SerializeField] private int friendLayerBit;
+    [LabelText("可破坏层")][SerializeField] private int canDestroyLayerBit;
+
+    [LabelText("射线检测的层级")][SerializeField] private LayerMask RayLayers;
 
     public override void Init(Player tankInfo)
     {
+        enemyLayerBit = LayerMask.NameToLayer("Enemy");
+        friendLayerBit = LayerMask.NameToLayer("Friend");
+        canDestroyLayerBit = LayerMask.NameToLayer("CanDestroy");
+        RayLayers = LayerMask.GetMask("Default", "Enemy", "Friend", "CanDestroy");
+
         freeLookCam = GameObject.FindWithTag("CMFreeLook").GetComponent<CinemachineCamera>();
         impulseSource = GameObject.FindWithTag("CMFreeLook").GetComponent<CinemachineImpulseSource>();
         cinemachineOrbitalFollow = GameObject.FindWithTag("CMFreeLook").GetComponent<CinemachineOrbitalFollow>();
 
         base.Init(tankInfo);
 
-        Enemy = tankInfo.camp == 1 ? "Camp2" : "Camp1";
         freeLookCam.Follow = transform;
 
         offsetY = turret.parent.localEulerAngles.y; // 模型制作的问题，导致特殊对待
@@ -115,15 +123,12 @@ public class CtrlTank : BaseTank
             msg.x = firePoint.transform.position.x.RoundTo(4);
             msg.y = firePoint.transform.position.y.RoundTo(4);
             msg.z = firePoint.transform.position.z.RoundTo(4);
-            msg.tx = targetPos.x.RoundTo(4);
-            msg.ty = targetPos.y.RoundTo(4);
-            msg.tz = targetPos.z.RoundTo(4);
             msg.IsExplosion = false; // 是否爆炸
             NetManager.Instance.Send(msg);
             //Debug.LogError($"发送开火协议：坐标 ={firePoint.transform.position}, 目标 ={targetPos}");
             this.PushPool(msg); // 将消息对象归还对象池
         }
-        if(Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetKeyUp(KeyCode.Space))
         {
             spaceKeyHandled = false; // 释放按键
         }
@@ -143,7 +148,7 @@ public class CtrlTank : BaseTank
         msg.ey = transform.eulerAngles.y.RoundTo(4);
         msg.ez = transform.eulerAngles.z.RoundTo(4);
         msg.turretY = turret.localEulerAngles.y.RoundTo(4);
-        this.PushPool(msg); // 将消息对象归还对象池
+        this.PushPool(msg);
         NetManager.Instance.Send(msg);
     }
 
@@ -157,26 +162,27 @@ public class CtrlTank : BaseTank
         Vector3 rayDirection = firePoint.forward;
 
         // 2. 发射射线检测碰撞
-        RaycastHit hit;
-        bool isHit = Physics.Raycast(rayStart, rayDirection, out hit, maxRayLength);
-        gamePanel.FrontSight.transform.position = Camera.main.WorldToScreenPoint(hit.point);
-        // 3. 根据碰撞标签切换颜色
-        if (isHit)
+        if (Physics.Raycast(rayStart, rayDirection, out RaycastHit hit, maxRayLength, RayLayers))
         {
-            if (hit.collider.CompareTag(Enemy))
+            gamePanel.FrontSight.transform.position = Camera.main.WorldToScreenPoint(hit.point);
+            // 3. 根据碰撞标签切换颜色
+            if (hit.collider.gameObject.layer == enemyLayerBit)
             {
                 gamePanel.FrontSight.color = Color.red; // 敌人：红色
             }
-            else if (hit.collider.CompareTag("Obstacle"))
+            else if (hit.collider.gameObject.layer == friendLayerBit)
             {
-                gamePanel.FrontSight.color = Color.green; // 障碍物：白色
+                gamePanel.FrontSight.color = Color.green; // 友军
+            }
+            else if (hit.collider.gameObject.layer == canDestroyLayerBit)
+            {
+                gamePanel.FrontSight.color = Color.orange; // 可销毁物体
             }
             else
             {
                 gamePanel.FrontSight.color = Color.white; // 其他情况：白色
             }
         }
-
     }
 
     private void OnDestroy()

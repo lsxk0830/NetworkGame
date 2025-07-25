@@ -21,7 +21,6 @@ public class BaseTank : MonoBehaviour
         camp = tankInfo.camp;
         ID = tankInfo.ID;
         hp = tankInfo.hp;
-        tag = tankInfo.ID == GameMain.ID ? "Player" : $"Camp{tankInfo.camp}";
 
         transform.position = new Vector3(tankInfo.x, tankInfo.y, tankInfo.z);
         transform.eulerAngles = new Vector3(tankInfo.ex, tankInfo.ey, tankInfo.ez);
@@ -41,19 +40,17 @@ public class BaseTank : MonoBehaviour
     public void SyncFire(MsgFire msg)
     {
         Vector3 pos = new Vector3(msg.x, msg.y, msg.z);
-        Vector3 tPos = new Vector3(msg.tx, msg.ty, msg.tz);
         if (msg.IsExplosion)
         {
             this.GetGameObject(EffectManager.HitPrefab)
                 .GetComponent<Hit>()
-                .PoolInit(tPos);
-            BulletManager.GetBullet(msg.bulletID)?.PoolReset(); // 将子弹归还对象池
-            BulletManager.RemoveBullet(msg.bulletID); // 从字典中移除子弹
+                .PoolInit(pos);
+            this.PushGameObject(BulletManager.GetBullet(msg.bulletID).gameObject); // 将子弹归还对象池
         }
         else
         {
             Bullet bullet = this.GetGameObject(EffectManager.BulletPrefab).GetComponent<Bullet>();
-            bullet.PoolInit(ID, msg.bulletID, pos, tPos);
+            bullet.PoolInit(ID, msg.bulletID, pos);
             BulletManager.AddBullet(bullet);
             lastFireTime = Time.time;
         }

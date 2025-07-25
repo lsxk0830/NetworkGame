@@ -5,12 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Terrain
-  - Indestructible
-  - Obstacle
-  - Camp1
-  - Camp2
   - CMFreeLook
-  - Ground
   - Item
   - Door
   layers:
@@ -20,9 +15,9 @@ TagManager:
   - Enemy
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Bullet
+  - Friend
+  - Player
   - 
   - 
   - 

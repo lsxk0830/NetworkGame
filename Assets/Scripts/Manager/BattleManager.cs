@@ -20,6 +20,11 @@ public class BattleManager : MonoBehaviour
 
     private GamePanel gamePanel;
 
+    /// <summary>
+    /// 本地的友军阵营
+    /// </summary>
+    private int Friend = -1;
+
     void Awake()
     {
         BGMusicManager.Instance.ChangeOpen(false);
@@ -118,6 +123,14 @@ public class BattleManager : MonoBehaviour
             PanelManager.Instance.Open<TipPanel>("没有坦克信息");
             return;
         }
+        foreach (var tank in msg.tanks)
+        {
+            if (tank.ID == GameMain.ID)
+            {
+                Friend = tank.camp;
+                break;
+            }
+        }
         foreach (var tankInfo in msg.tanks) // 生成坦克
         {
             Init(tankInfo);
@@ -213,6 +226,14 @@ public class BattleManager : MonoBehaviour
         {
             handles.Add($"Tank_{tankInfo.skin}");
             GameObject tank = Instantiate(handle);
+            if (tankInfo.ID == GameMain.ID)
+            {
+                tank.layer = LayerMask.NameToLayer("Player");
+            }
+            else
+            {
+                tank.layer = tankInfo.camp == Friend ? LayerMask.NameToLayer("Friend") : LayerMask.NameToLayer("Enemy");
+            }
             tank.transform.parent = tankParent.transform;
             BaseTank baseTank;
             if (tankInfo.ID == GameMain.ID)

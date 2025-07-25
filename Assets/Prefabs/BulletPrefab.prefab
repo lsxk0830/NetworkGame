@@ -150,6 +150,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb4c2d2e4532f0a4398947e70cd00de6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 50
+  maxDistance: 200
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 712
   ID: 0
   targetPos: {x: 0, y: 0, z: 0}
   audioSource: {fileID: 7641228472573276103}
