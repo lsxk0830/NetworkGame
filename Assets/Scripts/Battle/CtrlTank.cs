@@ -157,15 +157,10 @@ public class CtrlTank : BaseTank
     /// </summary>
     private void Draw()
     {
-        // 1. 计算射线方向（炮管正前方）
-        Vector3 rayStart = firePoint.position; rayStart.y = 0.8f;
-        Vector3 rayDirection = firePoint.forward;
-
-        // 2. 发射射线检测碰撞
-        if (Physics.Raycast(rayStart, rayDirection, out RaycastHit hit, maxRayLength, RayLayers))
+        // 发射射线检测碰撞
+        if (Physics.Raycast(firePoint.position, firePoint.forward, out RaycastHit hit, maxRayLength, RayLayers))
         {
             gamePanel.FrontSight.transform.position = Camera.main.WorldToScreenPoint(hit.point);
-            // 3. 根据碰撞标签切换颜色
             if (hit.collider.gameObject.layer == enemyLayerBit)
             {
                 gamePanel.FrontSight.color = Color.red; // 敌人：红色
