@@ -1,8 +1,16 @@
 音效优化对比
 
-优化前![image-20250726231632318](C:\Users\lsxk0\AppData\Roaming\Typora\typora-user-images\image-20250726231632318.png)
-优化后![image-20250726231816388](C:\Users\lsxk0\AppData\Roaming\Typora\typora-user-images\image-20250726231816388.png)
+优化前![1](./Texture/1.png)
+优化后![2](./Texture/2.png)
 
 模型优化：对比
-![image-20250726230618801](C:\Users\lsxk0\AppData\Roaming\Typora\typora-user-images\image-20250726230618801.png)
+![3](./Texture/3.png)
 
+纹理优化：
+优化前
+
+![4](./Texture/4.png)
+
+优化后
+
+![5](./Texture/5.png)
