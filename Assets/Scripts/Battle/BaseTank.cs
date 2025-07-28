@@ -15,6 +15,7 @@ public class BaseTank : MonoBehaviour
     protected Rigidbody mRigidbody;
     private GameObject explosion;
     public AudioSource audioSource; // 音频源
+    public Animator Animator;
 
     public virtual void Init(Player tankInfo)
     {
@@ -29,31 +30,10 @@ public class BaseTank : MonoBehaviour
         turret = transform.Find("Tank/Turret");
         gun = turret.transform.Find("Gun");
         firePoint = turret.transform.Find("FirePoint");
+        Animator = turret.GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
         audioSource.Play();
         audioSource.volume = BattleManager.EffectValue; // 设置音量
-    }
-
-    /// <summary>
-    /// 开火
-    /// </summary>
-    public void SyncFire(MsgFire msg)
-    {
-        Vector3 pos = new Vector3(msg.x, msg.y, msg.z);
-        if (msg.IsExplosion)
-        {
-            this.GetGameObject(EffectManager.HitPrefab)
-                .GetComponent<Hit>()
-                .PoolInit(pos);
-            this.PushGameObject(BulletManager.GetBullet(msg.bulletID).gameObject); // 将子弹归还对象池
-        }
-        else
-        {
-            Bullet bullet = this.GetGameObject(EffectManager.BulletPrefab).GetComponent<Bullet>();
-            bullet.PoolInit(ID, msg.bulletID, pos,firePoint.transform.rotation);
-            BulletManager.AddBullet(bullet);
-            lastFireTime = Time.time;
-        }
     }
 
     /// <summary>

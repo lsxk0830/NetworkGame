@@ -37,16 +37,12 @@ public class BattleManager : MonoBehaviour
         EventManager.Instance.RegisterEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
         EventManager.Instance.RegisterEvent(Events.MsgEndBattle, OnMsgEndBattle);
         EventManager.Instance.RegisterEvent(Events.MsgSyncTank, OnMsgSyncTank);
-        EventManager.Instance.RegisterEvent(Events.MsgFire, OnMsgFire);
-        EventManager.Instance.RegisterEvent(Events.MsgHit, OnMsgHit);
+        EventManager.Instance.RegisterEvent(Events.MsgAttack, OnMsgAttack);
 
         handles = new List<string>();
         tanks = new Dictionary<long, BaseTank>();
         tankParent = new GameObject("Tanks").transform;
         tankParent.position = Vector3.zero;
-
-        ResManager.Instance.LoadAssetAsync<GameObject>("BulletPrefab",
-        handle => EffectManager.BulletPrefab = handle.gameObject).Forget();
 
         ResManager.Instance.LoadAssetAsync<GameObject>("Die",
         handle => EffectManager.DiePrefab = handle.gameObject).Forget();
@@ -62,12 +58,9 @@ public class BattleManager : MonoBehaviour
         EventManager.Instance.RemoveEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
         EventManager.Instance.RemoveEvent(Events.MsgEndBattle, OnMsgEndBattle);
         EventManager.Instance.RemoveEvent(Events.MsgSyncTank, OnMsgSyncTank);
-        EventManager.Instance.RemoveEvent(Events.MsgFire, OnMsgFire);
-        EventManager.Instance.RemoveEvent(Events.MsgHit, OnMsgHit);
-        BulletManager.Clear(); // 清空子弹管理器
+        EventManager.Instance.RemoveEvent(Events.MsgAttack, OnMsgAttack);
         EffectManager.Destroy();
         tanks.Clear(); tanks = null;
-        ResManager.Instance.Release("BulletPrefab");
         ResManager.Instance.Release("Die");
         ResManager.Instance.Release("Hit");
         ResManager.Instance.Release("Tank_1");
@@ -160,13 +153,11 @@ public class BattleManager : MonoBehaviour
         tank.hp = 0; // 设置坦克血量为0
         PanelManager.Instance.Open<ResultPanel>(isWin);
         gamePanel.OnClose();
-        BulletManager.Clear(); // 清空子弹管理器
         EffectManager.Destroy();
         EventManager.Instance.RemoveEvent(Events.MsgEnterBattle, OnMsgEnterBattle);
         EventManager.Instance.RemoveEvent(Events.MsgEndBattle, OnMsgEndBattle);
         EventManager.Instance.RemoveEvent(Events.MsgSyncTank, OnMsgSyncTank);
-        EventManager.Instance.RemoveEvent(Events.MsgFire, OnMsgFire);
-        EventManager.Instance.RemoveEvent(Events.MsgHit, OnMsgHit);
+        EventManager.Instance.RemoveEvent(Events.MsgAttack, OnMsgAttack);
         // this.gameObject.ClearGameobjectPool(); // 清空对象池
         // this.ClearAll(); // 清空所有
     }
@@ -186,33 +177,33 @@ public class BattleManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 收到开火协议
+    /// 收到攻击协议
     /// </summary>
-    private void OnMsgFire(MsgBase msgBse)
+    private void OnMsgAttack(MsgBase msgBse)
     {
-        MsgFire msg = (MsgFire)msgBse;
-        BaseTank tank = msg.ID == GameMain.ID ? GetCtrlTank() : GetTank(msg.ID);
-        tank.SyncFire(msg);
-    }
+        MsgAttack msg = (MsgAttack)msgBse;
+        BaseTank tank = GetTank(msg.hitID);
+        if (tank == null) return;
 
-    /// <summary>
-    /// 收到击中协议
-    /// </summary>
-    private void OnMsgHit(MsgBase msgBse)
-    {
-        MsgHit msg = (MsgHit)msgBse;
-        if (msg.ID == GameMain.ID)
+        if (msg.ID == GameMain.ID) // 攻击者是自己不用管炮管震动
         {
             gamePanel.UpdateHit(msg.damage);
         }
-        else if (msg.targetID == GameMain.ID)
+        else
+        {
+            tank.Animator.SetTrigger("Fire");
+        }
+
+        if (msg.hitID == GameMain.ID) // 是否是自己受伤
+        {
+            //ToDo:UI显示特效
+        }
+        else
         {
             gamePanel.UpdateHP(msg.hp);
         }
-
         // 查找坦克
-        BaseTank tank = GetTank(msg.targetID);
-        if (tank == null) return;
+
         tank.hp = msg.hp; // 设置坦克血量
         if (tank.hp <= 0) tank.Die(); // 如果血量小于等于0，坦克死亡
 

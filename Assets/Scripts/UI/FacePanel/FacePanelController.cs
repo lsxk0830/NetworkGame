@@ -87,7 +87,6 @@ public class FacePanelController
             ID = GameMain.ID, // 示例ID
             avatarBytes = avatart.sprite.texture.EncodeToPNG()
         };
-        // ToDo 上传
         HTTPManager.Instance.Post(API.UploadAvatar, data, onSuccess =>
         {
             Debug.Log($"头像上传成功: {onSuccess}");

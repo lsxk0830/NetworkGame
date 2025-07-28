@@ -13,25 +13,21 @@ MonoBehaviour:
   m_Name: Default Local Group
   m_EditorClassIdentifier: 
   m_GroupName: Default Local Group
-  m_Data:
-    m_SerializedData: []
   m_GUID: 7b341ad66e134db4a87223472ee202ec
   m_SerializeEntries:
   - m_GUID: be913b5426171e5448b0d58be2c87e7d
     m_Address: Die
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: f56df958f7aefbf4398b07d88dd293da
-    m_Address: BulletPrefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f63e0c0bec828fa40b475679ada43749
     m_Address: Hit
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 0c62968f62d51d848b11533011becdd3, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 7ecb284f76e56cd4f9fa336894962aa3, type: 2}
     - {fileID: 11400000, guid: 73711adeaabcea748b83cdf5dcb3940f, type: 2}
+    - {fileID: 11400000, guid: 7ecb284f76e56cd4f9fa336894962aa3, type: 2}

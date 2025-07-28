@@ -26,8 +26,7 @@ public static class Events
     public static string MsgLeaveBattle = "MsgLeaveBattle"; //玩家退出协议
 
     public static string MsgSyncTank = "MsgSyncTank"; //同步协议
-    public static string MsgFire = "MsgFire"; //开火协议
-    public static string MsgHit = "MsgHit"; //击中协议
+    public static string MsgAttack = "MsgAttack"; //攻击协议
 
     #endregion 消息协议
 

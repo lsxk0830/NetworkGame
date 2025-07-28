@@ -103,7 +103,7 @@ public class CtrlTank : BaseTank
         Quaternion rotation = Quaternion.Euler(0, cinemachineOrbitalFollow.HorizontalAxis.Value + offsetY, 0);
         turret.rotation = rotation;
         //Debug.Log($"炮塔旋转角度: {turretEuler}, 相机旋转角度: {turret.rotation},{turret.rotation.eulerAngles}");
-        Draw();
+        //Draw();
     }
 
     private void FireUpdate()
@@ -112,21 +112,36 @@ public class CtrlTank : BaseTank
         {
             if (spaceKeyHandled || Time.time - lastFireTime < fired) return; // CD时间判断
             spaceKeyHandled = true;
-            Vector3 targetPos = firePoint.transform.position + firePoint.transform.forward * 50f;
 
-            impulseSource.GenerateImpulse(); // 生成震动
-
-            //Debug.Log($"点击开火按钮");
-            // 发送同步协议
-            MsgFire msg = this.GetObjInstance<MsgFire>();
+            MsgAttack msg = this.GetObjInstance<MsgAttack>();
             msg.ID = GameMain.ID;
             msg.x = firePoint.transform.position.x.RoundTo(4);
             msg.y = firePoint.transform.position.y.RoundTo(4);
             msg.z = firePoint.transform.position.z.RoundTo(4);
-            msg.IsExplosion = false; // 是否爆炸
+            // 发射射线检测碰撞
+            if (Physics.Raycast(firePoint.position, firePoint.forward, out RaycastHit hit, maxRayLength, RayLayers))
+            {
+                msg.fx = firePoint.forward.x.RoundTo(4);
+                msg.fy = firePoint.forward.y.RoundTo(4);
+                msg.fz = firePoint.forward.z.RoundTo(4);
+                msg.hitID = hit.collider.GetComponent<SyncTank>().ID;
+                msg.tx = hit.point.x.RoundTo(4);
+                msg.ty = hit.point.y.RoundTo(4);
+                msg.tz = hit.point.z.RoundTo(4);
+            }
+            else
+            {
+                msg.fx = 0;
+                msg.fy = 0;
+                msg.fz = 0;
+                msg.tx = 0;
+                msg.ty = 0;
+                msg.tz = 0;
+            }
+            Debug.LogError($"发送开火协议.ID:{msg.hitID}：坐标 ={firePoint.transform.position},方向：{firePoint.forward}, 目标 ={hit.point}");
             NetManager.Instance.Send(msg);
-            //Debug.LogError($"发送开火协议：坐标 ={firePoint.transform.position}, 目标 ={targetPos}");
-            this.PushPool(msg); // 将消息对象归还对象池
+            Animator.Play("Fire");
+            impulseSource.GenerateImpulse(); // 生成震动
         }
         if (Input.GetKeyUp(KeyCode.Space))
         {
@@ -152,40 +167,7 @@ public class CtrlTank : BaseTank
         NetManager.Instance.Send(msg);
     }
 
-    /// <summary>
-    /// 绘制射线
-    /// </summary>
-    private void Draw()
-    {
-        // 发射射线检测碰撞
-        if (Physics.Raycast(firePoint.position, firePoint.forward, out RaycastHit hit, maxRayLength, RayLayers))
-        {
-            gamePanel.FrontSight.transform.position = Camera.main.WorldToScreenPoint(hit.point);
-            if (hit.collider.gameObject.layer == enemyLayerBit)
-            {
-                gamePanel.FrontSight.color = Color.red; // 敌人：红色
-            }
-            else if (hit.collider.gameObject.layer == friendLayerBit)
-            {
-                gamePanel.FrontSight.color = Color.green; // 友军
-            }
-            else if (hit.collider.gameObject.layer == canDestroyLayerBit)
-            {
-                gamePanel.FrontSight.color = Color.orange; // 可销毁物体
-            }
-            else
-            {
-                gamePanel.FrontSight.color = Color.white; // 其他情况：白色
-            }
-        }
-    }
-
     private void OnDestroy()
-    {
-        Destroy();
-    }
-
-    protected override void Destroy()
     {
         base.Destroy();
         Cursor.lockState = CursorLockMode.None;
