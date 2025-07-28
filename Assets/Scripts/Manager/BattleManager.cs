@@ -17,7 +17,8 @@ public class BattleManager : MonoBehaviour
 
     public static bool EffectActive = false;
     public static float EffectValue = 0;
-    public const int Scale = 10000;
+    public const int Scale = 10000; // 上传时处理
+    public const float AcceptsScale = 10000; // 接收时处理
 
     private GamePanel gamePanel;
 
@@ -202,7 +203,7 @@ public class BattleManager : MonoBehaviour
         }
         this.GetGameObject(EffectManager.HitPrefab)
                 .GetComponent<Hit>()
-                .PoolInit(new Vector3(msg.tx / Scale, msg.ty / Scale, msg.tz / Scale));
+                .PoolInit(new Vector3(msg.tx / AcceptsScale, msg.ty / AcceptsScale, msg.tz / AcceptsScale));
         tank.hp = msg.hp; // 设置坦克血量
         if (tank.hp <= 0) tank.Die(); // 如果血量小于等于0，坦克死亡
     }

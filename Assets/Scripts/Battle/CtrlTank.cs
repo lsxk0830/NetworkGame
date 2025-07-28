@@ -112,21 +112,21 @@ public class CtrlTank : BaseTank
 
             MsgAttack msg = this.GetObjInstance<MsgAttack>();
             msg.ID = GameMain.ID;
-            msg.x = (int)(firePoint.transform.position.x * 10000);
-            msg.y = (int)(firePoint.transform.position.y * 10000);
-            msg.z = (int)(firePoint.transform.position.z * 10000);
+            msg.x = (int)(firePoint.transform.position.x * BattleManager.Scale);
+            msg.y = (int)(firePoint.transform.position.y * BattleManager.Scale);
+            msg.z = (int)(firePoint.transform.position.z * BattleManager.Scale);
             // 发射射线检测碰撞
             if (Physics.Raycast(firePoint.position, firePoint.forward, out RaycastHit hit, maxRayLength, RayLayers))
             {
                 if (hit.collider.TryGetComponent<SyncTank>(out SyncTank syncTank))
                 {
                     msg.hitID = syncTank.ID;
-                    msg.fx = (int)(firePoint.forward.x * 10000);
-                    msg.fy = (int)(firePoint.forward.y * 10000);
-                    msg.fz = (int)(firePoint.forward.z * 10000);
-                    msg.tx = (int)(hit.point.x * 10000);
-                    msg.ty = (int)(hit.point.y * 10000);
-                    msg.tz = (int)(hit.point.z * 10000);
+                    msg.fx = (int)(firePoint.forward.x * BattleManager.Scale);
+                    msg.fy = (int)(firePoint.forward.y * BattleManager.Scale);
+                    msg.fz = (int)(firePoint.forward.z * BattleManager.Scale);
+                    msg.tx = (int)(hit.point.x * BattleManager.Scale);
+                    msg.ty = (int)(hit.point.y * BattleManager.Scale);
+                    msg.tz = (int)(hit.point.z * BattleManager.Scale);
                 }
                 else
                 {
@@ -166,13 +166,13 @@ public class CtrlTank : BaseTank
         lastSendSyncTime = Time.time;
         // 发送同步协议
         MsgSyncTank msg = this.GetObjInstance<MsgSyncTank>();
-        msg.x = (int)transform.position.x * 10000;
-        msg.y = (int)transform.position.y * 10000;
-        msg.z = (int)transform.position.z * 10000;
-        msg.ex = (int)transform.eulerAngles.x * 10000;
-        msg.ey = (int)transform.eulerAngles.y * 10000;
-        msg.ez = (int)transform.eulerAngles.z * 10000;
-        msg.turretY = (int)turret.localEulerAngles.y * 10000;
+        msg.x = (int)transform.position.x * BattleManager.Scale;
+        msg.y = (int)transform.position.y * BattleManager.Scale;
+        msg.z = (int)transform.position.z * BattleManager.Scale;
+        msg.ex = (int)transform.eulerAngles.x * BattleManager.Scale;
+        msg.ey = (int)transform.eulerAngles.y * BattleManager.Scale;
+        msg.ez = (int)transform.eulerAngles.z * BattleManager.Scale;
+        msg.turretY = (int)turret.localEulerAngles.y * BattleManager.Scale;
         this.PushPool(msg);
         NetManager.Instance.Send(msg);
     }
