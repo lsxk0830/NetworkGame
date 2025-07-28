@@ -191,7 +191,7 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
-            tank.Animator.SetTrigger("Fire");
+            tank.Fire();
         }
 
         if (msg.hitID == GameMain.ID) // 是否是自己受伤

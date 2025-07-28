@@ -14,8 +14,8 @@ public class BaseTank : MonoBehaviour
     public int camp = 0; // 阵营
     protected Rigidbody mRigidbody;
     private GameObject explosion;
-    public AudioSource audioSource; // 音频源
-    public Animator Animator;
+    protected AudioSource audioSource; // 音频源
+    private Animator ani;
 
     public virtual void Init(Player tankInfo)
     {
@@ -30,10 +30,15 @@ public class BaseTank : MonoBehaviour
         turret = transform.Find("Tank/Turret");
         gun = turret.transform.Find("Gun");
         firePoint = turret.transform.Find("FirePoint");
-        Animator = turret.GetComponent<Animator>();
+        ani = turret.GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
         audioSource.Play();
         audioSource.volume = BattleManager.EffectValue; // 设置音量
+    }
+
+    public void Fire()
+    {
+        ani.SetTrigger("Fire");
     }
 
     /// <summary>

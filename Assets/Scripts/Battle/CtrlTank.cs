@@ -140,7 +140,7 @@ public class CtrlTank : BaseTank
             }
             Debug.LogError($"发送开火协议.ID:{msg.hitID}：坐标 ={firePoint.transform.position},方向：{firePoint.forward}, 目标 ={hit.point}");
             NetManager.Instance.Send(msg);
-            Animator.Play("Fire");
+            Fire();
             impulseSource.GenerateImpulse(); // 生成震动
         }
         if (Input.GetKeyUp(KeyCode.Space))
