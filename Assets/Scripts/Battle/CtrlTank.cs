@@ -21,7 +21,6 @@ public class CtrlTank : BaseTank
     private CinemachineOrbitalFollow cinemachineOrbitalFollow;
     private float maxRayLength = 300f; // 最大射线长度
     private bool spaceKeyHandled; // 开火标志位
-    private GamePanel gamePanel;
 
     [LabelText("敌人层")][SerializeField] private int enemyLayerBit;
     [LabelText("友军层")][SerializeField] private int friendLayerBit;
@@ -49,8 +48,6 @@ public class CtrlTank : BaseTank
         GloablMono.Instance.OnFixedUpdate += OnFixUpdate;
 
         Cursor.lockState = CursorLockMode.Locked;
-
-        gamePanel = PanelManager.Instance.GetPanel<GamePanel>();
     }
 
     private void OnUpdate()
@@ -115,19 +112,20 @@ public class CtrlTank : BaseTank
 
             MsgAttack msg = this.GetObjInstance<MsgAttack>();
             msg.ID = GameMain.ID;
-            msg.x = firePoint.transform.position.x.RoundTo(4);
-            msg.y = firePoint.transform.position.y.RoundTo(4);
-            msg.z = firePoint.transform.position.z.RoundTo(4);
+            msg.x = firePoint.transform.position.x.RoundTo4();
+            msg.y = firePoint.transform.position.y.RoundTo4();
+            msg.z = firePoint.transform.position.z.RoundTo4();
             // 发射射线检测碰撞
             if (Physics.Raycast(firePoint.position, firePoint.forward, out RaycastHit hit, maxRayLength, RayLayers))
             {
-                msg.fx = firePoint.forward.x.RoundTo(4);
-                msg.fy = firePoint.forward.y.RoundTo(4);
-                msg.fz = firePoint.forward.z.RoundTo(4);
+                msg.fx = firePoint.forward.x.RoundTo4();
+                msg.fy = firePoint.forward.y.RoundTo4();
+                msg.fz = firePoint.forward.z.RoundTo4();
                 msg.hitID = hit.collider.GetComponent<SyncTank>().ID;
-                msg.tx = hit.point.x.RoundTo(4);
-                msg.ty = hit.point.y.RoundTo(4);
-                msg.tz = hit.point.z.RoundTo(4);
+                msg.tx = hit.point.x.RoundTo4();
+                msg.ty = hit.point.y.RoundTo4();
+                msg.tz = hit.point.z.RoundTo4();
+                Debug.DrawRay(firePoint.position, firePoint.forward * 500, Color.green, 100f);
             }
             else
             {
@@ -156,13 +154,13 @@ public class CtrlTank : BaseTank
         lastSendSyncTime = Time.time;
         // 发送同步协议
         MsgSyncTank msg = this.GetObjInstance<MsgSyncTank>();
-        msg.x = transform.position.x.RoundTo(4);
-        msg.y = transform.position.y.RoundTo(4);
-        msg.z = transform.position.z.RoundTo(4);
-        msg.ex = transform.eulerAngles.x.RoundTo(4);
-        msg.ey = transform.eulerAngles.y.RoundTo(4);
-        msg.ez = transform.eulerAngles.z.RoundTo(4);
-        msg.turretY = turret.localEulerAngles.y.RoundTo(4);
+        msg.x = transform.position.x.RoundTo4();
+        msg.y = transform.position.y.RoundTo4();
+        msg.z = transform.position.z.RoundTo4();
+        msg.ex = transform.eulerAngles.x.RoundTo4();
+        msg.ey = transform.eulerAngles.y.RoundTo4();
+        msg.ez = transform.eulerAngles.z.RoundTo4();
+        msg.turretY = turret.localEulerAngles.y.RoundTo4();
         this.PushPool(msg);
         NetManager.Instance.Send(msg);
     }

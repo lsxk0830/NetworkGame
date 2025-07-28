@@ -1,15 +1,12 @@
-using System;
+using UnityEngine;
 
 public static class FloatExtensions
 {
     /// <summary>
-    /// 将浮点数四舍五入到指定的十进制位数
+    /// 保留小数点后四位
     /// </summary>
-    /// <param name="value">要四舍五入的浮点数</param>
-    /// <param name="decimals">保留的十进制位数</param>
-    /// <returns></returns>
-    public static float RoundTo(this float value, int decimals)
+    public static float RoundTo4(this float value)
     {
-        return (float)Math.Round(value, decimals, MidpointRounding.AwayFromZero);
+        return Mathf.Round(value * 10000) / 10000f;
     }
 }
