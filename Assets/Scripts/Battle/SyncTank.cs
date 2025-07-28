@@ -24,12 +24,12 @@ public class SyncTank : BaseTank
     public void SyncPos(MsgSyncTank msg)
     {
         // 预测位置
-        transform.position = new Vector3(msg.x, msg.y, msg.z);
-        transform.eulerAngles = new Vector3(msg.ex, msg.ey, msg.ez);
+        transform.position = new Vector3(msg.x / BattleManager.Scale, msg.y / BattleManager.Scale, msg.z / BattleManager.Scale);
+        transform.eulerAngles = new Vector3(msg.ex / BattleManager.Scale, msg.ey / BattleManager.Scale, msg.ez / BattleManager.Scale);
         //forecastTime = Time.time;
         // 炮塔
         Vector3 le = turret.localEulerAngles;
-        le.y = msg.turretY;
+        le.y = msg.turretY / BattleManager.Scale;
         turret.localEulerAngles = le;
         //Debug.Log($"同步位置协议:{JsonConvert.SerializeObject(msg)}");
     }
