@@ -184,8 +184,12 @@ public class BattleManager : MonoBehaviour
     private void OnMsgAttack(MsgBase msgBse)
     {
         MsgAttack msg = (MsgAttack)msgBse;
-        BaseTank tank = GetTank(msg.hitID);
-        if (tank == null) return;
+        BaseTank attackTank = GetTank(msg.ID);
+        BaseTank hitTank = GetTank(msg.hitID);
+        if (hitTank == null || attackTank == null) return;
+
+        if (msg.ID != GameMain.ID)
+            attackTank.Fire();
 
         if (msg.isHit)
         {
@@ -198,13 +202,8 @@ public class BattleManager : MonoBehaviour
                 //ToDo:UI显示特效
                 gamePanel.UpdateHP(msg.hp);
             }
-            tank.hp = msg.hp; // 设置坦克血量
-            if (tank.hp <= 0) tank.Die(); // 如果血量小于等于0，坦克死亡
-        }
-        else
-        {
-            if (msg.ID != GameMain.ID)
-                tank.Fire();
+            hitTank.hp = msg.hp; // 设置坦克血量
+            if (hitTank.hp <= 0) hitTank.Die(); // 如果血量小于等于0，坦克死亡
         }
         this.GetGameObject(EffectManager.HitPrefab)
                         .GetComponent<Hit>()
