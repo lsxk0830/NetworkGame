@@ -166,13 +166,13 @@ public class CtrlTank : BaseTank
         lastSendSyncTime = Time.time;
         // 发送同步协议
         MsgSyncTank msg = this.GetObjInstance<MsgSyncTank>();
-        msg.x = (int)transform.position.x * BattleManager.Scale;
-        msg.y = (int)transform.position.y * BattleManager.Scale;
-        msg.z = (int)transform.position.z * BattleManager.Scale;
-        msg.ex = (int)transform.eulerAngles.x * BattleManager.Scale;
-        msg.ey = (int)transform.eulerAngles.y * BattleManager.Scale;
-        msg.ez = (int)transform.eulerAngles.z * BattleManager.Scale;
-        msg.turretY = (int)turret.localEulerAngles.y * BattleManager.Scale;
+        msg.x = (int)(transform.position.x * BattleManager.Scale);
+        msg.y = (int)(transform.position.y * BattleManager.Scale);
+        msg.z = (int)(transform.position.z * BattleManager.Scale);
+        msg.ex = (int)(transform.eulerAngles.x * BattleManager.Scale);
+        msg.ey = (int)(transform.eulerAngles.y * BattleManager.Scale);
+        msg.ez = (int)(transform.eulerAngles.z * BattleManager.Scale);
+        msg.turretY = (int)(turret.localEulerAngles.y * BattleManager.Scale);
         this.PushPool(msg);
         NetManager.Instance.Send(msg);
     }
