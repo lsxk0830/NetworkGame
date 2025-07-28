@@ -112,19 +112,31 @@ public class CtrlTank : BaseTank
 
             MsgAttack msg = this.GetObjInstance<MsgAttack>();
             msg.ID = GameMain.ID;
-            msg.x = firePoint.transform.position.x.RoundTo4();
-            msg.y = firePoint.transform.position.y.RoundTo4();
-            msg.z = firePoint.transform.position.z.RoundTo4();
+            msg.x = (int)(firePoint.transform.position.x * 10000);
+            msg.y = (int)(firePoint.transform.position.y * 10000);
+            msg.z = (int)(firePoint.transform.position.z * 10000);
             // 发射射线检测碰撞
             if (Physics.Raycast(firePoint.position, firePoint.forward, out RaycastHit hit, maxRayLength, RayLayers))
             {
-                msg.fx = firePoint.forward.x.RoundTo4();
-                msg.fy = firePoint.forward.y.RoundTo4();
-                msg.fz = firePoint.forward.z.RoundTo4();
-                msg.hitID = hit.collider.GetComponent<SyncTank>().ID;
-                msg.tx = hit.point.x.RoundTo4();
-                msg.ty = hit.point.y.RoundTo4();
-                msg.tz = hit.point.z.RoundTo4();
+                if (hit.collider.TryGetComponent<SyncTank>(out SyncTank syncTank))
+                {
+                    msg.hitID = syncTank.ID;
+                    msg.fx = (int)(firePoint.forward.x * 10000);
+                    msg.fy = (int)(firePoint.forward.y * 10000);
+                    msg.fz = (int)(firePoint.forward.z * 10000);
+                    msg.tx = (int)(hit.point.x * 10000);
+                    msg.ty = (int)(hit.point.y * 10000);
+                    msg.tz = (int)(hit.point.z * 10000);
+                }
+                else
+                {
+                    msg.fx = 0;
+                    msg.fy = 0;
+                    msg.fz = 0;
+                    msg.tx = 0;
+                    msg.ty = 0;
+                    msg.tz = 0;
+                }
                 Debug.DrawRay(firePoint.position, firePoint.forward * 500, Color.green, 100f);
             }
             else

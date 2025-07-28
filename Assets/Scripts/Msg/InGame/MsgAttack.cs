@@ -9,19 +9,19 @@ public class MsgAttack : MsgBase
     }
 
     //炮弹初始位置
-    public float x = 0;
-    public float y = 0;
-    public float z = 0;
+    public int x = 0;
+    public int y = 0;
+    public int z = 0;
 
     //炮弹方向
-    public float fx = 0;
-    public float fy = 0;
-    public float fz = 0;
+    public int fx = 0;
+    public int fy = 0;
+    public int fz = 0;
 
     //击中点位置
-    public float tx = 0;
-    public float ty = 0;
-    public float tz = 0;
+    public int tx = 0;
+    public int ty = 0;
+    public int tz = 0;
 
     /// <summary>
     /// 哪个坦克开火的
