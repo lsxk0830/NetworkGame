@@ -1,5 +1,5 @@
 /// <summary>
-/// 击中
+/// 攻击协议
 /// </summary>
 public class MsgAttack : MsgBase
 {

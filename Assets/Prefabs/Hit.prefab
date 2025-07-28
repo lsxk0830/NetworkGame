@@ -4754,4 +4754,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfb2455fe55a34a44ae61d2657c14ee3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Effect: {fileID: 2312443323519626957}
+  ps: {fileID: 2312443323519626957}

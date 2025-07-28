@@ -1,3 +1,4 @@
+using System;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -112,9 +113,9 @@ public class CtrlTank : BaseTank
 
             MsgAttack msg = this.GetObjInstance<MsgAttack>();
             msg.ID = GameMain.ID;
-            msg.x = (int)(firePoint.transform.position.x * BattleManager.Scale);
-            msg.y = (int)(firePoint.transform.position.y * BattleManager.Scale);
-            msg.z = (int)(firePoint.transform.position.z * BattleManager.Scale);
+            msg.x = (int)Math.Round(firePoint.transform.position.x * BattleManager.Scale);
+            msg.y = (int)Math.Round(firePoint.transform.position.y * BattleManager.Scale);
+            msg.z = (int)Math.Round(firePoint.transform.position.z * BattleManager.Scale);
             // 发射射线检测碰撞
             if (Physics.Raycast(firePoint.position, firePoint.forward, out RaycastHit hit, maxRayLength, RayLayers))
             {
@@ -126,12 +127,12 @@ public class CtrlTank : BaseTank
                 {
                     msg.hitID = -1;
                 }
-                msg.fx = (int)(firePoint.forward.x * BattleManager.Scale);
-                msg.fy = (int)(firePoint.forward.y * BattleManager.Scale);
-                msg.fz = (int)(firePoint.forward.z * BattleManager.Scale);
-                msg.tx = (int)(hit.point.x * BattleManager.Scale);
-                msg.ty = (int)(hit.point.y * BattleManager.Scale);
-                msg.tz = (int)(hit.point.z * BattleManager.Scale);
+                msg.fx = (int)Math.Round(firePoint.forward.x * BattleManager.Scale);
+                msg.fy = (int)Math.Round(firePoint.forward.y * BattleManager.Scale);
+                msg.fz = (int)Math.Round(firePoint.forward.z * BattleManager.Scale);
+                msg.tx = (int)Math.Round(hit.point.x * BattleManager.Scale);
+                msg.ty = (int)Math.Round(hit.point.y * BattleManager.Scale);
+                msg.tz = (int)Math.Round(hit.point.z * BattleManager.Scale);
                 Debug.DrawRay(firePoint.position, firePoint.forward * 500, Color.green, 100f);
             }
             else
@@ -144,7 +145,7 @@ public class CtrlTank : BaseTank
                 msg.ty = 0;
                 msg.tz = 0;
             }
-            Debug.LogError($"发送开火协议.ID:{msg.hitID}：坐标 ={firePoint.transform.position},方向：{firePoint.forward}, 目标 ={hit.point}");
+            //Debug.LogError($"发送开火协议.ID:{msg.hitID}：坐标 ={firePoint.transform.position},方向：{firePoint.forward}, 目标 ={hit.point}");
             NetManager.Instance.Send(msg);
             Fire();
             impulseSource.GenerateImpulse(); // 生成震动
