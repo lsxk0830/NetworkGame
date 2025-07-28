@@ -121,26 +121,22 @@ public class CtrlTank : BaseTank
                 if (hit.collider.TryGetComponent<SyncTank>(out SyncTank syncTank))
                 {
                     msg.hitID = syncTank.ID;
-                    msg.fx = (int)(firePoint.forward.x * BattleManager.Scale);
-                    msg.fy = (int)(firePoint.forward.y * BattleManager.Scale);
-                    msg.fz = (int)(firePoint.forward.z * BattleManager.Scale);
-                    msg.tx = (int)(hit.point.x * BattleManager.Scale);
-                    msg.ty = (int)(hit.point.y * BattleManager.Scale);
-                    msg.tz = (int)(hit.point.z * BattleManager.Scale);
                 }
                 else
                 {
-                    msg.fx = 0;
-                    msg.fy = 0;
-                    msg.fz = 0;
-                    msg.tx = 0;
-                    msg.ty = 0;
-                    msg.tz = 0;
+                    msg.hitID = -1;
                 }
+                msg.fx = (int)(firePoint.forward.x * BattleManager.Scale);
+                msg.fy = (int)(firePoint.forward.y * BattleManager.Scale);
+                msg.fz = (int)(firePoint.forward.z * BattleManager.Scale);
+                msg.tx = (int)(hit.point.x * BattleManager.Scale);
+                msg.ty = (int)(hit.point.y * BattleManager.Scale);
+                msg.tz = (int)(hit.point.z * BattleManager.Scale);
                 Debug.DrawRay(firePoint.position, firePoint.forward * 500, Color.green, 100f);
             }
             else
             {
+                msg.hitID = -1;
                 msg.fx = 0;
                 msg.fy = 0;
                 msg.fz = 0;

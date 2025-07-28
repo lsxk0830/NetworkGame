@@ -187,25 +187,29 @@ public class BattleManager : MonoBehaviour
         BaseTank tank = GetTank(msg.hitID);
         if (tank == null) return;
 
-        if (msg.ID == GameMain.ID) // 攻击者是自己不用管炮管震动
+        if (msg.isHit)
         {
-            gamePanel.UpdateHit(msg.damage);
+            if (msg.ID == GameMain.ID) // 攻击者是自己不用管炮管震动
+            {
+                gamePanel.UpdateHit(msg.damage);
+            }
+            else if (msg.hitID == GameMain.ID) // 是否是自己受伤
+            {
+                //ToDo:UI显示特效
+                gamePanel.UpdateHP(msg.hp);
+            }
+            tank.hp = msg.hp; // 设置坦克血量
+            if (tank.hp <= 0) tank.Die(); // 如果血量小于等于0，坦克死亡
         }
         else
         {
-            tank.Fire();
-        }
-
-        if (msg.hitID == GameMain.ID) // 是否是自己受伤
-        {
-            //ToDo:UI显示特效
-            gamePanel.UpdateHP(msg.hp);
+            if (msg.ID != GameMain.ID)
+                tank.Fire();
         }
         this.GetGameObject(EffectManager.HitPrefab)
-                .GetComponent<Hit>()
-                .PoolInit(new Vector3(msg.tx / AcceptsScale, msg.ty / AcceptsScale, msg.tz / AcceptsScale));
-        tank.hp = msg.hp; // 设置坦克血量
-        if (tank.hp <= 0) tank.Die(); // 如果血量小于等于0，坦克死亡
+                        .GetComponent<Hit>()
+                        .PoolInit(new Vector3(msg.tx / AcceptsScale, msg.ty / AcceptsScale, msg.tz / AcceptsScale));
+
     }
 
     #endregion
