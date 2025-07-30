@@ -283,11 +283,11 @@ LODGroup:
   m_AnimateCrossFading: 1
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.6
+  - screenRelativeHeight: 0.9
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 2552091819862097052}
-  - screenRelativeHeight: 0.033592407
+  - screenRelativeHeight: 0.1
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 2552091820009901890}
@@ -600,11 +600,11 @@ LODGroup:
   m_AnimateCrossFading: 1
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.6
+  - screenRelativeHeight: 0.9
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 2552091820318306449}
-  - screenRelativeHeight: 0.03269974
+  - screenRelativeHeight: 0.1
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 2552091819845172710}
@@ -739,11 +739,11 @@ LODGroup:
   m_AnimateCrossFading: 1
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.6
+  - screenRelativeHeight: 0.9
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 2552091820345545368}
-  - screenRelativeHeight: 0.033592407
+  - screenRelativeHeight: 0.1
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 2552091819595273573}
@@ -917,11 +917,11 @@ LODGroup:
   m_AnimateCrossFading: 1
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.6
+  - screenRelativeHeight: 0.9
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 2552091821430394806}
-  - screenRelativeHeight: 0.0309494
+  - screenRelativeHeight: 0.1
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 2552091820140678015}
@@ -1771,6 +1771,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8040736106701180648, guid: af7963dd0c2bb654d9251888db74f7ba, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8040736106701180648, guid: af7963dd0c2bb654d9251888db74f7ba, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.12
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1841,6 +1849,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7741809532679488185, guid: 961246f5a43263b4480e85cef330412c, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.34
+      objectReference: {fileID: 0}
     - target: {fileID: 8125053463210069347, guid: 961246f5a43263b4480e85cef330412c, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -1898,6 +1910,18 @@ PrefabInstance:
     - target: {fileID: 5264393581758920354, guid: a3ac40762706b4347a078b135f68c153, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7633707032942419574, guid: a3ac40762706b4347a078b135f68c153, type: 3}
+      propertyPath: m_Size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7633707032942419574, guid: a3ac40762706b4347a078b135f68c153, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7633707032942419574, guid: a3ac40762706b4347a078b135f68c153, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 8555635461158566737, guid: a3ac40762706b4347a078b135f68c153, type: 3}
       propertyPath: m_RootOrder
@@ -1969,6 +1993,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2552091821059909645}
     m_Modifications:
+    - target: {fileID: 88521798803815693, guid: 6f1d161ff9167a245a8864307f58fc5e, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.36
+      objectReference: {fileID: 0}
     - target: {fileID: 482104401468136170, guid: 6f1d161ff9167a245a8864307f58fc5e, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -2021,6 +2049,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1656176475142283653, guid: 6f1d161ff9167a245a8864307f58fc5e, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5464047822787677700, guid: 6f1d161ff9167a245a8864307f58fc5e, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2043,6 +2075,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2552091821059909645}
     m_Modifications:
+    - target: {fileID: 1373084957787889863, guid: 3b5848d5aec55d3499074bdafb923bc6, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.55
+      objectReference: {fileID: 0}
     - target: {fileID: 2439594235955599672, guid: 3b5848d5aec55d3499074bdafb923bc6, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2129,6 +2165,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2552091821059909645}
     m_Modifications:
+    - target: {fileID: 442991992457906099, guid: 930e63c30edb0c24ea3d895ed81135a1, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2168769995702137711, guid: 930e63c30edb0c24ea3d895ed81135a1, type: 3}
       propertyPath: m_Name
       value: Bag_4
@@ -2185,6 +2225,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7870297378429256048, guid: 930e63c30edb0c24ea3d895ed81135a1, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.62
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2209,6 +2253,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 355206493511809318, guid: 41b734d9b591ddb44af0f637dd7131c7, type: 3}
       propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2076480898839924218, guid: 41b734d9b591ddb44af0f637dd7131c7, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3654296939055811381, guid: 41b734d9b591ddb44af0f637dd7131c7, type: 3}
@@ -2258,6 +2306,10 @@ PrefabInstance:
     - target: {fileID: 5520849204408941570, guid: 41b734d9b591ddb44af0f637dd7131c7, type: 3}
       propertyPath: m_Layer
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8632309196797723083, guid: 41b734d9b591ddb44af0f637dd7131c7, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.46
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2345,6 +2397,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7666557218896096481, guid: 5a1335287d3f4f2449202c0d24dc2dcb, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.06
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2363,6 +2419,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6764512613674266354}
     m_Modifications:
+    - target: {fileID: 1267900247596682425, guid: ab3a34e2f93f244489aade45ab216012, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1267900247596682425, guid: ab3a34e2f93f244489aade45ab216012, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.46
+      objectReference: {fileID: 0}
     - target: {fileID: 1590551269854629973, guid: ab3a34e2f93f244489aade45ab216012, type: 3}
       propertyPath: m_RootOrder
       value: 8
@@ -2515,6 +2579,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6764512613674266354}
     m_Modifications:
+    - target: {fileID: 302240605973487836, guid: ee45d949ea074254d8264119ad1663f6, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.24
+      objectReference: {fileID: 0}
     - target: {fileID: 8220753856814909960, guid: ee45d949ea074254d8264119ad1663f6, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -2585,6 +2653,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6764512613674266354}
     m_Modifications:
+    - target: {fileID: 1933025132699804232, guid: 1693094169485984b95003a4dcf558a2, type: 3}
+      propertyPath: m_LODs.Array.data[2].screenRelativeHeight
+      value: 0.12
+      objectReference: {fileID: 0}
     - target: {fileID: 2414664418751635991, guid: 1693094169485984b95003a4dcf558a2, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2811,6 +2883,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6764512613674266354}
     m_Modifications:
+    - target: {fileID: 1290047930562908292, guid: 8b132e3eed8569649869174914a76919, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.55
+      objectReference: {fileID: 0}
     - target: {fileID: 6306620400498574687, guid: 8b132e3eed8569649869174914a76919, type: 3}
       propertyPath: m_Name
       value: Carpet_1
@@ -2945,6 +3021,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8896529145716709023, guid: d16190e69318a794bbb10ab12bfe5513, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2974,6 +3054,14 @@ PrefabInstance:
     - target: {fileID: 6216045877876971991, guid: a55926f6318c80d46a9e2890b5b6716a, type: 3}
       propertyPath: m_Layer
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6521983134812374876, guid: a55926f6318c80d46a9e2890b5b6716a, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6521983134812374876, guid: a55926f6318c80d46a9e2890b5b6716a, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 6703612882024858477, guid: a55926f6318c80d46a9e2890b5b6716a, type: 3}
       propertyPath: m_RootOrder
@@ -3037,6 +3125,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6764512613674266354}
     m_Modifications:
+    - target: {fileID: 1264977920666801484, guid: 1707e529793eb5c42accfe7ff1cd291a, type: 3}
+      propertyPath: m_LODs.Array.data[2].screenRelativeHeight
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 3089463658409418390, guid: 1707e529793eb5c42accfe7ff1cd291a, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -3331,6 +3423,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8191194796946472304, guid: 92638a8beed66e04cba94d092c460867, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8191194796946472304, guid: 92638a8beed66e04cba94d092c460867, type: 3}
+      propertyPath: m_LODs.Array.data[2].screenRelativeHeight
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 8316061804286459766, guid: 92638a8beed66e04cba94d092c460867, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -3404,6 +3504,10 @@ PrefabInstance:
     - target: {fileID: 3006879592364837050, guid: 6f3ce1b3ef7f44b4d81fa17dc9b820ce, type: 3}
       propertyPath: m_Layer
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3436869803879597013, guid: 6f3ce1b3ef7f44b4d81fa17dc9b820ce, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3479,6 +3583,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7969197178590310678, guid: 92a4710262913af45830088286a13090, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7969197178590310678, guid: 92a4710262913af45830088286a13090, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.12
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3497,6 +3609,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6764512613674266354}
     m_Modifications:
+    - target: {fileID: 1368372531877992337, guid: f5b7f16e047991347bb5909964f13266, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1368372531877992337, guid: f5b7f16e047991347bb5909964f13266, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.12
+      objectReference: {fileID: 0}
     - target: {fileID: 1546941306263734461, guid: f5b7f16e047991347bb5909964f13266, type: 3}
       propertyPath: m_RootOrder
       value: 21
@@ -3723,6 +3843,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4711719173669570899, guid: caa4f68374737684294d9f64853c57c4, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4711719173669570899, guid: caa4f68374737684294d9f64853c57c4, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.12
+      objectReference: {fileID: 0}
     - target: {fileID: 6488518164777017456, guid: caa4f68374737684294d9f64853c57c4, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -3873,6 +4001,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8783508293243173701, guid: 5ba174e7e5a2771468c6671fb40c3c78, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.09
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3954,6 +4086,10 @@ PrefabInstance:
     - target: {fileID: 4234936455803275609, guid: 86e925b3dca6bdf428edae6760ea4630, type: 3}
       propertyPath: m_Layer
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985006393455341407, guid: 86e925b3dca6bdf428edae6760ea4630, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.35
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4051,6 +4187,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6764512613674266354}
     m_Modifications:
+    - target: {fileID: 1748786172919008643, guid: 50f23bffbeb5c3d4c87d8cd8f9da92bf, type: 3}
+      propertyPath: m_LODs.Array.data[2].screenRelativeHeight
+      value: 0.16
+      objectReference: {fileID: 0}
     - target: {fileID: 2527943950682339872, guid: 50f23bffbeb5c3d4c87d8cd8f9da92bf, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -4227,6 +4367,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4231504663605443165, guid: e32ad5a58fb000547b5215c8b2ec7979, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4231504663605443165, guid: e32ad5a58fb000547b5215c8b2ec7979, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.08
+      objectReference: {fileID: 0}
     - target: {fileID: 4410126222808391098, guid: e32ad5a58fb000547b5215c8b2ec7979, type: 3}
       propertyPath: m_RootOrder
       value: 25
@@ -4293,6 +4441,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6764512613674266354}
     m_Modifications:
+    - target: {fileID: 2237715843162038809, guid: dbf019fbc6549b043896134ece90fb79, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 6262348694593867304, guid: dbf019fbc6549b043896134ece90fb79, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -4363,6 +4515,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6764512613674266354}
     m_Modifications:
+    - target: {fileID: 1933025132699804232, guid: 1693094169485984b95003a4dcf558a2, type: 3}
+      propertyPath: m_LODs.Array.data[2].screenRelativeHeight
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 2414664418751635991, guid: 1693094169485984b95003a4dcf558a2, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -4801,6 +4957,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7163565668537241465, guid: 6136e4259e868c849b3c9eff2109a274, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7163565668537241465, guid: 6136e4259e868c849b3c9eff2109a274, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.55
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4866,6 +5030,14 @@ PrefabInstance:
     - target: {fileID: 7131060719908803387, guid: d3ec165ac51d7ef4fb10d6d03841a711, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7312760080694941282, guid: d3ec165ac51d7ef4fb10d6d03841a711, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7312760080694941282, guid: d3ec165ac51d7ef4fb10d6d03841a711, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 7619331209685338497, guid: d3ec165ac51d7ef4fb10d6d03841a711, type: 3}
       propertyPath: m_Name
@@ -4949,6 +5121,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8780984390417882019, guid: 6ee441dc67960de4b945db194638d063, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8780984390417882019, guid: 6ee441dc67960de4b945db194638d063, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.42
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5010,6 +5190,10 @@ PrefabInstance:
     - target: {fileID: 593640231289857296, guid: 3efcfe2392b49f14881909c5e15433fb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2290032694546889285, guid: 3efcfe2392b49f14881909c5e15433fb, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 4496370878677735171, guid: 3efcfe2392b49f14881909c5e15433fb, type: 3}
       propertyPath: m_Name
@@ -5085,6 +5269,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7219538048576282005, guid: 3a259e12ad3cbe849b4ab5aedeeca3d8, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.06
+      objectReference: {fileID: 0}
     - target: {fileID: 7561994898167248194, guid: 3a259e12ad3cbe849b4ab5aedeeca3d8, type: 3}
       propertyPath: m_Name
       value: Bottle_3
@@ -5130,6 +5318,10 @@ PrefabInstance:
     - target: {fileID: 4261863924689098916, guid: a49831eeeebb1d943871d24411799580, type: 3}
       propertyPath: m_Layer
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4760424476771511159, guid: a49831eeeebb1d943871d24411799580, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 5015556068762765840, guid: a49831eeeebb1d943871d24411799580, type: 3}
       propertyPath: m_RootOrder
@@ -5290,6 +5482,14 @@ PrefabInstance:
     - target: {fileID: 4100437833187249866, guid: 99408b83778fed747a4240dad86f1082, type: 3}
       propertyPath: m_Layer
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261759382038719536, guid: 99408b83778fed747a4240dad86f1082, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261759382038719536, guid: 99408b83778fed747a4240dad86f1082, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.18
       objectReference: {fileID: 0}
     - target: {fileID: 8467712425894500900, guid: 99408b83778fed747a4240dad86f1082, type: 3}
       propertyPath: m_RootOrder
@@ -5591,6 +5791,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6764512613674266354}
     m_Modifications:
+    - target: {fileID: 403296624021077218, guid: 5f111ba2332a4dd479726c7e68f65064, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.08
+      objectReference: {fileID: 0}
     - target: {fileID: 1856418370873769987, guid: 5f111ba2332a4dd479726c7e68f65064, type: 3}
       propertyPath: m_Name
       value: Books_1
@@ -5669,6 +5873,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6764512613674266354}
     m_Modifications:
+    - target: {fileID: 533447559974629323, guid: b1eedd371dafffe4e9fb035084e95ab5, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.14
+      objectReference: {fileID: 0}
     - target: {fileID: 1273920812806855830, guid: b1eedd371dafffe4e9fb035084e95ab5, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -5841,6 +6049,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8668912391406587608, guid: 37fd45dd72058c0469b19180fb9a96e1, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8668912391406587608, guid: 37fd45dd72058c0469b19180fb9a96e1, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.13
+      objectReference: {fileID: 0}
     - target: {fileID: 9206642549531756980, guid: 37fd45dd72058c0469b19180fb9a96e1, type: 3}
       propertyPath: m_RootOrder
       value: 24
@@ -5903,6 +6119,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2552091820318306455}
     m_Modifications:
+    - target: {fileID: 4083736035804762440, guid: 856a29b3e30b5eb4a88f82767403a8a2, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 4619560386797630770, guid: 856a29b3e30b5eb4a88f82767403a8a2, type: 3}
       propertyPath: m_Layer
       value: 0

@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5032367141993918168, guid: 00de04377a7aceb478073cc1e8dfb5de, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8325342452464364072, guid: 00de04377a7aceb478073cc1e8dfb5de, type: 3}
       propertyPath: m_FadeMode
       value: 1
@@ -15,6 +19,14 @@ PrefabInstance:
     - target: {fileID: 8325342452464364072, guid: 00de04377a7aceb478073cc1e8dfb5de, type: 3}
       propertyPath: m_AnimateCrossFading
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8325342452464364072, guid: 00de04377a7aceb478073cc1e8dfb5de, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8325342452464364072, guid: 00de04377a7aceb478073cc1e8dfb5de, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.63
       objectReference: {fileID: 0}
     - target: {fileID: 8359586514656332623, guid: 00de04377a7aceb478073cc1e8dfb5de, type: 3}
       propertyPath: m_RootOrder
@@ -93,6 +105,10 @@ PrefabInstance:
     - target: {fileID: 1645364518814752351, guid: 1ec1190b22a54f24693657572e49fc6b, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 3279854373493490294, guid: 1ec1190b22a54f24693657572e49fc6b, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 6820014692964506491, guid: 1ec1190b22a54f24693657572e49fc6b, type: 3}
       propertyPath: m_Name
