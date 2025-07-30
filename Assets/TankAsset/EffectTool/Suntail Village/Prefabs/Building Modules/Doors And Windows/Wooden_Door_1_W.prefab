@@ -103,6 +103,7 @@ GameObject:
   - component: {fileID: -5568095113060132716}
   - component: {fileID: -3841646947487603809}
   - component: {fileID: -212392734294158415}
+  - component: {fileID: 8924073444548334505}
   m_Layer: 11
   m_Name: Wooden_Door_1_W
   m_TagString: Door
@@ -363,6 +364,16 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!41 &8924073444548334505
+OcclusionPortal:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5523012492520086688}
+  m_Open: 0
+  m_Center: {x: 0.52, y: 0.1, z: 0}
+  m_Size: {x: 1.2, y: 2.2, z: 0.2}
 --- !u!1 &7241764629593073752
 GameObject:
   m_ObjectHideFlags: 0
