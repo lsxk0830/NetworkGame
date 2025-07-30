@@ -39,3 +39,13 @@
 ![9](./Texture/9.png)
 
 ![10](./Texture/10.png)
+
+
+
+### 待优化：
+
+将光源的灯光剔除放到玩家上
+
+![11](./Texture/11.png)
+
+![image-20250730235440076](C:\Users\lsxk0\AppData\Roaming\Typora\typora-user-images\image-20250730235440076.png)
