@@ -42,10 +42,6 @@
 
 
 
-### 待优化：
+### 关闭静态批处理：
 
-将光源的灯光剔除放到玩家上
-
-![11](./Texture/11.png)
-
-![image-20250730235440076](C:\Users\lsxk0\AppData\Roaming\Typora\typora-user-images\image-20250730235440076.png)
+![12](./Texture/12.png)
