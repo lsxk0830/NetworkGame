@@ -19,6 +19,8 @@ public class GamePanel : BasePanel
     [LabelText("开火时不看Player")][SerializeField] public LayerMask IsFrontSight;
     [LabelText("正常相机看到的层")][SerializeField] public LayerMask NormalFrontSight;
 
+    private Camera mainCamera;
+
     public override void OnInit()
     {
         IsFrontSight = LayerMask.GetMask("Default", "Enemy", "Friend", "CanDestroy", "Bullet");
@@ -29,6 +31,7 @@ public class GamePanel : BasePanel
         FPSText = transform.Find("FPSText").GetComponent<TextMeshProUGUI>();
         MemoryText = transform.Find("MemoryText").GetComponent<TextMeshProUGUI>();
         map = transform.Find("Map").GetComponent<RectTransform>();
+        mainCamera = Camera.main;
     }
 
     public override void OnShow(params object[] args)
@@ -64,12 +67,12 @@ public class GamePanel : BasePanel
         {
             if (FrontSight.gameObject.activeSelf)
             {
-                Camera.main.cullingMask = NormalFrontSight;
+                mainCamera.cullingMask = NormalFrontSight;
                 FrontSight.gameObject.SetActive(false);
             }
             else
             {
-                Camera.main.cullingMask = IsFrontSight;
+                mainCamera.cullingMask = IsFrontSight;
                 FrontSight.gameObject.SetActive(true);
             }
         }

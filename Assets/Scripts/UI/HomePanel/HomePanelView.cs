@@ -21,6 +21,8 @@ public class HomePanelView : BasePanel
     [SerializeField][LabelText("隐藏按钮")] public Button InfoCloseBtn;
     [SerializeField][LabelText("开始游戏")] private Button PlayBtn;
 
+    private Camera mainCamera;
+
     [Header("CMFreeLook")]
     [SerializeField] private CinemachineInputAxisController input;
     [SerializeField]
@@ -42,6 +44,7 @@ public class HomePanelView : BasePanel
         layer = PanelManager.Layer.Panel;
 
         // 寻找组件
+        mainCamera = Camera.main;
         nameText = transform.Find("Top/UserNameText").GetComponent<TMP_Text>();
         RecordText = transform.Find("Top/RecordText").GetComponent<TMP_Text>();
         CoinCountText = transform.Find("Top/CoinCountText").GetComponent<TMP_Text>();
@@ -120,7 +123,7 @@ public class HomePanelView : BasePanel
     {
         if (UnityEngine.Input.GetMouseButtonDown(0))
         {
-            var ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
+            var ray = mainCamera.ScreenPointToRay(UnityEngine.Input.mousePosition);
             if (Physics.Raycast(ray, out var hit) && hit.collider.gameObject.name == "TankModel")
             {
                 Input.enabled = true;

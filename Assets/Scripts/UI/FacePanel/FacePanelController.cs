@@ -72,7 +72,8 @@ public class FacePanelController
             (int)sprite.rect.height
         );
         Debug.Log($"大小:{sprite.rect.width},{(int)sprite.rect.height}");
-        newTex.SetPixels(pixels);
+        Color32[] pixels32 = Array.ConvertAll(pixels, c => (Color32)c);
+        newTex.SetPixels32(pixels32);
         newTex.Apply();
         byte[] _textureBytes = newTex.EncodeToPNG();
         var path = StandaloneFileBrowser.SaveFilePanel("Title", "", "sample", "png");
