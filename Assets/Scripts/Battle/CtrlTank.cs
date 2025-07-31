@@ -23,17 +23,10 @@ public class CtrlTank : BaseTank
     private float maxRayLength = 300f; // 最大射线长度
     private bool spaceKeyHandled; // 开火标志位
 
-    [LabelText("敌人层")][SerializeField] private int enemyLayerBit;
-    [LabelText("友军层")][SerializeField] private int friendLayerBit;
-    [LabelText("可破坏层")][SerializeField] private int canDestroyLayerBit;
-
     [LabelText("射线检测的层级")][SerializeField] private LayerMask RayLayers;
 
     public override void Init(Player tankInfo)
     {
-        enemyLayerBit = LayerMask.NameToLayer("Enemy");
-        friendLayerBit = LayerMask.NameToLayer("Friend");
-        canDestroyLayerBit = LayerMask.NameToLayer("CanDestroy");
         RayLayers = LayerMask.GetMask("Default", "Enemy", "Friend", "CanDestroy");
 
         freeLookCam = GameObject.FindWithTag("CMFreeLook").GetComponent<CinemachineCamera>();

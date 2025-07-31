@@ -186,12 +186,11 @@ public class BattleManager : MonoBehaviour
         MsgAttack msg = (MsgAttack)msgBse;
         BaseTank attackTank = GetTank(msg.ID);
         BaseTank hitTank = GetTank(msg.hitID);
-        if (hitTank == null || attackTank == null) return;
 
-        if (msg.ID != GameMain.ID)
+        if (msg.ID != GameMain.ID && attackTank != null)
             attackTank.Fire();
 
-        if (msg.isHit)
+        if (msg.isHit && hitTank != null)
         {
             if (msg.ID == GameMain.ID) // 攻击者是自己不用管炮管震动
             {
@@ -221,7 +220,12 @@ public class BattleManager : MonoBehaviour
             GameObject tank = Instantiate(handle);
             if (tankInfo.ID == GameMain.ID)
             {
-                tank.layer = LayerMask.NameToLayer("Player");
+                int playerLayer = LayerMask.NameToLayer("Player");
+                tank.layer = playerLayer;
+                foreach (var renderer in tank.GetComponentsInChildren<Renderer>(true))
+                {
+                    renderer.gameObject.layer = playerLayer;
+                }
             }
             else
             {

@@ -1,12 +1,10 @@
-using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
-using System;
 using UnityEngine.Profiling;
 
 public class GamePanel : BasePanel
 {
-    [LabelText("准星")] public Image FrontSight;
+    [LabelText("准星")] public Transform FrontSight;
     [LabelText("血量")][SerializeField] private TextMeshProUGUI HPText;
     [LabelText("击中伤害")][SerializeField] private TextMeshProUGUI HitText;
     [LabelText("FPS")][SerializeField] private TextMeshProUGUI FPSText;
@@ -18,10 +16,14 @@ public class GamePanel : BasePanel
     private float lastUpdateTime; // 上次更新时间
     private int frameCount; // 帧计数
     private float accumulatedFps; // 累计FPS
+    [LabelText("开火时不看Player")][SerializeField] public LayerMask IsFrontSight;
+    [LabelText("正常相机看到的层")][SerializeField] public LayerMask NormalFrontSight;
 
     public override void OnInit()
     {
-        FrontSight = transform.Find("FrontSight").GetComponent<Image>();
+        IsFrontSight = LayerMask.GetMask("Default", "Enemy", "Friend", "CanDestroy", "Bullet");
+        NormalFrontSight = LayerMask.GetMask("Default", "Enemy", "Friend", "CanDestroy", "Player", "Bullet");
+        FrontSight = transform.Find("FrontSight");
         HPText = transform.Find("HPText").GetComponent<TextMeshProUGUI>();
         HitText = transform.Find("HitText").GetComponent<TextMeshProUGUI>();
         FPSText = transform.Find("FPSText").GetComponent<TextMeshProUGUI>();
@@ -56,6 +58,20 @@ public class GamePanel : BasePanel
             MemoryText.color = GetValueColor(totalMemory, 500, 1000);
 
             lastUpdateTime = Time.time;
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (FrontSight.gameObject.activeSelf)
+            {
+                Camera.main.cullingMask = NormalFrontSight;
+                FrontSight.gameObject.SetActive(false);
+            }
+            else
+            {
+                Camera.main.cullingMask = IsFrontSight;
+                FrontSight.gameObject.SetActive(true);
+            }
         }
     }
 
