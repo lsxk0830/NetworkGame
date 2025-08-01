@@ -1,6 +1,9 @@
 # 坦克先锋客户端
 
+[优化结果见Optimize.md](./Optimize.md)
+
 #### 流程图
+
 ```mermaid
 graph TD
     A[启动客户端] --> B[自动Socket连接]
