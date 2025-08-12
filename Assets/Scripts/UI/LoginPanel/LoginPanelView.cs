@@ -15,6 +15,7 @@ public class LoginPanelView : BasePanel
     public Toggle isShowPwToggle; // 是否显示密码
     public Toggle RememberPwToggle; // 是否记住密码
     private GameObject tipPanel; // 自动输入密码弹窗
+    private Transform languageDropdown;
 
     public override void OnInit() // 初始化
     {
@@ -32,6 +33,8 @@ public class LoginPanelView : BasePanel
         readPwBtn = transform.Find("TipPanel/ReadPwBtn").GetComponent<Button>();
         isShowPwToggle = transform.Find("IsShowPwToggle").GetComponent<Toggle>();
         RememberPwToggle = transform.Find("RememberPwToggle").GetComponent<Toggle>();
+        languageDropdown = transform.Find("LanguageDropdown");
+        languageDropdown.gameObject.AddComponent<Language>();
         controller.SetToggleState();
 #if DEBUG
         transform.Find("DEV").gameObject.SetActive(true);

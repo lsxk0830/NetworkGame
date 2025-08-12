@@ -104,6 +104,7 @@ public class CtrlTank : BaseTank
         {
             if (spaceKeyHandled || Time.time - lastFireTime < fired) return; // CD时间判断
             spaceKeyHandled = true;
+            lastFireTime = Time.time;
 
             MsgAttack msg = this.GetObjInstance<MsgAttack>();
             msg.ID = GameMain.ID;

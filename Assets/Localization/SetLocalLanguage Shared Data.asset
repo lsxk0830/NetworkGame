@@ -1,0 +1,156 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: SetLocalLanguage Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: SetLocalLanguage
+  m_TableCollectionNameGuidString: b71d51b0e423b7944b05e87e8b923231
+  m_Entries:
+  - m_Id: 54351052800
+    m_Key: 'Account '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6274914926592
+    m_Key: Password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6301464870912
+    m_Key: RememberPassword
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6438102712320
+    m_Key: Input User Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6503567409152
+    m_Key: Input  Password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6530062827520
+    m_Key: Login
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6542738014208
+    m_Key: Register
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6664775483392
+    m_Key: Repeat Password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6738893029376
+    m_Key: User Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6782354407424
+    m_Key: Game Setting
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6799978872832
+    m_Key: Music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6814629576704
+    m_Key: Sound Effects
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6831511650304
+    m_Key: Key Configuration
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6853938593792
+    m_Key: Call out the mouse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6963665780736
+    m_Key: Tip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6987309072384
+    m_Key: OK
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7082188423168
+    m_Key: War Record
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7112651653120
+    m_Key: Stamina
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7148538118144
+    m_Key: Gold Coin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7159820795904
+    m_Key: Diamond
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7208566996992
+    m_Key: Play Game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7266125430784
+    m_Key: 'Progress '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7304549449728
+    m_Key: Operate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7315597246464
+    m_Key: Create a room
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7348094713856
+    m_Key: Refresh List
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7378964791296
+    m_Key: Leave the room lobby
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7472476798976
+    m_Key: Start battle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7505225924608
+    m_Key: Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7537131995136
+    m_Key: Change
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7550344052736
+    m_Key: Save
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7565917503488
+    m_Key: Download
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14422660825088
+    m_Key: Room List
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 6663177082331463894
+  references:
+    version: 2
+    RefIds:
+    - rid: 6663177082331463894
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1754982972153

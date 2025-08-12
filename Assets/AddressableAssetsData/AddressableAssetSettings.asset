@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 7b341ad66e134db4a87223472ee202ec
   m_currentHash:
     serializedVersion: 2
-    Hash: 5c80a1125d368800df436f6cd7f0a2ac
+    Hash: 00000000000000000000000000000000
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_CatalogRequestsTimeout: 0
@@ -59,11 +59,15 @@ MonoBehaviour:
   m_BuildAddressablesWithPlayerBuild: 0
   m_overridePlayerVersion: 
   m_GroupAssets:
+  - {fileID: 11400000, guid: 8487dbf04d348ba429fb9a4e28db5dc3, type: 2}
   - {fileID: 11400000, guid: 4d846f74f099c52419135681e8fe010d, type: 2}
+  - {fileID: 11400000, guid: c122e0b766cbd814aa5a5a5056db9ccd, type: 2}
   - {fileID: 11400000, guid: fbc3e5d11adcc1a4a8533c52646d51fe, type: 2}
   - {fileID: 11400000, guid: 7c74e838cc411ec44a01cbfeb599d0a2, type: 2}
   - {fileID: 11400000, guid: 80f222b59260f814994da1059ef5ae26, type: 2}
   - {fileID: 11400000, guid: 1c954cbf399a5a547b9a8d727959ee15, type: 2}
+  - {fileID: 11400000, guid: ddc5b7987b040374692956b2ce8dadc3, type: 2}
+  - {fileID: 11400000, guid: a420e6deded3c42499e44d1facd3b0d5, type: 2}
   m_BuildSettings:
     m_LogResourceManagerExceptions: 1
     m_BundleBuildPath: Temp/com.unity.addressables/AssetBundles
@@ -105,6 +109,10 @@ MonoBehaviour:
     - default
     - UIPanel
     - Tank
+    - Locale
+    - Locale-zh-Hans
+    - Locale-en
+    - Locale-ja
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 6dad22eeef1a4e24c8849899d2393623, type: 2}

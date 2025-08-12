@@ -31,13 +31,17 @@ public class GamePanel : BasePanel
         FPSText = transform.Find("FPSText").GetComponent<TextMeshProUGUI>();
         MemoryText = transform.Find("MemoryText").GetComponent<TextMeshProUGUI>();
         map = transform.Find("Map").GetComponent<RectTransform>();
-        mainCamera = Camera.main;
     }
 
     public override void OnShow(params object[] args)
     {
         gameObject.SetActive(true);
+        HPText.text = "HP: 100";
+        HitText.text = "伤害：0";
         hitCount = 0;
+        FrontSight.gameObject.SetActive(false);
+        lastUpdateTime = Time.time;
+        mainCamera = Camera.main;
         GloablMono.Instance.OnUpdate += OnUpdate;
     }
 
