@@ -34,7 +34,7 @@ public class MsgAttack : MsgBase
     public long hitID;
 
     /// <summary>
-    /// 网络判断是否受伤
+    /// 网络判断是否受伤,现在改为本地判断
     /// </summary>
     public bool isHit;
 

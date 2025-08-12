@@ -116,10 +116,12 @@ public class CtrlTank : BaseTank
                 if (hit.collider.TryGetComponent<SyncTank>(out SyncTank syncTank))
                 {
                     msg.hitID = syncTank.ID;
+                    msg.isHit = true;
                 }
                 else
                 {
                     msg.hitID = -1;
+                    msg.isHit = false;
                 }
                 msg.fx = (int)Math.Round(firePoint.forward.x * BattleManager.Scale);
                 msg.fy = (int)Math.Round(firePoint.forward.y * BattleManager.Scale);
@@ -132,6 +134,7 @@ public class CtrlTank : BaseTank
             else
             {
                 msg.hitID = -1;
+                msg.isHit = false;
                 msg.fx = 0;
                 msg.fy = 0;
                 msg.fz = 0;
