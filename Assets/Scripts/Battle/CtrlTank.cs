@@ -147,7 +147,7 @@ public class CtrlTank : BaseTank
             Fire();
             impulseSource.GenerateImpulse(); // 生成震动
         }
-        if (Input.GetMouseButtonUp(1))
+        if (Input.GetMouseButtonUp(0))
         {
             spaceKeyHandled = false; // 释放按键
         }
