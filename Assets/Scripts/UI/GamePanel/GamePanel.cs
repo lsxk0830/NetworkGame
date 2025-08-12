@@ -76,6 +76,23 @@ public class GamePanel : BasePanel
                 FrontSight.gameObject.SetActive(true);
             }
         }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            PanelManager.Instance.Open<SettingPanel>();
+        }
+        if (Input.GetKeyDown(KeyCode.BackQuote))
+        {
+            if (Cursor.lockState == CursorLockMode.Locked)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+        }
     }
 
     // 根据数值返回颜色（绿-黄-红）

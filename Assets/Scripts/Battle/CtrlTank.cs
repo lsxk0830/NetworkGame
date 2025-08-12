@@ -42,6 +42,7 @@ public class CtrlTank : BaseTank
         GloablMono.Instance.OnFixedUpdate += OnFixUpdate;
 
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void OnUpdate()
@@ -99,7 +100,7 @@ public class CtrlTank : BaseTank
 
     private void FireUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.Space))  // 按键判断
+        if (Input.GetMouseButtonDown(0))
         {
             if (spaceKeyHandled || Time.time - lastFireTime < fired) return; // CD时间判断
             spaceKeyHandled = true;
@@ -143,7 +144,7 @@ public class CtrlTank : BaseTank
             Fire();
             impulseSource.GenerateImpulse(); // 生成震动
         }
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetMouseButtonUp(1))
         {
             spaceKeyHandled = false; // 释放按键
         }
@@ -171,6 +172,7 @@ public class CtrlTank : BaseTank
     {
         base.Destroy();
         Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         GloablMono.Instance.OnUpdate -= OnUpdate;
         GloablMono.Instance.OnFixedUpdate -= OnFixUpdate;
         freeLookCam = null;
