@@ -7,7 +7,7 @@ public class BaseTank : MonoBehaviour
     public Transform turret; // 炮塔
     public Transform gun; // 炮管
     public Transform firePoint; // 发射点
-    public float fired = 0.5f; // 炮弹Cd时间
+    public float fired = 1.5f; // 炮弹Cd时间
     public float lastFireTime = 0; // 上一次发射炮弹时间
     public float hp = 100;
     public long ID; // 哪一玩家
