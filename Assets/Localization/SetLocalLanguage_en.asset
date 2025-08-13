@@ -73,10 +73,10 @@ MonoBehaviour:
   - m_Id: 6853938593792
     m_Localized: 'Call out the mouse:~
 
-      Forward: W, Backward: S
+      Forward: W  Backward: S
 
       Turn
-      left: A Turn right: D'
+      left: A   Turn right: D'
     m_Metadata:
       m_Items: []
   - m_Id: 6963665780736
