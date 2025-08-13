@@ -20,6 +20,7 @@ public class HomePanelView : BasePanel
     [SerializeField][LabelText("显示按钮")] public Button InfoOpenBtn;
     [SerializeField][LabelText("隐藏按钮")] public Button InfoCloseBtn;
     [SerializeField][LabelText("开始游戏")] private Button PlayBtn;
+    [SerializeField][LabelText("签到按钮")] private Button SignInBtn;
 
     private Camera mainCamera;
 
@@ -56,6 +57,7 @@ public class HomePanelView : BasePanel
         InfoOpenBtn = transform.Find("Top/InfoOpenBtn").GetComponent<Button>();
         InfoCloseBtn = transform.Find("Top/InfoCloseBtn").GetComponent<Button>();
         PlayBtn = transform.Find("Down/PlayBtn").GetComponent<Button>();
+        SignInBtn = transform.Find("Right/CalendarBtn").GetComponent<Button>();
 
         Controller = new HomePanelController(this);
         Controller.UpdateUI().Forget();
@@ -79,15 +81,24 @@ public class HomePanelView : BasePanel
         InfoOpenBtn.onClick.AddListener(OnInfoOpenClick);
         InfoCloseBtn.onClick.AddListener(OnInfoCloseClick);
         PlayBtn.onClick.AddListener(OnPlayClick);
+        SignInBtn.onClick.AddListener(OnSignInClick);
         GloablMono.Instance.OnUpdate += OnUpdate;
 
         EventManager.Instance.RegisterEvent(Events.GoHome, OnGoHome);
+        EventManager.Instance.RegisterEvent(Events.UpdateCoinDiamond, OnUpdateCoinDiamond);
     }
 
     private void OnGoHome()
     {
         PlayBtn.gameObject.SetActive(true);
     }
+    private void OnUpdateCoinDiamond()
+    {
+        User user = UserManager.Instance.GetUser(GameMain.ID);
+        CoinCountText.text = $"{user.Coin}";
+        diamondText.text = user.Diamond.ToString();
+    }
+
 
     public override void OnClose()
     {
@@ -99,6 +110,7 @@ public class HomePanelView : BasePanel
         InfoOpenBtn.onClick.RemoveListener(OnInfoOpenClick);
         InfoCloseBtn.onClick.RemoveListener(OnInfoCloseClick);
         PlayBtn.onClick.RemoveListener(OnPlayClick);
+        SignInBtn.onClick.RemoveListener(OnSignInClick);
         GloablMono.Instance.OnUpdate -= OnUpdate;
         EventManager.Instance.RemoveEvent(Events.GoHome, OnGoHome);
     }
@@ -181,6 +193,12 @@ public class HomePanelView : BasePanel
         this.Log("开始游戏");
         PlayBtn.gameObject.SetActive(false);
         Controller.HandlePlay();
+    }
+
+    private void OnSignInClick() // 签到按钮点击回调
+    {
+        PanelManager.Instance.Open<DailyRewardsPanel>();
+        PlayBtn.gameObject.SetActive(false);
     }
 
     #endregion

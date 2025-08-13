@@ -151,6 +151,46 @@ MonoBehaviour:
     m_Localized: Room List
     m_Metadata:
       m_Items: []
+  - m_Id: 482359234478080
+    m_Localized: Day 1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 482608883646464
+    m_Localized: Day 2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 482610968215552
+    m_Localized: Day 3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 482612562051072
+    m_Localized: Day 4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 482635559419904
+    m_Localized: Day 5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 482637023232000
+    m_Localized: Day 6
+    m_Metadata:
+      m_Items: []
+  - m_Id: 482638394769408
+    m_Localized: Day 7
+    m_Metadata:
+      m_Items: []
+  - m_Id: 483948800196608
+    m_Localized: Sign In Every Day
+    m_Metadata:
+      m_Items: []
+  - m_Id: 484076286066688
+    m_Localized: SignIn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 485451917115392
+    m_Localized: Congratulations on obtaining
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

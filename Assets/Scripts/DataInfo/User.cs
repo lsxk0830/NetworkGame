@@ -39,14 +39,4 @@ public class User
     /// 用户头像
     /// </summary>
     public string AvatarPath;
-
-    /// <summary>
-    /// 创建账户时间
-    /// </summary>
-    public DateTime CreateTime;
-
-    /// <summary>
-    /// 上次登录时间
-    /// </summary>
-    public DateTime LastLogin;
 }

@@ -143,6 +143,46 @@ MonoBehaviour:
     m_Key: Room List
     m_Metadata:
       m_Items: []
+  - m_Id: 482359234478080
+    m_Key: SignInDay1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 482608883646464
+    m_Key: SignInDay2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 482610968215552
+    m_Key: SignInDay3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 482612562051072
+    m_Key: SignInDay4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 482635559419904
+    m_Key: SignInDay5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 482637023232000
+    m_Key: SignInDay6
+    m_Metadata:
+      m_Items: []
+  - m_Id: 482638394769408
+    m_Key: SignInDay7
+    m_Metadata:
+      m_Items: []
+  - m_Id: 483948800196608
+    m_Key: SignInEveryDay
+    m_Metadata:
+      m_Items: []
+  - m_Id: 484076286066688
+    m_Key: SignIn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 485451917115392
+    m_Key: CongratulationsOnObtaining
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

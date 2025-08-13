@@ -13,65 +13,80 @@ MonoBehaviour:
   m_Name: UI
   m_EditorClassIdentifier: 
   m_GroupName: UI
-  m_Data:
-    m_SerializedData: []
   m_GUID: 8a493f9bcf1bb7a4281d487dceb67e7d
   m_SerializeEntries:
-  - m_GUID: 6ef8bb197ad66694197fc0e5fff4c4d6
-    m_Address: LoginPanelView
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - UIPanel
-  - m_GUID: 4372e5fa582b4964388fd8d053c70a86
-    m_Address: RegisterPanelView
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - UIPanel
-  - m_GUID: a26cc27872f88104abf22bb7d583dc5d
-    m_Address: ResultPanel
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - UIPanel
-  - m_GUID: c49183660cae8ac4881e3a02a1c88878
-    m_Address: HomePanelView
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - UIPanel
-  - m_GUID: 37cd54564004926419b427fdfcb425dd
-    m_Address: RoomPanelView
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - UIPanel
-  - m_GUID: 4718cc914ae8f3942a74335763ac5921
-    m_Address: TipPanel
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - UIPanel
-  - m_GUID: 5e856d2ca0e6b5c42a3d8de41d301c53
-    m_Address: FacePanelView
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - UIPanel
-  - m_GUID: d6e1e365e9ebefc4c98ec9300ceb8525
-    m_Address: RoomHallPanelView
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - UIPanel
-  - m_GUID: d16f715f91bfa104ca41ef2f71b13286
-    m_Address: LoadingPanel
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - UIPanel
-  - m_GUID: 1a9b9d63a6bfd4b40a8bc0ff351c9406
-    m_Address: SettingPanel
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - UIPanel
   - m_GUID: 026d02f58a0b06c439772e0b0c4286a8
     m_Address: GamePanel
     m_ReadOnly: 0
     m_SerializedLabels:
     - UIPanel
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1a9b9d63a6bfd4b40a8bc0ff351c9406
+    m_Address: SettingPanel
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b03a6ea99b415d4099622ae8ff11827
+    m_Address: DailyRewardsPanel
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 37cd54564004926419b427fdfcb425dd
+    m_Address: RoomPanelView
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4372e5fa582b4964388fd8d053c70a86
+    m_Address: RegisterPanelView
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4718cc914ae8f3942a74335763ac5921
+    m_Address: TipPanel
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e856d2ca0e6b5c42a3d8de41d301c53
+    m_Address: FacePanelView
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ef8bb197ad66694197fc0e5fff4c4d6
+    m_Address: LoginPanelView
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a26cc27872f88104abf22bb7d583dc5d
+    m_Address: ResultPanel
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c49183660cae8ac4881e3a02a1c88878
+    m_Address: HomePanelView
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d16f715f91bfa104ca41ef2f71b13286
+    m_Address: LoadingPanel
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d6e1e365e9ebefc4c98ec9300ceb8525
+    m_Address: RoomHallPanelView
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIPanel
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 0c62968f62d51d848b11533011becdd3, type: 2}
   m_SchemaSet:
